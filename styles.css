@@ -1,51 +1,148 @@
 :root { color-scheme: dark; }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
-body { margin: 0; background: #000; }
+body { background: #070b17; margin: 0; }
 
+/* ========== Cinematic Hero Background ========== */
+.hero-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  /* Start fully hidden – JS will animate this in */
+  clip-path: inset(50% 50% 50% 50%);
+  opacity: 0;
+  transform: scale(1.2);
+}
+
+.hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+
+/* After cinematic reveal finishes, add the Ken Burns slow drift */
+.hero-bg.revealed img {
+  animation: ken-burns 30s ease-in-out infinite alternate;
+}
+
+/* Red scanning beam that sweeps after the image opens */
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #ff3333 30%, #e52222 50%, #ff3333 70%, transparent 100%);
+  box-shadow: 0 0 24px #ff3333, 0 0 60px rgba(229, 34, 34, .3);
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hero-bg.scan::after {
+  animation: scan-line 3s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
+@keyframes scan-line {
+  0%   { top: 0;    opacity: 0; }
+  5%   { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes ken-burns {
+  0%   { transform: scale(1.0) translate(0, 0); }
+  50%  { transform: scale(1.05) translate(-.4%, -.3%); }
+  100% { transform: scale(1.02) translate(.3%, -.2%); }
+}
+
+/* Vignette on top of image — light enough to keep image clearly visible */
+.hero-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, rgba(7, 11, 23, .1) 0%, rgba(7, 11, 23, .35) 65%, rgba(7, 11, 23, .65) 100%);
+}
+
+/* ========== Original construction page ========== */
 .construction {
   align-items: center;
-  background: #000;
+  background: transparent;
   display: flex;
   justify-content: center;
   min-height: 100svh;
   overflow: hidden;
-  padding: 24px;
+  padding: 30px;
   position: relative;
+  z-index: 1;
+  text-align: center;      /* keep all text centered */
 }
 
-#starfield { height: 100%; inset: 0; position: absolute; width: 100%; }
-.loader { position: relative; text-align: center; width: min(76vw, 940px); }
-h1 {
-  color: #f8f8f8;
-  display: flex;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: clamp(1.55rem, 4.2vw, 4.3rem);
-  font-weight: 700;
-  gap: clamp(.35rem, 1.3vw, 1.45rem);
-  justify-content: center;
-  letter-spacing: clamp(.03em, .4vw, .13em);
-  line-height: 1.1;
-  margin: 0;
-  text-shadow: 0 0 18px rgba(255, 255, 255, .12);
+#blueprint, #text-vapor { height: 100%; inset: 0; position: absolute; width: 100%; }
+#text-vapor { pointer-events: none; z-index: 3; }
+.glow { border-radius: 50%; filter: blur(30px); pointer-events: none; position: absolute; }
+.glow-a { background: rgba(54, 253, 196, .11); height: 26vw; left: -12vw; top: -10vw; width: 26vw; }
+.glow-b { background: rgba(147, 91, 255, .11); bottom: -11vw; height: 28vw; right: -12vw; width: 28vw; }
+
+.title-block {
+  color: #eef4ff;
+  max-width: 980px;
+  padding: clamp(28px, 5vw, 72px) clamp(26px, 6.5vw, 108px);
+  position: relative;
+  width: min(88vw, 980px);
+  margin: 0 auto;          /* horizontally center the block */
+  text-align: left;        /* text left-aligned inside the block */
+}
+.title-block::before, .title-block::after {
+  border-color: rgba(124, 248, 211, .6);
+  content: "";
+  height: clamp(18px, 2.7vw, 31px);
+  position: absolute;
+  width: clamp(18px, 2.7vw, 31px);
+}
+.title-block::before { border-left: 2px solid; border-top: 2px solid; left: 0; top: 0; }
+.title-block::after { border-bottom: 2px solid; border-right: 2px solid; bottom: 0; right: 0; }
+
+h1 { font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif; font-size: clamp(3.35rem, 10.4vw, 9.6rem); font-stretch: condensed; font-weight: 900; letter-spacing: -.05em; line-height: .72; margin: 0; text-transform: uppercase; }
+h1 > span { display: block; }
+.vapor-active h1 > span { opacity: 0; }
+.title-revealed h1 > span { opacity: 1; }
+.char { display: inline-block; opacity: 0; transform: translateY(.24em) scale(.94); }
+.title-revealed .char { animation: type-in .34s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: var(--char-delay); }
+.website { color: #ecf7ff; margin-left: .035em; }
+.under { color: #74f8cf; font-size: .47em; letter-spacing: .08em; line-height: 1.15; margin-left: 25%; }
+.under b { background: #ff8a64; border-radius: 50%; display: inline-block; height: .17em; margin: 0 .13em .09em; vertical-align: middle; width: .17em; }
+.construction-word {
+  -webkit-text-stroke: 1.5px rgba(238, 244, 255, .95);
+  color: transparent;
+  font-size: .72em;
+  letter-spacing: -.064em;
+  line-height: .92;
+  margin-left: -.06em;
   white-space: nowrap;
 }
-h1 span { animation: arrive .65s both; }
-h1 span:nth-child(1) { animation-delay: .15s; }
-h1 span:nth-child(2) { animation-delay: .45s; }
-h1 span:nth-child(3) { animation-delay: .75s; }
-h1 b { animation: cursor .8s step-end infinite; font-weight: inherit; margin-left: .08em; }
 
-.progress { background: rgba(255, 255, 255, .18); border-radius: 99px; height: 7px; margin: clamp(22px, 3vw, 34px) auto 0; overflow: hidden; width: min(53%, 490px); }
-.progress span { animation: scan 2.25s 1.05s cubic-bezier(.5, 0, .1, 1) infinite; background: #fff; border-radius: inherit; display: block; height: 100%; transform-origin: left; width: 25%; }
+.corner-cuts { inset: 0; pointer-events: none; position: absolute; }
+.corner-cuts i { background: #ff8a64; display: block; height: 7px; position: absolute; width: 7px; }
+.corner-cuts i:nth-child(1) { left: -3px; top: -3px; }.corner-cuts i:nth-child(2) { right: -3px; top: -3px; }.corner-cuts i:nth-child(3) { bottom: -3px; left: -3px; }.corner-cuts i:nth-child(4) { bottom: -3px; right: -3px; }
+.measure { align-items: center; display: flex; gap: 8px; margin: clamp(20px, 3vw, 38px) 0 0 3px; }
+.measure span { background: #ff8a64; display: block; height: 3px; width: clamp(46px, 8vw, 92px); }.measure i { background: #74f8cf; border-radius: 50%; box-shadow: 0 0 18px #74f8cf; height: 7px; width: 7px; }
 
-@keyframes arrive { from { filter: blur(5px); opacity: 0; transform: translateY(13px); } to { filter: none; opacity: 1; transform: translateY(0); } }
-@keyframes cursor { 50% { opacity: 0; } }
-@keyframes scan { 0% { transform: translateX(-110%) scaleX(.1); } 36% { transform: translateX(120%) scaleX(1); } 54%, 100% { transform: translateX(420%) scaleX(.3); } }
-
-@media (max-width: 640px) {
-  .loader { width: min(90vw, 430px); }
-  h1 { flex-wrap: wrap; font-size: clamp(1.5rem, 8.1vw, 2.6rem); gap: .08em .45em; justify-content: center; letter-spacing: .04em; white-space: normal; }
-  h1 b { margin-left: -.25em; }.progress { height: 5px; width: 62%; }
+@keyframes lift { to { opacity: 1; transform: translateY(0); } }
+@keyframes type-in { to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes title-float {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(116, 248, 207, 0)); transform: translateY(0); }
+  50% { filter: drop-shadow(0 11px 17px rgba(76, 247, 202, .2)) drop-shadow(0 0 28px rgba(100, 132, 255, .18)); transform: translateY(-8px); }
 }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
+.title-revealed h1.settled { animation: title-float 4.6s ease-in-out infinite; }
+@media (max-width: 640px) {
+  .construction { padding: 22px; }.title-block { padding: 42px 24px; width: 100%; } h1 { font-size: clamp(3rem, 15.1vw, 5.8rem); line-height: .77; }.under { margin-left: 16%; }.construction-word { font-size: .61em; letter-spacing: -.07em; white-space: normal; word-break: normal; }.glow { filter: blur(20px); }.glow-a { height: 62vw; width: 62vw; }.glow-b { height: 70vw; width: 70vw; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } .hero-bg { clip-path: inset(0); opacity: 1; transform: none; } }

@@ -1,4 +1,4 @@
-# TechSrijan:
+# TechSrijan:-
 
 The official website for **TechSrijan**, the annual techno-management festival of **Madan Mohan Malaviya University of Technology (MMMUT), Gorakhpur**.
 

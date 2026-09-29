@@ -1,37 +1,66 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowRight, Terminal } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden border-b border-[var(--border)]">
-      {/* Background Radial Gradient */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--bg-secondary)_0%,_var(--bg-primary)_100%)] opacity-50" />
-      
-      {/* Grid Pattern Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+    <section className="relative flex min-h-[90vh] flex-col items-center justify-center overflow-hidden px-6 pt-24 pb-16 text-center">
+      {/* Background Radial Glow & Cinematic Gradient */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(212,168,67,0.12),transparent_70%)]" />
 
-      <div className="relative z-10 flex flex-col items-center text-center px-4">
-        <div className="inline-flex items-center rounded-full border border-[var(--accent-primary)] bg-[var(--surface)] px-3 py-1 text-sm font-mono text-[var(--accent-primary)] mb-8">
-          <span className="flex h-2 w-2 rounded-full bg-[var(--accent-primary)] mr-2 animate-pulse" />
-          SYSTEM ONLINE
+      {/* Cybernetic Reticle Markers */}
+      <div className="pointer-events-none absolute left-8 top-32 hidden font-mono text-[9px] tracking-[0.3em] text-[var(--text-muted)] lg:block text-left">
+        <div>SYS.ARCH // NEXT.16</div>
+        <div>MEM.STATE // SYNCHRONIZED</div>
+        <div>LATENCY // 0.42MS</div>
+      </div>
+      <div className="pointer-events-none absolute right-8 top-32 hidden font-mono text-[9px] tracking-[0.3em] text-[var(--text-muted)] lg:block text-right">
+        <div>DEFENSE // LVL_4</div>
+        <div>FACTION // AVALON</div>
+        <div>REGION // ASIA-SOUTH1</div>
+      </div>
+
+      <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center">
+        {/* Animated Conic Gradient Badge */}
+        <div className="border-glow-conic mb-8 inline-flex items-center px-4 py-1.5 shadow-[var(--glow)]">
+          <span className="flex h-2 w-2 rounded-full bg-[var(--accent-primary)] animate-pulse mr-2.5" />
+          <span className="font-mono text-xs font-bold tracking-[0.25em] text-[var(--accent-primary)] uppercase">
+            SYSTEM ONLINE // PROTOCOL ACTIVE
+          </span>
         </div>
-        
-        <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-[var(--text-primary)] uppercase">
-          Tech<span className="text-[var(--accent-primary)]">Srijan</span>
+
+        {/* Main Display Typography */}
+        <h1 className="font-mono text-5xl font-black tracking-tight sm:text-7xl md:text-8xl lg:text-9xl uppercase text-[var(--text-primary)]">
+          TECH<span className="text-[var(--accent-primary)] drop-shadow-[0_0_35px_rgba(212,168,67,0.4)]">SRIJAN</span>
         </h1>
-        
-        <p className="mt-6 max-w-2xl text-lg md:text-xl font-mono text-[var(--text-secondary)]">
-          IMPERIUM: REQUIEM // ANNUAL TECHNICAL SYMPOSIUM
+
+        {/* Cinematic Subheading */}
+        <div className="mt-6 flex items-center gap-3 font-mono text-sm tracking-[0.35em] text-[var(--text-secondary)] sm:text-lg md:text-xl">
+          <span className="h-[1px] w-6 sm:w-12 bg-[var(--border-accent)]" />
+          <span>IMPERIUM: REQUIEM</span>
+          <span className="h-[1px] w-6 sm:w-12 bg-[var(--border-accent)]" />
+        </div>
+
+        <p className="mt-4 max-w-2xl font-mono text-xs text-[var(--text-muted)] tracking-wider sm:text-sm">
+          ANNUAL TECHNICAL SYMPOSIUM OF MADAN MOHAN MALAVIYA UNIVERSITY OF TECHNOLOGY
         </p>
 
-        <div className="mt-10 flex flex-col sm:flex-row gap-4">
-          <Button size="lg" className="w-full sm:w-auto">
-            ENTER SYSTEM
-          </Button>
-          <Button variant="outline" size="lg" className="w-full sm:w-auto">
-            VIEW DIRECTIVES
-          </Button>
+        {/* Interactive Action Cluster */}
+        <div className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+          <Link href="/events" className="w-full sm:w-auto">
+            <Button size="lg" className="w-full sm:w-auto group">
+              <span>EXPLORE DIRECTIVES</span>
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
+          <Link href="/dashboard" className="w-full sm:w-auto">
+            <Button variant="outline" size="lg" className="w-full sm:w-auto">
+              <Terminal className="mr-2 h-4 w-4 text-[var(--accent-primary)]" />
+              <span>CLAIM IMPERIUM PASS</span>
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

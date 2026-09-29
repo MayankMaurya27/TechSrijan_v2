@@ -1,30 +1,26 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { useDeviceTier } from "@/lib/device-tier";
+import { CipherIntro } from "./cipher-intro";
 
-const SandwormIntro = dynamic(() => import("./sandworm-intro"), {
-  ssr: false,
-});
-
-const SESSION_KEY = "imperium_intro_executed";
+const SESSION_KEY = "imperium_intro_executed_v2";
 
 export function IntroGate() {
   const [shouldPlay, setShouldPlay] = useState(false);
-  const tier = useDeviceTier();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const hasPlayed = sessionStorage.getItem(SESSION_KEY);
-    if (!hasPlayed && tier === "desktop-high") {
+    if (!hasPlayed) {
       setShouldPlay(true);
     }
-  }, [tier]);
+  }, []);
 
-  if (!shouldPlay) return null;
+  if (!mounted || !shouldPlay) return null;
 
   return (
-    <SandwormIntro
+    <CipherIntro
       onComplete={() => {
         sessionStorage.setItem(SESSION_KEY, "1");
         setShouldPlay(false);

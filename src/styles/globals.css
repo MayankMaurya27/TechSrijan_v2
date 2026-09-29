@@ -1,55 +1,108 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
-  /* Default / Light Mode: Arrakis Twin Sun */
   :root, html[data-theme="arrakis"] {
-    --bg-primary: #1a1206;
-    --bg-secondary: #2d1f0e;
-    --surface: #3d2b14;
-    --surface-hover: #4a351a;
+    --bg-primary: #0d0904;
+    --bg-secondary: #1a1208;
+    --surface: #24190c;
+    --surface-hover: #332312;
     --accent-primary: #d4a843;
-    --accent-secondary: #e8c068;
-    --text-primary: #f5e6c8;
-    --text-secondary: #c4a882;
-    --text-muted: #8b7355;
-    --danger: #a83232;
-    --border: #4a351a;
-    --ring: rgba(212, 168, 67, 0.4);
-    --glow: 0 0 20px rgba(212, 168, 67, 0.3);
+    --accent-secondary: #f0c96c;
+    --text-primary: #fcf6e8;
+    --text-secondary: #c2aa85;
+    --text-muted: #7d6b52;
+    --danger: #cf3d3d;
+    --border: #3d2b15;
+    --border-accent: rgba(212, 168, 67, 0.4);
+    --glow: 0 0 25px rgba(212, 168, 67, 0.35);
+    --scanline-color: rgba(212, 168, 67, 0.03);
   }
 
-  /* Dark Mode: Giedi Prime Infrared */
   html[data-theme="giedi-prime"] {
     --bg-primary: #000000;
     --bg-secondary: #0a0a0a;
     --surface: #141414;
-    --surface-hover: #1f1f1f;
+    --surface-hover: #222222;
     --accent-primary: #ffffff;
-    --accent-secondary: #ff1a1a;
-    --text-primary: #e0e0e0;
-    --text-secondary: #808080;
-    --text-muted: #404040;
+    --accent-secondary: #ff1e1e;
+    --text-primary: #f0f0f0;
+    --text-secondary: #8a8a8a;
+    --text-muted: #4a4a4a;
     --danger: #ff0000;
-    --border: #333333;
-    --ring: rgba(255, 26, 26, 0.4);
-    --glow: 0 0 20px rgba(255, 26, 26, 0.2);
+    --border: #262626;
+    --border-accent: rgba(255, 30, 30, 0.4);
+    --glow: 0 0 25px rgba(255, 30, 30, 0.3);
+    --scanline-color: rgba(255, 30, 30, 0.03);
+  }
+
+  * {
+    border-color: var(--border);
   }
 
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
+/* Custom Blade Cursor for Fine Pointer Devices */
 @media (pointer: fine) {
-  html {
-    cursor: url('/cursors/geass-sword.svg') 4 4, auto;
+  * {
+    cursor: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 3L10.5 19.5L13.5 13.5L19.5 10.5L3 3Z' fill='%23D4A843' stroke='%230D0904' stroke-width='1.5' stroke-linejoin='round'/%3E%3Ccircle cx='13.5' cy='13.5' r='1.5' fill='%23FFFFFF'/%3E%3C/svg%3E") 3 3, auto !important;
   }
   a, button, [role="button"], input, select, textarea {
-    cursor: url('/cursors/geass-sword-pointer.svg') 4 4, pointer;
+    cursor: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 3L10.5 19.5L13.5 13.5L19.5 10.5L3 3Z' fill='%23F0C96C' stroke='%23FFFFFF' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M13.5 13.5L21 21' stroke='%23F0C96C' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 3 3, pointer !important;
   }
+}
+
+/* Conic Rotating Gradient Animation */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotate-gradient {
+  to {
+    --angle: 360deg;
+  }
+}
+
+.border-glow-conic {
+  position: relative;
+  background: var(--surface);
+  border-radius: 6px;
+}
+
+.border-glow-conic::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  background: conic-gradient(from var(--angle), var(--accent-primary), transparent 40%, var(--accent-secondary), transparent 80%, var(--accent-primary));
+  border-radius: inherit;
+  z-index: -1;
+  animation: rotate-gradient 4s linear infinite;
+}
+
+/* Continuous Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Subtle Film Grain */
+.film-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
 }

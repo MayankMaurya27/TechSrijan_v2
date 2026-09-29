@@ -1,0 +1,240 @@
+================================================================================
+UI/UX DESIGN SPECIFICATION: TECHSRIJAN (IMPERIUM: REQUIEM)
+Target: Figma Product & Systems Designer
+Format: Declarative / Fact-Stating
+================================================================================
+
+1. VISUAL TOKEN MATRIX & DESIGN SYSTEM
+--------------------------------------------------------------------------------
+
+COLOR PALETTE (DUAL MODES)
+
+Mode A: Arrakis Twin Sun (Default / Light Palette)
+  - Background Base (bg-primary):       #1A1206 (Deep desert charcoal/brown)
+  - Surface / Panels (surface):         #3D2B14 (Tempered sandstone)
+  - Surface Hover (surface-hover):      #4A351A
+  - Primary Accent (accent-primary):    #D4A843 (Spice gold)
+  - Secondary Accent (accent-secondary):#E8C068 (Sunlight sand)
+  - Text Primary (text-primary):        #F5E6C8 (Parchment white)
+  - Text Secondary (text-secondary):    #C4A882 (Muted desert earth)
+  - Borders / Dividers (border):        #4A351A (1px solid)
+  - Accent Glow (glow):                 0px 0px 20px rgba(212, 168, 67, 0.3)
+
+Mode B: Giedi Prime Infrared (Dark / High-Contrast Palette)
+  - Background Base (bg-primary):       #000000 (Monochrome pure black)
+  - Surface / Panels (surface):         #141414 (Carbon industrial plate)
+  - Surface Hover (surface-hover):      #1F1F1F
+  - Primary Accent (accent-primary):    #FFFFFF (Clinical stark white)
+  - Secondary Accent (accent-secondary):#FF1A1A (Infrared targeting red)
+  - Text Primary (text-primary):        #E0E0E0 (Clean grey)
+  - Text Secondary (text-secondary):    #808080 (Muted machine steel)
+  - Borders / Dividers (border):        #333333 (1px solid)
+  - Accent Glow (glow):                 0px 0px 20px rgba(255, 26, 26, 0.25)
+
+TYPOGRAPHY RULES
+  - Headings / Display: Sans-Serif Bold / Black (Inter or Space Grotesk). All-caps, tracking +0.05em to +0.1em.
+  - Data, Stats, Badges, Code: Monospace (JetBrains Mono). Uppercase, tracking +0.08em.
+  - Body Text: Clean Sans-Serif (Inter), line-height 1.6, regular weight (400).
+
+SHAPE & SURFACE TREATMENT
+  - Corner Radii: Strict small radii. 4px on buttons, inputs, and cards. No pill shapes except active status badges.
+  - Borders: 1px hairline borders on all panels and cards using assigned border token.
+  - Glassmorphism: backdrop-filter: blur(12px) on navigation bar, sticky CTA bars, and dialog overlays.
+
+CURSOR ASSETS (DESKTOP ONLY)
+  - Default State: Code Geass ceremonial sword vector graphic (sharp geometric blade, 24x24px, 4px hotspot offset).
+  - Interactive / Pointer State: Same sword angled 15 degrees with accent gold/red outline glow.
+  - Mobile / Touch: Native OS cursor only. Custom cursor asset excluded on mobile artboards.
+
+
+2. GLOBAL SHELL LAYOUT
+--------------------------------------------------------------------------------
+
+TOP NAVIGATION BAR
+  - Position: Fixed top, full width, 72px height, 1px bottom border, glassmorphism background.
+  - Left Anchor: Fest logo mark (TECHSRIJAN) + sub-brand tag (REQUIEM).
+  - Center Links: EVENTS, ACCOMMODATION, SCHEDULE, SPONSORS (uppercase monospace, active indicator is a 2px bottom accent line).
+  - Right Controls:
+      * Theme toggle switch (Arrakis Sun icon <-> Giedi Prime Crosshair icon).
+      * ENTER SYSTEM primary button (links to Login / Dashboard).
+  - Mobile View (< 768px): Center links hidden; replaced by 2-line geometric hamburger icon opening a full-screen drawer.
+
+FOOTER
+  - Layout: 4-column structured grid (desktop) collapsing to single column (mobile).
+  - Content Blocks:
+      * Col 1: TechSrijan crest, MMMUT Gorakhpur affiliation text, copyright notice.
+      * Col 2: Navigation link cluster.
+      * Col 3: Legal & Support (Privacy Policy, Refund Rules, Code of Conduct).
+      * Col 4: Direct coordinator contacts and social media icon cluster (X, Instagram, LinkedIn, Discord).
+
+
+3. SCREEN 1: LANDING PAGE (/)
+--------------------------------------------------------------------------------
+
+INTRO OVERLAY FRAME (DESKTOP PROTOTYPE ONLY)
+  - State: Full viewport overlay, pure black background (#000000).
+  - Center Element: 3D Sandworm emergence wireframe placeholder + central glowing serif text: IMPERIUM: REQUIEM.
+  - Behavior: Auto-dismisses to main hero after 2.5 seconds with opacity fade.
+
+HERO SECTION
+  - Desktop Canvas: 100vh full-screen frame.
+      * Centered vertical content stack.
+      * Small pill badge: SYSTEM ONLINE with glowing green dot.
+      * Giant Display Title: TECHSRIJAN (accent highlight on SRIJAN).
+      * Subtitle: IMPERIUM: REQUIEM // ANNUAL TECHNICAL SYMPOSIUM.
+      * Dual Button Cluster: ENTER SYSTEM (solid accent fill) + VIEW DIRECTIVES (outlined transparent button).
+  - Mobile Canvas: Same copy, static high-resolution desert background graphic, buttons stacked vertically.
+
+4-DIGIT COUNTDOWN TIMER
+  - Layout: Horizontal strip immediately following Hero.
+  - Structure: 4 discrete square surface cards: DAYS, HOURS, MINUTES, SECONDS.
+  - Typography: Large bold monospace numbers (48px desktop / 32px mobile) with small muted labels below.
+
+FLAGSHIP EVENTS CAROUSEL
+  - Layout: Horizontal scroll reel with overflow visible.
+  - Card Spec: 340px width x 480px height.
+  - Card Anatomy:
+      * Cinematic background image with dark gradient bottom overlay.
+      * Top right badge: Prize Pool callout (e.g., ₹50,000).
+      * Bottom stack: Event title, category tag, team size indicator (Solo or Team: 2-4), and full-width EXPLORE button.
+
+SPONSOR GRID & MASONRY GALLERY
+  - Sponsor Grid: 4-column logo panel. All partner logos rendered in 100% monochrome white/accent tint. Hairline grid separators.
+  - Masonry Gallery: 3-column irregular height picture board depicting previous year stage events, robotics battles, and crowd captures.
+
+
+4. SCREEN 2: EVENTS DIRECTORY (/events)
+--------------------------------------------------------------------------------
+
+SEARCH & CATEGORY FILTER BAR
+  - Search Box: Full width input, 48px height, search icon prefix, placeholder "Search by event name or keyword...".
+  - Category Pills: Horizontal row: ALL, CODING, ROBOTICS, DESIGN, GAMING, MANAGEMENT.
+      * Inactive Pill: Dark surface fill, muted border, grey text.
+      * Active Pill: Solid accent fill, dark text, glow shadow.
+
+EVENT CARDS GRID
+  - Layout: 3-column responsive grid (desktop), 1-column (mobile). Spacing: 24px gap.
+  - Card Component Anatomy:
+      * Aspect Ratio Header: 16:9 thumbnail preview image.
+      * Category Chip: Absolute positioned top-left over thumbnail.
+      * Body Content: Event title (20px bold), 2-line truncated description.
+      * Meta Row: Team Structure (Users icon + "1-4 Members"), Entry Fee (Tag icon + "FREE" or "₹150").
+      * Footer Action: Outlined button: VIEW DIRECTIVE ->.
+
+
+5. SCREEN 3: EVENT DETAIL (/events/[slug])
+--------------------------------------------------------------------------------
+
+HEADER & BREADCRUMB
+  - Breadcrumb: "<- BACK TO DIRECTORY" text link with hover arrow shift.
+  - Title Header: Event title (40px), Category label, and Prize Pool banner.
+
+4-POINT STAT BAR
+  - Structure: Horizontal 4-cell partitioned surface block.
+  - Cell 1: PRIZE POOL -> ₹50,000 (Accent color).
+  - Cell 2: TEAM FORMAT -> 1 - 4 MEMBERS.
+  - Cell 3: TIMELINE -> 36 HOURS SPRINT.
+  - Cell 4: VENUE -> OFFLINE (MPH LAB).
+
+CONTENT COLUMNS (70/30 SPLIT)
+  - Left Column (70%):
+      * Typography-focused rich text view.
+      * Section blocks: EVENT DIRECTIVE (Overview), OPERATIONAL RULES (Bullet list), TIMELINE ROUNDS (Vertical stepping node line), COORDINATOR CONTACTS (Name, Phone, Email cards).
+  - Right Column (30% Sticky Panel):
+      * Registration Card: Price highlight, registration deadline countdown.
+      * Registration Action Button: REGISTER NOW.
+      * Rulebook Download: File icon + DOWNLOAD PDF RULES link.
+
+REGISTRATION MODAL / DRAWER FLOW
+  - Trigger: Click on REGISTER NOW.
+  - Branch A (Solo Event): Direct summary card showing Event Name, User Details, Total Fee, and PROCEED TO CHECKOUT button.
+  - Branch B (Team Event):
+      * Step 1: Choice radio cards -> CREATE NEW TEAM vs JOIN EXISTING TEAM.
+      * If Create: Input field for Team Name -> Generates display of 8-character invite code.
+      * If Join: Input field for Enter 8-Digit Invite Code.
+      * Step 2: Payment checkout trigger.
+
+
+6. SCREEN 4: ACCOMMODATION PORTAL (/accommodation)
+--------------------------------------------------------------------------------
+
+PRICING TIER CARDS
+  - Layout: 3 comparative vertical cards (TIER 1: SINGLE NIGHT, TIER 2: FEST PASS (3 DAYS), TIER 3: ALL-INCLUSIVE STAY + MESS).
+  - Middle Card (Tier 2): Visual RECOMMENDED badge ribbon on top right; primary accent border outline.
+  - Card Anatomy: Tier title, large price tag (₹499), checkmark list of inclusions (Bedding, Security, Wi-Fi, Food coupons), and BOOK BED button.
+
+LOGISTICS & MAP STRIP
+  - Split Layout:
+      * Left side: Guidelines accordion list (Gate curfews, allowed items, mandatory ID proofs).
+      * Right side: Styled dark-mode vector map preview of university campus with hostel blocks pinned.
+
+BOOKING FORM PANEL (BELOW CARDS)
+  - Inputs Required: Check-in Date Picker, Check-out Date Picker, Gender Select (Boys Hostel / Girls Hostel), Emergency Contact Phone Number, College ID Photo upload tile.
+  - Action: Full width button: CONFIRM ALLOCATION & PROCEED.
+
+
+7. SCREEN 5: STUDENT DASHBOARD (/dashboard/student)
+--------------------------------------------------------------------------------
+
+IMPERIUM PASS COMPONENT (PRIMARY ASSET)
+  - Visual Style: High-tech digital boarding pass card. Cut-out notches on left/right edges.
+  - Left Section (65%):
+      * TechSrijan logo + OFFICIAL ADMIT CARD.
+      * Student Name, Affiliated College Name, Roll/Student ID Number.
+      * Registered Events pill tags.
+  - Right Section (35%):
+      * Large high-contrast square QR Code frame.
+      * Alphanumeric Pass Code printed under QR: TS26-XXXX-XXXX.
+  - Actions Strip Below Pass: DOWNLOAD PASS (PNG) button + PRINT button.
+
+REGISTERED EVENTS TABLE
+  - Columns: EVENT, TYPE (Solo/Team), ROLE (Leader/Member), STATUS, ACTIONS.
+  - Status Badges:
+      * CONFIRMED: Green border, green text, green dot icon.
+      * PENDING REVIEW: Amber border, amber text, alert triangle icon.
+      * FAILED: Red border, red text.
+  - Pending State Interaction: Amber alert box under table with button: CONTACT DESK WITH RECEIPT.
+
+TEAM ROSTER SECTION
+  - Layout: Card list for every team the user belongs to.
+  - Content: Team Name, Event name, list of team members with Leader crown icon, copyable INVITE CODE field with COPY icon button.
+
+
+8. SCREEN 6: ADMIN DASHBOARD (/dashboard/admin)
+--------------------------------------------------------------------------------
+
+KPI METRIC CARDS
+  - Layout: 4 horizontal metric tiles across top row.
+  - Metric 1: Total Registrations (Number + percentage increase tag).
+  - Metric 2: Gross Revenue Collected (₹X,XX,XXX).
+  - Metric 3: Pending Manual Reviews (Highlighted in Amber if > 0).
+  - Metric 4: Gate Check-Ins Scanned (Count).
+
+MASTER REGISTRATIONS DATA TABLE
+  - Top Bar: Search input (Name, Email, Payment ID) + Filter Tabs (ALL, CONFIRMED, NEEDS REVIEW, FAILED) + EXPORT CSV button.
+  - Columns:
+      * Checkbox (Select row).
+      * Participant Name & Email.
+      * Event Name.
+      * Amount Paid.
+      * Razorpay Order ID & Payment ID (Monospace text).
+      * Status Badge.
+      * Action Menu (... dropdown): Mark Approved, View Receipt, Revoke Pass.
+  - Pagination Footer: Row count indicator (Showing 1-25 of 1,240) + Previous / Next page buttons.
+
+
+9. SYSTEM STATES & OVERLAYS
+--------------------------------------------------------------------------------
+
+  - Loading State: Dark surface card with animated skeleton shimmering gradient (rgba(255,255,255,0.05)).
+  - Empty State: Geometric dashed border box with central terminal icon, title NO DIRECTIVES FOUND, and action link RESET FILTERS.
+  - Toast Notifications: Monospace terminal notification anchored bottom-right.
+      * Success: Green accent left border + checkmark.
+      * Error / Warning: Red or Amber accent left border + alert glyph.
+  - Auth Modal: Split visual modal:
+      * Left side (Desktop): Dune sand landscape illustration with imperial crest.
+      * Right side: Clean login form containing "Continue with Google" single-click button.
+
+================================================================================
+END OF SPECIFICATION
+================================================================================

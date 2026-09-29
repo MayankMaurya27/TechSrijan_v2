@@ -1,9 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CipherIntro } from "./cipher-intro";
+import dynamic from "next/dynamic";
 
-const SESSION_KEY = "imperium_intro_executed_v2";
+const Sandworm3D = dynamic(
+  () => import("./sandworm-3d").then((mod) => mod.Sandworm3D),
+  { ssr: false }
+);
+
+const SESSION_KEY = "imperium_sandworm_shown";
 
 export function IntroGate() {
   const [shouldPlay, setShouldPlay] = useState(false);
@@ -11,8 +16,9 @@ export function IntroGate() {
 
   useEffect(() => {
     setMounted(true);
-    const hasPlayed = sessionStorage.getItem(SESSION_KEY);
-    if (!hasPlayed) {
+    const hasShown = sessionStorage.getItem(SESSION_KEY);
+    // If not shown yet, trigger the 3D WebGL Sandworm emergence
+    if (!hasShown) {
       setShouldPlay(true);
     }
   }, []);
@@ -20,7 +26,7 @@ export function IntroGate() {
   if (!mounted || !shouldPlay) return null;
 
   return (
-    <CipherIntro
+    <Sandworm3D
       onComplete={() => {
         sessionStorage.setItem(SESSION_KEY, "1");
         setShouldPlay(false);

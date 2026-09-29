@@ -3,6 +3,7 @@ import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { LenisProvider } from "@/components/effects/lenis-provider";
 import { AmbientParticles } from "@/components/effects/ambient-particles";
+import { TwinSunsRays } from "@/components/effects/twin-suns-rays";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import "@/styles/globals.css";
@@ -36,6 +37,9 @@ export default function RootLayout({
           <LenisProvider>
             {/* Film Grain Layer */}
             <div className="pointer-events-none fixed inset-0 z-40 film-grain" />
+
+            {/* Volumetric Celestial God-Rays (Parallax Horizon) */}
+            <TwinSunsRays />
 
             {/* Ambient Spice / Ember Particles */}
             <AmbientParticles />

@@ -2,25 +2,25 @@ import { IntroGate } from "@/components/effects/intro-gate";
 import { HeroSection } from "@/components/landing/hero-section";
 import { MarqueeTicker } from "@/components/landing/marquee-ticker";
 import { CountdownHUD } from "@/components/landing/countdown-hud";
-import { FlagshipHighlights } from "@/components/landing/flagship-highlights";
+import { HoltzmanCylinder } from "@/components/landing/holtzman-cylinder";
 
 export default function LandingPage() {
   return (
     <>
-      {/* Decryption Intro Layer */}
+      {/* 3D WebGL Sandworm Emergence Sequence */}
       <IntroGate />
 
-      {/* Hero Visual Anchor */}
+      {/* Hero Visual Display */}
       <HeroSection />
 
-      {/* Continuous Kinetic Divider */}
+      {/* Kinetic Telemetry Divider */}
       <MarqueeTicker />
 
-      {/* Live Synchronization Countdown HUD */}
+      {/* Synchronized 4-Digit T-Minus Countdown HUD */}
       <CountdownHUD />
 
-      {/* Flagship Directive Highlights */}
-      <FlagshipHighlights />
+      {/* 3D Holtzman Cylindrical Flagship Showcase */}
+      <HoltzmanCylinder />
 
       {/* Reverse Marquee Faction Strip */}
       <MarqueeTicker

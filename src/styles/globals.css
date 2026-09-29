@@ -1,38 +1,52 @@
 @import "tailwindcss";
 
 @layer base {
+  /* ==========================================================================
+     THEME A: ARRAKIS TWIN SUN (CINEMATIC OCHRE HAZE & DEEP BASALT)
+     Cinematography: Greig Fraser (Dune Part 1 & 2)
+     ========================================================================== */
   :root, html[data-theme="arrakis"] {
-    --bg-primary: #0d0904;
-    --bg-secondary: #1a1208;
-    --surface: #24190c;
-    --surface-hover: #332312;
-    --accent-primary: #d4a843;
-    --accent-secondary: #f0c96c;
-    --text-primary: #fcf6e8;
-    --text-secondary: #c2aa85;
-    --text-muted: #7d6b52;
-    --danger: #cf3d3d;
-    --border: #3d2b15;
-    --border-accent: rgba(212, 168, 67, 0.4);
-    --glow: 0 0 25px rgba(212, 168, 67, 0.35);
-    --scanline-color: rgba(212, 168, 67, 0.03);
+    --bg-primary: #090704;        /* Deep basalt obsidian */
+    --bg-secondary: #160f08;      /* Sietch shaded stone */
+    --surface: #24180d;           /* Weathered sandstone plate */
+    --surface-hover: #362414;     /* Interactive sun-warmed stone */
+    --accent-primary: #d4a843;    /* Melange Spice Gold */
+    --accent-secondary: #f3ce7a;  /* Bleached noon sunlight */
+    --accent-glow: rgba(212, 168, 67, 0.35);
+    --text-primary: #f8eed9;      /* Sun-bleached desert linen */
+    --text-secondary: #bba382;    /* Airborne spice dust tone */
+    --text-muted: #6b5944;        /* Deep cliff shadow */
+    --border: rgba(212, 168, 67, 0.18);
+    --border-accent: rgba(212, 168, 67, 0.45);
+    --glow: 0 0 35px rgba(212, 168, 67, 0.28);
+    --geass-crimson: #e61924;     /* Zero Geass Eye Sigil Crimson */
+    --grid-line: rgba(212, 168, 67, 0.06);
+    --hud-bracket: #d4a843;
+    --ray-color: rgba(212, 168, 67, 0.08);
   }
 
+  /* ==========================================================================
+     THEME B: GIEDI PRIME INFRARED (100% MONOCHROME CHIAROSCURO)
+     Cinematography: Greig Fraser Infrared Camera System
+     ========================================================================== */
   html[data-theme="giedi-prime"] {
-    --bg-primary: #000000;
-    --bg-secondary: #0a0a0a;
-    --surface: #141414;
-    --surface-hover: #222222;
-    --accent-primary: #ffffff;
-    --accent-secondary: #ff1e1e;
-    --text-primary: #f0f0f0;
-    --text-secondary: #8a8a8a;
-    --text-muted: #4a4a4a;
-    --danger: #ff0000;
-    --border: #262626;
-    --border-accent: rgba(255, 30, 30, 0.4);
-    --glow: 0 0 25px rgba(255, 30, 30, 0.3);
-    --scanline-color: rgba(255, 30, 30, 0.03);
+    --bg-primary: #000000;        /* Absolute void black */
+    --bg-secondary: #080808;      /* Industrial carbon plate */
+    --surface: #121212;           /* Cold pressed steel */
+    --surface-hover: #1c1c1c;     /* Activated carbon substrate */
+    --accent-primary: #ffffff;    /* Clinical infrared white */
+    --accent-secondary: #ff1e27;  /* Zero Command targeting infrared */
+    --accent-glow: rgba(255, 30, 39, 0.45);
+    --text-primary: #f0f0f0;      /* Stark translucent white */
+    --text-secondary: #7a7a7a;    /* Cold machine grey */
+    --text-muted: #3e3e3e;        /* Shadow carbon */
+    --border: rgba(255, 255, 255, 0.15);
+    --border-accent: rgba(255, 30, 39, 0.5);
+    --glow: 0 0 35px rgba(255, 30, 39, 0.35);
+    --geass-crimson: #ff1e27;
+    --grid-line: rgba(255, 255, 255, 0.05);
+    --hud-bracket: #ff1e27;
+    --ray-color: rgba(255, 255, 255, 0.06);
   }
 
   * {
@@ -47,17 +61,100 @@
   }
 }
 
-/* Custom Blade Cursor for Fine Pointer Devices */
+/* ==========================================================================
+   CODE GEASS CEREMONIAL BLADE CUSTOM CURSOR
+   Strictly enabled only for pointer: fine devices
+   ========================================================================== */
 @media (pointer: fine) {
   * {
-    cursor: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 3L10.5 19.5L13.5 13.5L19.5 10.5L3 3Z' fill='%23D4A843' stroke='%230D0904' stroke-width='1.5' stroke-linejoin='round'/%3E%3Ccircle cx='13.5' cy='13.5' r='1.5' fill='%23FFFFFF'/%3E%3C/svg%3E") 3 3, auto !important;
+    cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 4L13 24L16 16L24 13L4 4Z' fill='%23D4A843' stroke='%23090704' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23E61924'/%3E%3Cpath d='M16 16L28 28' stroke='%23E61924' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 4 4, auto !important;
   }
-  a, button, [role="button"], input, select, textarea {
-    cursor: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 3L10.5 19.5L13.5 13.5L19.5 10.5L3 3Z' fill='%23F0C96C' stroke='%23FFFFFF' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M13.5 13.5L21 21' stroke='%23F0C96C' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 3 3, pointer !important;
+  a, button, [role="button"], input, select, textarea, [tabindex="0"] {
+    cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 4L13 24L16 16L24 13L4 4Z' fill='%23F3CE7A' stroke='%23E61924' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23E61924'/%3E%3Cpath d='M16 16L30 30' stroke='%23F3CE7A' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M14 18L18 14' stroke='%23E61924' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 4 4, pointer !important;
   }
 }
 
-/* Conic Rotating Gradient Animation */
+/* ==========================================================================
+   CODE GEASS MECHA COCKPIT BRACKET CORNERS
+   ========================================================================== */
+.mecha-bracket {
+  position: relative;
+}
+
+.mecha-bracket::before,
+.mecha-bracket::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mecha-bracket::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--hud-bracket);
+  border-left: 2px solid var(--hud-bracket);
+}
+
+.mecha-bracket::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--hud-bracket);
+  border-right: 2px solid var(--hud-bracket);
+}
+
+.mecha-bracket:hover::before {
+  width: 14px;
+  height: 14px;
+  border-color: var(--geass-crimson);
+}
+
+.mecha-bracket:hover::after {
+  width: 14px;
+  height: 14px;
+  border-color: var(--geass-crimson);
+}
+
+/* ==========================================================================
+   CODE GEASS EYE-SIGIL OPTIC PULSE KEYFRAMES
+   ========================================================================== */
+@keyframes geass-pulse {
+  0% {
+    transform: scale(0.3) rotate(-15deg);
+    opacity: 0;
+    filter: drop-shadow(0 0 0px var(--geass-crimson));
+  }
+  50% {
+    transform: scale(1.15) rotate(0deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 20px var(--geass-crimson));
+  }
+  100% {
+    transform: scale(1.8) rotate(10deg);
+    opacity: 0;
+    filter: drop-shadow(0 0 40px var(--geass-crimson));
+  }
+}
+
+.geass-flash-active {
+  animation: geass-pulse 0.45s ease-out forwards;
+}
+
+/* ==========================================================================
+   TACTICAL CHESSBOARD GRID BACKGROUND
+   ========================================================================== */
+.tactical-grid {
+  background-image: 
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ==========================================================================
+   CONIC ROTATING GRADIENT
+   ========================================================================== */
 @property --angle {
   syntax: "<angle>";
   initial-value: 0deg;
@@ -73,20 +170,22 @@
 .border-glow-conic {
   position: relative;
   background: var(--surface);
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .border-glow-conic::before {
   content: "";
   position: absolute;
   inset: -1.5px;
-  background: conic-gradient(from var(--angle), var(--accent-primary), transparent 40%, var(--accent-secondary), transparent 80%, var(--accent-primary));
+  background: conic-gradient(from var(--angle), var(--accent-primary), transparent 35%, var(--geass-crimson), transparent 75%, var(--accent-primary));
   border-radius: inherit;
   z-index: -1;
   animation: rotate-gradient 4s linear infinite;
 }
 
-/* Continuous Marquee Animation */
+/* ==========================================================================
+   KINETIC MARQUEE STRIP
+   ========================================================================== */
 @keyframes marquee {
   0% { transform: translateX(0%); }
   100% { transform: translateX(-50%); }
@@ -95,14 +194,16 @@
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 25s linear infinite;
+  animation: marquee 28s linear infinite;
 }
 
 .animate-marquee:hover {
   animation-play-state: paused;
 }
 
-/* Subtle Film Grain */
+/* ==========================================================================
+   ANALOG FILM GRAIN
+   ========================================================================== */
 .film-grain {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
 }

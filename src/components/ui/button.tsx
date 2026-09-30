@@ -2,6 +2,71 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/providers/theme-provider";
+
+/**
+ * Sand Animation Texture Overlay
+ * Activates on hover, displaying streaming Arrakis spice sand grains,
+ * a sweeping sunlight dune wave, and an animated sediment baseline.
+ * ONLY active in Arrakis (Amber) view, completely disabled in Giedi Prime (Red / Dark) view.
+ */
+export function ButtonSandEffect({ className }: { className?: string }) {
+  const { theme } = useTheme();
+
+  if (theme !== "arrakis") {
+    return null;
+  }
+
+  return (
+    <span
+      data-sand-effect="true"
+      className={cn(
+        "sand-only-effect button-sand-effect pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        className
+      )}
+      aria-hidden="true"
+    >
+      {/* Streaming Granular Desert Sand Grains */}
+      <span className="absolute inset-0 sand-grain-texture opacity-75 mix-blend-screen" />
+
+      {/* Sweeping Sunlight Dune Shimmer Wave */}
+      <span className="absolute inset-0 sand-shimmer-wave" />
+
+      {/* Crystalline Micro-Particles */}
+      <span
+        className="absolute rounded-full w-1 h-1 bg-[var(--accent-secondary)]"
+        style={{
+          left: "22%",
+          top: "35%",
+          boxShadow: "0 0 4px var(--accent-secondary)",
+          animation: "sand-particle-flutter 2.2s ease-in-out infinite",
+        }}
+      />
+      <span
+        className="absolute rounded-full w-1.5 h-1.5 bg-[var(--accent-primary)]"
+        style={{
+          left: "58%",
+          top: "55%",
+          boxShadow: "0 0 5px var(--accent-primary)",
+          animation: "sand-particle-flutter 2.7s ease-in-out infinite 0.6s",
+        }}
+      />
+      <span
+        className="absolute rounded-full w-1 h-1 bg-[#ffffff]"
+        style={{
+          left: "82%",
+          top: "28%",
+          boxShadow: "0 0 4px #ffffff",
+          animation: "sand-particle-flutter 1.9s ease-in-out infinite 1.1s",
+        }}
+      />
+
+      {/* Dune Sediment Hairline at the Bottom */}
+      <span className="absolute inset-x-0 bottom-0 h-[1.5px] bg-gradient-to-r from-transparent via-[var(--accent-primary)] to-transparent opacity-90" />
+    </span>
+  );
+}
+
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "default" | "outline" | "ghost" | "danger";
@@ -11,23 +76,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "default", size = "default", isLoading, children, onClick, ...props }, ref) => {
-    const [flashActive, setFlashActive] = React.useState(false);
-    const [clickCoords, setClickCoords] = React.useState({ x: 0, y: 0 });
-
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      setClickCoords({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-
-      setFlashActive(true);
-      setTimeout(() => setFlashActive(false), 450);
-
-      if (onClick) onClick(e);
-    };
-
-    const baseStyles = "mecha-bracket relative overflow-hidden inline-flex items-center justify-center whitespace-nowrap text-xs font-mono font-bold tracking-[0.2em] uppercase transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-accent)] disabled:pointer-events-none disabled:opacity-50 select-none active:scale-[0.98]";
+    const baseStyles = "mecha-bracket group relative overflow-hidden inline-flex items-center justify-center whitespace-nowrap text-xs font-mono font-bold tracking-[0.2em] uppercase transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-accent)] disabled:pointer-events-none disabled:opacity-50 select-none active:scale-[0.98]";
 
     const variants = {
       default: "border border-[var(--accent-primary)] bg-[var(--surface)] text-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--bg-primary)] shadow-[var(--glow)]",
@@ -48,32 +97,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         className={cn(baseStyles, variants[variant], sizes[size], className)}
         disabled={isLoading || props.disabled}
-        onClick={handleClick}
+        onClick={onClick}
         {...props}
       >
-        {/* Code Geass Eye-Sigil Optic Flare upon Click */}
-        {flashActive && (
-          <span
-            className="pointer-events-none absolute z-20 geass-flash-active"
-            style={{
-              left: clickCoords.x - 20,
-              top: clickCoords.y - 20,
-              width: 40,
-              height: 40,
-            }}
-          >
-            <svg viewBox="0 0 100 100" fill="none" className="h-full w-full">
-              {/* Geass Winged Bird Sigil */}
-              <path
-                d="M50 20 C35 38 10 44 5 48 C18 52 38 48 50 68 C62 48 82 52 95 48 C90 44 65 38 50 20 Z"
-                fill="var(--geass-crimson)"
-                stroke="#FFFFFF"
-                strokeWidth="2"
-              />
-              <circle cx="50" cy="46" r="6" fill="#FFFFFF" />
-            </svg>
-          </span>
-        )}
+        {/* Sand / Ember Texture on Hover */}
+        <ButtonSandEffect />
 
         {isLoading ? (
           <span className="mr-2 h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />

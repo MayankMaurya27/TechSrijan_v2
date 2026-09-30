@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // Use standalone output only when building in a container (Docker/Cloud Run)
+  ...(process.env.DOCKER_BUILD === "true" ? { output: "standalone" as const } : {}),
   experimental: {
     serverActions: {
       bodySizeLimit: "2mb",

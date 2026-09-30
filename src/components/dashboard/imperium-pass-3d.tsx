@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { Download, Printer, ShieldCheck, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/components/providers/theme-provider";
+import { cn } from "@/lib/utils";
 
 interface ImperiumPass3DProps {
   userName?: string;
@@ -22,13 +24,15 @@ export function ImperiumPass3D({
     { title: "ROBO GLADIATORS", status: "pending_manual_review" },
   ],
 }: ImperiumPass3DProps) {
+  const { theme } = useTheme();
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
   const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50 });
+  const [isHovered, setIsHovered] = useState(false);
 
-  // Generate QR Code data URL on mount
+  // Generate QR Code data URL on mount & theme change
   useEffect(() => {
     QRCode.toDataURL(
       JSON.stringify({
@@ -41,16 +45,17 @@ export function ImperiumPass3D({
         width: 180,
         margin: 1,
         color: {
-          dark: "#090704",
-          light: "#F8EED9",
+          dark: theme === "giedi-prime" ? "#000000" : "#090704",
+          light: theme === "giedi-prime" ? "#FFFFFF" : "#F8EED9",
         },
       }
     ).then(setQrDataUrl);
-  }, [passCode, userName, college]);
+  }, [passCode, userName, college, theme]);
 
   // Desktop Pointer Parallax Tilt
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
+    setIsHovered(true);
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -58,19 +63,20 @@ export function ImperiumPass3D({
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rX = ((y - centerY) / centerY) * -14;
-    const rY = ((x - centerX) / centerX) * 14;
+    const rX = ((y - centerY) / centerY) * -12;
+    const rY = ((x - centerX) / centerX) * 12;
 
     setRotateX(rX);
     setRotateY(rY);
 
     setGlarePosition({
-      x: (x / rect.width) * 100,
-      y: (y / rect.height) * 100,
+      x: Math.round((x / rect.width) * 100),
+      y: Math.round((y / rect.height) * 100),
     });
   };
 
   const handleMouseLeave = () => {
+    setIsHovered(false);
     setRotateX(0);
     setRotateY(0);
     setGlarePosition({ x: 50, y: 50 });
@@ -80,8 +86,9 @@ export function ImperiumPass3D({
   useEffect(() => {
     const handleOrientation = (e: DeviceOrientationEvent) => {
       if (e.beta === null || e.gamma === null) return;
-      const rX = Math.min(Math.max((e.beta - 45) * 0.4, -14), 14);
-      const rY = Math.min(Math.max(e.gamma * 0.4, -14), 14);
+      setIsHovered(true);
+      const rX = Math.min(Math.max((e.beta - 45) * 0.4, -12), 12);
+      const rY = Math.min(Math.max(e.gamma * 0.4, -12), 12);
       setRotateX(-rX);
       setRotateY(rY);
     };
@@ -111,17 +118,78 @@ export function ImperiumPass3D({
           ref={cardRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className="mecha-bracket relative h-[320px] sm:h-[350px] w-full rounded-lg border border-[var(--border-accent)] bg-gradient-to-br from-[#24180D] via-[#160F08] to-[#090704] p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-transform duration-150 ease-out overflow-hidden"
+          className={cn(
+            "mecha-bracket relative h-[320px] sm:h-[350px] w-full rounded-lg border border-[var(--border-accent)] p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-all duration-200 ease-out overflow-hidden",
+            theme === "giedi-prime"
+              ? "bg-gradient-to-br from-[#160a0d] via-[#090709] to-[#020102]"
+              : "bg-gradient-to-br from-[#24180D] via-[#160F08] to-[#090704]"
+          )}
           style={{
             transformStyle: "preserve-3d",
             transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
           }}
         >
-          {/* Holographic Iridescent Shimmer Foil Overlay */}
+          {/* Theme-Adaptive Diffused Ambient Center Glow (Soft, Broad, No Harsh Spot) */}
           <div
-            className="pointer-events-none absolute inset-0 z-20 opacity-30 mix-blend-color-dodge transition-opacity duration-300"
+            className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+            aria-hidden="true"
+          >
+            {/* Cinematic Center Radial Atmosphere */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  theme === "giedi-prime"
+                    ? "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(255, 30, 39, 0.16) 0%, rgba(255, 30, 39, 0.04) 50%, transparent 80%)"
+                    : "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(212, 168, 67, 0.18) 0%, rgba(212, 168, 67, 0.04) 50%, transparent 80%)",
+              }}
+            />
+
+            {/* Faint Concentric Security Telemetry Watermark Rings */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 rounded-full border border-[var(--accent-primary)]/10 pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 rounded-full border border-dashed border-[var(--accent-primary)]/15 pointer-events-none" />
+
+            {/* Subtle Geass Winged Insignia Center Watermark */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 opacity-[0.06] pointer-events-none">
+              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full">
+                <path
+                  d="M50 20 C35 38 10 44 5 48 C18 52 38 48 50 68 C62 48 82 52 95 48 C90 44 65 38 50 20 Z"
+                  fill="var(--accent-primary)"
+                  stroke="var(--accent-primary)"
+                  strokeWidth="1.5"
+                />
+                <circle cx="50" cy="46" r="6" fill="var(--accent-primary)" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Interactive Holographic Foil Sheen (Only visible during tilt/hover) */}
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-0 z-20 mix-blend-screen transition-opacity duration-300",
+              isHovered ? "opacity-65" : "opacity-0"
+            )}
             style={{
-              background: `radial-gradient(circle at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,0.8) 0%, rgba(212,168,67,0.4) 30%, rgba(255,30,39,0.3) 60%, transparent 80%)`,
+              background:
+                theme === "giedi-prime"
+                  ? `radial-gradient(circle 260px at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,0.26) 0%, rgba(255,40,50,0.18) 30%, rgba(168,85,247,0.1) 55%, transparent 75%)`
+                  : `radial-gradient(circle 260px at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,0.3) 0%, rgba(243,206,122,0.22) 30%, rgba(212,168,67,0.12) 55%, transparent 75%)`,
+            }}
+          />
+
+          {/* Diagonal Prismatic Holographic Sweep */}
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-0 z-20 mix-blend-overlay transition-opacity duration-300",
+              isHovered ? "opacity-50" : "opacity-0"
+            )}
+            style={{
+              background:
+                theme === "giedi-prime"
+                  ? `linear-gradient(115deg, transparent 30%, rgba(255,30,39,0.12) 46%, rgba(255,255,255,0.22) 50%, rgba(255,30,39,0.12) 54%, transparent 70%)`
+                  : `linear-gradient(115deg, transparent 30%, rgba(212,168,67,0.12) 46%, rgba(255,255,255,0.22) 50%, rgba(212,168,67,0.12) 54%, transparent 70%)`,
+              transform: `translateX(${(glarePosition.x - 50) * 1.2}%)`,
+              transition: "transform 0.1s ease-out",
             }}
           />
 
@@ -176,11 +244,25 @@ export function ImperiumPass3D({
 
               {/* High-Contrast Optical QR Code */}
               <div className="flex flex-col items-center">
-                <div className="rounded border-2 border-[var(--accent-primary)] p-1 bg-[#F8EED9] shadow-[var(--glow)]">
+                <div
+                  className={cn(
+                    "rounded border-2 border-[var(--accent-primary)] p-1 shadow-[var(--glow)]",
+                    theme === "giedi-prime" ? "bg-white" : "bg-[#F8EED9]"
+                  )}
+                >
                   {qrDataUrl ? (
-                    <img src={qrDataUrl} alt="Security Check-in QR" className="h-24 w-24 sm:h-28 sm:w-28 object-contain" />
+                    <img
+                      src={qrDataUrl}
+                      alt="Security Check-in QR"
+                      className="h-24 w-24 sm:h-28 sm:w-28 object-contain"
+                    />
                   ) : (
-                    <div className="h-24 w-24 sm:h-28 sm:w-28 bg-[#24180D] animate-pulse" />
+                    <div
+                      className={cn(
+                        "h-24 w-24 sm:h-28 sm:w-28 animate-pulse",
+                        theme === "giedi-prime" ? "bg-[#18181b]" : "bg-[#24180D]"
+                      )}
+                    />
                   )}
                 </div>
                 <span className="font-mono text-[8px] tracking-widest text-[var(--text-muted)] mt-1.5">

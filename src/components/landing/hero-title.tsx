@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
-import { ChevronDown } from "lucide-react";
 
 interface HeroTitleProps {
   scrollProgress: number;
@@ -10,6 +9,8 @@ interface HeroTitleProps {
 
 export function HeroTitle({ scrollProgress }: HeroTitleProps) {
   const [hasEntered, setHasEntered] = useState(false);
+  const [mouseTilt, setMouseTilt] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleIntroComplete = () => {
@@ -32,11 +33,31 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
     };
   }, []);
 
+  // Subtle interactive 3D perspective tilt on mouse move (makes title feel like a real physical 3D element)
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    const { innerWidth, innerHeight } = window;
+    const normX = (e.clientX / innerWidth - 0.5) * 2; // -1 to 1
+    const normY = (e.clientY / innerHeight - 0.5) * 2; // -1 to 1
+
+    // Maximum tilt: 4 degrees
+    setMouseTilt({
+      x: -normY * 3.5,
+      y: normX * 3.5,
+    });
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [handleMouseMove]);
+
   // Smooth scroll exit: fades out completely within the first 8% of the scroll journey
   const fadeOutThreshold = 0.08;
   const normalizedFade = Math.min(1, Math.max(0, scrollProgress / fadeOutThreshold));
   const currentOpacity = hasEntered ? Math.max(0, 1 - normalizedFade) : 0;
-  const currentTranslateY = -normalizedFade * 60; // Upward drift on scroll
+  const currentTranslateY = -normalizedFade * 65; // Upward drift on scroll
   const currentScale = 1 - normalizedFade * 0.05;
 
   // Don't render/composite if fully faded out down the scroll track
@@ -46,6 +67,7 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
 
   return (
     <div
+      ref={containerRef}
       className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none select-none px-4 pt-10 sm:pt-14 pb-12 sm:pb-16"
       style={{
         opacity: currentOpacity,
@@ -56,9 +78,9 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
     >
       {/* Layer A: Atmospheric Contrast Backing (ensures bold 100% readability over bright desert video frames) */}
       <div
-        className="absolute w-[95vw] sm:w-[900px] lg:w-[1200px] h-[360px] sm:h-[480px] pointer-events-none -z-10"
+        className="absolute w-[95vw] sm:w-[950px] lg:w-[1250px] h-[360px] sm:h-[480px] pointer-events-none -z-10"
         style={{
-          background: "radial-gradient(ellipse 70% 55% at center, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.35) 55%, transparent 80%)",
+          background: "radial-gradient(ellipse 70% 55% at center, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.32) 55%, transparent 80%)",
         }}
       />
 
@@ -71,36 +93,65 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
         }}
       />
 
-      {/* Main 3D Sculpted Typography Asset (Centered & Scaled for Maximum Boldness) */}
-      <div className="relative w-full max-w-[94vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-center items-center">
+      {/* Main 3D Sculpted Typography Asset (with Interactive 3D Perspective Tilt) */}
+      <div
+        className="relative w-full max-w-[94vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-center items-center transition-transform duration-300 ease-out"
+        style={{
+          transform: `perspective(1200px) rotateX(${mouseTilt.x}deg) rotateY(${mouseTilt.y}deg)`,
+          transformStyle: "preserve-3d",
+        }}
+      >
         {/* Hidden Accessible H1 for SEO & Screen Readers */}
         <h1 className="sr-only">
           TechSrijan &apos;27 — MMMUT Gorakhpur Presents — The Awakening Begins (25 - 27 September 2027)
         </h1>
 
-        <picture className="w-full flex justify-center">
-          <source srcSet="/hero-logo.webp" type="image/webp" />
-          <Image
-            src="/hero-logo.png"
-            alt="TechSrijan '27 — The Awakening Begins"
-            width={1024}
-            height={341}
-            priority
-            className="w-full h-auto object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)] drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]"
-          />
-        </picture>
+        <div className="relative w-full flex justify-center overflow-hidden">
+          <picture className="w-full flex justify-center">
+            <source srcSet="/hero-logo.webp" type="image/webp" />
+            <Image
+              src="/hero-logo.png"
+              alt="TechSrijan '27 — The Awakening Begins"
+              width={2048}
+              height={682}
+              priority
+              quality={100}
+              className="w-full h-auto object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)] drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]"
+              style={{
+                imageRendering: "-webkit-optimize-contrast",
+              }}
+            />
+          </picture>
+
+          {/* Periodic Specular Metallic Sheen across the gold letters */}
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-white/15 to-transparent animate-specular-sheen" />
+        </div>
       </div>
 
-      {/* Subtle Tactical Scroll Prompt */}
+      {/* Minimal Luxury Vertical Scroll Indicator (Image 2 Design) */}
       <div
-        className="absolute bottom-6 sm:bottom-10 flex flex-col items-center gap-1.5 font-mono text-[10px] sm:text-xs tracking-[0.3em] uppercase text-[var(--accent-primary,#d4a843)] opacity-85"
+        className="absolute bottom-6 sm:bottom-10 flex flex-col items-center"
         style={{
-          opacity: Math.max(0, currentOpacity * 0.85),
+          opacity: Math.max(0, currentOpacity * 0.95),
           transition: "opacity 0.3s ease-out",
         }}
       >
-        <span className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">[ SCROLL TO ENTER CITADEL ]</span>
-        <ChevronDown className="h-4 w-4 animate-bounce text-[var(--accent-primary,#d4a843)] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]" />
+        {/* SCROLL text in clean, geometric modern sans-serif */}
+        <span className="font-sans font-medium text-[11px] sm:text-xs tracking-[0.35em] text-white/95 uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">
+          SCROLL
+        </span>
+
+        {/* Vertical animated line moving smoothly up and down with light beam */}
+        <div className="relative mt-2.5 flex flex-col items-center animate-scroll-indicator">
+          {/* Subtle ambient blur glow */}
+          <div className="absolute w-[2px] h-9 sm:h-11 bg-white/40 blur-[2px]" />
+
+          {/* Razor-thin luminous vertical track */}
+          <div className="relative w-[1.5px] h-9 sm:h-11 bg-gradient-to-b from-white via-white/80 to-transparent rounded-full shadow-[0_0_8px_rgba(255,255,255,0.7)] overflow-hidden">
+            {/* Sliding light pulse beam */}
+            <div className="absolute inset-x-0 h-1/2 bg-gradient-to-b from-transparent via-white to-transparent animate-scroll-beam" />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -373,4 +373,66 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
   visibility: hidden !important;
 }
 
+/* ==========================================================================
+   MINIMAL LUXURY VERTICAL SCROLL INDICATOR (IMAGE 2)
+   ========================================================================== */
+@keyframes scrollIndicatorFlow {
+  0% {
+    transform: translateY(0);
+    opacity: 0.95;
+  }
+  50% {
+    transform: translateY(10px);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.95;
+  }
+}
+
+@keyframes scrollBeamDrop {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(150%);
+    opacity: 0;
+  }
+}
+
+.animate-scroll-indicator {
+  animation: scrollIndicatorFlow 2.2s ease-in-out infinite;
+}
+
+.animate-scroll-beam {
+  animation: scrollBeamDrop 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes specularSheen {
+  0%, 100% {
+    transform: translateX(-150%) skewX(-25deg);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateX(150%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+.animate-specular-sheen {
+  animation: specularSheen 7s ease-in-out infinite;
+}
+
+
 

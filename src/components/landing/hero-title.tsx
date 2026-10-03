@@ -9,7 +9,7 @@ interface HeroTitleProps {
 
 export function HeroTitle({ scrollProgress }: HeroTitleProps) {
   const [hasEntered, setHasEntered] = useState(false);
-  const [mouseTilt, setMouseTilt] = useState({ x: 0, y: 0 });
+  const [mouseTilt, setMouseTilt] = useState({ rotX: 0, rotY: 0, transX: 0, transY: 0, lightX: 50, lightY: 50 });
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,16 +33,20 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
     };
   }, []);
 
-  // Subtle interactive 3D perspective tilt on mouse move (makes title feel like a real physical 3D element)
+  // Enhanced interactive 3D perspective tilt & cursor light reflection
   const handleMouseMove = useCallback((e: MouseEvent) => {
     const { innerWidth, innerHeight } = window;
     const normX = (e.clientX / innerWidth - 0.5) * 2; // -1 to 1
     const normY = (e.clientY / innerHeight - 0.5) * 2; // -1 to 1
 
-    // Maximum tilt: 4 degrees
+    // Tastefully increased tilt and parallax movement
     setMouseTilt({
-      x: -normY * 3.5,
-      y: normX * 3.5,
+      rotX: -normY * 6.5,
+      rotY: normX * 6.5,
+      transX: normX * 14,
+      transY: normY * 10,
+      lightX: ((normX + 1) / 2) * 100,
+      lightY: ((normY + 1) / 2) * 100,
     });
   }, []);
 
@@ -76,28 +80,28 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
         willChange: "transform, opacity",
       }}
     >
-      {/* Layer A: Atmospheric Contrast Backing (ensures bold 100% readability over bright desert video frames) */}
+      {/* Layer A: Atmospheric Contrast Backing (subtle vignette for crisp separation) */}
       <div
         className="absolute w-[95vw] sm:w-[950px] lg:w-[1250px] h-[360px] sm:h-[480px] pointer-events-none -z-10"
         style={{
-          background: "radial-gradient(ellipse 70% 55% at center, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.32) 55%, transparent 80%)",
+          background: "radial-gradient(ellipse 70% 55% at center, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.25) 55%, transparent 80%)",
         }}
       />
 
-      {/* Layer B: Volumetric Radial Celestial Gold Aura */}
+      {/* Layer B: Gentle Warm Celestial Glow (toned down brightness for deep antique gold look) */}
       <div
-        className="absolute w-[600px] sm:w-[850px] lg:w-[1100px] h-[300px] sm:h-[420px] rounded-full pointer-events-none opacity-40 blur-3xl -z-10 animate-pulse"
+        className="absolute w-[600px] sm:w-[850px] lg:w-[1100px] h-[280px] sm:h-[380px] rounded-full pointer-events-none opacity-25 blur-3xl -z-10 animate-pulse"
         style={{
-          background: "radial-gradient(circle, rgba(212,168,67,0.32) 0%, rgba(212,168,67,0.10) 45%, transparent 75%)",
+          background: "radial-gradient(circle, rgba(212,168,67,0.20) 0%, rgba(212,168,67,0.06) 50%, transparent 75%)",
           animationDuration: "4s",
         }}
       />
 
-      {/* Main 3D Sculpted Typography Asset (with Interactive 3D Perspective Tilt) */}
+      {/* Main 3D Sculpted Typography Asset (Responsive 3D Parallax & Cursor Spotlight) */}
       <div
-        className="relative w-full max-w-[94vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-center items-center transition-transform duration-300 ease-out"
+        className="relative w-full max-w-[94vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-center items-center transition-transform duration-200 ease-out"
         style={{
-          transform: `perspective(1200px) rotateX(${mouseTilt.x}deg) rotateY(${mouseTilt.y}deg)`,
+          transform: `perspective(1100px) rotateX(${mouseTilt.rotX}deg) rotateY(${mouseTilt.rotY}deg) translate3d(${mouseTilt.transX}px, ${mouseTilt.transY}px, 0)`,
           transformStyle: "preserve-3d",
         }}
       >
@@ -123,8 +127,17 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
             />
           </picture>
 
+          {/* Dynamic Interactive Cursor Specular Gleam across the metallic relief */}
+          <div
+            className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+            style={{
+              background: `radial-gradient(circle 280px at ${mouseTilt.lightX}% ${mouseTilt.lightY}%, rgba(255, 235, 175, 0.22) 0%, rgba(212, 168, 67, 0.06) 40%, transparent 70%)`,
+              mixBlendMode: "color-dodge",
+            }}
+          />
+
           {/* Periodic Specular Metallic Sheen across the gold letters */}
-          <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-white/15 to-transparent animate-specular-sheen" />
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-white/12 to-transparent animate-specular-sheen" />
         </div>
       </div>
 

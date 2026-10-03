@@ -141,26 +141,26 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
         </div>
       </div>
 
-      {/* Minimal Luxury Vertical Scroll Indicator (Image 2 Design) */}
+      {/* Minimal Luxury Vertical Scroll Indicator */}
       <div
-        className="absolute bottom-6 sm:bottom-10 flex flex-col items-center"
+        className="absolute bottom-3 sm:bottom-5 flex flex-col items-center"
         style={{
           opacity: Math.max(0, currentOpacity * 0.95),
           transition: "opacity 0.3s ease-out",
         }}
       >
-        {/* SCROLL text in clean, geometric modern sans-serif */}
-        <span className="font-sans font-medium text-[11px] sm:text-xs tracking-[0.35em] text-white/95 uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">
-          SCROLL
+        {/* SCROLL TO ENTER CITADEL text in clean, geometric bold sans-serif */}
+        <span className="font-sans font-bold text-[11px] sm:text-xs tracking-[0.28em] text-white uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] drop-shadow-[0_1px_12px_rgba(0,0,0,0.8)]">
+          SCROLL TO ENTER CITADEL
         </span>
 
         {/* Vertical animated line moving smoothly up and down with light beam */}
-        <div className="relative mt-2.5 flex flex-col items-center animate-scroll-indicator">
+        <div className="relative mt-2 flex flex-col items-center animate-scroll-indicator">
           {/* Subtle ambient blur glow */}
-          <div className="absolute w-[2px] h-9 sm:h-11 bg-white/40 blur-[2px]" />
+          <div className="absolute w-[2px] h-8 sm:h-10 bg-white/40 blur-[2px]" />
 
           {/* Razor-thin luminous vertical track */}
-          <div className="relative w-[1.5px] h-9 sm:h-11 bg-gradient-to-b from-white via-white/80 to-transparent rounded-full shadow-[0_0_8px_rgba(255,255,255,0.7)] overflow-hidden">
+          <div className="relative w-[1.5px] h-8 sm:h-10 bg-gradient-to-b from-white via-white/80 to-transparent rounded-full shadow-[0_0_8px_rgba(255,255,255,0.7)] overflow-hidden">
             {/* Sliding light pulse beam */}
             <div className="absolute inset-x-0 h-1/2 bg-gradient-to-b from-transparent via-white to-transparent animate-scroll-beam" />
           </div>

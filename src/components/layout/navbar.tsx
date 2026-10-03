@@ -2,14 +2,55 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/providers/theme-provider";
 import { Menu, X } from "lucide-react";
 
+const SESSION_KEY = "techsrijan_intro_video_played";
+
 export function Navbar() {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const { theme, setTheme } = useTheme();
   const isArrakis = theme === "arrakis";
+
+  // Check intro status: hide during intro on landing page, show after intro-complete
+  useEffect(() => {
+    if (pathname !== "/") {
+      setIsVisible(true);
+      return;
+    }
+
+    // If already played in this tab (e.g. refresh), show immediately
+    if (typeof window !== "undefined") {
+      const hasPlayed = sessionStorage.getItem(SESSION_KEY);
+      if (hasPlayed) {
+        setIsVisible(true);
+        return;
+      }
+    }
+
+    // Otherwise, wait for intro video to complete
+    setIsVisible(false);
+
+    const handleIntroComplete = () => {
+      setIsVisible(true);
+    };
+
+    window.addEventListener("intro-complete", handleIntroComplete);
+
+    // Fallback timer: ensure navbar reveals if video is skipped/fails
+    const fallbackTimer = setTimeout(() => {
+      setIsVisible(true);
+    }, 4500);
+
+    return () => {
+      window.removeEventListener("intro-complete", handleIntroComplete);
+      clearTimeout(fallbackTimer);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -24,7 +65,13 @@ export function Navbar() {
   };
 
   return (
-    <header className="fixed top-1 sm:top-1.5 inset-x-0 z-50 flex justify-center px-2 sm:px-4 pointer-events-none select-none">
+    <header
+      className={`fixed top-1 sm:top-1.5 inset-x-0 z-50 flex justify-center px-2 sm:px-4 pointer-events-none select-none transition-all duration-700 ease-out ${
+        isVisible
+          ? "opacity-100 translate-y-0 visible"
+          : "opacity-0 -translate-y-8 invisible"
+      }`}
+    >
       <div className="relative w-full max-w-[1020px] pointer-events-auto">
         {/* SVG Mecha HUD Frame with Live Moving Neon Laser Border */}
         <svg

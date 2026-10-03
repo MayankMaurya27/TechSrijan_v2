@@ -59,6 +59,34 @@ export function ScrollJourney({
     }
   }, [attemptSeek]);
 
+  // Synchronize and lock scroll to top on mount and when intro video completes
+  useEffect(() => {
+    const resetToTop = () => {
+      setScrollProgress(0);
+      targetTimeRef.current = 0;
+      if (scrollVideoRef.current) {
+        scrollVideoRef.current.currentTime = 0;
+      }
+      if (landingVideoRef.current) {
+        landingVideoRef.current.currentTime = 0;
+        landingVideoRef.current.play().catch(() => {});
+      }
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        if (window.__lenis) {
+          window.__lenis.scrollTo(0, { immediate: true });
+        }
+      }
+    };
+
+    resetToTop();
+
+    window.addEventListener("intro-complete", resetToTop);
+    return () => {
+      window.removeEventListener("intro-complete", resetToTop);
+    };
+  }, []);
+
   useEffect(() => {
     let ticking = false;
 

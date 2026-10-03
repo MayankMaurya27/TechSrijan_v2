@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useDeviceTier } from "@/lib/device-tier";
+import { HeroTitle } from "./hero-title";
 
 interface ScrollJourneyProps {
   landingSrc?: string;
@@ -182,6 +183,9 @@ export function ScrollJourney({
             willChange: "transform, opacity",
           }}
         />
+
+        {/* Layer 3: TechSrijan '27 Main Landing Hero Title (enters on intro end, fades on scroll) */}
+        <HeroTitle scrollProgress={scrollProgress} />
       </div>
     </div>
   );

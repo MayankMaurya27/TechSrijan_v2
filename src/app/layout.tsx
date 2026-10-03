@@ -5,7 +5,6 @@ import { LenisProvider } from "@/components/effects/lenis-provider";
 import { AmbientParticles } from "@/components/effects/ambient-particles";
 import { TwinSunsRays } from "@/components/effects/twin-suns-rays";
 import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
 import "@/styles/globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -39,7 +38,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans relative selection:bg-[var(--accent-primary)] selection:text-[var(--bg-primary)]">
+      <body suppressHydrationWarning className="antialiased min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans relative selection:bg-[var(--accent-primary)] selection:text-[var(--bg-primary)]">
         <ThemeProvider>
           <LenisProvider>
             {/* Film Grain Layer */}
@@ -58,9 +57,6 @@ export default function RootLayout({
             <main className="relative z-10 flex min-h-screen flex-col pt-16">
               {children}
             </main>
-
-            {/* Global Footer */}
-            <Footer />
           </LenisProvider>
         </ThemeProvider>
       </body>

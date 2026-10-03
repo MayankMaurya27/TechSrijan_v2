@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useDeviceTier } from "@/lib/device-tier";
 import { HeroTitle } from "./hero-title";
+import { Paul3D } from "./paul-3d";
 
 interface ScrollJourneyProps {
   landingSrc?: string;
@@ -186,6 +187,9 @@ export function ScrollJourney({
 
         {/* Layer 3: TechSrijan '27 Main Landing Hero Title (enters on intro end, fades on scroll) */}
         <HeroTitle scrollProgress={scrollProgress} />
+
+        {/* Layer 4: Paul Atreides 3D Model with interactive sideways rotation */}
+        <Paul3D scrollProgress={scrollProgress} />
       </div>
     </div>
   );

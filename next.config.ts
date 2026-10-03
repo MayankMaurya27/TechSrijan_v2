@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "2mb",
     },
-    optimizePackageImports: ["three", "qrcode", "react-hook-form", "lucide-react"],
+    optimizePackageImports: ["qrcode", "react-hook-form", "lucide-react"],
   },
 };
 

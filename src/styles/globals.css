@@ -434,5 +434,37 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
   animation: specularSheen 7s ease-in-out infinite;
 }
 
+/* ==========================================================================
+   LIVE MOVING NEON BORDER ANIMATION (CYBER HUD EDGES)
+   ========================================================================== */
+@keyframes neonBorderTravel {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -2600;
+  }
+}
+
+.animate-neon-border {
+  stroke-dasharray: 850 1750;
+  animation: neonBorderTravel 5s linear infinite;
+}
+
+.animate-neon-border-glow {
+  stroke-dasharray: 900 1700;
+  animation: neonBorderTravel 5s linear infinite;
+}
+
+.animate-neon-border-fast {
+  stroke-dasharray: 700 1900;
+  animation: neonBorderTravel 3.5s linear infinite;
+}
+
+.clip-mecha-btn {
+  clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
+}
+
+
 
 

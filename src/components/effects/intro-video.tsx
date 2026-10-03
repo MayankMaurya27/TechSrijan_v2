@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Volume2, VolumeX, FastForward, Crosshair } from "lucide-react";
 
+const SESSION_KEY = "techsrijan_intro_video_played";
+
 interface IntroVideoProps {
   src?: string;
   poster?: string;
@@ -12,7 +14,7 @@ export function IntroVideo({
   src = "/intro.mp4",
   poster = "/intro-poster.jpg",
 }: IntroVideoProps) {
-  const [shouldRender, setShouldRender] = useState(true);
+  const [shouldRender, setShouldRender] = useState(false);
   const [isFading, setIsFading] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -34,15 +36,35 @@ export function IntroVideo({
     }
   }, []);
 
+  // Per-tab check: plays ONCE per tab. On refresh, it will NOT play. In another tab, it will play once.
+  useEffect(() => {
+    forceScrollTop();
+    if (typeof window !== "undefined") {
+      const hasPlayedInTab = sessionStorage.getItem(SESSION_KEY);
+      if (!hasPlayedInTab) {
+        // First visit in this tab -> render and play intro
+        setShouldRender(true);
+      } else {
+        // Already played in this tab (e.g. user refreshed) -> skip intro, show landing page directly
+        window.dispatchEvent(new CustomEvent("intro-complete"));
+      }
+    }
+  }, [forceScrollTop]);
+
   const handleComplete = useCallback(() => {
     if (hasCompletedRef.current) return;
     hasCompletedRef.current = true;
+
+    // Save flag for this browser tab
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(SESSION_KEY, "true");
+    }
 
     // Immediately anchor to top
     forceScrollTop();
     setIsFading(true);
 
-    // Notify other components (ScrollJourney, etc.) to synchronize to 0
+    // Notify landing page components to animate in the TechSrijan text emblem
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("intro-complete"));
     }
@@ -50,16 +72,12 @@ export function IntroVideo({
     setTimeout(() => {
       setShouldRender(false);
       forceScrollTop();
-    }, 500);
+    }, 700);
   }, [forceScrollTop]);
 
-  // Initial scroll-to-top on mount
+  // Autoplay attempt when rendered
   useEffect(() => {
-    forceScrollTop();
-  }, [forceScrollTop]);
-
-  // Attempt instant autoplay on mount
-  useEffect(() => {
+    if (!shouldRender) return;
     const video = videoRef.current;
     if (!video) return;
 
@@ -70,7 +88,7 @@ export function IntroVideo({
         // Fallback if browser policies restrict autoplay
       });
     }
-  }, []);
+  }, [shouldRender]);
 
   // Listen for ESC key to skip
   useEffect(() => {
@@ -110,7 +128,7 @@ export function IntroVideo({
   };
 
   const handleScreenClick = () => {
-    // If clicking screen while muted, unmute for cinematic experience
+    // If clicking screen while muted, unmute for richer audio
     if (videoRef.current && videoRef.current.muted) {
       videoRef.current.muted = false;
       setIsMuted(false);
@@ -123,7 +141,7 @@ export function IntroVideo({
   return (
     <div
       onClick={handleScreenClick}
-      className={`fixed inset-0 z-[9999] flex flex-col justify-between bg-black overflow-hidden select-none transition-opacity duration-500 cursor-pointer ${
+      className={`fixed inset-0 z-[9999] flex flex-col justify-between bg-black overflow-hidden select-none transition-opacity duration-700 cursor-pointer ${
         isFading ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >

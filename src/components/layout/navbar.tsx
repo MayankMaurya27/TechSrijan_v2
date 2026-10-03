@@ -22,8 +22,8 @@ export function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[var(--bg-primary)]/85 backdrop-blur-md border-b border-[var(--border)] shadow-[0_4px_30px_rgba(0,0,0,0.6)]"
-          : "bg-transparent border-b border-transparent"
+          ? "bg-[var(--bg-primary)]/90 backdrop-blur-md border-b border-[var(--border)] shadow-[0_4px_30px_rgba(0,0,0,0.7)]"
+          : "bg-gradient-to-b from-black/85 via-black/45 to-transparent border-b border-transparent backdrop-blur-[1px]"
       }`}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-12">
@@ -34,17 +34,17 @@ export function Navbar() {
               TS
             </div>
             <div className="flex flex-col">
-              <span className="font-mono text-lg font-black tracking-widest text-[var(--text-primary)]">
+              <span className="font-mono text-lg font-black tracking-widest text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                 TECH<span className="text-[var(--accent-primary)]">SRIJAN</span>
               </span>
-              <span className="font-mono text-[9px] tracking-[0.3em] text-[var(--text-secondary)]">
+              <span className="font-mono text-[9px] tracking-[0.3em] text-amber-200/90 font-medium drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                 IMPERIUM: REQUIEM
               </span>
             </div>
           </Link>
 
           {/* Tactical Chess Coordinate Marker */}
-          <span className="hidden xl:inline-block font-mono text-[10px] text-[var(--text-muted)] tracking-widest border-l border-[var(--border)] pl-4">
+          <span className="hidden xl:inline-block font-mono text-[10px] text-amber-200/90 font-medium tracking-widest border-l border-white/30 pl-4 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
             GRID // E-4 // COMMAND
           </span>
         </div>
@@ -53,24 +53,24 @@ export function Navbar() {
         <nav className="hidden md:flex items-center gap-8 font-mono text-xs tracking-[0.2em]">
           <Link
             href="/events"
-            className="text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-primary)] relative group"
+            className="text-white/95 font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)] transition-colors hover:text-[var(--accent-primary)] relative group"
           >
             <span>// DIRECTIVES</span>
-            <span className="absolute -bottom-1 left-0 h-[1px] w-0 bg-[var(--accent-primary)] transition-all group-hover:w-full" />
+            <span className="absolute -bottom-1 left-0 h-[1.5px] w-0 bg-[var(--accent-primary)] transition-all group-hover:w-full" />
           </Link>
           <Link
             href="/accommodation"
-            className="text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-primary)] relative group"
+            className="text-white/95 font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)] transition-colors hover:text-[var(--accent-primary)] relative group"
           >
             <span>// ACCOMMODATION</span>
-            <span className="absolute -bottom-1 left-0 h-[1px] w-0 bg-[var(--accent-primary)] transition-all group-hover:w-full" />
+            <span className="absolute -bottom-1 left-0 h-[1.5px] w-0 bg-[var(--accent-primary)] transition-all group-hover:w-full" />
           </Link>
           <Link
             href="#schedule"
-            className="text-[var(--text-secondary)] transition-colors hover:text-[var(--accent-primary)] relative group"
+            className="text-white/95 font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)] transition-colors hover:text-[var(--accent-primary)] relative group"
           >
             <span>// TIMELINE</span>
-            <span className="absolute -bottom-1 left-0 h-[1px] w-0 bg-[var(--accent-primary)] transition-all group-hover:w-full" />
+            <span className="absolute -bottom-1 left-0 h-[1.5px] w-0 bg-[var(--accent-primary)] transition-all group-hover:w-full" />
           </Link>
         </nav>
 

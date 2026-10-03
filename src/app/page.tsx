@@ -1,40 +1,15 @@
-import { IntroGate } from "@/components/effects/intro-gate";
-import { HeroSection } from "@/components/landing/hero-section";
-import { MarqueeTicker } from "@/components/landing/marquee-ticker";
-import { CountdownHUD } from "@/components/landing/countdown-hud";
-import { HoltzmanCylinder } from "@/components/landing/holtzman-cylinder";
+import { IntroVideo } from "@/components/effects/intro-video";
+import { ScrollJourney } from "@/components/landing/scroll-journey";
 
 export default function LandingPage() {
   return (
     <>
-      {/* 3D WebGL Sandworm Emergence Sequence */}
-      <IntroGate />
+      {/* Intro Video Sequence (plays once per new tab, skips if no video provided) */}
+      <IntroVideo src="/intro.mp4" />
 
-      {/* Hero Visual Display */}
-      <HeroSection />
-
-      {/* Kinetic Telemetry Divider */}
-      <MarqueeTicker />
-
-      {/* Synchronized 4-Digit T-Minus Countdown HUD */}
-      <CountdownHUD />
-
-      {/* 3D Holtzman Cylindrical Flagship Showcase */}
-      <HoltzmanCylinder />
-
-      {/* Reverse Marquee Faction Strip */}
-      <MarqueeTicker
-        reverse
-        items={[
-          "ARRAKIS SECTOR 07",
-          "GIEDI PRIME INFRARED",
-          "BLACK KNIGHTS ORDER",
-          "GEASS ACTIVATION",
-          "MMMUT GORAKHPUR",
-          "CASH POOL: ₹5,00,000+",
-          "36-HOUR HACKATHON",
-        ]}
-      />
+      {/* Pure Full-Screen Scroll-Driven Cinematic Flight through Imperium Citadel */}
+      <ScrollJourney />
     </>
   );
 }
+

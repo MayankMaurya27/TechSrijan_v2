@@ -86,7 +86,7 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
             width={1024}
             height={341}
             priority
-            className="w-full h-auto object-contain filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] drop-shadow-[0_8px_25px_rgba(0,0,0,0.85)] drop-shadow-[0_0_35px_rgba(212,168,67,0.4)]"
+            className="w-full h-auto object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)] drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]"
           />
         </picture>
       </div>

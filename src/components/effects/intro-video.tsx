@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Volume2, VolumeX, FastForward, Crosshair } from "lucide-react";
+import { Volume2, VolumeX, FastForward, Crosshair, Play } from "lucide-react";
 
 const SESSION_KEY = "techsrijan_intro_video_played";
 
@@ -18,6 +18,7 @@ export function IntroVideo({
   const [isFading, setIsFading] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isAutoplayBlocked, setIsAutoplayBlocked] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasCompletedRef = useRef(false);
 
@@ -75,19 +76,34 @@ export function IntroVideo({
     }, 700);
   }, [forceScrollTop]);
 
-  // Autoplay attempt when rendered
+  // Robust mobile & desktop autoplay attempt
   useEffect(() => {
     if (!shouldRender) return;
     const video = videoRef.current;
     if (!video) return;
 
     video.muted = true;
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // Fallback if browser policies restrict autoplay
-      });
-    }
+    const attemptPlay = () => {
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsAutoplayBlocked(false);
+          })
+          .catch(() => {
+            // Autoplay blocked by mobile browser policy (battery saver or gesture requirement)
+            setIsAutoplayBlocked(true);
+          });
+      }
+    };
+
+    attemptPlay();
+
+    // Secondary attempt on canplay
+    video.addEventListener("canplay", attemptPlay, { once: true });
+    return () => {
+      video.removeEventListener("canplay", attemptPlay);
+    };
   }, [shouldRender]);
 
   // Listen for ESC key to skip
@@ -124,15 +140,28 @@ export function IntroVideo({
       videoRef.current.muted = nextMuted;
       setIsMuted(nextMuted);
       setHasInteracted(true);
+      if (videoRef.current.paused) {
+        videoRef.current.play().catch(() => {});
+        setIsAutoplayBlocked(false);
+      }
     }
   };
 
   const handleScreenClick = () => {
-    // If clicking screen while muted, unmute for richer audio
-    if (videoRef.current && videoRef.current.muted) {
+    if (!videoRef.current) return;
+    setHasInteracted(true);
+
+    // If video was blocked from autoplaying on mobile, kickstart playback immediately
+    if (videoRef.current.paused) {
+      videoRef.current.play().then(() => {
+        setIsAutoplayBlocked(false);
+      }).catch(() => {});
+    }
+
+    // Also unmute on first intentional user tap
+    if (videoRef.current.muted) {
       videoRef.current.muted = false;
       setIsMuted(false);
-      setHasInteracted(true);
     }
   };
 
@@ -145,20 +174,20 @@ export function IntroVideo({
         isFading ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
-      {/* Background Video Layer */}
+      {/* Background Video Layer with Responsive Source Optimization */}
       <video
         ref={videoRef}
-        src={src}
         poster={poster}
         autoPlay
         muted
         playsInline
-        webkit-playsinline="true"
         preload="auto"
         onEnded={handleComplete}
-        onError={handleComplete}
         className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-      />
+      >
+        <source src="/intro-mobile.mp4" media="(max-width: 768px)" type="video/mp4" />
+        <source src={src} type="video/mp4" />
+      </video>
 
       {/* Atmospheric Film Texture & Subtle Vignette */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60" />
@@ -213,15 +242,20 @@ export function IntroVideo({
         </div>
       </header>
 
-      {/* Ambient Unmute Prompt if still muted */}
-      {isMuted && !hasInteracted && (
-        <div className="relative z-20 mx-auto pointer-events-none animate-pulse text-center px-4 my-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-accent,#d4a84340)] bg-black/50 backdrop-blur-sm text-[var(--accent-primary,#d4a843)] font-mono text-[11px] sm:text-xs tracking-[0.2em] uppercase">
-            <Volume2 className="h-3.5 w-3.5" />
-            <span>CLICK ANYWHERE TO UNMUTE AUDIO</span>
+      {/* Prompts for User Interaction (Unmute or Play if blocked on Mobile) */}
+      <div className="relative z-20 mx-auto pointer-events-none text-center px-4 my-auto">
+        {isAutoplayBlocked ? (
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[var(--accent-primary,#d4a843)] bg-black/80 backdrop-blur-md text-[var(--accent-primary,#d4a843)] font-mono text-xs tracking-[0.2em] uppercase shadow-[0_0_25px_rgba(212,168,67,0.4)] animate-pulse">
+            <Play className="h-3.5 w-3.5 fill-current" />
+            <span>TAP ANYWHERE TO PLAY INTRO</span>
           </div>
-        </div>
-      )}
+        ) : isMuted && !hasInteracted ? (
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-accent,#d4a84340)] bg-black/50 backdrop-blur-sm text-[var(--accent-primary,#d4a843)] font-mono text-[11px] sm:text-xs tracking-[0.2em] uppercase animate-pulse">
+            <Volume2 className="h-3.5 w-3.5" />
+            <span>TAP ANYWHERE TO UNMUTE AUDIO</span>
+          </div>
+        ) : null}
+      </div>
 
       {/* Bottom Telemetry Footer */}
       <footer className="relative z-20 flex items-center justify-between px-4 py-3 sm:px-8 sm:py-4 font-mono text-[9px] sm:text-[10px] tracking-[0.25em] text-[var(--text-muted,#6b5944)]">

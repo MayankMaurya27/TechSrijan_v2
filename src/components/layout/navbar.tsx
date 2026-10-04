@@ -110,7 +110,7 @@ export function Navbar() {
           <path
             d="M 16,0 L 1184,0 L 1200,16 L 1200,48 L 1184,64 L 760,64 L 740,74 L 635,74 C 620,62 580,62 565,74 L 460,74 L 440,64 L 16,64 L 0,48 L 0,16 Z"
             fill="none"
-            stroke={isArrakis ? "rgba(212, 168, 67, 0.45)" : "rgba(255, 60, 60, 0.45)"}
+            stroke={isArrakis ? "rgba(212, 168, 67, 0.45)" : "rgba(255, 255, 255, 0.45)"}
             strokeWidth="1.5"
             vectorEffect="non-scaling-stroke"
           />
@@ -119,7 +119,7 @@ export function Navbar() {
           <path
             d="M 16,0 L 1184,0 L 1200,16 L 1200,48 L 1184,64 L 760,64 L 740,74 L 635,74 C 620,62 580,62 565,74 L 460,74 L 440,64 L 16,64 L 0,48 L 0,16 Z"
             fill="none"
-            stroke={isArrakis ? "#ffb703" : "#ff1a35"}
+            stroke={isArrakis ? "#ffb703" : "rgba(255, 255, 255, 0.7)"}
             strokeWidth="7"
             strokeOpacity="0.8"
             vectorEffect="non-scaling-stroke"
@@ -131,7 +131,7 @@ export function Navbar() {
           <path
             d="M 16,0 L 1184,0 L 1200,16 L 1200,48 L 1184,64 L 760,64 L 740,74 L 635,74 C 620,62 580,62 565,74 L 460,74 L 440,64 L 16,64 L 0,48 L 0,16 Z"
             fill="none"
-            stroke={isArrakis ? "#ffd700" : "#ff4d6d"}
+            stroke={isArrakis ? "#ffd700" : "#ffffff"}
             strokeWidth="3.6"
             strokeOpacity="1"
             vectorEffect="non-scaling-stroke"
@@ -156,12 +156,12 @@ export function Navbar() {
           className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-16 h-4 rounded-t-full blur-[3px] pointer-events-none ${
             isArrakis
               ? "bg-gradient-to-t from-amber-400/80 via-amber-500/40 to-transparent"
-              : "bg-gradient-to-t from-red-500/80 via-red-600/40 to-transparent"
+              : "bg-gradient-to-t from-white/80 via-white/40 to-transparent"
           }`}
         />
         <div
           className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-white pointer-events-none animate-pulse ${
-            isArrakis ? "shadow-[0_0_12px_#ffd700]" : "shadow-[0_0_12px_#ff2a3b]"
+            isArrakis ? "shadow-[0_0_12px_#ffd700]" : "shadow-[0_0_12px_#ffffff]"
           }`}
         />
 
@@ -201,9 +201,10 @@ export function Navbar() {
 
             <Link
               href="/events"
+              onClick={() => setTheme("giedi-prime")}
               className="px-1.5 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
             >
-              <span>DIRECTIVES</span>
+              <span>EVENTS</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
             </Link>
 
@@ -242,13 +243,13 @@ export function Navbar() {
                 className={`w-3.5 h-3.5 rounded-full transition-all duration-500 relative flex-shrink-0 ${
                   isArrakis
                     ? "bg-gradient-to-br from-[#f5b358] via-[#c66c1b] to-[#421d05] shadow-[0_0_8px_#d4a843]"
-                    : "bg-gradient-to-br from-[#ffffff] via-[#ff1e27] to-[#120000] shadow-[0_0_8px_#ff1e27]"
+                    : "bg-gradient-to-br from-[#ffffff] via-[#888888] to-[#121212] shadow-[0_0_8px_rgba(255,255,255,0.8)]"
                 }`}
               />
 
               {/* State Text */}
               <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.22em] font-semibold text-[#f8eed9] uppercase">
-                {isArrakis ? "ARRAKIS // 1.0" : "GIEDI // 2.0"}
+                {isArrakis ? "ARRAKIS // 1.0" : "GIEDI // MONO"}
               </span>
             </button>
 
@@ -256,7 +257,11 @@ export function Navbar() {
             <Link href="/dashboard" className="hidden sm:inline-block">
               <button
                 type="button"
-                className="clip-mecha-btn relative px-4 sm:px-5 py-2 font-sans font-bold text-[10px] sm:text-[11px] tracking-[0.22em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.22)] via-[rgba(212,168,67,0.1)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_25px_rgba(212,168,67,0.65)] transition-all active:scale-95"
+                className={`clip-mecha-btn relative px-4 sm:px-5 py-2 font-sans font-bold text-[10px] sm:text-[11px] tracking-[0.22em] uppercase transition-all active:scale-95 ${
+                  isArrakis
+                    ? "text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.22)] via-[rgba(212,168,67,0.1)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_25px_rgba(212,168,67,0.65)]"
+                    : "text-white bg-gradient-to-r from-white/20 via-white/10 to-transparent border border-white/60 shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:bg-white hover:text-black hover:shadow-[0_0_25px_rgba(255,255,255,0.7)]"
+                }`}
               >
                 INITIALIZE PASS
               </button>
@@ -287,10 +292,13 @@ export function Navbar() {
               </Link>
               <Link
                 href="/events"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => {
+                  setTheme("giedi-prime");
+                  setMobileMenuOpen(false);
+                }}
                 className="py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)]"
               >
-                // DIRECTIVES
+                // EVENTS
               </Link>
               <Link
                 href="/accommodation"

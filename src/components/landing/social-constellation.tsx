@@ -53,7 +53,7 @@ function LinkedInIcon({ className, style }: { className?: string; style?: React.
   );
 }
 
-// Shorter, compact celestial coordinates with Instagram brought lower
+// Compact celestial coordinates shifted to the left flank
 const SOCIAL_NODES: SocialNode[] = [
   {
     id: "x",
@@ -61,7 +61,7 @@ const SOCIAL_NODES: SocialNode[] = [
     label: "X",
     sublabel: "DISPATCHES",
     href: "https://x.com/techsrijan_",
-    x: 42,
+    x: 36,
     y: 265,
     r: 22,
     orbitRadiusX: 33,
@@ -76,7 +76,7 @@ const SOCIAL_NODES: SocialNode[] = [
     label: "YOUTUBE",
     sublabel: "HIGHLIGHTS",
     href: "https://www.youtube.com/@techSrijanMMMUT",
-    x: 118,
+    x: 104,
     y: 165,
     r: 25,
     orbitRadiusX: 37,
@@ -91,10 +91,10 @@ const SOCIAL_NODES: SocialNode[] = [
     label: "INSTAGRAM",
     sublabel: "VISUALS",
     href: "https://www.instagram.com/techsrijan_mmmut/",
-    x: 215,
-    y: 95, // Brought down significantly lower as requested
-    r: 27,
-    orbitRadiusX: 40,
+    x: 188,
+    y: 100,
+    r: 26,
+    orbitRadiusX: 39,
     orbitRadiusY: 15,
     orbitRotation: -15,
     labelPlacement: "bottom",
@@ -106,7 +106,7 @@ const SOCIAL_NODES: SocialNode[] = [
     label: "LINKEDIN",
     sublabel: "UPDATES",
     href: "https://www.linkedin.com/company/techsrijan/",
-    x: 210,
+    x: 185,
     y: 225,
     r: 24,
     orbitRadiusX: 35,
@@ -117,8 +117,8 @@ const SOCIAL_NODES: SocialNode[] = [
   },
 ];
 
-// Pedestal coordinates anchored flush to the very bottom
-const PEDESTAL = { x: 135, y: 365 };
+// Pedestal coordinates anchored firmly on the left rock ledge
+const PEDESTAL = { x: 116, y: 365 };
 
 interface SocialConstellationProps {
   scrollProgress?: number;
@@ -142,19 +142,19 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
     <div
       className="pointer-events-none absolute z-30 select-none transition-all duration-700"
       style={{
-        // Stuck flush to the very bottom, and shifted further left onto the rock
-        left: "clamp(-10px, 0.5vw, 16px)",
+        // Positioned cleanly on the left rock flank, flush to the very bottom
+        left: "clamp(-18px, -0.8vw, 8px)",
         bottom: "0px",
         opacity: currentOpacity,
         transform: `translateY(${currentTranslateY}px)`,
         willChange: "transform, opacity",
       }}
     >
-      {/* Shorter, compact container size: perfectly fits rock and leaves right side wide open */}
-      <div className="relative w-[250px] xs:w-[280px] sm:w-[310px] md:w-[340px] lg:w-[360px] h-[290px] xs:h-[320px] sm:h-[355px] md:h-[390px]">
+      {/* Compact container size: strictly stays on the left rock flank */}
+      <div className="relative w-[215px] xs:w-[245px] sm:w-[270px] md:w-[295px] lg:w-[315px] h-[280px] xs:h-[310px] sm:h-[345px] md:h-[380px]">
         {/* SVG Holographic Beams, Orbit Rings, and Rock-Integrated Pedestal */}
         <svg
-          viewBox="0 0 300 390"
+          viewBox="0 0 270 390"
           className="absolute inset-0 h-full w-full overflow-visible pointer-events-none"
         >
           <defs>
@@ -268,7 +268,7 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
           <g filter={`url(#hologram-glow-${filterId})`}>
             {/* Primary Orbit Ring linking all 4 orbs into a tight ellipse */}
             <path
-              d="M 42 265 C 55 190, 85 140, 118 165 C 160 195, 180 90, 215 95 C 248 98, 255 190, 210 225 C 160 260, 68 310, 42 265 Z"
+              d="M 36 265 C 48 190, 75 140, 104 165 C 142 195, 160 95, 188 100 C 220 102, 228 190, 185 225 C 140 260, 60 310, 36 265 Z"
               fill="none"
               stroke={`url(#constellation-grad-${filterId})`}
               strokeWidth="1.3"
@@ -278,7 +278,7 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
 
             {/* Connecting chords between nodes */}
             <path
-              d="M 42 265 Q 126 230, 210 225"
+              d="M 36 265 Q 110 230, 185 225"
               fill="none"
               stroke="#ffd54f"
               strokeWidth="1"
@@ -286,7 +286,7 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
               opacity="0.45"
             />
             <path
-              d="M 118 165 Q 165 140, 210 225"
+              d="M 104 165 Q 148 140, 185 225"
               fill="none"
               stroke="#ffca28"
               strokeWidth="1"
@@ -294,14 +294,14 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
               opacity="0.5"
             />
             <path
-              d="M 42 265 Q 80 120, 118 165"
+              d="M 36 265 Q 70 120, 104 165"
               fill="none"
               stroke="#fff3b0"
               strokeWidth="1.2"
               opacity="0.65"
             />
             <path
-              d="M 118 165 Q 175 90, 215 95"
+              d="M 104 165 Q 155 95, 188 100"
               fill="none"
               stroke="#fff3b0"
               strokeWidth="1.2"
@@ -313,14 +313,14 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
           <g>
             <circle r="2" fill="#ffffff" filter={`url(#hologram-glow-${filterId})`}>
               <animateMotion
-                path="M 42 265 C 55 190, 85 140, 118 165 C 160 195, 180 90, 215 95 C 248 98, 255 190, 210 225 C 160 260, 68 310, 42 265 Z"
+                path="M 36 265 C 48 190, 75 140, 104 165 C 142 195, 160 95, 188 100 C 220 102, 228 190, 185 225 C 140 260, 60 310, 36 265 Z"
                 dur="6.5s"
                 repeatCount="indefinite"
               />
             </circle>
             <circle r="1.6" fill="#ffd54f" filter={`url(#hologram-glow-${filterId})`}>
               <animateMotion
-                path="M 42 265 C 55 190, 85 140, 118 165 C 160 195, 180 90, 215 95 C 248 98, 255 190, 210 225 C 160 260, 68 310, 42 265 Z"
+                path="M 36 265 C 48 190, 75 140, 104 165 C 142 195, 160 95, 188 100 C 220 102, 228 190, 185 225 C 140 260, 60 310, 36 265 Z"
                 dur="8s"
                 begin="-3.2s"
                 repeatCount="indefinite"
@@ -328,14 +328,14 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
             </circle>
             <circle r="1.5" fill="#fff9c4" filter={`url(#hologram-glow-${filterId})`}>
               <animateMotion
-                path="M 118 165 Q 175 90, 215 95 Q 235 155, 210 225 Q 126 230, 42 265"
+                path="M 104 165 Q 155 95, 188 100 Q 215 155, 185 225 Q 110 230, 36 265"
                 dur="5.5s"
                 repeatCount="indefinite"
               />
             </circle>
             <circle r="1.4" fill="#ffe082" filter={`url(#hologram-glow-${filterId})`}>
               <animateMotion
-                path="M 135 365 L 118 165 L 215 95"
+                path={`M ${PEDESTAL.x} ${PEDESTAL.y} L 104 165 L 188 100`}
                 dur="4s"
                 repeatCount="indefinite"
               />
@@ -387,8 +387,8 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
           const isHovered = hoveredId === node.id;
           const Icon = node.icon;
 
-          // Convert viewBox coords (300x390) to percentages
-          const leftPercent = (node.x / 300) * 100;
+          // Convert viewBox coords (270x390) to percentages
+          const leftPercent = (node.x / 270) * 100;
           const topPercent = (node.y / 390) * 100;
 
           return (

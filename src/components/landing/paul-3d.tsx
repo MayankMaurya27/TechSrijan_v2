@@ -11,6 +11,7 @@ interface Paul3DProps {
 
 export function Paul3D({ scrollProgress }: Paul3DProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const modelGroupRef = useRef<THREE.Group | null>(null);
@@ -26,12 +27,12 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   const isVisibleRef = useRef(false);
 
   // Timeline:
-  // - 0.00 → 0.58: Completely hidden while inside gate corridor.
-  // - 0.58 → 0.72: Gate opens fully into citadel avenue. Paul gracefully rises from the floor stones with cinematic smoothstep easing.
-  // - 0.72 → 1.00: Firmly planted at the bottom of the video, NOT fading out even when the video ends.
+  // - 0.00 → 0.48: Completely hidden while inside gate corridor.
+  // - 0.48 → 0.66: Gate opens fully into citadel avenue. Paul gracefully rises from the floor stones with cinematic smoothstep easing.
+  // - 0.66 → 1.00: Firmly planted at the bottom of the video, NOT fading out even when the video ends.
   const anim = useMemo(() => {
-    const enterStart = 0.58; // Gate clears into citadel avenue
-    const enterEnd = 0.72;   // Fully grounded presence in citadel
+    const enterStart = 0.48; // Gate clears into citadel avenue
+    const enterEnd = 0.66;   // Fully grounded presence in citadel
 
     // Before gate clears: completely invisible
     if (scrollProgress < enterStart) {
@@ -56,7 +57,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
       };
     }
 
-    // Grounded presence in Citadel (0.72 → 1.00+):
+    // Grounded presence in Citadel (0.66 → 1.00+):
     // Stays firmly planted, boots stuck flush to the bottom, gentle 0.92 cinematic opacity
     return {
       opacity: 0.92,
@@ -78,8 +79,9 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     if (!canvas || !container) return;
 
     const mobile = isMobileDevice();
-    let width = container.clientWidth || 450;
-    let height = container.clientHeight || 500;
+    const el = viewportRef.current || container;
+    let width = el?.clientWidth || (typeof window !== "undefined" ? Math.min(window.innerWidth, 450) : 450);
+    let height = el?.clientHeight || (typeof window !== "undefined" ? Math.round(window.innerHeight * 0.42) : 450);
 
     // 1. Scene
     const scene = new THREE.Scene();
@@ -212,9 +214,10 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
 
     // 8. Handle Resize dynamically
     const updateSize = () => {
-      if (!container || !canvas) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
+      const el = viewportRef.current || container;
+      if (!el || !canvas) return;
+      const w = el.clientWidth || window.innerWidth;
+      const h = el.clientHeight || Math.round(window.innerHeight * 0.42);
       if (w > 0 && h > 0) {
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
@@ -225,7 +228,11 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     // Listen for resize
     window.addEventListener("resize", updateSize);
     const resizeObserver = new ResizeObserver(updateSize);
-    resizeObserver.observe(container);
+    if (viewportRef.current) {
+      resizeObserver.observe(viewportRef.current);
+    } else {
+      resizeObserver.observe(container);
+    }
 
     return () => {
       cancelAnimationFrame(animationFrameId);
@@ -274,6 +281,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     >
       {/* 3D Model Viewport — constrained height so top 50%+ stays open */}
       <div
+        ref={viewportRef}
         className="relative z-20 h-[38vh] sm:h-[44vh] md:h-[48vh] lg:h-[50vh] max-h-[480px] w-full max-w-[420px] sm:max-w-[500px] flex items-end justify-center touch-none -bottom-2 sm:-bottom-3"
         style={{
           transform: `translate3d(0, ${anim.translateYPercent}%, 0) scale(${anim.scale})`,

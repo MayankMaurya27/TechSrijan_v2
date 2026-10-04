@@ -78,7 +78,7 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none select-none px-4 pt-10 sm:pt-14 pb-12 sm:pb-16"
+      className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none select-none px-4 pt-16 pb-20 sm:pt-14 sm:pb-16"
       style={{
         opacity: currentOpacity,
         transform: hasEntered
@@ -98,7 +98,7 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
 
       {/* Main 3D Sculpted Typography Asset (Gentle, stable 3D perspective tilt) */}
       <div
-        className="relative w-full max-w-[94vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-center items-center transition-transform duration-500 ease-out"
+        className="relative w-full max-w-[90vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-center items-center transition-transform duration-500 ease-out"
         style={{
           transform: `perspective(1000px) rotateX(${mouseTilt.rotX}deg) rotateY(${mouseTilt.rotY}deg)`,
           transformStyle: "preserve-3d",

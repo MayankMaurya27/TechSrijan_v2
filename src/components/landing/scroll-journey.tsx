@@ -377,12 +377,12 @@ export function ScrollJourney({
         />
 
         {/* Layer 3: TechSrijan Main Landing Hero Title */}
-        <div style={{ position: "relative", zIndex: 10 }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }}>
           <HeroTitle scrollProgress={scrollProgress} />
         </div>
 
         {/* Layer 4: Paul Atreides 3D Model */}
-        <div style={{ position: "relative", zIndex: 15 }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 15 }}>
           <Paul3D scrollProgress={scrollProgress} />
         </div>
       </div>

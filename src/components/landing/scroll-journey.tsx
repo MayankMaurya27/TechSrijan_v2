@@ -397,12 +397,10 @@ export function ScrollJourney({
         {/* Layer 3.5: Celestial Social Constellation Hologram on the Rock (Desktop Only) */}
         {!isMobile && <SocialConstellation scrollProgress={scrollProgress} />}
 
-        {/* Layer 4: Paul Atreides 3D Model (Desktop Only) */}
-        {!isMobile && (
-          <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 15 }}>
-            <Paul3D scrollProgress={scrollProgress} />
-          </div>
-        )}
+        {/* Layer 4: Paul Atreides 3D Model (Rises dynamically as the gate opens into the Citadel) */}
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 15 }}>
+          <Paul3D scrollProgress={scrollProgress} />
+        </div>
       </div>
     </div>
   );

@@ -78,7 +78,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     const container = containerRef.current;
     if (!canvas || !container) return;
 
-    const mobile = isMobileDevice();
+    const mobile = isMobileDevice() || (typeof window !== "undefined" && window.innerWidth < 1024);
     const el = viewportRef.current || container;
     let width = el?.clientWidth || (typeof window !== "undefined" ? Math.min(window.innerWidth, 450) : 450);
     let height = el?.clientHeight || (typeof window !== "undefined" ? Math.round(window.innerHeight * 0.42) : 450);
@@ -181,8 +181,8 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     let animationFrameId: number;
     const startTime = performance.now();
     let lastRenderTime = 0;
-    // On mobile, throttle to ~20 FPS to reduce GPU heat; desktop runs uncapped
-    const minFrameInterval = mobile ? 50 : 0;
+    // On mobile, throttle to ~30 FPS to reduce GPU heat; desktop runs uncapped
+    const minFrameInterval = mobile ? 33 : 0;
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);

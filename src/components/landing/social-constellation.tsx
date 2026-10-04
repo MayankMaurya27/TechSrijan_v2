@@ -53,7 +53,7 @@ function LinkedInIcon({ className, style }: { className?: string; style?: React.
   );
 }
 
-// Compact celestial coordinates: tightened horizontally so nothing collides with TechSrijan title
+// Shorter, compact celestial coordinates with Instagram brought lower
 const SOCIAL_NODES: SocialNode[] = [
   {
     id: "x",
@@ -61,11 +61,11 @@ const SOCIAL_NODES: SocialNode[] = [
     label: "X",
     sublabel: "DISPATCHES",
     href: "https://x.com/techsrijan_",
-    x: 48,
-    y: 298,
-    r: 24,
-    orbitRadiusX: 36,
-    orbitRadiusY: 14,
+    x: 42,
+    y: 265,
+    r: 22,
+    orbitRadiusX: 33,
+    orbitRadiusY: 13,
     orbitRotation: -25,
     labelPlacement: "bottom",
     icon: XIcon,
@@ -76,11 +76,11 @@ const SOCIAL_NODES: SocialNode[] = [
     label: "YOUTUBE",
     sublabel: "HIGHLIGHTS",
     href: "https://www.youtube.com/@techSrijanMMMUT",
-    x: 126,
-    y: 178,
-    r: 27,
-    orbitRadiusX: 40,
-    orbitRadiusY: 15,
+    x: 118,
+    y: 165,
+    r: 25,
+    orbitRadiusX: 37,
+    orbitRadiusY: 14,
     orbitRotation: 20,
     labelPlacement: "left",
     icon: YouTubeIcon,
@@ -91,11 +91,11 @@ const SOCIAL_NODES: SocialNode[] = [
     label: "INSTAGRAM",
     sublabel: "VISUALS",
     href: "https://www.instagram.com/techsrijan_mmmut/",
-    x: 236,
-    y: 62,
-    r: 30,
-    orbitRadiusX: 44,
-    orbitRadiusY: 16,
+    x: 215,
+    y: 95, // Brought down significantly lower as requested
+    r: 27,
+    orbitRadiusX: 40,
+    orbitRadiusY: 15,
     orbitRotation: -15,
     labelPlacement: "bottom",
     icon: InstagramIcon,
@@ -106,19 +106,19 @@ const SOCIAL_NODES: SocialNode[] = [
     label: "LINKEDIN",
     sublabel: "UPDATES",
     href: "https://www.linkedin.com/company/techsrijan/",
-    x: 226,
-    y: 242,
-    r: 26,
-    orbitRadiusX: 38,
-    orbitRadiusY: 15,
+    x: 210,
+    y: 225,
+    r: 24,
+    orbitRadiusX: 35,
+    orbitRadiusY: 14,
     orbitRotation: 28,
     labelPlacement: "bottom",
     icon: LinkedInIcon,
   },
 ];
 
-// Pedestal coordinates anchored firmly on the rock ledge
-const PEDESTAL = { x: 145, y: 418 };
+// Pedestal coordinates anchored flush to the very bottom
+const PEDESTAL = { x: 135, y: 365 };
 
 interface SocialConstellationProps {
   scrollProgress?: number;
@@ -128,11 +128,11 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const filterId = useId();
 
-  // Smooth scroll exit as the user scrolls into the citadel
+  // Smooth scroll exit synchronized with the TechSrijan hero text exit
   const fadeOutThreshold = 0.08;
   const normalizedFade = Math.min(1, Math.max(0, scrollProgress / fadeOutThreshold));
   const currentOpacity = Math.max(0, 1 - normalizedFade);
-  const currentTranslateY = -normalizedFade * 35;
+  const currentTranslateY = -normalizedFade * 45;
 
   if (currentOpacity <= 0.005) {
     return null;
@@ -142,19 +142,19 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
     <div
       className="pointer-events-none absolute z-30 select-none transition-all duration-700"
       style={{
-        // Positioned hard to the left so it sits firmly on the rock and never touches the center title
-        left: "clamp(0px, 1.2vw, 24px)",
-        bottom: "clamp(12px, 3.5vh, 52px)",
+        // Stuck flush to the very bottom, and shifted further left onto the rock
+        left: "clamp(-10px, 0.5vw, 16px)",
+        bottom: "0px",
         opacity: currentOpacity,
         transform: `translateY(${currentTranslateY}px)`,
         willChange: "transform, opacity",
       }}
     >
-      {/* Compact container size: stops well short of the center title */}
-      <div className="relative w-[280px] xs:w-[310px] sm:w-[340px] md:w-[370px] lg:w-[390px] h-[330px] xs:h-[370px] sm:h-[410px] md:h-[450px]">
-        {/* SVG Holographic Beams, Orbit Rings, and Realistic Rock-Embedded Pedestal */}
+      {/* Shorter, compact container size: perfectly fits rock and leaves right side wide open */}
+      <div className="relative w-[250px] xs:w-[280px] sm:w-[310px] md:w-[340px] lg:w-[360px] h-[290px] xs:h-[320px] sm:h-[355px] md:h-[390px]">
+        {/* SVG Holographic Beams, Orbit Rings, and Rock-Integrated Pedestal */}
         <svg
-          viewBox="0 0 320 460"
+          viewBox="0 0 300 390"
           className="absolute inset-0 h-full w-full overflow-visible pointer-events-none"
         >
           <defs>
@@ -195,7 +195,6 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
             </linearGradient>
 
             {/* Base Pedestal Metallic Materials */}
-            {/* 1. Heavy machined bronze base ring */}
             <linearGradient id={`ped-metal-base-${filterId}`} x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#2c2214" />
               <stop offset="30%" stopColor="#4a381f" />
@@ -204,7 +203,6 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
               <stop offset="100%" stopColor="#191209" />
             </linearGradient>
 
-            {/* 2. Specular burnished gold collar */}
             <linearGradient id={`ped-gold-rim-${filterId}`} x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#8a6721" />
               <stop offset="25%" stopColor="#ffd54f" />
@@ -213,7 +211,6 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
               <stop offset="100%" stopColor="#664912" />
             </linearGradient>
 
-            {/* 3. Central Laser Emitter Core Radial Flare */}
             <radialGradient id={`pedestal-core-${filterId}`} cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
               <stop offset="20%" stopColor="#fffde7" stopOpacity="0.95" />
@@ -222,7 +219,6 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
               <stop offset="100%" stopColor="#ff9800" stopOpacity="0" />
             </radialGradient>
 
-            {/* 4. Soft warm light cast on rock surface */}
             <radialGradient id={`rock-cast-light-${filterId}`} cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#ffd54f" stopOpacity="0.45" />
               <stop offset="35%" stopColor="#d4a843" stopOpacity="0.25" />
@@ -239,26 +235,24 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
               const isHovered = hoveredId === node.id;
               return (
                 <g key={`beam-${node.id}`}>
-                  {/* Outer atmospheric light glow line */}
                   <line
                     x1={PEDESTAL.x}
                     y1={PEDESTAL.y - 3}
                     x2={node.x}
                     y2={node.y}
                     stroke={`url(#beam-grad-${node.id}-${filterId})`}
-                    strokeWidth={isHovered ? 3.8 : 1.8}
+                    strokeWidth={isHovered ? 3.6 : 1.8}
                     strokeLinecap="round"
                     className="transition-all duration-300"
                     opacity={isHovered ? 1 : 0.75}
                   />
-                  {/* Intense center laser core */}
                   <line
                     x1={PEDESTAL.x}
                     y1={PEDESTAL.y - 3}
                     x2={node.x}
                     y2={node.y}
                     stroke="#ffffff"
-                    strokeWidth={isHovered ? 1.6 : 0.8}
+                    strokeWidth={isHovered ? 1.5 : 0.8}
                     strokeLinecap="round"
                     opacity={isHovered ? 0.95 : 0.55}
                     className="transition-all duration-300"
@@ -272,19 +266,19 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
               LAYER 2: SPARKLING CONSTELLATION FILAMENTS
              ══════════════════════════════════════════════════════════ */}
           <g filter={`url(#hologram-glow-${filterId})`}>
-            {/* Primary Orbit Ring linking all 4 orbs into an ellipse */}
+            {/* Primary Orbit Ring linking all 4 orbs into a tight ellipse */}
             <path
-              d="M 48 298 C 65 210, 95 150, 126 178 C 175 215, 200 60, 236 62 C 275 64, 280 200, 226 242 C 170 280, 75 350, 48 298 Z"
+              d="M 42 265 C 55 190, 85 140, 118 165 C 160 195, 180 90, 215 95 C 248 98, 255 190, 210 225 C 160 260, 68 310, 42 265 Z"
               fill="none"
               stroke={`url(#constellation-grad-${filterId})`}
-              strokeWidth="1.4"
+              strokeWidth="1.3"
               strokeDasharray="4 3"
               className="animate-constellation-drift opacity-75"
             />
 
             {/* Connecting chords between nodes */}
             <path
-              d="M 48 298 Q 140 250, 226 242"
+              d="M 42 265 Q 126 230, 210 225"
               fill="none"
               stroke="#ffd54f"
               strokeWidth="1"
@@ -292,7 +286,7 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
               opacity="0.45"
             />
             <path
-              d="M 126 178 Q 180 150, 226 242"
+              d="M 118 165 Q 165 140, 210 225"
               fill="none"
               stroke="#ffca28"
               strokeWidth="1"
@@ -300,14 +294,14 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
               opacity="0.5"
             />
             <path
-              d="M 48 298 Q 90 130, 126 178"
+              d="M 42 265 Q 80 120, 118 165"
               fill="none"
               stroke="#fff3b0"
               strokeWidth="1.2"
               opacity="0.65"
             />
             <path
-              d="M 126 178 Q 190 100, 236 62"
+              d="M 118 165 Q 175 90, 215 95"
               fill="none"
               stroke="#fff3b0"
               strokeWidth="1.2"
@@ -315,33 +309,33 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
             />
           </g>
 
-          {/* Animated Sparkling Light Motes Traveling Along the Filaments */}
+          {/* Animated Sparkling Light Motes */}
           <g>
-            <circle r="2.2" fill="#ffffff" filter={`url(#hologram-glow-${filterId})`}>
+            <circle r="2" fill="#ffffff" filter={`url(#hologram-glow-${filterId})`}>
               <animateMotion
-                path="M 48 298 C 65 210, 95 150, 126 178 C 175 215, 200 60, 236 62 C 275 64, 280 200, 226 242 C 170 280, 75 350, 48 298 Z"
+                path="M 42 265 C 55 190, 85 140, 118 165 C 160 195, 180 90, 215 95 C 248 98, 255 190, 210 225 C 160 260, 68 310, 42 265 Z"
                 dur="6.5s"
                 repeatCount="indefinite"
               />
             </circle>
-            <circle r="1.8" fill="#ffd54f" filter={`url(#hologram-glow-${filterId})`}>
+            <circle r="1.6" fill="#ffd54f" filter={`url(#hologram-glow-${filterId})`}>
               <animateMotion
-                path="M 48 298 C 65 210, 95 150, 126 178 C 175 215, 200 60, 236 62 C 275 64, 280 200, 226 242 C 170 280, 75 350, 48 298 Z"
+                path="M 42 265 C 55 190, 85 140, 118 165 C 160 195, 180 90, 215 95 C 248 98, 255 190, 210 225 C 160 260, 68 310, 42 265 Z"
                 dur="8s"
                 begin="-3.2s"
                 repeatCount="indefinite"
               />
             </circle>
-            <circle r="1.6" fill="#fff9c4" filter={`url(#hologram-glow-${filterId})`}>
+            <circle r="1.5" fill="#fff9c4" filter={`url(#hologram-glow-${filterId})`}>
               <animateMotion
-                path="M 126 178 Q 190 100, 236 62 Q 250 170, 226 242 Q 140 250, 48 298"
+                path="M 118 165 Q 175 90, 215 95 Q 235 155, 210 225 Q 126 230, 42 265"
                 dur="5.5s"
                 repeatCount="indefinite"
               />
             </circle>
-            <circle r="1.5" fill="#ffe082" filter={`url(#hologram-glow-${filterId})`}>
+            <circle r="1.4" fill="#ffe082" filter={`url(#hologram-glow-${filterId})`}>
               <animateMotion
-                path="M 145 418 L 126 178 L 236 62"
+                path="M 135 365 L 118 165 L 215 95"
                 dur="4s"
                 repeatCount="indefinite"
               />
@@ -349,41 +343,40 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
           </g>
 
           {/* ══════════════════════════════════════════════════════════
-              LAYER 3: REALISTIC ROCK-INTEGRATED BASE PEDESTAL
+              LAYER 3: ROCK-INTEGRATED BASE PEDESTAL (FLUSH TO BOTTOM)
              ══════════════════════════════════════════════════════════ */}
           <g transform={`translate(${PEDESTAL.x}, ${PEDESTAL.y})`}>
-            {/* 1. Deep Contact Occlusion Shadow — wraps tightly into the rock stone crevices */}
-            <ellipse cx="0" cy="12" rx="76" ry="18" fill="#000000" opacity="0.95" filter="blur(6px)" />
-            <ellipse cx="0" cy="10" rx="66" ry="14" fill="#050302" opacity="0.9" filter="blur(3px)" />
+            {/* 1. Deep Contact Occlusion Shadow */}
+            <ellipse cx="0" cy="12" rx="72" ry="16" fill="#000000" opacity="0.95" filter="blur(6px)" />
+            <ellipse cx="0" cy="10" rx="62" ry="13" fill="#050302" opacity="0.9" filter="blur(3px)" />
 
-            {/* 2. Warm Amber Light Spill onto Rock Surface — illuminates the surrounding stone naturally */}
-            <ellipse cx="0" cy="8" rx="85" ry="24" fill={`url(#rock-cast-light-${filterId})`} filter="blur(8px)" />
+            {/* 2. Warm Amber Light Spill onto Rock Surface */}
+            <ellipse cx="0" cy="8" rx="80" ry="22" fill={`url(#rock-cast-light-${filterId})`} filter="blur(8px)" />
 
-            {/* 3. Base Bed Foundation Ring (Machined weathered bronze embedded in rock) */}
-            <ellipse cx="0" cy="8" rx="68" ry="16" fill={`url(#ped-metal-base-${filterId})`} stroke="#1a1208" strokeWidth="1.5" />
-            {/* Top bevel rim of base ring */}
-            <ellipse cx="0" cy="6" rx="65" ry="15" fill="none" stroke={`url(#ped-gold-rim-${filterId})`} strokeWidth="1.2" opacity="0.85" />
+            {/* 3. Base Bed Foundation Ring */}
+            <ellipse cx="0" cy="8" rx="64" ry="15" fill={`url(#ped-metal-base-${filterId})`} stroke="#1a1208" strokeWidth="1.5" />
+            <ellipse cx="0" cy="6" rx="61" ry="14" fill="none" stroke={`url(#ped-gold-rim-${filterId})`} strokeWidth="1.2" opacity="0.85" />
 
-            {/* 4. Stepped Mechanical Collar (Solid burnished gold with metallic bevel) */}
-            <ellipse cx="0" cy="4" rx="55" ry="13" fill={`url(#ped-metal-base-${filterId})`} stroke="#150f07" strokeWidth="1" />
-            <ellipse cx="0" cy="3" rx="52" ry="12" fill="none" stroke={`url(#ped-gold-rim-${filterId})`} strokeWidth="1.8" />
+            {/* 4. Stepped Mechanical Collar */}
+            <ellipse cx="0" cy="4" rx="50" ry="12" fill={`url(#ped-metal-base-${filterId})`} stroke="#150f07" strokeWidth="1" />
+            <ellipse cx="0" cy="3" rx="47" ry="11" fill="none" stroke={`url(#ped-gold-rim-${filterId})`} strokeWidth="1.8" />
 
             {/* 5. Inner Concentric Emitter Collar Ring */}
-            <ellipse cx="0" cy="1" rx="42" ry="10" fill="#241a0b" stroke="#ffd54f" strokeWidth="1.4" filter={`url(#hologram-glow-${filterId})`} />
-            <ellipse cx="0" cy="0" rx="36" ry="8.5" fill="none" stroke="#fff9c4" strokeWidth="1" opacity="0.9" />
+            <ellipse cx="0" cy="1" rx="38" ry="9" fill="#241a0b" stroke="#ffd54f" strokeWidth="1.4" filter={`url(#hologram-glow-${filterId})`} />
+            <ellipse cx="0" cy="0" rx="32" ry="7.5" fill="none" stroke="#fff9c4" strokeWidth="1" opacity="0.9" />
 
-            {/* 6. Central Holographic Laser Lens & Blinding Plasma Core */}
-            <ellipse cx="0" cy="-2" rx="26" ry="6.5" fill={`url(#pedestal-core-${filterId})`} filter={`url(#hologram-glow-${filterId})`} />
-            <ellipse cx="0" cy="-2" rx="13" ry="3.2" fill="#ffffff" filter={`url(#hologram-glow-${filterId})`} />
+            {/* 6. Central Holographic Laser Lens & Core */}
+            <ellipse cx="0" cy="-2" rx="23" ry="5.8" fill={`url(#pedestal-core-${filterId})`} filter={`url(#hologram-glow-${filterId})`} />
+            <ellipse cx="0" cy="-2" rx="11" ry="2.8" fill="#ffffff" filter={`url(#hologram-glow-${filterId})`} />
 
             {/* Rotating holographic circuit lens markings */}
             <g className="animate-spin-slow origin-center opacity-70">
-              <line x1="-22" y1="-2" x2="22" y2="-2" stroke="#ffffff" strokeWidth="1" />
-              <line x1="0" y1="-6.5" x2="0" y2="4.5" stroke="#ffffff" strokeWidth="1" />
+              <line x1="-19" y1="-2" x2="19" y2="-2" stroke="#ffffff" strokeWidth="1" />
+              <line x1="0" y1="-5.5" x2="0" y2="3.5" stroke="#ffffff" strokeWidth="1" />
             </g>
 
             {/* Volumetric vertical flare beam shroud hovering over pedestal */}
-            <ellipse cx="0" cy="-10" rx="36" ry="12" fill="rgba(255, 213, 79, 0.3)" filter="blur(8px)" />
+            <ellipse cx="0" cy="-10" rx="32" ry="10" fill="rgba(255, 213, 79, 0.3)" filter="blur(8px)" />
           </g>
         </svg>
 
@@ -394,9 +387,9 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
           const isHovered = hoveredId === node.id;
           const Icon = node.icon;
 
-          // Convert viewBox coords (320x460) to percentages
-          const leftPercent = (node.x / 320) * 100;
-          const topPercent = (node.y / 460) * 100;
+          // Convert viewBox coords (300x390) to percentages
+          const leftPercent = (node.x / 300) * 100;
+          const topPercent = (node.y / 390) * 100;
 
           return (
             <div
@@ -409,7 +402,6 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
               onMouseEnter={() => setHoveredId(node.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
-              {/* Interactive Anchor Link */}
               <a
                 href={node.href}
                 target="_blank"
@@ -424,7 +416,6 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
                     transform: `rotate(${node.orbitRotation}deg)`,
                   }}
                 >
-                  {/* Primary Luminous Orbital Ellipse */}
                   <div
                     className={`rounded-full border border-[rgba(255,213,79,0.5)] transition-all duration-500 ${
                       isHovered
@@ -437,8 +428,6 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
                       transform: "rotateX(68deg)",
                     }}
                   />
-
-                  {/* Secondary Counter-Rotating Orbital Ring */}
                   <div
                     className="absolute rounded-full border border-[rgba(212,168,67,0.25)]"
                     style={{
@@ -466,7 +455,7 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
                 <div
                   className={`relative flex items-center justify-center rounded-full transition-all duration-350 ease-out ${
                     isHovered
-                      ? "scale-115 -translate-y-1 shadow-[0_0_28px_rgba(255,213,79,0.75),inset_0_0_15px_rgba(255,235,59,0.5)] border-[#fff8e1]"
+                      ? "scale-115 -translate-y-1 shadow-[0_0_26px_rgba(255,213,79,0.75),inset_0_0_15px_rgba(255,235,59,0.5)] border-[#fff8e1]"
                       : "shadow-[0_6px_18px_rgba(0,0,0,0.85),0_0_12px_rgba(212,168,67,0.4),inset_0_0_10px_rgba(255,215,0,0.22)] border-[rgba(255,213,79,0.75)]"
                   }`}
                   style={{
@@ -501,11 +490,10 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
                 </div>
 
                 {/* ─── Compact Dune Telemetry Typography Labels ───── */}
-                {/* Placed below or to the left of the orbs to NEVER collide with the title on the right */}
                 <div
                   className={`pointer-events-none absolute flex flex-col whitespace-nowrap transition-all duration-300 ${
                     node.labelPlacement === "left"
-                      ? "right-full top-1/2 -translate-y-1/2 pr-2.5 items-end"
+                      ? "right-full top-1/2 -translate-y-1/2 pr-2 items-end"
                       : "top-full left-1/2 -translate-x-1/2 pt-1.5 items-center"
                   }`}
                 >
@@ -514,7 +502,7 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
                       isHovered ? "text-[#ffffff]" : "text-[#f8eed9]"
                     }`}
                     style={{
-                      fontSize: "clamp(8px, 0.75vw, 10px)",
+                      fontSize: "clamp(7.5px, 0.72vw, 9.5px)",
                       textShadow: isHovered
                         ? "0 0 8px rgba(255,213,79,0.9)"
                         : "0 2px 4px rgba(0,0,0,0.95), 0 0 6px rgba(0,0,0,0.85)",
@@ -523,7 +511,7 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
                     {node.label}
                   </span>
                   <span
-                    className="font-mono text-[6.5px] sm:text-[7.5px] tracking-[0.22em] text-[var(--accent-primary,#d4a843)] uppercase opacity-85"
+                    className="font-mono text-[6px] sm:text-[7px] tracking-[0.22em] text-[var(--accent-primary,#d4a843)] uppercase opacity-85"
                     style={{
                       textShadow: "0 1px 3px rgba(0,0,0,0.95)",
                     }}

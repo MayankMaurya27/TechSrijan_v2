@@ -173,12 +173,12 @@ export function ScrollJourney({
         video.currentTime = target;
       }
 
-      // Watchdog: If browser drops `seeked` event, unlock after 200ms
+      // Watchdog: If browser drops `seeked` event, unlock after 150ms
       if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
       seekWatchdogRef.current = setTimeout(() => {
         isSeekingRef.current = false;
         attemptSeek();
-      }, 200);
+      }, 150);
     }
   }, []);
 
@@ -197,7 +197,7 @@ export function ScrollJourney({
     if (video && video.duration) {
       const maxSafe = Math.max(0, video.duration - 0.05);
       const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
-      if (Math.abs(video.currentTime - target) > 0.02) {
+      if (Math.abs(video.currentTime - target) > 0.015) {
         attemptSeek();
       }
     }
@@ -303,7 +303,7 @@ export function ScrollJourney({
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-[400vh] md:min-h-[420vh] bg-black -mt-16"
+      className="relative w-full min-h-[260vh] sm:min-h-[320vh] md:min-h-[420vh] bg-black -mt-16"
     >
       {/* Sticky Fullscreen Video Window with dynamic viewport support */}
       <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden select-none bg-black">

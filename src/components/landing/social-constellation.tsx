@@ -140,7 +140,7 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
 
   return (
     <div
-      className="pointer-events-none absolute z-30 select-none transition-all duration-700"
+      className="hidden lg:block pointer-events-none absolute z-30 select-none transition-all duration-700"
       style={{
         // Positioned cleanly on the left rock flank, flush to the very bottom
         left: "clamp(-18px, -0.8vw, 8px)",

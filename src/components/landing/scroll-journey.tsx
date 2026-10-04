@@ -133,12 +133,15 @@ export function ScrollJourney({
     };
 
     const onResize = () => {
+      const mobile = isMobileDevice();
+      setIsMobile(mobile);
+      isMobileRef.current = mobile;
       syncCanvasSize();
       paintCanvas();
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [isMobile, paintCanvas, syncCanvasSize]);
+  }, [paintCanvas, syncCanvasSize]);
 
   // ─── Precision Video Seeking & Queue Chaining ────────────────────
   const attemptSeek = useCallback(() => {
@@ -382,8 +385,8 @@ export function ScrollJourney({
           <HeroTitle scrollProgress={scrollProgress} />
         </div>
 
-        {/* Layer 3.5: Celestial Social Constellation Hologram on the Rock */}
-        <SocialConstellation scrollProgress={scrollProgress} />
+        {/* Layer 3.5: Celestial Social Constellation Hologram on the Rock (Desktop Only) */}
+        {!isMobile && <SocialConstellation scrollProgress={scrollProgress} />}
 
         {/* Layer 4: Paul Atreides 3D Model */}
         <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 15 }}>

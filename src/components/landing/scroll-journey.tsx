@@ -90,16 +90,16 @@ export function ScrollJourney({
     }
 
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
+    ctx.imageSmoothingQuality = "medium";
     ctx.drawImage(video, offX, offY, drawW, drawH);
     lastPaintedTimeRef.current = video.currentTime;
   }, []);
 
-  // Size canvas to viewport bounding rect with retina sharpness (up to 2x DPR)
+  // Size canvas to viewport bounding rect with crisp clarity (capped at 1.25x DPR for optimal low-end mobile fill rate)
   const syncCanvasSize = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
     const rect = canvas.getBoundingClientRect();
     const w = Math.round((rect.width || window.innerWidth) * dpr);
     const h = Math.round((rect.height || window.innerHeight) * dpr);
@@ -138,7 +138,7 @@ export function ScrollJourney({
         oX = (cW - dW) / 2;
       }
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = "high";
+      ctx.imageSmoothingQuality = "medium";
       ctx.drawImage(poster, oX, oY, dW, dH);
     };
 
@@ -162,16 +162,23 @@ export function ScrollJourney({
     const maxSafe = Math.max(0, video.duration - 0.05);
     const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
 
-    if (Math.abs(video.currentTime - target) > 0.02) {
+    if (Math.abs(video.currentTime - target) > 0.015) {
       isSeekingRef.current = true;
-      video.currentTime = target;
 
-      // Watchdog: If browser drops `seeked` event, unlock after 300ms
+      // Use fastSeek on supported mobile browsers (instant hardware keyframe seek)
+      const v = video as HTMLVideoElement & { fastSeek?: (time: number) => void };
+      if (typeof v.fastSeek === "function") {
+        v.fastSeek(target);
+      } else {
+        video.currentTime = target;
+      }
+
+      // Watchdog: If browser drops `seeked` event, unlock after 200ms
       if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
       seekWatchdogRef.current = setTimeout(() => {
         isSeekingRef.current = false;
         attemptSeek();
-      }, 300);
+      }, 200);
     }
   }, []);
 
@@ -190,7 +197,7 @@ export function ScrollJourney({
     if (video && video.duration) {
       const maxSafe = Math.max(0, video.duration - 0.05);
       const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
-      if (Math.abs(video.currentTime - target) > 0.025) {
+      if (Math.abs(video.currentTime - target) > 0.02) {
         attemptSeek();
       }
     }
@@ -251,7 +258,7 @@ export function ScrollJourney({
         setScrollProgress(progress);
 
         // Manage landing loop playback to free mobile GPU decoder
-        if (progress > 0.04) {
+        if (progress > 0.005) {
           if (landingVideoRef.current && !landingVideoRef.current.paused) {
             landingVideoRef.current.pause();
           }
@@ -390,10 +397,12 @@ export function ScrollJourney({
         {/* Layer 3.5: Celestial Social Constellation Hologram on the Rock (Desktop Only) */}
         {!isMobile && <SocialConstellation scrollProgress={scrollProgress} />}
 
-        {/* Layer 4: Paul Atreides 3D Model */}
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 15 }}>
-          <Paul3D scrollProgress={scrollProgress} />
-        </div>
+        {/* Layer 4: Paul Atreides 3D Model (Desktop Only) */}
+        {!isMobile && (
+          <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 15 }}>
+            <Paul3D scrollProgress={scrollProgress} />
+          </div>
+        )}
       </div>
     </div>
   );

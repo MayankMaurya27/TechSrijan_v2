@@ -19,19 +19,22 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       window.scrollTo(0, 0);
     }
 
-    const mobile = isMobileDevice();
+    const mobile = isMobileDevice() || (typeof window !== "undefined" && window.innerWidth < 1024);
+
+    // On mobile devices, native touch scroll has zero JS overhead and 120Hz hardware momentum.
+    // Hijacking touch with Lenis adds input lag on low-end mobile phones.
+    if (mobile) {
+      window.scrollTo(0, 0);
+      return;
+    }
 
     const lenis = new Lenis({
-      // On mobile: shorter duration + higher touch multiplier = snappy native feel
-      // On desktop: smooth cinematic scroll with controlled wheel speed
-      duration: mobile ? 0.8 : 1.2,
+      duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      // Mobile touch scrolling should feel closer to native
-      touchMultiplier: mobile ? 1.8 : 1.0,
-      wheelMultiplier: mobile ? 1.0 : 0.9,
+      wheelMultiplier: 0.9,
     });
 
     window.__lenis = lenis;

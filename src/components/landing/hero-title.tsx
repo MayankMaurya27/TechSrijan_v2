@@ -90,41 +90,43 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
     >
       {/* Layer A: Atmospheric Contrast Backing (subtle dark vignette for clean separation) */}
       <div
-        className="absolute w-[95vw] sm:w-[950px] lg:w-[1250px] h-[360px] sm:h-[480px] pointer-events-none -z-10"
+        className="absolute w-[95vw] sm:w-[950px] lg:w-[1250px] h-[360px] sm:h-[480px] pointer-events-none -z-10 md:translate-x-12 lg:translate-x-20 xl:translate-x-28 transition-transform duration-700 ease-out"
         style={{
           background: "radial-gradient(ellipse 70% 55% at center, rgba(0, 0, 0, 0.68) 0%, rgba(0, 0, 0, 0.22) 55%, transparent 80%)",
         }}
       />
 
-      {/* Main 3D Sculpted Typography Asset (Gentle, stable 3D perspective tilt) */}
-      <div
-        className="relative w-full max-w-[90vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-center items-center transition-transform duration-500 ease-out"
-        style={{
-          transform: `perspective(1000px) rotateX(${mouseTilt.rotX}deg) rotateY(${mouseTilt.rotY}deg)`,
-          transformStyle: "preserve-3d",
-        }}
-      >
-        {/* Hidden Accessible H1 for SEO & Screen Readers */}
-        <h1 className="sr-only">
-          TechSrijan &apos;27 — MMMUT Gorakhpur Presents — The Awakening Begins (25 - 27 September 2027)
-        </h1>
+      {/* Main 3D Sculpted Typography Asset (Gentle, stable 3D perspective tilt, shifted right on desktop) */}
+      <div className="w-full flex justify-center items-center md:translate-x-12 lg:translate-x-20 xl:translate-x-28 transition-transform duration-700 ease-out">
+        <div
+          className="relative w-full max-w-[90vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-center items-center transition-transform duration-500 ease-out"
+          style={{
+            transform: `perspective(1000px) rotateX(${mouseTilt.rotX}deg) rotateY(${mouseTilt.rotY}deg)`,
+            transformStyle: "preserve-3d",
+          }}
+        >
+          {/* Hidden Accessible H1 for SEO & Screen Readers */}
+          <h1 className="sr-only">
+            TechSrijan &apos;27 — MMMUT Gorakhpur Presents — The Awakening Begins (25 - 27 September 2027)
+          </h1>
 
-        <div className="relative w-full flex justify-center overflow-hidden">
-          <picture className="w-full flex justify-center">
-            <source srcSet="/hero-logo.webp" type="image/webp" />
-            <Image
-              src="/hero-logo.png"
-              alt="TechSrijan '27 — The Awakening Begins"
-              width={2048}
-              height={682}
-              priority
-              quality={100}
-              className="w-full h-auto object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)] drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]"
-              style={{
-                imageRendering: "-webkit-optimize-contrast",
-              }}
-            />
-          </picture>
+          <div className="relative w-full flex justify-center overflow-hidden">
+            <picture className="w-full flex justify-center">
+              <source srcSet="/hero-logo.webp" type="image/webp" />
+              <Image
+                src="/hero-logo.png"
+                alt="TechSrijan '27 — The Awakening Begins"
+                width={2048}
+                height={682}
+                priority
+                quality={100}
+                className="w-full h-auto object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)] drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]"
+                style={{
+                  imageRendering: "-webkit-optimize-contrast",
+                }}
+              />
+            </picture>
+          </div>
         </div>
       </div>
 

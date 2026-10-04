@@ -465,6 +465,51 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
   clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
 }
 
+/* ==========================================================================
+   CELESTIAL HOLOGRAPHIC CONSTELLATION ANIMATIONS
+   ========================================================================== */
+@keyframes constellation-drift {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -56;
+  }
+}
+
+.animate-constellation-drift {
+  animation: constellation-drift 12s linear infinite;
+}
+
+@keyframes holographic-pulse {
+  0%, 100% {
+    opacity: 0.85;
+    filter: drop-shadow(0 0 10px rgba(255, 213, 79, 0.45));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 22px rgba(255, 213, 79, 0.85));
+  }
+}
+
+.animate-holographic-pulse {
+  animation: holographic-pulse 4s ease-in-out infinite;
+}
+
+@keyframes orb-float-slow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-orb-float {
+  animation: orb-float-slow 5s ease-in-out infinite;
+}
+
+
 
 
 

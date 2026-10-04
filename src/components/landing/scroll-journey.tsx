@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { isMobileDevice } from "@/lib/device-tier";
 import { HeroTitle } from "./hero-title";
 import { Paul3D } from "./paul-3d";
+import { SocialConstellation } from "./social-constellation";
 
 interface ScrollJourneyProps {
   landingSrc?: string;
@@ -380,6 +381,9 @@ export function ScrollJourney({
         <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }}>
           <HeroTitle scrollProgress={scrollProgress} />
         </div>
+
+        {/* Layer 3.5: Celestial Social Constellation Hologram on the Rock */}
+        <SocialConstellation scrollProgress={scrollProgress} />
 
         {/* Layer 4: Paul Atreides 3D Model */}
         <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 15 }}>

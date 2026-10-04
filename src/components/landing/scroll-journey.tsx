@@ -88,14 +88,15 @@ export function ScrollJourney({
     lastPaintedTimeRef.current = video.currentTime;
   }, []);
 
-  // Size canvas to viewport (capped at 1x DPR on mobile to save GPU memory)
+  // Size canvas to viewport bounding rect (capped at 1x DPR on mobile to save GPU memory)
   const syncCanvasSize = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const dpr = isMobileRef.current ? 1 : Math.min(window.devicePixelRatio, 1.5);
-    const w = Math.round(window.innerWidth * dpr);
-    const h = Math.round(window.innerHeight * dpr);
-    if (canvas.width !== w || canvas.height !== h) {
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.round((rect.width || window.innerWidth) * dpr);
+    const h = Math.round((rect.height || window.innerHeight) * dpr);
+    if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
       canvas.width = w;
       canvas.height = h;
     }
@@ -282,24 +283,19 @@ export function ScrollJourney({
   // ─── Derived Layer Opacities ─────────────────────────────────────
   const landingOpacity = Math.max(0, 1 - scrollProgress * 12);
   const scrollVideoOpacity = Math.min(1, scrollProgress * 14);
-  const citadelBackdropOpacity =
-    scrollProgress > 0.94 ? Math.min(1, (scrollProgress - 0.94) * 16) : 0;
 
   return (
     <div
       ref={containerRef}
       className="relative w-full min-h-[220vh] sm:min-h-[300vh] md:min-h-[420vh] bg-black -mt-16"
     >
-      {/* Sticky Fullscreen Video Window */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden select-none bg-black">
+      {/* Sticky Fullscreen Video Window with dynamic viewport support */}
+      <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden select-none bg-black">
         {/* Layer 0: Static baseline poster (never pitch black) */}
         <div
           className="absolute inset-0 h-full w-full pointer-events-none"
           style={{
-            backgroundImage:
-              scrollProgress > 0.6
-                ? "url('/citadel-poster.jpg')"
-                : "url('/scrolling-hd-poster.jpg')",
+            backgroundImage: "url('/scrolling-hd-poster.jpg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -368,18 +364,6 @@ export function ScrollJourney({
             opacity: landingOpacity,
             visibility: scrollProgress > 0.12 ? "hidden" : "visible",
             zIndex: 2,
-          }}
-        />
-
-        {/* Layer 1.5: Citadel Avenue Backdrop (ensures citadel interior stays visible) */}
-        <div
-          className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300"
-          style={{
-            backgroundImage: "url('/citadel-poster.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: citadelBackdropOpacity,
-            zIndex: 3,
           }}
         />
 

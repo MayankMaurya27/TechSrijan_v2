@@ -159,7 +159,11 @@ export function ScrollJourney({
     if (!video || !video.duration) return;
     if (isSeekingRef.current) return;
 
-    const maxSafe = Math.max(0, video.duration - 0.05);
+    // Desktop: clamp to 3.65s (Image 2) so Image 3 (end plaza) is never reached!
+    // Mobile: keep full mobile video duration.
+    const maxSafe = isMobileRef.current
+      ? Math.max(0, video.duration - 0.05)
+      : Math.min(3.65, Math.max(0, video.duration - 0.05));
     const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
 
     if (Math.abs(video.currentTime - target) > 0.015) {
@@ -195,7 +199,9 @@ export function ScrollJourney({
     // If user scrolled while the previous seek was executing, chain to latest target
     const video = scrollVideoRef.current;
     if (video && video.duration) {
-      const maxSafe = Math.max(0, video.duration - 0.05);
+      const maxSafe = isMobileRef.current
+        ? Math.max(0, video.duration - 0.05)
+        : Math.min(3.65, Math.max(0, video.duration - 0.05));
       const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
       if (Math.abs(video.currentTime - target) > 0.015) {
         attemptSeek();
@@ -271,9 +277,15 @@ export function ScrollJourney({
         // Calculate target video timestamp
         const video = scrollVideoRef.current;
         if (video && video.duration) {
+          // On desktop/laptop: cap at 3.65s (Image 2) so Image 3 (end plaza) never appears!
+          // On mobile phones: keep full mobile video duration intact.
+          const maxDuration = isMobileRef.current
+            ? Math.max(0, video.duration - 0.05)
+            : Math.min(3.65, Math.max(0, video.duration - 0.05));
+
           targetTimeRef.current = Math.max(
             0,
-            Math.min(video.duration - 0.05, progress * video.duration)
+            Math.min(maxDuration, progress * maxDuration)
           );
           attemptSeek();
         }
@@ -299,6 +311,24 @@ export function ScrollJourney({
   // ─── Derived Layer Opacities ─────────────────────────────────────
   const landingOpacity = Math.max(0, 1 - scrollProgress * 12);
   const scrollVideoOpacity = Math.min(1, scrollProgress * 14);
+
+  // Gate Solar Flash Light curve (fires as the gate opens from Image 1 to Image 2)
+  const flashStart = isMobile ? 0.46 : 0.70;
+  const flashPeak = isMobile ? 0.58 : 0.78;
+  const flashEnd = isMobile ? 0.70 : 0.88;
+
+  let flashOpacity = 0;
+  if (scrollProgress >= flashStart && scrollProgress <= flashEnd) {
+    if (scrollProgress < flashPeak) {
+      // Exponential flare build-up as gates open
+      const t = (scrollProgress - flashStart) / (flashPeak - flashStart);
+      flashOpacity = t * t;
+    } else {
+      // Smooth Hermite decay into the open citadel
+      const t = (scrollProgress - flashPeak) / (flashEnd - flashPeak);
+      flashOpacity = Math.max(0, 1 - t * t * (3 - 2 * t));
+    }
+  }
 
   return (
     <div
@@ -397,7 +427,57 @@ export function ScrollJourney({
         {/* Layer 3.5: Celestial Social Constellation Hologram on the Rock (Desktop Only) */}
         {!isMobile && <SocialConstellation scrollProgress={scrollProgress} />}
 
-        {/* Layer 4: Paul Atreides 3D Model (Rises dynamically as the gate opens into the Citadel) */}
+        {/* Layer 3.8: Cinematic Solar Gate Flash & Anamorphic Flare (When gate opens from Image 1 to Image 2) */}
+        {flashOpacity > 0.001 && (
+          <div
+            className="absolute inset-0 pointer-events-none overflow-hidden transition-opacity duration-75"
+            style={{
+              opacity: flashOpacity,
+              zIndex: 14,
+              mixBlendMode: "screen",
+            }}
+          >
+            {/* 1. Full-screen warm solar atmospheric flash */}
+            <div
+              className="absolute inset-0 w-full h-full"
+              style={{
+                background:
+                  "radial-gradient(ellipse 90% 70% at 50% 50%, rgba(255, 240, 200, 0.95) 0%, rgba(255, 185, 75, 0.75) 30%, rgba(215, 115, 25, 0.35) 60%, transparent 100%)",
+              }}
+            />
+
+            {/* 2. Intense center portal light bloom */}
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75vw] h-[65vh] max-w-[950px] rounded-full blur-[35px]"
+              style={{
+                background:
+                  "radial-gradient(circle at center, rgba(255, 255, 255, 1) 0%, rgba(255, 225, 140, 0.9) 35%, rgba(245, 150, 45, 0.45) 70%, transparent 100%)",
+              }}
+            />
+
+            {/* 3. Cinematic anamorphic horizontal lens flare streak */}
+            <div
+              className="absolute top-1/2 left-0 w-full h-[6px] -translate-y-1/2 blur-[2px]"
+              style={{
+                background:
+                  "linear-gradient(90deg, transparent 0%, rgba(255, 195, 90, 0.3) 15%, rgba(255, 245, 220, 0.95) 50%, rgba(255, 195, 90, 0.3) 85%, transparent 100%)",
+                boxShadow:
+                  "0 0 25px 8px rgba(255, 200, 90, 0.8), 0 0 60px 20px rgba(230, 130, 30, 0.4)",
+              }}
+            />
+
+            {/* 4. Secondary vertical light shaft piercing through the portal */}
+            <div
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] sm:w-[280px] h-full blur-[22px] opacity-80"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255, 245, 210, 0.65) 0%, rgba(255, 190, 75, 0.4) 50%, transparent 100%)",
+              }}
+            />
+          </div>
+        )}
+
+        {/* Layer 4: Paul Atreides 3D Model (Materializes as the gate opens into the Citadel) */}
         <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 15 }}>
           <Paul3D scrollProgress={scrollProgress} />
         </div>

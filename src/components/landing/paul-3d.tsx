@@ -26,46 +26,55 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   const [isHovered, setIsHovered] = useState(false);
   const isVisibleRef = useRef(false);
 
-  // Timeline:
-  // - 0.00 → 0.48: Completely hidden while inside gate corridor.
-  // - 0.48 → 0.66: Gate opens fully into citadel avenue. Paul gracefully rises from the floor stones with cinematic smoothstep easing.
-  // - 0.66 → 1.00: Firmly planted at the bottom of the video, NOT fading out even when the video ends.
-  const anim = useMemo(() => {
-    const enterStart = 0.48; // Gate clears into citadel avenue
-    const enterEnd = 0.66;   // Fully grounded presence in citadel
+  const [isMobile, setIsMobile] = useState(false);
 
-    // Before gate clears: completely invisible
+  useEffect(() => {
+    const checkMobile = () =>
+      isMobileDevice() || (typeof window !== "undefined" && window.innerWidth < 1024);
+    setIsMobile(checkMobile());
+    const onResize = () => setIsMobile(checkMobile());
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Timeline:
+  // - Paul materializes directly out of the bright solar gate flash via pure opacity fade (no downward rise)
+  // - Starts emerging as the flash light peaks, fully grounded on the avenue stones
+  const anim = useMemo(() => {
+    const enterStart = isMobile ? 0.50 : 0.72; // Begins emerging as flash peaks
+    const enterEnd = isMobile ? 0.66 : 0.86;   // Fully materialized in Citadel
+
+    // Before gate opens: completely invisible
     if (scrollProgress < enterStart) {
       return {
         opacity: 0,
-        translateYPercent: 40,
-        scale: 0.94,
+        translateYPercent: 0,
+        scale: 1.0,
         visible: false,
       };
     }
 
-    // Entering as citadel opens: silky smooth rise & fade
+    // Emerging from the radiant light: silky smooth pure opacity fade
     if (scrollProgress < enterEnd) {
       const t = (scrollProgress - enterStart) / (enterEnd - enterStart);
       // Hermite smoothstep easing: zero jerk at both start and finish
       const eased = t * t * (3 - 2 * t);
       return {
-        opacity: eased * 0.92,
-        translateYPercent: 40 * (1 - eased),
-        scale: 0.94 + 0.06 * eased,
+        opacity: eased * 0.94,
+        translateYPercent: 0, // Grounded in place - no downward rise!
+        scale: 0.98 + 0.02 * eased,
         visible: true,
       };
     }
 
-    // Grounded presence in Citadel (0.66 → 1.00+):
-    // Stays firmly planted, boots stuck flush to the bottom, gentle 0.92 cinematic opacity
+    // Grounded presence in Citadel (firmly planted, gentle 0.94 cinematic opacity)
     return {
-      opacity: 0.92,
+      opacity: 0.94,
       translateYPercent: 0,
       scale: 1.0,
       visible: true,
     };
-  }, [scrollProgress]);
+  }, [scrollProgress, isMobile]);
 
   // Track visibility so RAF loop can pause when hidden (saves GPU on mobile)
   useEffect(() => {

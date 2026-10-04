@@ -5,6 +5,7 @@ import { isMobileDevice } from "@/lib/device-tier";
 import { HeroTitle } from "./hero-title";
 import { Paul3D } from "./paul-3d";
 import { SocialConstellation } from "./social-constellation";
+import { CitadelArchive } from "./citadel-archive";
 
 interface ScrollJourneyProps {
   landingSrc?: string;
@@ -377,7 +378,7 @@ export function ScrollJourney({
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-[260vh] sm:min-h-[320vh] md:min-h-[420vh] bg-black -mt-16"
+      className="relative w-full min-h-[300vh] sm:min-h-[380vh] md:min-h-[480vh] bg-black -mt-16"
     >
       {/* Sticky Fullscreen Video Window with dynamic viewport support */}
       <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden select-none bg-black">
@@ -530,9 +531,14 @@ export function ScrollJourney({
           </div>
         )}
 
-        {/* Layer 4: Paul Atreides 3D Model (Materializes as the gate opens into the Citadel) */}
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 15 }}>
+        {/* Layer 4: Paul Atreides 3D Model (Materializes as the gate opens, visual anchor in lower-left foreground) */}
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 22 }}>
           <Paul3D scrollProgress={scrollProgress} />
+        </div>
+
+        {/* Layer 5: Citadel Archive (Monumental 3D information slabs revealing systems of the citadel) */}
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
+          <CitadelArchive scrollProgress={scrollProgress} />
         </div>
       </div>
     </div>

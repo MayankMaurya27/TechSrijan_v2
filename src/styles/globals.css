@@ -526,3 +526,7 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
 .clip-mecha-btn {
   clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
 }
+
+.font-serif {
+  font-family: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}

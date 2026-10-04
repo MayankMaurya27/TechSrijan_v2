@@ -73,11 +73,26 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
       };
     }
 
-    // Grounded presence in Citadel (firmly planted, normal solid 0.96 opacity)
+    // Grounded presence in Citadel, settling smoothly into lower-left anchor as archive reveals
+    let translateXPercent = 0;
+    let translateYPercent = 0;
+    let scale = 1.0;
+
+    if (scrollProgress >= 0.86) {
+      const p = Math.min(1, Math.max(0, (scrollProgress - 0.86) / 0.11));
+      const eased = p * p * (3 - 2 * p);
+      // On desktop: settle smoothly toward left (-34%) and slightly down (+4%)
+      // On mobile: stay centered and grounded at bottom
+      translateXPercent = isMobile ? 0 : -34 * eased;
+      translateYPercent = isMobile ? 2 * eased : 4 * eased;
+      scale = isMobile ? 1.0 : 1.0 - 0.05 * eased;
+    }
+
     return {
       opacity: normalOpacity,
-      translateYPercent: 0,
-      scale: 1.0,
+      translateXPercent,
+      translateYPercent,
+      scale,
       visible: true,
     };
   }, [scrollProgress, isMobile]);
@@ -319,7 +334,8 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
       style={{
         opacity: anim.opacity,
         visibility: anim.visible ? "visible" : "hidden",
-        transition: "opacity 0.4s ease-out",
+        transform: `translate3d(${anim.translateXPercent}%, ${anim.translateYPercent}%, 0) scale(${anim.scale})`,
+        transition: "opacity 0.4s ease-out, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
         willChange: "transform, opacity",
       }}
     >

@@ -283,7 +283,7 @@ export function ScrollJourney({
   const landingOpacity = Math.max(0, 1 - scrollProgress * 12);
   const scrollVideoOpacity = Math.min(1, scrollProgress * 14);
   const citadelBackdropOpacity =
-    scrollProgress > 0.65 ? Math.min(1, (scrollProgress - 0.65) * 4) : 0;
+    scrollProgress > 0.94 ? Math.min(1, (scrollProgress - 0.94) * 16) : 0;
 
   return (
     <div
@@ -296,7 +296,10 @@ export function ScrollJourney({
         <div
           className="absolute inset-0 h-full w-full pointer-events-none"
           style={{
-            backgroundImage: "url('/scrolling-hd-poster.jpg')",
+            backgroundImage:
+              scrollProgress > 0.6
+                ? "url('/citadel-poster.jpg')"
+                : "url('/scrolling-hd-poster.jpg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}

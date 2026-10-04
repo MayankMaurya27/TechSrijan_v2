@@ -1,0 +1,45 @@
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- ACTIVE VIBRO-FREQUENCY BURST AURA -->
+  <circle cx="17.5" cy="17.5" r="9" fill="#FF1E27" fill-opacity="0.25" />
+  <path d="M2 2 L23 15 L15 23 Z" fill="#FF1E27" fill-opacity="0.4" />
+  <path d="M2 2 L22.5 15.5 L15.5 22.5 Z" stroke="#FF1E27" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.45" />
+  <path d="M2 2 L21 16 L16 21 Z" stroke="#FF5E68" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" />
+
+  <!-- BLADE BLACK SILHOUETTE OUTLINE -->
+  <path d="M2 2 L20 16.2 L18.5 18.5 L16.2 20 Z" fill="#050203" stroke="#050203" stroke-width="1.6" stroke-linejoin="round" />
+
+  <!-- BLADE RED VIBRO-FACETS (OVERLOADED ENERGY) -->
+  <path d="M2.4 2.4 L19.4 16.4 L18.2 18.2 Z" fill="#FF2632" />
+  <path d="M2.4 2.4 L19.4 16.4" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" />
+  <path d="M2.4 2.4 L18.2 18.2 L16.4 19.4 Z" fill="#D40010" />
+
+  <!-- WHITE LASER ENERGY CORE -->
+  <path d="M2.4 2.4 L17.5 17.5" stroke="#FFFFFF" stroke-width="1.4" stroke-linecap="round" />
+
+  <!-- HILT / GRIP -->
+  <path d="M18.5 18.5 L26 26" stroke="#0D0B08" stroke-width="3.2" stroke-linecap="square" />
+  <path d="M19.5 19.5 L25.5 25.5" stroke="#42372A" stroke-width="2.2" stroke-linecap="square" />
+  <path d="M20.5 21.5 L21.5 20.5" stroke="#FFE58F" stroke-width="1.4" />
+  <path d="M22.5 23.5 L23.5 22.5" stroke="#FFE58F" stroke-width="1.4" />
+  <path d="M24.5 25.5 L25.5 24.5" stroke="#FFE58F" stroke-width="1.4" />
+
+  <!-- GOLD POMMEL -->
+  <path d="M25 27 L27 25 L31 29 L29 31 Z" fill="#050203" />
+  <path d="M25.5 26.5 L26.5 25.5 L30 29 L29 30 Z" fill="#F59E0B" stroke="#FFFBEB" stroke-width="0.6" />
+
+  <!-- GOLD CROSSGUARD (FORWARD-SWEEPING WINGS WITH RADIANT GLOW) -->
+  <path d="M17.5 15.5 L24 10 L22.5 7.5 L18.5 13.5 L13.5 18.5 L7.5 22.5 L10 24 L15.5 17.5 Z" fill="#050203" stroke="#050203" stroke-width="1.4" stroke-linejoin="round" />
+  <path d="M18 15.5 L23.5 10.5 L22.2 8.5 L19 13.8 Z" fill="#F59E0B" />
+  <path d="M18 15.5 L23.2 10.8" stroke="#FFFFFF" stroke-width="1" />
+  <path d="M15.5 18 L10.5 23.5 L8.5 22.2 L13.8 19 Z" fill="#D97706" />
+  <path d="M15.5 18 L10.8 23.2" stroke="#FFFFFF" stroke-width="1" />
+
+  <!-- Center Crest -->
+  <circle cx="17.5" cy="17.5" r="3.4" fill="#F59E0B" stroke="#050203" stroke-width="0.8" />
+
+  <!-- RADIANT SAKURADITE GEM FLASH -->
+  <circle cx="17.5" cy="17.5" r="4.5" fill="#00E676" fill-opacity="0.4" />
+  <polygon points="17.5,14.8 20.2,17.5 17.5,20.2 14.8,17.5" fill="#00E676" stroke="#FFFFFF" stroke-width="0.8" />
+  <polygon points="17.5,15.8 19.2,17.5 17.5,19.2 15.8,17.5" fill="#E8FFF3" />
+  <circle cx="17.5" cy="17.5" r="1.2" fill="#FFFFFF" />
+</svg>

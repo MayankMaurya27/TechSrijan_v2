@@ -18,11 +18,15 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
 
-  // User interactive rotation (drag to rotate sideways in full 3D)
+  // User interactive rotation (subtle cursor drag & hover rotation looking best overall)
+  // -0.10 rad brings his face and chest into ideal heroic balance with cinematic cape silhouette
+  const DEFAULT_ROTATION_Y = -0.10;
   const isDraggingRef = useRef(false);
   const startXRef = useRef(0);
-  const targetRotationYRef = useRef(0.18); // Default heroic 3/4 pose
-  const currentRotationYRef = useRef(0.18);
+  const dragRotationRef = useRef(0); // drag offset from default
+  const hoverOffsetRef = useRef(0);  // gentle cursor parallax offset
+  const targetRotationYRef = useRef(DEFAULT_ROTATION_Y);
+  const currentRotationYRef = useRef(DEFAULT_ROTATION_Y);
   const [isHovered, setIsHovered] = useState(false);
   const isVisibleRef = useRef(false);
 
@@ -214,11 +218,12 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
 
       if (modelGroupRef.current) {
         // Idle gentle subtle breathing sway if not being dragged
-        const idleSway = isDraggingRef.current ? 0 : Math.sin(elapsed * 1.2) * 0.025;
+        const idleSway = isDraggingRef.current ? 0 : Math.sin(elapsed * 1.0) * 0.008;
 
         // Smooth damping interpolation towards target rotation
+        const finalTarget = targetRotationYRef.current + hoverOffsetRef.current + idleSway;
         currentRotationYRef.current +=
-          (targetRotationYRef.current + idleSway - currentRotationYRef.current) * 0.08;
+          (finalTarget - currentRotationYRef.current) * 0.07;
 
         modelGroupRef.current.rotation.y = currentRotationYRef.current;
       }
@@ -258,7 +263,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     };
   }, []);
 
-  // Pointer / Mouse interaction to rotate sideways in full 3D with anatomical limits
+  // Pointer / Mouse interaction: rotates via cursor very less, looking best overall
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     isDraggingRef.current = true;
     startXRef.current = e.clientX;
@@ -266,13 +271,27 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   }, []);
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDraggingRef.current) return;
-    const deltaX = e.clientX - startXRef.current;
-    startXRef.current = e.clientX;
+    // If dragging: very gentle rotation sensitivity (0.0012) and very tight clamp (max ±0.08 rad ≈ ±4.5 deg)
+    if (isDraggingRef.current) {
+      const deltaX = e.clientX - startXRef.current;
+      startXRef.current = e.clientX;
 
-    // Rotate within natural viewing bounds [-0.55 rad, +0.55 rad] (~ -32deg to +32deg)
-    const newRot = targetRotationYRef.current + deltaX * 0.008;
-    targetRotationYRef.current = Math.max(-0.55, Math.min(0.55, newRot));
+      // Rotate via cursor very less
+      dragRotationRef.current += deltaX * 0.0012;
+      dragRotationRef.current = Math.max(-0.08, Math.min(0.08, dragRotationRef.current));
+      targetRotationYRef.current = DEFAULT_ROTATION_Y + dragRotationRef.current;
+      return;
+    }
+
+    // When hovering/moving cursor across the viewport: micro-parallax (very less, max ±0.03 rad ≈ 1.7 deg)
+    const el = viewportRef.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      if (rect.width > 0) {
+        const normalizedX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+        hoverOffsetRef.current = Math.max(-1, Math.min(1, normalizedX)) * 0.03;
+      }
+    }
   }, []);
 
   const onPointerUp = useCallback((e: React.PointerEvent) => {
@@ -280,8 +299,17 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     try {
       (e.target as HTMLElement).releasePointerCapture(e.pointerId);
     } catch {}
-    // Gently ease back towards default iconic 3/4 angle
-    targetRotationYRef.current = 0.18;
+    // Gently ease back to center
+    dragRotationRef.current = 0;
+    targetRotationYRef.current = DEFAULT_ROTATION_Y;
+  }, []);
+
+  const onPointerLeave = useCallback(() => {
+    setIsHovered(false);
+    isDraggingRef.current = false;
+    dragRotationRef.current = 0;
+    hoverOffsetRef.current = 0;
+    targetRotationYRef.current = DEFAULT_ROTATION_Y;
   }, []);
 
   return (
@@ -306,7 +334,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
           WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 16%, black 100%)",
         }}
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseLeave={onPointerLeave}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}

@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const SESSION_KEY = "techsrijan_intro_video_played";
 
-interface HeroTitleProps {
+export interface HeroTitleProps {
   scrollProgress: number;
 }
 

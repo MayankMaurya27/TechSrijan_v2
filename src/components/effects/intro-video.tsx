@@ -248,14 +248,14 @@ export function IntroVideo({
       {/* Prompts for User Interaction (Unmute or Play if blocked on Mobile) */}
       <div className="relative z-20 mx-auto pointer-events-none text-center px-4 my-auto">
         {isAutoplayBlocked ? (
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[var(--accent-primary,#d4a843)] bg-black/80 backdrop-blur-md text-[var(--accent-primary,#d4a843)] font-mono text-xs tracking-[0.2em] uppercase shadow-[0_0_25px_rgba(212,168,67,0.4)] animate-pulse">
-            <Play className="h-3.5 w-3.5 fill-current" />
-            <span>TAP ANYWHERE TO PLAY INTRO</span>
+          <div className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full border border-[var(--accent-primary,#d4a843)] bg-black/85 backdrop-blur-md text-[var(--accent-primary,#d4a843)] font-mono text-xs tracking-[0.22em] uppercase shadow-[0_0_30px_rgba(212,168,67,0.5)] animate-pulse">
+            <Play className="h-4 w-4 fill-current" />
+            <span>CLICK ANYWHERE TO PLAY INTRO</span>
           </div>
         ) : isMuted && !hasInteracted ? (
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--border-accent,#d4a84340)] bg-black/50 backdrop-blur-sm text-[var(--accent-primary,#d4a843)] font-mono text-[11px] sm:text-xs tracking-[0.2em] uppercase animate-pulse">
-            <Volume2 className="h-3.5 w-3.5" />
-            <span>TAP ANYWHERE TO UNMUTE AUDIO</span>
+          <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-[var(--accent-primary,#d4a843)]/70 bg-black/65 backdrop-blur-md text-[var(--accent-primary,#d4a843)] font-mono text-xs tracking-[0.22em] uppercase shadow-[0_0_25px_rgba(212,168,67,0.35)] animate-pulse">
+            <Volume2 className="h-4 w-4" />
+            <span>CLICK ANYWHERE TO UNMUTE</span>
           </div>
         ) : null}
       </div>

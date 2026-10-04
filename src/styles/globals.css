@@ -1,52 +1,153 @@
 @import "tailwindcss";
 
 @layer base {
-  /* ==========================================================================
-     THEME A: ARRAKIS TWIN SUN (CINEMATIC OCHRE HAZE & DEEP BASALT)
-     Cinematography: Greig Fraser (Dune Part 1 & 2)
-     ========================================================================== */
-  :root, html[data-theme="arrakis"] {
-    --bg-primary: #090704;        /* Deep basalt obsidian */
-    --bg-secondary: #160f08;      /* Sietch shaded stone */
-    --surface: #24180d;           /* Weathered sandstone plate */
-    --surface-hover: #362414;     /* Interactive sun-warmed stone */
-    --accent-primary: #d4a843;    /* Melange Spice Gold */
-    --accent-secondary: #f3ce7a;  /* Bleached noon sunlight */
-    --accent-glow: rgba(212, 168, 67, 0.35);
-    --text-primary: #f8eed9;      /* Sun-bleached desert linen */
-    --text-secondary: #bba382;    /* Airborne spice dust tone */
-    --text-muted: #6b5944;        /* Deep cliff shadow */
-    --border: rgba(212, 168, 67, 0.18);
-    --border-accent: rgba(212, 168, 67, 0.45);
-    --glow: 0 0 35px rgba(212, 168, 67, 0.28);
-    --geass-crimson: #e61924;     /* Zero Geass Eye Sigil Crimson */
-    --grid-line: rgba(212, 168, 67, 0.06);
-    --hud-bracket: #d4a843;
-    --ray-color: rgba(212, 168, 67, 0.08);
+  
+  :root, html[data-theme="arrakis-day"], html[data-theme="arrakis"] {
+    --bg-primary: #4B3629;        
+    --bg-secondary: #3B2A1F;      
+    --surface: rgba(139, 87, 56, 0.42); 
+    --surface-hover: rgba(139, 87, 56, 0.65);
+    --accent-primary: #C47D48;    
+    --accent-secondary: #F0EAE1;  
+    --accent-glow: rgba(196, 125, 72, 0.45);
+    --text-primary: #F0EAE1;      
+    --text-secondary: #D4C9BC;    
+    --text-muted: #9E897A;        
+    --border: rgba(139, 87, 56, 0.45);
+    --border-accent: #C47D48;
+    --glow: 0 0 35px rgba(196, 125, 72, 0.38);
+    --geass-crimson: #E61924;
+    --grid-line: rgba(196, 125, 72, 0.08);
+    --hud-bracket: #C47D48;
+    --ray-color: rgba(196, 125, 72, 0.12);
+    
+    --accent: var(--accent-primary);
+    --text-main: var(--text-primary);
   }
 
-  /* ==========================================================================
-     THEME B: GIEDI PRIME INFRARED (100% MONOCHROME CHIAROSCURO)
-     Cinematography: Greig Fraser Infrared Camera System
-     ========================================================================== */
-  html[data-theme="giedi-prime"] {
-    --bg-primary: #000000;        /* Absolute void black */
-    --bg-secondary: #080808;      /* Industrial carbon plate */
-    --surface: #121212;           /* Cold pressed steel */
-    --surface-hover: #1c1c1c;     /* Activated carbon substrate */
-    --accent-primary: #ffffff;    /* Clinical infrared white */
-    --accent-secondary: #ff1e27;  /* Zero Command targeting infrared */
-    --accent-glow: rgba(255, 30, 39, 0.45);
-    --text-primary: #f0f0f0;      /* Stark translucent white */
-    --text-secondary: #7a7a7a;    /* Cold machine grey */
-    --text-muted: #3e3e3e;        /* Shadow carbon */
-    --border: rgba(255, 255, 255, 0.15);
-    --border-accent: rgba(255, 30, 39, 0.5);
-    --glow: 0 0 35px rgba(255, 30, 39, 0.35);
-    --geass-crimson: #ff1e27;
-    --grid-line: rgba(255, 255, 255, 0.05);
-    --hud-bracket: #ff1e27;
-    --ray-color: rgba(255, 255, 255, 0.06);
+html[data-theme="krelln-night"], html[data-theme="kelln-night"] {
+    --bg-primary: #1A1D21;        
+    --bg-secondary: #121518;      
+    --surface: rgba(46, 55, 67, 0.48); 
+    --surface-hover: rgba(46, 55, 67, 0.75);
+    --accent-primary: #778292;    
+    --accent-secondary: #D7DBE2;  
+    --accent-glow: rgba(119, 130, 146, 0.42);
+    --text-primary: #D7DBE2;      
+    --text-secondary: #A0A8B5;    
+    --text-muted: #5B6472;        
+    --border: rgba(119, 130, 146, 0.28);
+    --border-accent: rgba(215, 219, 226, 0.6);
+    --glow: 0 0 35px rgba(119, 130, 146, 0.35);
+    --geass-crimson: #E61924;
+    --grid-line: rgba(119, 130, 146, 0.08);
+    --hud-bracket: #778292;
+    --ray-color: rgba(215, 219, 226, 0.10);
+    --accent: var(--accent-primary);
+    --text-main: var(--text-primary);
+  }
+
+html[data-theme="avron-night"], html[data-theme="arvon-night"] {
+    --bg-primary: #221B2A;        
+    --bg-secondary: #17121E;      
+    --surface: rgba(81, 72, 86, 0.48); 
+    --surface-hover: rgba(81, 72, 86, 0.75);
+    --accent-primary: #5793CE;    
+    --accent-secondary: #8EB7E5;  
+    --accent-glow: rgba(87, 147, 206, 0.48);
+    --text-primary: #B3B0B7;      
+    --text-secondary: #8E8795;    
+    --text-muted: #5A5362;        
+    --border: rgba(81, 72, 86, 0.42);
+    --border-accent: #5793CE;
+    --glow: 0 0 35px rgba(87, 147, 206, 0.40);
+    --geass-crimson: #E61924;
+    --grid-line: rgba(87, 147, 206, 0.08);
+    --hud-bracket: #5793CE;
+    --ray-color: rgba(87, 147, 206, 0.12);
+    --accent: var(--accent-primary);
+    --text-main: var(--text-primary);
+  }
+
+html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
+    --bg-primary: #190912;        
+    --bg-secondary: #0B0408;      
+    --surface: rgba(106, 0, 13, 0.38); 
+    --surface-hover: rgba(106, 0, 13, 0.70);
+    --accent-primary: #C80014;    
+    --accent-secondary: #FF1E27;  
+    --accent-glow: rgba(255, 30, 39, 0.52);
+    --text-primary: #FFFFFF;      
+    --text-secondary: #D9A8B0;    
+    --text-muted: #80404C;        
+    --border: rgba(200, 0, 20, 0.30);
+    --border-accent: #FF1E27;
+    --glow: 0 0 35px rgba(255, 30, 39, 0.48);
+    --geass-crimson: #FF1E27;
+    --grid-line: rgba(255, 30, 39, 0.08);
+    --hud-bracket: #FF1E27;
+    --ray-color: rgba(255, 30, 39, 0.14);
+    --accent: var(--accent-primary);
+    --text-main: var(--text-primary);
+  }
+
+@supports (color: oklch(0% 0 0)) {
+    :root, html[data-theme="arrakis-day"], html[data-theme="arrakis"] {
+      --bg-primary: oklch(0.28 0.05 45);
+      --surface: oklch(0.48 0.11 48 / 0.42);
+      --surface-hover: oklch(0.48 0.11 48 / 0.65);
+      --text-primary: oklch(0.95 0.03 90);
+      --accent-primary: oklch(0.65 0.16 55);
+      --accent-secondary: oklch(0.95 0.03 90);
+      --accent-glow: oklch(0.65 0.16 55 / 0.45);
+      --border: oklch(0.48 0.11 48 / 0.45);
+      --border-accent: oklch(0.65 0.16 55);
+      --glow: 0 0 35px oklch(0.65 0.16 55 / 0.38);
+      --hud-bracket: oklch(0.65 0.16 55);
+    }
+
+    html[data-theme="krelln-night"], html[data-theme="kelln-night"] {
+      --bg-primary: oklch(0.14 0.01 260);
+      --surface: oklch(0.25 0.03 260 / 0.48);
+      --surface-hover: oklch(0.25 0.03 260 / 0.75);
+      --text-primary: oklch(0.88 0.02 260);
+      --accent-primary: oklch(0.55 0.04 260);
+      --accent-secondary: oklch(0.88 0.02 260);
+      --accent-glow: oklch(0.55 0.04 260 / 0.42);
+      --border: oklch(0.55 0.04 260 / 0.28);
+      --border-accent: oklch(0.88 0.02 260 / 0.6);
+      --glow: 0 0 35px oklch(0.55 0.04 260 / 0.35);
+      --hud-bracket: oklch(0.55 0.04 260);
+    }
+
+    html[data-theme="avron-night"], html[data-theme="arvon-night"] {
+      --bg-primary: oklch(0.16 0.04 285);
+      --surface: oklch(0.35 0.04 285 / 0.48);
+      --surface-hover: oklch(0.35 0.04 285 / 0.75);
+      --text-primary: oklch(0.72 0.01 285);
+      --accent-primary: oklch(0.60 0.14 250);
+      --accent-secondary: oklch(0.75 0.10 250);
+      --accent-glow: oklch(0.60 0.14 250 / 0.48);
+      --border: oklch(0.35 0.04 285 / 0.42);
+      --border-accent: oklch(0.60 0.14 250);
+      --glow: 0 0 35px oklch(0.60 0.14 250 / 0.40);
+      --hud-bracket: oklch(0.60 0.14 250);
+    }
+
+    html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
+      --bg-primary: oklch(12.65% 0.032 342.18);
+      --bg-secondary: oklch(5.12% 0.015 338.45);
+      --surface: oklch(28.45% 0.138 27.42 / 0.38);
+      --surface-hover: oklch(28.45% 0.138 27.42 / 0.70);
+      --text-primary: #FFFFFF;
+      --accent-primary: oklch(48.23% 0.234 26.85);
+      --accent-secondary: oklch(61.85% 0.256 25.12);
+      --accent-glow: oklch(61.85% 0.256 25.12 / 0.52);
+      --border: oklch(48.23% 0.234 26.85 / 0.30);
+      --border-accent: oklch(61.85% 0.256 25.12);
+      --glow: 0 0 35px oklch(61.85% 0.256 25.12 / 0.48);
+      --hud-bracket: oklch(61.85% 0.256 25.12);
+    }
   }
 
   * {
@@ -61,22 +162,15 @@
   }
 }
 
-/* ==========================================================================
-   CODE GEASS CEREMONIAL BLADE CUSTOM CURSOR
-   Strictly enabled only for pointer: fine devices
-   ========================================================================== */
 @media (pointer: fine) {
-  * {
-    cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 4L13 24L16 16L24 13L4 4Z' fill='%23D4A843' stroke='%23090704' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23E61924'/%3E%3Cpath d='M16 16L28 28' stroke='%23E61924' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 4 4, auto !important;
+  html, body, * {
+    cursor: url("/cursors/mvs-sword.svg") 2 2, url("data:image/svg+xml,%3Csvg width='36' height='36' viewBox='0 0 36 36' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 2 L20.5 16.5 L16.5 20.5 Z' fill='%23FF1E27' fill-opacity='0.25'/%3E%3Cpath d='M2 2 L21 16 L16 21 Z' stroke='%23FF1E27' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' opacity='0.35'/%3E%3Cpath d='M2 2 L20 16.2 L16.2 20 Z' stroke='%23FF404A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='0.6'/%3E%3Cpath d='M2 2 L20 16.2 L18.5 18.5 L16.2 20 Z' fill='%23050203' stroke='%23050203' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M2.4 2.4 L19.4 16.4 L18.2 18.2 Z' fill='%23FF2632'/%3E%3Cpath d='M2.4 2.4 L19.4 16.4' stroke='%23FFA6AC' stroke-width='0.75' stroke-linecap='round'/%3E%3Cpath d='M2.4 2.4 L18.2 18.2 L16.4 19.4 Z' fill='%23B8000C'/%3E%3Cpath d='M2.4 2.4 L17.5 17.5' stroke='%23FFFFFF' stroke-width='0.85' stroke-linecap='round'/%3E%3Cpath d='M18.5 18.5 L26 26' stroke='%230D0B08' stroke-width='3.2' stroke-linecap='square'/%3E%3Cpath d='M19.5 19.5 L25.5 25.5' stroke='%2342372A' stroke-width='2.2' stroke-linecap='square'/%3E%3Cpath d='M20.5 21.5 L21.5 20.5' stroke='%23D4A843' stroke-width='1.2'/%3E%3Cpath d='M22.5 23.5 L23.5 22.5' stroke='%23D4A843' stroke-width='1.2'/%3E%3Cpath d='M24.5 25.5 L25.5 24.5' stroke='%23D4A843' stroke-width='1.2'/%3E%3Cpath d='M25 27 L27 25 L31 29 L29 31 Z' fill='%23050203'/%3E%3Cpath d='M25.5 26.5 L26.5 25.5 L30 29 L29 30 Z' fill='%23D4A843' stroke='%23FFE58F' stroke-width='0.5'/%3E%3Cpath d='M17.5 15.5 L23.5 10.5 L22 8 L18.5 13.5 L13.5 18.5 L8 22 L10.5 23.5 L15.5 17.5 Z' fill='%23050203' stroke='%23050203' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M18 15.5 L23 11 L21.8 9 L19 13.8 Z' fill='%23D4A843'/%3E%3Cpath d='M18 15.5 L22.8 11.2' stroke='%23FFF1BA' stroke-width='0.8'/%3E%3Cpath d='M15.5 18 L11 23 L9 21.8 L13.8 19 Z' fill='%23B88A27'/%3E%3Cpath d='M15.5 18 L11.2 22.8' stroke='%23FFF1BA' stroke-width='0.8'/%3E%3Ccircle cx='17.5' cy='17.5' r='3.2' fill='%23D4A843' stroke='%23050203' stroke-width='0.8'/%3E%3Cpolygon points='17.5,15.2 19.8,17.5 17.5,19.8 15.2,17.5' fill='%2300E676' stroke='%23050203' stroke-width='0.6'/%3E%3Cpolygon points='17.5,16 19,17.5 17.5,19 16,17.5' fill='%23B9F6CA'/%3E%3Ccircle cx='17.5' cy='17.5' r='0.6' fill='%23FFFFFF'/%3E%3C/svg%3E") 2 2, auto !important;
   }
-  a, button, [role="button"], input, select, textarea, [tabindex="0"] {
-    cursor: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 4L13 24L16 16L24 13L4 4Z' fill='%23F3CE7A' stroke='%23E61924' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23E61924'/%3E%3Cpath d='M16 16L30 30' stroke='%23F3CE7A' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M14 18L18 14' stroke='%23E61924' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 4 4, pointer !important;
+  a, button, [role="button"], input, select, textarea, [tabindex="0"], label, .cursor-pointer {
+    cursor: url("/cursors/mvs-sword-pointer.svg") 2 2, url("data:image/svg+xml,%3Csvg width='36' height='36' viewBox='0 0 36 36' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='17.5' cy='17.5' r='9' fill='%23FF1E27' fill-opacity='0.25'/%3E%3Cpath d='M2 2 L23 15 L15 23 Z' fill='%23FF1E27' fill-opacity='0.4'/%3E%3Cpath d='M2 2 L22.5 15.5 L15.5 22.5 Z' stroke='%23FF1E27' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' opacity='0.45'/%3E%3Cpath d='M2 2 L21 16 L16 21 Z' stroke='%23FF5E68' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' opacity='0.8'/%3E%3Cpath d='M2 2 L20 16.2 L18.5 18.5 L16.2 20 Z' fill='%23050203' stroke='%23050203' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M2.4 2.4 L19.4 16.4 L18.2 18.2 Z' fill='%23FF2632'/%3E%3Cpath d='M2.4 2.4 L19.4 16.4' stroke='%23FFFFFF' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M2.4 2.4 L18.2 18.2 L16.4 19.4 Z' fill='%23D40010'/%3E%3Cpath d='M2.4 2.4 L17.5 17.5' stroke='%23FFFFFF' stroke-width='1.4' stroke-linecap='round'/%3E%3Cpath d='M18.5 18.5 L26 26' stroke='%230D0B08' stroke-width='3.2' stroke-linecap='square'/%3E%3Cpath d='M19.5 19.5 L25.5 25.5' stroke='%2342372A' stroke-width='2.2' stroke-linecap='square'/%3E%3Cpath d='M20.5 21.5 L21.5 20.5' stroke='%23FFE58F' stroke-width='1.4'/%3E%3Cpath d='M22.5 23.5 L23.5 22.5' stroke='%23FFE58F' stroke-width='1.4'/%3E%3Cpath d='M24.5 25.5 L25.5 24.5' stroke='%23FFE58F' stroke-width='1.4'/%3E%3Cpath d='M25 27 L27 25 L31 29 L29 31 Z' fill='%23050203'/%3E%3Cpath d='M25.5 26.5 L26.5 25.5 L30 29 L29 30 Z' fill='%23F59E0B' stroke='%23FFFBEB' stroke-width='0.6'/%3E%3Cpath d='M17.5 15.5 L24 10 L22.5 7.5 L18.5 13.5 L13.5 18.5 L7.5 22.5 L10 24 L15.5 17.5 Z' fill='%23050203' stroke='%23050203' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M18 15.5 L23.5 10.5 L22.2 8.5 L19 13.8 Z' fill='%23F59E0B'/%3E%3Cpath d='M18 15.5 L23.2 10.8' stroke='%23FFFFFF' stroke-width='1'/%3E%3Cpath d='M15.5 18 L10.5 23.5 L8.5 22.2 L13.8 19 Z' fill='%23D97706'/%3E%3Cpath d='M15.5 18 L10.8 23.2' stroke='%23FFFFFF' stroke-width='1'/%3E%3Ccircle cx='17.5' cy='17.5' r='3.4' fill='%23F59E0B' stroke='%23050203' stroke-width='0.8'/%3E%3Ccircle cx='17.5' cy='17.5' r='4.5' fill='%2300E676' fill-opacity='0.4'/%3E%3Cpolygon points='17.5,14.8 20.2,17.5 17.5,20.2 14.8,17.5' fill='%2300E676' stroke='%23FFFFFF' stroke-width='0.8'/%3E%3Cpolygon points='17.5,15.8 19.2,17.5 17.5,19.2 15.8,17.5' fill='%23E8FFF3'/%3E%3Ccircle cx='17.5' cy='17.5' r='1.2' fill='%23FFFFFF'/%3E%3C/svg%3E") 2 2, pointer !important;
   }
 }
 
-/* ==========================================================================
-   CODE GEASS MECHA COCKPIT BRACKET CORNERS
-   ========================================================================== */
 .mecha-bracket {
   position: relative;
 }
@@ -117,9 +211,6 @@
   border-color: var(--geass-crimson);
 }
 
-/* ==========================================================================
-   CODE GEASS EYE-SIGIL OPTIC PULSE KEYFRAMES
-   ========================================================================== */
 @keyframes geass-pulse {
   0% {
     transform: scale(0.3) rotate(-15deg);
@@ -142,9 +233,6 @@
   animation: geass-pulse 0.45s ease-out forwards;
 }
 
-/* ==========================================================================
-   TACTICAL CHESSBOARD GRID BACKGROUND
-   ========================================================================== */
 .tactical-grid {
   background-image: 
     linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
@@ -152,9 +240,6 @@
   background-size: 48px 48px;
 }
 
-/* ==========================================================================
-   CONIC ROTATING GRADIENT
-   ========================================================================== */
 @property --angle {
   syntax: "<angle>";
   initial-value: 0deg;
@@ -183,9 +268,6 @@
   animation: rotate-gradient 4s linear infinite;
 }
 
-/* ==========================================================================
-   KINETIC MARQUEE STRIP
-   ========================================================================== */
 @keyframes marquee {
   0% { transform: translateX(0%); }
   100% { transform: translateX(-50%); }
@@ -201,16 +283,10 @@
   animation-play-state: paused;
 }
 
-/* ==========================================================================
-   ANALOG FILM GRAIN
-   ========================================================================== */
 .film-grain {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
 }
 
-/* ==========================================================================
-   ARRAKIS MINUTE SPICE SAND PARTICLES
-   ========================================================================== */
 @keyframes sand-drift {
   0%, 100% {
     transform: translate(0, 0);
@@ -251,9 +327,6 @@
   }
 }
 
-/* ==========================================================================
-   BUTTON HOVER SAND ANIMATION TEXTURE
-   ========================================================================== */
 @keyframes sand-stream {
   0% {
     background-position: 0 0;
@@ -310,10 +383,6 @@
   animation: sand-wave-sweep 2.6s ease-in-out infinite;
 }
 
-/* ==========================================================================
-   BUTTON HOVER GIEDI PRIME RED EMBER ANIMATIONS
-   Sparse glowing red specks drifting downward with occasional fade out
-   ========================================================================== */
 @keyframes red-ember-drift-down {
   0% {
     transform: translateY(-8px) translateX(0);
@@ -343,7 +412,7 @@
     transform: translateY(14px) translateX(-2px);
     opacity: 0.85;
   }
-  /* Occasional particle fading out midway */
+  
   70% {
     transform: translateY(20px) translateX(-3px);
     opacity: 0;
@@ -354,28 +423,24 @@
   }
 }
 
-/* ==========================================================================
-   THEME SEPARATION: ARRAKIS (SAND) VS GIEDI PRIME (RED EMBERS)
-   ========================================================================== */
-html[data-theme="giedi-prime"] .sand-grain-texture,
-html[data-theme="giedi-prime"] .sand-shimmer-wave,
-html[data-theme="giedi-prime"] .sand-only-effect,
-html[data-theme="giedi-prime"] [data-sand-effect="true"] {
+html:not([data-theme="arrakis-day"]):not([data-theme="arrakis"]) .sand-grain-texture,
+html:not([data-theme="arrakis-day"]):not([data-theme="arrakis"]) .sand-shimmer-wave,
+html:not([data-theme="arrakis-day"]):not([data-theme="arrakis"]) .sand-only-effect,
+html:not([data-theme="arrakis-day"]):not([data-theme="arrakis"]) [data-sand-effect="true"] {
   display: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
 }
 
+html[data-theme="arrakis-day"] .button-ember-effect,
 html[data-theme="arrakis"] .button-ember-effect,
+html[data-theme="arrakis-day"] [data-ember-effect="true"],
 html[data-theme="arrakis"] [data-ember-effect="true"] {
   display: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
 }
 
-/* ==========================================================================
-   MINIMAL LUXURY VERTICAL SCROLL INDICATOR (IMAGE 2)
-   ========================================================================== */
 @keyframes scrollIndicatorFlow {
   0% {
     transform: translateY(0);
@@ -434,9 +499,6 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
   animation: specularSheen 7s ease-in-out infinite;
 }
 
-/* ==========================================================================
-   LIVE MOVING NEON BORDER ANIMATION (CYBER HUD EDGES)
-   ========================================================================== */
 @keyframes neonBorderTravel {
   0% {
     stroke-dashoffset: 0;
@@ -464,52 +526,3 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
 .clip-mecha-btn {
   clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
 }
-
-/* ==========================================================================
-   CELESTIAL HOLOGRAPHIC CONSTELLATION ANIMATIONS
-   ========================================================================== */
-@keyframes constellation-drift {
-  0% {
-    stroke-dashoffset: 0;
-  }
-  100% {
-    stroke-dashoffset: -56;
-  }
-}
-
-.animate-constellation-drift {
-  animation: constellation-drift 12s linear infinite;
-}
-
-@keyframes holographic-pulse {
-  0%, 100% {
-    opacity: 0.85;
-    filter: drop-shadow(0 0 10px rgba(255, 213, 79, 0.45));
-  }
-  50% {
-    opacity: 1;
-    filter: drop-shadow(0 0 22px rgba(255, 213, 79, 0.85));
-  }
-}
-
-.animate-holographic-pulse {
-  animation: holographic-pulse 4s ease-in-out infinite;
-}
-
-@keyframes orb-float-slow {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-.animate-orb-float {
-  animation: orb-float-slow 5s ease-in-out infinite;
-}
-
-
-
-
-

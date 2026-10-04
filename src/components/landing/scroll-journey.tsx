@@ -31,21 +31,26 @@ export function ScrollJourney({
   const rafIdRef = useRef<number>(0);
   const lastPaintedTimeRef = useRef(-1);
 
-  // Detect device tier once on mount for branching render strategy
+  // Device detection: active for mobile devices OR viewport width < 1024px
   const [isMobile, setIsMobile] = useState(false);
 
-  // Choose video source based on device (all-intra lightweight 960x540 on mobile)
+  const checkIsMobile = useCallback(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth < 1024 || isMobileDevice();
+  }, []);
+
+  // Choose video source based on device (1080x1920 all-intra mobile_asset on mobile, scrolling-hd on laptop)
   const activeScrollSrc =
     scrollSrc || (isMobile ? "/scrolling-mobile.mp4" : "/scrolling-hd.mp4");
 
   useEffect(() => {
-    const mobile = isMobileDevice();
+    const mobile = checkIsMobile();
     setIsMobile(mobile);
     isMobileRef.current = mobile;
-  }, []);
+  }, [checkIsMobile]);
 
   // ─── Canvas Frame Painting (Mobile Only) ────────────────────────
-  const paintCanvas = useCallback(() => {
+  const paintCanvas = useCallback((force = false) => {
     if (!isMobileRef.current) return;
     const canvas = canvasRef.current;
     const video = scrollVideoRef.current;
@@ -56,8 +61,8 @@ export function ScrollJourney({
     // Drawing during seeking is what causes mobile WebKit/Chrome to paint solid black frames.
     if (video.seeking || video.readyState < 2) return;
 
-    // Avoid redundant repaints of the exact same frame timestamp
-    if (Math.abs(video.currentTime - lastPaintedTimeRef.current) < 0.005) return;
+    // Avoid redundant repaints of the exact same frame timestamp unless forced
+    if (!force && Math.abs(video.currentTime - lastPaintedTimeRef.current) < 0.005) return;
 
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
@@ -110,7 +115,7 @@ export function ScrollJourney({
     syncCanvasSize();
 
     const poster = new Image();
-    poster.src = "/scrolling-hd-poster.jpg";
+    poster.src = "/scrolling-mobile-poster.jpg";
     poster.onload = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -138,15 +143,15 @@ export function ScrollJourney({
     };
 
     const onResize = () => {
-      const mobile = isMobileDevice();
+      const mobile = checkIsMobile();
       setIsMobile(mobile);
       isMobileRef.current = mobile;
       syncCanvasSize();
-      paintCanvas();
+      paintCanvas(true);
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [paintCanvas, syncCanvasSize]);
+  }, [checkIsMobile, isMobile, paintCanvas, syncCanvasSize]);
 
   // ─── Precision Video Seeking & Queue Chaining ────────────────────
   const attemptSeek = useCallback(() => {
@@ -291,7 +296,7 @@ export function ScrollJourney({
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-[220vh] sm:min-h-[300vh] md:min-h-[420vh] bg-black -mt-16"
+      className="relative w-full min-h-[400vh] md:min-h-[420vh] bg-black -mt-16"
     >
       {/* Sticky Fullscreen Video Window with dynamic viewport support */}
       <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden select-none bg-black">
@@ -299,7 +304,9 @@ export function ScrollJourney({
         <div
           className="absolute inset-0 h-full w-full pointer-events-none"
           style={{
-            backgroundImage: "url('/scrolling-hd-poster.jpg')",
+            backgroundImage: isMobile
+              ? "url('/scrolling-mobile-poster.jpg')"
+              : "url('/scrolling-hd-poster.jpg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -332,7 +339,7 @@ export function ScrollJourney({
           />
         )}
 
-        {/* === MOBILE: Decoder video element (kept active in layout tree) === */}
+        {/* === MOBILE: Decoder video element (kept active in layout tree for hardware acceleration) === */}
         {isMobile && (
           <video
             ref={scrollVideoRef}
@@ -341,15 +348,19 @@ export function ScrollJourney({
             muted
             preload="auto"
             onSeeked={handleSeeked}
+            onLoadedData={() => paintCanvas(true)}
+            onLoadedMetadata={() => {
+              if (targetTimeRef.current > 0) attemptSeek();
+            }}
             className="pointer-events-none"
             style={{
               position: "absolute",
               top: 0,
               left: 0,
-              width: "1px",
-              height: "1px",
-              opacity: 0.01,
-              zIndex: -10,
+              width: "100%",
+              height: "100%",
+              opacity: 0.001,
+              zIndex: -1,
             }}
           />
         )}

@@ -38,13 +38,13 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   }, []);
 
   // Timeline:
-  // - Paul materializes directly out of the bright solar gate flash via pure opacity fade (no downward rise)
-  // - Starts emerging as the flash light peaks, fully grounded on the avenue stones
+  // - ONLY as the gate flash light ends and Image 2 is on screen:
+  // - Paul emerges purely through a silky-smooth opacity fade right where he stands (NO translation upward or downward)
   const anim = useMemo(() => {
-    const enterStart = isMobile ? 0.50 : 0.72; // Begins emerging as flash peaks
-    const enterEnd = isMobile ? 0.66 : 0.86;   // Fully materialized in Citadel
+    const enterStart = isMobile ? 0.74 : 0.78; // begins fading in as the flash ends
+    const enterEnd = isMobile ? 0.86 : 0.89;   // fully faded in to normal solid presence
 
-    // Before gate opens: completely invisible
+    // Before flash light ends: completely invisible
     if (scrollProgress < enterStart) {
       return {
         opacity: 0,
@@ -54,22 +54,24 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
       };
     }
 
-    // Emerging from the radiant light: silky smooth pure opacity fade
+    const normalOpacity = 0.96; // Restored normal solid cinematic opacity
+
+    // Pure fade and blend: smoothly fades in with zero vertical translation
     if (scrollProgress < enterEnd) {
       const t = (scrollProgress - enterStart) / (enterEnd - enterStart);
-      // Hermite smoothstep easing: zero jerk at both start and finish
+      // Hermite smoothstep for natural gradual fade
       const eased = t * t * (3 - 2 * t);
       return {
-        opacity: eased * 0.94,
-        translateYPercent: 0, // Grounded in place - no downward rise!
-        scale: 0.98 + 0.02 * eased,
+        opacity: eased * normalOpacity,
+        translateYPercent: 0, // NO upward or downward translation!
+        scale: 1.0,
         visible: true,
       };
     }
 
-    // Grounded presence in Citadel (firmly planted, gentle 0.94 cinematic opacity)
+    // Grounded presence in Citadel (firmly planted, normal solid 0.96 opacity)
     return {
-      opacity: 0.94,
+      opacity: normalOpacity,
       translateYPercent: 0,
       scale: 1.0,
       visible: true,
@@ -90,16 +92,16 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     const mobile = isMobileDevice() || (typeof window !== "undefined" && window.innerWidth < 1024);
     const el = viewportRef.current || container;
     let width = el?.clientWidth || (typeof window !== "undefined" ? Math.min(window.innerWidth, 450) : 450);
-    let height = el?.clientHeight || (typeof window !== "undefined" ? Math.round(window.innerHeight * 0.42) : 450);
+    let height = el?.clientHeight || (typeof window !== "undefined" ? Math.round(window.innerHeight * 0.45) : 450);
 
     // 1. Scene
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // 2. Camera
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(0, 0.1, 3.2);
-    camera.lookAt(0, -0.05, 0);
+    // 2. Camera: Focused on upper 60-70% of Paul (head, shoulders, chest, Fremen cape and waist)
+    const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
+    camera.position.set(0, 0.05, 2.5);
+    camera.lookAt(0, 0.05, 0);
     cameraRef.current = camera;
 
     // 3. WebGL Renderer — reduce GPU pressure on mobile
@@ -168,14 +170,19 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
           }
         });
 
-        // Compute bounding box to align feet perfectly to bottom
+        // Compute bounding box to frame upper 60-70% (head, chest, Fremen cloak, waist) removing legs/feet
         const bbox = new THREE.Box3().setFromObject(root);
         const centerX = (bbox.min.x + bbox.max.x) / 2;
         const centerZ = (bbox.min.z + bbox.max.z) / 2;
+        const modelHeight = bbox.max.y - bbox.min.y;
 
-        // Position model inside group so feet are stuck firmly to bottom (-1.20) and centered horizontally
+        // Display upper 65% of the model and crop out lower 35% (legs and boots)
+        const visibleHeight = modelHeight * 0.65;
+        const cutoffY = bbox.max.y - visibleHeight;
+        const targetCenterY = (bbox.max.y + cutoffY) / 2;
+
         root.position.x = -centerX;
-        root.position.y = -bbox.min.y - 1.20;
+        root.position.y = -targetCenterY;
         root.position.z = -centerZ;
 
         modelGroup.add(root);
@@ -288,16 +295,15 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
         willChange: "transform, opacity",
       }}
     >
-      {/* 3D Model Viewport — constrained height so top 50%+ stays open */}
+      {/* 3D Model Viewport — constrained height showing upper 60-70% with soft bottom dissolve */}
       <div
         ref={viewportRef}
-        className="relative z-20 h-[38vh] sm:h-[44vh] md:h-[48vh] lg:h-[50vh] max-h-[480px] w-full max-w-[420px] sm:max-w-[500px] flex items-end justify-center touch-none -bottom-2 sm:-bottom-3"
+        className="relative z-20 h-[42vh] sm:h-[48vh] md:h-[52vh] max-h-[520px] w-full max-w-[440px] sm:max-w-[520px] flex items-end justify-center touch-none -bottom-2 sm:-bottom-3 overflow-hidden"
         style={{
-          transform: `translate3d(0, ${anim.translateYPercent}%, 0) scale(${anim.scale})`,
-          transformOrigin: "bottom center",
-          transition: "transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)",
           cursor: isHovered ? (isDraggingRef.current ? "grabbing" : "grab") : "default",
           pointerEvents: anim.visible ? "auto" : "none",
+          maskImage: "linear-gradient(to top, transparent 0%, black 16%, black 100%)",
+          WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 16%, black 100%)",
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -305,13 +311,13 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
       >
-        {/* Ground contact shadow right under boots */}
+        {/* Soft atmospheric ground contact shadow */}
         <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[65%] h-[16px] rounded-[50%] pointer-events-none z-10"
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[85%] h-[20px] rounded-[50%] pointer-events-none z-10"
           style={{
             background:
-              "radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.45) 55%, transparent 80%)",
-            filter: "blur(6px)",
+              "radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 80%)",
+            filter: "blur(8px)",
             opacity: anim.opacity,
             transition: "opacity 0.4s ease-out",
           }}
@@ -322,8 +328,6 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
           ref={canvasRef}
           className="w-full h-full object-contain pointer-events-auto select-none"
         />
-
-
       </div>
     </div>
   );

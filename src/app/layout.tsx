@@ -41,8 +41,8 @@ export default function RootLayout({
       <body suppressHydrationWarning className="antialiased min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans relative selection:bg-[var(--accent-primary)] selection:text-[var(--bg-primary)]">
         <ThemeProvider>
           <LenisProvider>
-            {/* Film Grain Layer */}
-            <div className="pointer-events-none fixed inset-0 z-40 film-grain" />
+            {/* Film Grain Layer (Desktop only to prevent mobile GPU composite pressure) */}
+            <div className="pointer-events-none fixed inset-0 z-40 hidden md:block film-grain" />
 
             {/* Volumetric Celestial God-Rays (Parallax Horizon) */}
             <TwinSunsRays />

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { isMobileDevice } from "@/lib/device-tier";
 
 declare global {
   interface Window {
@@ -18,13 +19,19 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       window.scrollTo(0, 0);
     }
 
+    const mobile = isMobileDevice();
+
     const lenis = new Lenis({
-      duration: 1.2,
+      // On mobile: shorter duration + higher touch multiplier = snappy native feel
+      // On desktop: smooth cinematic scroll with controlled wheel speed
+      duration: mobile ? 0.8 : 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 0.9,
+      // Mobile touch scrolling should feel closer to native
+      touchMultiplier: mobile ? 1.8 : 1.0,
+      wheelMultiplier: mobile ? 1.0 : 0.9,
     });
 
     window.__lenis = lenis;

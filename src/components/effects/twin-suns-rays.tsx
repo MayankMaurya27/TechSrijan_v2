@@ -1,13 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@/components/providers/theme-provider";
+import { isMobileDevice } from "@/lib/device-tier";
 
 export function TwinSunsRays() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme } = useTheme();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
+    // Skip god rays on mobile/tablet to free GPU budget for video + WebGL
+    if (isMobileDevice()) {
+      setIsDisabled(true);
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -112,6 +120,8 @@ export function TwinSunsRays() {
       window.removeEventListener("mousemove", onMouseMove);
     };
   }, [theme]);
+
+  if (isDisabled) return null;
 
   return (
     <canvas

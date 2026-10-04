@@ -3,6 +3,7 @@
 import { useEffect, useRef, useMemo, useState, useCallback } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { isMobileDevice } from "@/lib/device-tier";
 
 interface Paul3DProps {
   scrollProgress: number;
@@ -13,6 +14,8 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const modelGroupRef = useRef<THREE.Group | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
 
   // User interactive rotation (drag to rotate sideways in full 3D)
   const isDraggingRef = useRef(false);
@@ -20,6 +23,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   const targetRotationYRef = useRef(0.18); // Default heroic 3/4 pose
   const currentRotationYRef = useRef(0.18);
   const [isHovered, setIsHovered] = useState(false);
+  const isVisibleRef = useRef(false);
 
   // Timeline:
   // - 0.00 → 0.58: Completely hidden while inside gate corridor.
@@ -62,12 +66,18 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     };
   }, [scrollProgress]);
 
-  // Set up Three.js Scene, Camera, Lights, Renderer, and load Model (Always runs on mount)
+  // Track visibility so RAF loop can pause when hidden (saves GPU on mobile)
+  useEffect(() => {
+    isVisibleRef.current = anim.visible;
+  }, [anim.visible]);
+
+  // Set up Three.js Scene, Camera, Lights, Renderer, and load Model
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
 
+    const mobile = isMobileDevice();
     let width = container.clientWidth || 450;
     let height = container.clientHeight || 500;
 
@@ -79,18 +89,21 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
     camera.position.set(0, 0.1, 3.2);
     camera.lookAt(0, -0.05, 0);
+    cameraRef.current = camera;
 
-    // 3. WebGL Renderer with HDR tone mapping & transparency
+    // 3. WebGL Renderer — reduce GPU pressure on mobile
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
-      antialias: true,
-      powerPreference: "high-performance",
+      antialias: !mobile,  // Disable AA on mobile to save GPU
+      powerPreference: mobile ? "low-power" : "high-performance",
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Cap pixel ratio: 1.0 on mobile, 2.0 on desktop
+    renderer.setPixelRatio(mobile ? 1 : Math.min(window.devicePixelRatio, 2));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.35;
+    rendererRef.current = renderer;
 
     // 4. Cinematic Arrakis Citadel Lighting
     const ambientLight = new THREE.AmbientLight(0xffeedd, 1.4);
@@ -162,14 +175,24 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
       }
     );
 
-    // 7. Animation Loop with smooth inertial rotation (Using performance.now to avoid THREE.Clock deprecation)
+    // 7. Animation Loop with visibility-aware throttling
     let animationFrameId: number;
     const startTime = performance.now();
+    let lastRenderTime = 0;
+    // On mobile, throttle to ~20 FPS to reduce GPU heat; desktop runs uncapped
+    const minFrameInterval = mobile ? 50 : 0;
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      const elapsed = (performance.now() - startTime) / 1000;
+      // Skip rendering entirely when model is off-screen (saves massive GPU on mobile)
+      if (!isVisibleRef.current) return;
+
+      const now = performance.now();
+      if (now - lastRenderTime < minFrameInterval) return;
+      lastRenderTime = now;
+
+      const elapsed = (now - startTime) / 1000;
 
       if (modelGroupRef.current) {
         // Idle gentle subtle breathing sway if not being dragged

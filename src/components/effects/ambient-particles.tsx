@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { isMobileDevice } from "@/lib/device-tier";
 
 interface Particle {
   x: number;
@@ -14,8 +15,15 @@ interface Particle {
 
 export function AmbientParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
+    // Skip particles entirely on mobile/tablet to free GPU budget for video + WebGL
+    if (isMobileDevice()) {
+      setIsDisabled(true);
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -105,6 +113,8 @@ export function AmbientParticles() {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  if (isDisabled) return null;
 
   return (
     <canvas

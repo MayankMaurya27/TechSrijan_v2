@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Volume2, VolumeX, FastForward, Crosshair, Play } from "lucide-react";
+import { isMobileDevice } from "@/lib/device-tier";
 
 const SESSION_KEY = "techsrijan_intro_video_played";
 
@@ -19,6 +20,7 @@ export function IntroVideo({
   const [isMuted, setIsMuted] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isAutoplayBlocked, setIsAutoplayBlocked] = useState(false);
+  const [activeSrc, setActiveSrc] = useState(src);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasCompletedRef = useRef(false);
 
@@ -40,6 +42,9 @@ export function IntroVideo({
   // Per-tab check: plays ONCE per tab. On refresh, it will NOT play. In another tab, it will play once.
   useEffect(() => {
     forceScrollTop();
+    if (isMobileDevice()) {
+      setActiveSrc("/intro-mobile.mp4");
+    }
     if (typeof window !== "undefined") {
       const hasPlayedInTab = sessionStorage.getItem(SESSION_KEY);
       if (!hasPlayedInTab) {
@@ -177,6 +182,7 @@ export function IntroVideo({
       {/* Background Video Layer with Responsive Source Optimization */}
       <video
         ref={videoRef}
+        src={activeSrc}
         poster={poster}
         autoPlay
         muted
@@ -184,10 +190,7 @@ export function IntroVideo({
         preload="auto"
         onEnded={handleComplete}
         className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-      >
-        <source src="/intro-mobile.mp4" media="(max-width: 768px)" type="video/mp4" />
-        <source src={src} type="video/mp4" />
-      </video>
+      />
 
       {/* Atmospheric Film Texture & Subtle Vignette */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60" />

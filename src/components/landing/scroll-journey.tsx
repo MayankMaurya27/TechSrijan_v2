@@ -84,15 +84,17 @@ export function ScrollJourney({
       offX = (cW - drawW) / 2;
     }
 
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     ctx.drawImage(video, offX, offY, drawW, drawH);
     lastPaintedTimeRef.current = video.currentTime;
   }, []);
 
-  // Size canvas to viewport bounding rect (capped at 1x DPR on mobile to save GPU memory)
+  // Size canvas to viewport bounding rect with retina sharpness (up to 2x DPR)
   const syncCanvasSize = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const dpr = isMobileRef.current ? 1 : Math.min(window.devicePixelRatio, 1.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
     const w = Math.round((rect.width || window.innerWidth) * dpr);
     const h = Math.round((rect.height || window.innerHeight) * dpr);
@@ -130,6 +132,8 @@ export function ScrollJourney({
         dW = cH * posterAspect;
         oX = (cW - dW) / 2;
       }
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
       ctx.drawImage(poster, oX, oY, dW, dH);
     };
 

@@ -167,7 +167,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 overflow-hidden">
           {/* Backdrop with dark blur */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -191,7 +191,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                 IMAGE 1 CORNER ARMOR PLATES & RED RAZOR ACCENTS
                 ==================================================== */}
             {/* Top-Left Beveled Armor Plate with Red Slice */}
-            <div className="absolute top-0 left-0 w-32 h-32 pointer-events-none overflow-hidden z-0">
+            <div className="absolute top-0 left-0 w-32 h-32 pointer-events-none overflow-hidden z-10">
               <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
                 <path
                   d="M0,0 L70,0 L0,70 Z"
@@ -213,7 +213,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
             </div>
 
             {/* Bottom-Right Beveled Armor Plate with Red Slice */}
-            <div className="absolute bottom-0 right-0 w-36 h-36 pointer-events-none overflow-hidden z-0">
+            <div className="absolute bottom-0 right-0 w-36 h-36 pointer-events-none overflow-hidden z-30">
               <svg viewBox="0 0 140 140" fill="none" className="w-full h-full">
                 <path
                   d="M140,50 L140,140 L50,140 Z"
@@ -237,7 +237,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
             {/* Subtle Close Button Top Right */}
             <button
               onClick={resetAndClose}
-              className="absolute top-5 right-5 z-20 w-8 h-8 rounded-full bg-neutral-900/80 border border-neutral-700/60 text-neutral-400 hover:text-white hover:border-red-500/60 flex items-center justify-center transition-all"
+              className="absolute top-4 right-4 sm:top-5 sm:right-5 z-30 w-8 h-8 rounded-full bg-neutral-900/80 border border-neutral-700/60 text-neutral-400 hover:text-white hover:border-red-500/60 flex items-center justify-center transition-all"
               aria-label="Close modal"
             >
               <X className="w-4 h-4" />
@@ -246,58 +246,59 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
             {/* ====================================================
                 MAIN CONTENT BODY
                 ==================================================== */}
-            <div className="relative z-10 p-6 sm:p-10 lg:p-12 overflow-y-auto custom-scrollbar flex-1">
-              {!submitted ? (
-                <>
-                  {/* Step Progress Bar (Matches Image 1 Exact Layout) */}
-                  <div className="mb-6">
-                    <div className="flex items-center justify-between text-xs sm:text-[13px] font-mono tracking-[0.25em] uppercase text-neutral-400 font-medium mb-3">
-                      <span>
-                        APPLICATION &nbsp;•&nbsp; STEP {step === 1 ? "01 OF 02" : "02 OF 02"}
-                      </span>
-                      <span className="text-neutral-400 font-mono text-xs">
-                        {step === 1 ? "50%" : "100%"}
-                      </span>
-                    </div>
-
-                    {/* Progress Track */}
-                    <div className="h-[3px] w-full bg-[#24262B] rounded-full overflow-hidden flex">
-                      <motion.div
-                        className="h-full bg-[#E61924] shadow-[0_0_10px_#FF1E27]"
-                        initial={{ width: "50%" }}
-                        animate={{ width: step === 1 ? "50%" : "100%" }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    </div>
+            {!submitted ? (
+              <div className="relative z-10 flex flex-col flex-1 min-h-0 overflow-hidden">
+                {/* Step Progress Bar (Pinned at top) */}
+                <div className="px-6 sm:px-9 pt-5 sm:pt-6 pb-3 shrink-0">
+                  <div className="flex items-center justify-between text-xs sm:text-[13px] font-mono tracking-[0.25em] uppercase text-neutral-400 font-medium mb-2.5 pr-8">
+                    <span>
+                      APPLICATION &nbsp;•&nbsp; STEP {step === 1 ? "01 OF 02" : "02 OF 02"}
+                    </span>
+                    <span className="text-neutral-400 font-mono text-xs">
+                      {step === 1 ? "50%" : "100%"}
+                    </span>
                   </div>
 
-                  {/* ==================================================
-                      STEP 1: YOUR DETAILS (Matches Image 1 Exactly)
-                      ================================================== */}
-                  {step === 1 && (
-                    <motion.form
-                      key="step1"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.25 }}
-                      onSubmit={handleContinue}
-                    >
+                  {/* Progress Track */}
+                  <div className="h-[3px] w-full bg-[#24262B] rounded-full overflow-hidden flex">
+                    <motion.div
+                      className="h-full bg-[#E61924] shadow-[0_0_10px_#FF1E27]"
+                      initial={{ width: "50%" }}
+                      animate={{ width: step === 1 ? "50%" : "100%" }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </div>
+                </div>
+
+                {/* ==================================================
+                    STEP 1: YOUR DETAILS (Matches Image 1 Exactly)
+                    ================================================== */}
+                {step === 1 && (
+                  <motion.form
+                    key="step1"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25 }}
+                    onSubmit={handleContinue}
+                    className="flex flex-col flex-1 min-h-0 overflow-hidden"
+                  >
+                    {/* Scrollable Form Body */}
+                    <div className="flex-1 overflow-y-auto px-6 sm:px-9 py-2 custom-scrollbar overscroll-contain">
                       {/* Big Headline */}
-                      <h2 className="font-impact text-5xl sm:text-6xl lg:text-7xl leading-none uppercase tracking-wide">
+                      <h2 className="font-impact text-4xl sm:text-5xl lg:text-6xl leading-none uppercase tracking-wide">
                         <span className="text-white">YOUR </span>
                         <span className="text-[#E61924]">DETAILS</span>
                       </h2>
 
                       {/* Red Accent Dash */}
-                      <div className="w-8 h-[3.5px] bg-[#E61924] mt-2.5 mb-7 sm:mb-8 shadow-[0_0_8px_#FF1E27]" />
+                      <div className="w-8 h-[3.5px] bg-[#E61924] mt-2 mb-4 sm:mb-5 shadow-[0_0_8px_#FF1E27]" />
 
                       {/* 2-Column Form Grid */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-                        
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3.5 sm:gap-y-4">
                         {/* 1. Full name */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
                             Full name
                           </label>
                           <input
@@ -305,7 +306,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.fullName}
                             onChange={(e) => handleChange("fullName", e.target.value)}
                             placeholder="Enter your full name"
-                            className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
                           />
                           {errors.fullName && (
                             <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -316,7 +317,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* 2. Email address */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
                             Email address
                           </label>
                           <input
@@ -324,7 +325,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.email}
                             onChange={(e) => handleChange("email", e.target.value)}
                             placeholder="Enter your email address"
-                            className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
                           />
                           {errors.email && (
                             <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -335,7 +336,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* 3. Mobile number */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
                             Mobile number
                           </label>
                           <input
@@ -343,7 +344,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.phone}
                             onChange={(e) => handleChange("phone", e.target.value)}
                             placeholder="Enter your mobile number"
-                            className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
                           />
                           {errors.phone && (
                             <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -352,9 +353,9 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                           )}
                         </div>
 
-                        {/* 4. College / university (with auto-suggest datalist) */}
+                        {/* 4. College / university */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
                             College / university
                           </label>
                           <input
@@ -363,7 +364,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.college}
                             onChange={(e) => handleChange("college", e.target.value)}
                             placeholder="Enter your college or university name"
-                            className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
                           />
                           <datalist id="colleges-list">
                             {GORAKHPUR_COLLEGES.map((col) => (
@@ -379,14 +380,14 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* 5. Course and year dropdown */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
                             Course and year
                           </label>
                           <div className="relative">
                             <select
                               value={formData.courseYear}
                               onChange={(e) => handleChange("courseYear", e.target.value)}
-                              className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white focus:outline-none focus:border-red-500/80 transition-all font-sans appearance-none pr-10 cursor-pointer"
+                              className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white focus:outline-none focus:border-red-500/80 transition-all font-sans appearance-none pr-10 cursor-pointer"
                             >
                               {COURSE_YEAR_OPTIONS.map((opt) => (
                                 <option key={opt} value={opt} className="bg-[#121316] text-white">
@@ -400,7 +401,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* 6. City */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
                             City
                           </label>
                           <input
@@ -408,7 +409,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.city}
                             onChange={(e) => handleChange("city", e.target.value)}
                             placeholder="Enter your city"
-                            className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
                           />
                           {errors.city && (
                             <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -416,11 +417,10 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             </span>
                           )}
                         </div>
-
                       </div>
 
                       {/* Checkbox: I agree to be contacted */}
-                      <div className="mt-6 mb-7">
+                      <div className="mt-4 mb-3">
                         <label className="flex items-center gap-3 cursor-pointer select-none">
                           <div
                             onClick={() => handleChange("agreeContact", !formData.agreeContact)}
@@ -442,50 +442,56 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                           </span>
                         )}
                       </div>
+                    </div>
 
-                      {/* Chamfered Red Button (Matches Image 1) */}
-                      <div>
-                        <button
-                          type="submit"
-                          className="group relative inline-flex items-center justify-center px-8 sm:px-10 py-3.5 font-mono text-xs sm:text-sm font-bold tracking-[0.18em] uppercase text-white bg-gradient-to-r from-[#C51D24] via-[#E61924] to-[#C51D24] hover:from-[#DC2626] hover:to-[#FF2A36] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.45)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98]"
-                          style={{
-                            clipPath:
-                              "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
-                          }}
-                        >
-                          <span className="relative z-10">CONTINUE TO CAMPUS DETAILS</span>
-                        </button>
-                      </div>
-                    </motion.form>
-                  )}
+                    {/* Pinned Action Footer (Always 100% visible) */}
+                    <div className="shrink-0 px-6 sm:px-9 py-3.5 bg-[#0C0D10]/95 backdrop-blur-md border-t border-neutral-800/80 flex items-center justify-end z-20">
+                      <button
+                        type="submit"
+                        className="group relative inline-flex items-center justify-center px-8 sm:px-10 py-3 font-mono text-xs sm:text-sm font-bold tracking-[0.18em] uppercase text-white bg-gradient-to-r from-[#C51D24] via-[#E61924] to-[#C51D24] hover:from-[#DC2626] hover:to-[#FF2A36] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.45)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98]"
+                        style={{
+                          clipPath:
+                            "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
+                        }}
+                      >
+                        <span className="relative z-10 flex items-center gap-2">
+                          <span>CONTINUE TO CAMPUS DETAILS</span>
+                          <span className="text-base font-sans leading-none">→</span>
+                        </span>
+                      </button>
+                    </div>
+                  </motion.form>
+                )}
 
-                  {/* ==================================================
-                      STEP 2: CAMPUS DETAILS & MOTIVATION
-                      ================================================== */}
-                  {step === 2 && (
-                    <motion.form
-                      key="step2"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.25 }}
-                      onSubmit={handleSubmit}
-                    >
+                {/* ==================================================
+                    STEP 2: CAMPUS DETAILS & MOTIVATION
+                    ================================================== */}
+                {step === 2 && (
+                  <motion.form
+                    key="step2"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25 }}
+                    onSubmit={handleSubmit}
+                    className="flex flex-col flex-1 min-h-0 overflow-hidden"
+                  >
+                    {/* Scrollable Form Body */}
+                    <div className="flex-1 overflow-y-auto px-6 sm:px-9 py-2 custom-scrollbar overscroll-contain">
                       {/* Big Headline */}
-                      <h2 className="font-impact text-5xl sm:text-6xl lg:text-7xl leading-none uppercase tracking-wide">
+                      <h2 className="font-impact text-4xl sm:text-5xl lg:text-6xl leading-none uppercase tracking-wide">
                         <span className="text-white">CAMPUS </span>
                         <span className="text-[#E61924]">DETAILS</span>
                       </h2>
 
                       {/* Red Accent Dash */}
-                      <div className="w-8 h-[3.5px] bg-[#E61924] mt-2.5 mb-7 sm:mb-8 shadow-[0_0_8px_#FF1E27]" />
+                      <div className="w-8 h-[3.5px] bg-[#E61924] mt-2 mb-3.5 sm:mb-4 shadow-[0_0_8px_#FF1E27]" />
 
                       {/* 2-Column Form Grid */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-                        
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 sm:gap-y-3.5">
                         {/* Branch / Department */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                          <label className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5">
                             Branch / Department
                           </label>
                           <input
@@ -493,7 +499,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.branch}
                             onChange={(e) => handleChange("branch", e.target.value)}
                             placeholder="e.g. Computer Science, IT, ECE"
-                            className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className="w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
                           />
                           {errors.branch && (
                             <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -504,7 +510,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* College Roll No / Student ID */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                          <label className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5">
                             Roll number or Student ID (Optional)
                           </label>
                           <input
@@ -512,20 +518,20 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.rollNo}
                             onChange={(e) => handleChange("rollNo", e.target.value)}
                             placeholder="Enter your roll number"
-                            className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 transition-all font-sans"
+                            className="w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 transition-all font-sans"
                           />
                         </div>
 
                         {/* Leadership experience */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                          <label className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5">
                             Leadership or club experience
                           </label>
                           <div className="relative">
                             <select
                               value={formData.experience}
                               onChange={(e) => handleChange("experience", e.target.value)}
-                              className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white focus:outline-none focus:border-red-500/80 transition-all font-sans appearance-none pr-10 cursor-pointer"
+                              className="w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white focus:outline-none focus:border-red-500/80 transition-all font-sans appearance-none pr-10 cursor-pointer"
                             >
                               <option value="Club Core Member / PR Lead" className="bg-[#121316]">
                                 Club Core Member / PR Lead
@@ -549,7 +555,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* Social Link */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                          <label className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5">
                             Social profile link (Optional)
                           </label>
                           <input
@@ -557,23 +563,22 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.socialLink}
                             onChange={(e) => handleChange("socialLink", e.target.value)}
                             placeholder="LinkedIn or Instagram profile URL"
-                            className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 transition-all font-sans"
+                            className="w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 transition-all font-sans"
                           />
                         </div>
-
                       </div>
 
                       {/* Statement / Why Vanguard */}
-                      <div className="mt-5 mb-5">
-                        <label className="block text-white font-sans text-sm sm:text-[15px] font-medium mb-2">
+                      <div className="mt-3 sm:mt-3.5 mb-3">
+                        <label className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5">
                           Why do you want to represent Techsrijan on your campus?
                         </label>
                         <textarea
-                          rows={3}
+                          rows={2}
                           value={formData.statement}
                           onChange={(e) => handleChange("statement", e.target.value)}
                           placeholder="Tell us briefly how you plan to mobilize your campus..."
-                          className="w-full px-4 py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans resize-none"
+                          className="w-full px-4 py-2 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans resize-none"
                         />
                         {errors.statement && (
                           <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -583,8 +588,8 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                       </div>
 
                       {/* Referral Code (Optional) */}
-                      <div className="max-w-xs mb-8">
-                        <label className="block text-white font-sans text-xs sm:text-sm font-medium mb-1.5">
+                      <div className="max-w-xs mb-2">
+                        <label className="block text-white font-sans text-xs sm:text-[13px] font-medium mb-1">
                           Referral code (Optional)
                         </label>
                         <input
@@ -592,46 +597,52 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                           value={formData.referralCode}
                           onChange={(e) => handleChange("referralCode", e.target.value)}
                           placeholder="e.g. TS27-VANGUARD"
-                          className="w-full px-3.5 py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-xs sm:text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 font-mono uppercase"
+                          className="w-full px-3.5 py-1.5 sm:py-2 bg-[#111215] border border-neutral-700/60 rounded-md text-xs sm:text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 font-mono uppercase"
                         />
                       </div>
+                    </div>
 
-                      {/* Buttons */}
-                      <div className="flex items-center gap-4">
-                        <button
-                          type="button"
-                          onClick={() => setStep(1)}
-                          className="px-5 py-3 rounded-md font-mono text-xs uppercase tracking-wider text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-600 transition-colors"
-                        >
-                          Back
-                        </button>
+                    {/* Pinned Action Footer (Always 100% visible on screen) */}
+                    <div className="shrink-0 px-6 sm:px-9 py-3.5 bg-[#0C0D10]/95 backdrop-blur-md border-t border-neutral-800/80 flex items-center justify-between z-20">
+                      <button
+                        type="button"
+                        onClick={() => setStep(1)}
+                        className="px-5 py-2.5 rounded-md font-mono text-xs uppercase tracking-wider text-neutral-400 hover:text-white border border-neutral-700 hover:border-neutral-500 transition-colors flex items-center gap-1.5"
+                      >
+                        <span className="leading-none font-sans">←</span>
+                        <span>BACK</span>
+                      </button>
 
-                        <button
-                          type="submit"
-                          disabled={isSubmitting}
-                          className="group relative inline-flex items-center justify-center px-8 sm:px-11 py-3.5 font-mono text-xs sm:text-sm font-bold tracking-[0.18em] uppercase text-white bg-gradient-to-r from-[#C51D24] via-[#E61924] to-[#C51D24] hover:from-[#DC2626] hover:to-[#FF2A36] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.5)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98] disabled:opacity-50"
-                          style={{
-                            clipPath:
-                              "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
-                          }}
-                        >
-                          {isSubmitting ? (
-                            <span className="flex items-center gap-2 relative z-10">
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                              <span>TRANSMITTING...</span>
-                            </span>
-                          ) : (
-                            <span className="relative z-10">SUBMIT APPLICATION</span>
-                          )}
-                        </button>
-                      </div>
-                    </motion.form>
-                  )}
-                </>
-              ) : (
-                /* ==================================================
-                    SUCCESS STATE: DIGITAL OPERATIVE PASS
-                    ================================================== */
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="group relative inline-flex items-center justify-center px-8 sm:px-11 py-3 font-mono text-xs sm:text-sm font-bold tracking-[0.18em] uppercase text-white bg-gradient-to-r from-[#C51D24] via-[#E61924] to-[#C51D24] hover:from-[#DC2626] hover:to-[#FF2A36] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.5)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98] disabled:opacity-50"
+                        style={{
+                          clipPath:
+                            "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
+                        }}
+                      >
+                        {isSubmitting ? (
+                          <span className="flex items-center gap-2 relative z-10">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>TRANSMITTING...</span>
+                          </span>
+                        ) : (
+                          <span className="relative z-10 flex items-center gap-2">
+                            <span>SUBMIT APPLICATION</span>
+                            <span className="text-base font-sans leading-none">✓</span>
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  </motion.form>
+                )}
+              </div>
+            ) : (
+              /* ==================================================
+                  SUCCESS STATE: DIGITAL OPERATIVE PASS
+                  ================================================== */
+              <div className="relative z-10 p-6 sm:p-8 overflow-y-auto flex-1 custom-scrollbar">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -713,8 +724,8 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                     </button>
                   </div>
                 </motion.div>
-              )}
-            </div>
+              </div>
+            )}
           </motion.div>
         </div>
       )}

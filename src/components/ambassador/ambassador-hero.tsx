@@ -29,9 +29,9 @@ export function AmbassadorHero() {
   useEffect(() => {
     setMounted(true);
     // Smooth cinematic sequence:
-    // 0ms: Crimson moon & starry sky loads with full dome visible below navbar
+    // 0ms: Moon background appears below the navbar
     // 250ms: Person begins rising smoothly from downward
-    // 1400ms: Title and CTA smoothly glide in once person has settled
+    // 1400ms: Title and CTA smoothly glide in
     const t1 = setTimeout(() => setPhase("character"), 250);
     const t2 = setTimeout(() => setPhase("ready"), 1400);
     return () => {
@@ -56,52 +56,55 @@ export function AmbassadorHero() {
       ref={containerRef}
       className="relative w-full h-[100dvh] min-h-[640px] overflow-hidden bg-black select-none"
     >
-      {/* Layer 1: Crimson Desert & Blood Moon (Static Base with full circular moon dome) */}
-      <motion.div
-        className="absolute inset-0 z-0 top-3 sm:top-6"
-        style={{ scale: moonScale, y: moonY, x: springX }}
-      >
-        <motion.img
-          src="/images/redmoon1.png"
-          alt="TechSrijan Crimson Moon"
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-          draggable={false}
-          priority-component="true"
-        />
-      </motion.div>
+      {/* Scene Wrapper: Starts cleanly below the navbar (top-14 sm:top-18) so moon is never cut off */}
+      <div className="absolute inset-x-0 top-14 sm:top-18 bottom-0 overflow-hidden">
+        {/* Layer 1: Crimson Desert & Blood Moon (Original Untouched Artwork) */}
+        <motion.div
+          className="absolute inset-0 z-0"
+          style={{ scale: moonScale, y: moonY, x: springX }}
+        >
+          <motion.img
+            src="/images/redmoon1.png"
+            alt="TechSrijan Crimson Moon"
+            className="w-full h-full object-cover object-center"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            draggable={false}
+            priority-component="true"
+          />
+        </motion.div>
 
-      {/* Layer 2: Atmospheric Red Mist & Glow Behind Person */}
-      <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/80 via-transparent to-black/35 pointer-events-none" />
-      <div className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[650px] h-[400px] sm:h-[650px] rounded-full bg-red-600/10 blur-[130px] pointer-events-none" />
+        {/* Layer 2: Atmospheric Red Mist & Glow Behind Person */}
+        <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/80 via-transparent to-black/35 pointer-events-none" />
+        <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[650px] h-[400px] sm:h-[650px] rounded-full bg-red-600/10 blur-[130px] pointer-events-none" />
 
-      {/* Layer 3: Person Rising from Downward (User-provided image.png perfectly aligned) */}
-      <motion.div
-        className="absolute inset-0 z-[2] top-3 sm:top-6 pointer-events-none"
-        style={{ y: characterScrollY, x: charSpringX }}
-      >
-        <motion.img
-          src="/images/ambassador-character.png"
-          alt="TechSrijan Ambassador"
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          initial={{ y: "24%", opacity: 0 }}
-          animate={
-            phase !== "moon"
-              ? { y: "0%", opacity: 1 }
-              : { y: "24%", opacity: 0 }
-          }
-          transition={{
-            duration: 1.4, // Normal cinematic duration as requested
-            ease: [0.16, 1, 0.3, 1], // Smooth deceleration curve
-          }}
-          draggable={false}
-        />
-      </motion.div>
+        {/* Layer 3: Person Rising from Downward (User-provided image.png) */}
+        <motion.div
+          className="absolute inset-0 z-[2] pointer-events-none"
+          style={{ y: characterScrollY, x: charSpringX }}
+        >
+          <motion.img
+            src="/images/ambassador-character.png"
+            alt="TechSrijan Ambassador"
+            className="w-full h-full object-cover object-center"
+            initial={{ y: "24%", opacity: 0 }}
+            animate={
+              phase !== "moon"
+                ? { y: "0%", opacity: 1 }
+                : { y: "24%", opacity: 0 }
+            }
+            transition={{
+              duration: 1.4, // Normal cinematic duration
+              ease: [0.16, 1, 0.3, 1], // Smooth deceleration curve
+            }}
+            draggable={false}
+          />
+        </motion.div>
 
-      {/* Layer 4: Lower gradient vignette to ensure high text contrast while keeping moon and character upper body clear */}
-      <div className="absolute inset-x-0 bottom-0 h-[48%] sm:h-[42%] z-[3] bg-gradient-to-t from-black via-black/85 to-transparent pointer-events-none" />
+        {/* Layer 4: Lower gradient vignette to ensure high text contrast while keeping moon and character clear */}
+        <div className="absolute inset-x-0 bottom-0 h-[48%] sm:h-[42%] z-[3] bg-gradient-to-t from-black via-black/85 to-transparent pointer-events-none" />
+      </div>
 
       {/* Layer 5: Floating Sand Embers (Client-only to avoid hydration mismatch) */}
       {mounted && (

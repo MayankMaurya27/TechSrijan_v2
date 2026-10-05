@@ -10,25 +10,32 @@ export function AmbassadorHero() {
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 45, damping: 25 });
-  const springY = useSpring(mouseY, { stiffness: 45, damping: 25 });
+  const springX = useSpring(mouseX, { stiffness: 40, damping: 25 });
+  const springY = useSpring(mouseY, { stiffness: 40, damping: 25 });
 
+  // Parallax on scroll
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   });
 
-  const moonScale = useTransform(scrollYProgress, [0, 0.6], [1, 1.25]);
-  const moonY = useTransform(scrollYProgress, [0, 0.6], [0, -40]);
-  const characterScrollY = useTransform(scrollYProgress, [0, 0.6], [0, 30]);
+  const moonScale = useTransform(scrollYProgress, [0, 0.6], [1, 1.2]);
+  const moonY = useTransform(scrollYProgress, [0, 0.6], [0, -35]);
+  const characterScrollY = useTransform(scrollYProgress, [0, 0.6], [0, 25]);
   const overlayOpacity = useTransform(scrollYProgress, [0.25, 0.65], [0, 0.85]);
-  const titleY = useTransform(scrollYProgress, [0, 0.5], [0, -60]);
+  const titleY = useTransform(scrollYProgress, [0, 0.5], [0, -50]);
+
+  // Character slight parallax against background
+  const charSpringX = useTransform(springX, (v) => v * 1.35);
 
   useEffect(() => {
     setMounted(true);
-    // Sequence: Moon lands -> Character rises -> Final lock & text reveal
-    const t1 = setTimeout(() => setPhase("character"), 500);
-    const t2 = setTimeout(() => setPhase("ready"), 1900);
+    // Smooth cinematic sequence:
+    // 0ms: Moon background displays crisp and majestic
+    // 400ms: Character rises smoothly from below
+    // 1700ms: Titles and CTA unlock
+    const t1 = setTimeout(() => setPhase("character"), 400);
+    const t2 = setTimeout(() => setPhase("ready"), 1700);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -39,8 +46,8 @@ export function AmbassadorHero() {
     const handleMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 16;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 14;
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 8;
       mouseX.set(x);
       mouseY.set(y);
     };
@@ -53,76 +60,60 @@ export function AmbassadorHero() {
       ref={containerRef}
       className="relative w-full h-[100dvh] min-h-[640px] overflow-hidden bg-[#050101] select-none"
     >
-      {/* Layer 1: Crimson Desert & Blood Moon (Static Base) */}
+      {/* Layer 1: Crimson Desert & Blood Moon (Static Majestic Background) */}
       <motion.div
         className="absolute inset-0 z-0"
         style={{ scale: moonScale, y: moonY, x: springX }}
       >
         <motion.img
           src="/images/redmoon1.png"
-          alt="Crimson Moon Arrakis"
+          alt="TechSrijan Crimson Moon"
           className="absolute inset-0 w-full h-full object-cover object-center"
-          initial={{ opacity: 0, scale: 1.12 }}
+          initial={{ opacity: 0, scale: 1.08 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
           draggable={false}
           priority-component="true"
         />
       </motion.div>
 
-      {/* Layer 2: Atmospheric Red Mist & Eclipse Glow */}
-      <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/90 via-transparent to-black/50 pointer-events-none" />
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] rounded-full bg-red-600/15 blur-[120px] pointer-events-none" />
+      {/* Layer 2: Subtle Atmospheric Red Mist & Glow Behind Character */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/80 via-transparent to-black/40 pointer-events-none" />
+      <div className="absolute top-[38%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] sm:w-[700px] h-[450px] sm:h-[700px] rounded-full bg-red-600/10 blur-[140px] pointer-events-none" />
 
-      {/* Layer 3A: Character Spawning Upward (Isolated cutout rising from below) */}
+      {/* Layer 3: Character Spawning Upward (ONLY the character figure with zero moon or sky) */}
       <motion.div
         className="absolute inset-0 z-[2] flex items-end justify-center pointer-events-none"
-        style={{ y: characterScrollY }}
+        style={{ y: characterScrollY, x: charSpringX }}
       >
         <motion.img
           src="/images/ambassador-character.png"
-          alt="TechSrijan Ambassador"
+          alt="TechSrijan Ambassador Character"
           className="w-full h-full object-cover object-bottom"
-          initial={{ y: "45%", opacity: 0, scale: 1.08 }}
+          initial={{ y: "30%", opacity: 0 }}
           animate={
             phase !== "moon"
-              ? { y: "0%", opacity: 1, scale: 1 }
-              : { y: "45%", opacity: 0, scale: 1.08 }
+              ? { y: "0%", opacity: 1 }
+              : { y: "30%", opacity: 0 }
           }
           transition={{
-            duration: 1.5,
+            duration: 1.4,
             ease: [0.16, 1, 0.3, 1],
           }}
           draggable={false}
         />
       </motion.div>
 
-      {/* Layer 3B: Seamless Final Composite (redmoon2 with full ground shadow & lighting locks in) */}
-      <motion.div
-        className="absolute inset-0 z-[3] flex items-end justify-center pointer-events-none"
-        style={{ y: characterScrollY }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: phase === "ready" ? 1 : 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <img
-          src="/images/redmoon2.png"
-          alt=""
-          className="w-full h-full object-cover object-bottom"
-          draggable={false}
-        />
-      </motion.div>
+      {/* Layer 4: Deep ground fade for readability and seamless floor blend */}
+      <div className="absolute inset-x-0 bottom-0 h-[60%] sm:h-[50%] z-[3] bg-gradient-to-t from-black via-black/75 to-transparent pointer-events-none" />
 
-      {/* Layer 4: Deep vignette & floor darkness for text readability */}
-      <div className="absolute inset-x-0 bottom-0 h-[65%] sm:h-[55%] z-[4] bg-gradient-to-t from-black via-black/75 to-transparent pointer-events-none" />
-
-      {/* Layer 5: Floating Sand Embers (Client-rendered only to prevent hydration mismatch) */}
+      {/* Layer 5: Floating Sand Embers (Client-rendered only) */}
       {mounted && (
-        <div className="absolute inset-0 z-[5] pointer-events-none overflow-hidden">
-          {Array.from({ length: 24 }).map((_, i) => {
+        <div className="absolute inset-0 z-[4] pointer-events-none overflow-hidden">
+          {Array.from({ length: 22 }).map((_, i) => {
             const size = (i % 3) + 2;
-            const left = (i * 4.2 + (i % 5) * 3) % 100;
-            const top = (i * 7.1 + 20) % 95;
+            const left = (i * 4.4 + (i % 5) * 3) % 100;
+            const top = (i * 6.8 + 22) % 94;
             return (
               <motion.div
                 key={i}
@@ -139,14 +130,14 @@ export function AmbassadorHero() {
                   boxShadow: "0 0 6px rgba(239, 68, 68, 0.8)",
                 }}
                 animate={{
-                  y: [0, -35 - (i % 20), 0],
-                  x: [0, (i % 2 === 0 ? 12 : -12), 0],
-                  opacity: [0.2, 0.85, 0.2],
+                  y: [0, -32 - (i % 18), 0],
+                  x: [0, i % 2 === 0 ? 10 : -10, 0],
+                  opacity: [0.2, 0.8, 0.2],
                 }}
                 transition={{
-                  duration: 4 + (i % 4),
+                  duration: 4.5 + (i % 3),
                   repeat: Infinity,
-                  delay: (i * 0.25) % 3,
+                  delay: (i * 0.3) % 3,
                   ease: "easeInOut",
                 }}
               />
@@ -157,7 +148,7 @@ export function AmbassadorHero() {
 
       {/* Layer 6: Hero Content & Typography */}
       <motion.div
-        className="absolute inset-0 z-[6] flex flex-col items-center justify-end pb-[7vh] sm:pb-[9vh] px-4 text-center pointer-events-none"
+        className="absolute inset-0 z-[5] flex flex-col items-center justify-end pb-[7vh] sm:pb-[9vh] px-4 text-center pointer-events-none"
         style={{ y: titleY }}
       >
         {/* Monogram tag */}
@@ -247,7 +238,7 @@ export function AmbassadorHero() {
 
       {/* Layer 7: Scroll-driven fade into content */}
       <motion.div
-        className="absolute inset-0 z-[7] bg-black pointer-events-none"
+        className="absolute inset-0 z-[6] bg-black pointer-events-none"
         style={{ opacity: overlayOpacity }}
       />
     </section>

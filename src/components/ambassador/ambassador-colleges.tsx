@@ -136,7 +136,7 @@ export function AmbassadorColleges() {
       {/* Ambient bloody red glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-red-950/15 blur-[150px] rounded-full pointer-events-none" />
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-8">
+      <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         
         {/* ========================================================
             SECTION HEADER: Matches "YOUR JOURNEY" Aesthetic
@@ -183,7 +183,7 @@ export function AmbassadorColleges() {
         </motion.div>
 
         {/* Colleges grid in Bloody Red theme */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
           {displayColleges.map((college, i) => {
             const tierInfo = TIER_LABELS[college.tier];
             return (

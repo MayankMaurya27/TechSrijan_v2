@@ -31,7 +31,7 @@ export function AmbassadorLeaderboard() {
       {/* Crimson bleed */}
       <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[400px] h-[400px] bg-red-950/15 blur-[140px] rounded-full pointer-events-none" />
 
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-8">
+      <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         
         {/* ========================================================
             SECTION HEADER: Matches "YOUR JOURNEY" Aesthetic
@@ -62,7 +62,7 @@ export function AmbassadorLeaderboard() {
           className="rounded-lg border border-red-500/25 bg-gradient-to-b from-[#140406]/90 via-[#0B0204]/95 to-black/95 shadow-[0_15px_35px_rgba(0,0,0,0.9)] overflow-hidden"
         >
           {/* Header */}
-          <div className="grid grid-cols-[50px_1fr_100px] sm:grid-cols-[60px_1fr_1fr_120px] gap-2 px-4 sm:px-6 py-3 border-b border-red-500/20 font-mono text-[10px] tracking-[0.25em] uppercase text-neutral-400 bg-red-950/20">
+          <div className="grid grid-cols-[50px_1fr_100px] sm:grid-cols-[70px_1.5fr_1.5fr_120px] gap-3 px-5 sm:px-8 py-3.5 border-b border-red-500/20 font-mono text-[10px] tracking-[0.25em] uppercase text-neutral-400 bg-red-950/20">
             <span>Rank</span>
             <span>Ambassador</span>
             <span className="hidden sm:block">College</span>
@@ -80,7 +80,7 @@ export function AmbassadorLeaderboard() {
                 delay: 0.08 * i + 0.25,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="grid grid-cols-[50px_1fr_100px] sm:grid-cols-[60px_1fr_1fr_120px] gap-2 items-center px-4 sm:px-6 py-3.5 border-b border-red-950/40 last:border-0 hover:bg-red-950/25 transition-colors font-sans text-sm"
+              className="grid grid-cols-[50px_1fr_100px] sm:grid-cols-[70px_1.5fr_1.5fr_120px] gap-3 items-center px-5 sm:px-8 py-4 border-b border-red-950/40 last:border-0 hover:bg-red-950/25 transition-colors font-sans text-sm"
             >
               {/* Rank */}
               <div>

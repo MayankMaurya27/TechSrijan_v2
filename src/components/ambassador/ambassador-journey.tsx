@@ -79,7 +79,7 @@ export function AmbassadorJourney() {
         }}
       />
 
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-8">
+      <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         
         {/* ========================================================
             SECTION HEADER: Clean & Impactful (No pill badge)
@@ -180,11 +180,11 @@ export function AmbassadorJourney() {
                       CARD CONTAINER: Concise, Human-written & Clean
                       ------------------------------------------------ */}
                   <div
-                    className={`ml-16 w-[calc(100%-64px)] sm:ml-0 sm:w-[calc(50%-48px)] ${
+                    className={`ml-16 w-[calc(100%-64px)] sm:ml-0 sm:w-[calc(50%-44px)] lg:w-[calc(50%-56px)] ${
                       isEven ? "sm:mr-auto" : "sm:ml-auto"
                     }`}
                   >
-                    <div className="relative p-5 sm:p-6 rounded-lg border border-red-500/25 bg-gradient-to-br from-[#140406]/90 via-[#0B0204]/95 to-black/95 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.85)] hover:border-red-500/60 hover:shadow-[0_0_28px_rgba(220,38,38,0.25)] transition-all duration-300 group overflow-hidden">
+                    <div className="relative p-5 sm:p-7 rounded-lg border border-red-500/25 bg-gradient-to-br from-[#140406]/90 via-[#0B0204]/95 to-black/95 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.85)] hover:border-red-500/60 hover:shadow-[0_0_28px_rgba(220,38,38,0.25)] transition-all duration-300 group overflow-hidden">
                       
                       {/* Tech Corner Brackets */}
                       <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-red-500/60" />

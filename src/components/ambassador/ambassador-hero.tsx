@@ -34,7 +34,7 @@ export function AmbassadorHero() {
     // 300ms: Person begins rising smoothly from downward with a generous, luxurious duration
     // 2400ms: Title and CTA smoothly glide in once person is nearly in position
     const t1 = setTimeout(() => setPhase("character"), 300);
-    const t2 = setTimeout(() => setPhase("ready"), 2400);
+    const t2 = setTimeout(() => setPhase("ready"), 1400);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -94,8 +94,8 @@ export function AmbassadorHero() {
               : { y: "24%", opacity: 0 }
           }
           transition={{
-            duration: 2.8, // Extended luxurious transition duration in milliseconds (2800ms)
-            ease: [0.16, 1, 0.3, 1], // Smooth cinematic deceleration
+            duration: 1.4, // Restored normal cinematic transition duration
+            ease: [0.16, 1, 0.3, 1], // Smooth deceleration
           }}
           draggable={false}
         />

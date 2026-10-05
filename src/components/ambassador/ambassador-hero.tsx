@@ -17,9 +17,9 @@ export function AmbassadorHero() {
     offset: ["start start", "end start"],
   });
 
-  const moonScale = useTransform(scrollYProgress, [0, 0.6], [1, 1.12]);
-  const moonY = useTransform(scrollYProgress, [0, 0.6], [0, -25]);
-  const characterScrollY = useTransform(scrollYProgress, [0, 0.6], [0, 18]);
+  const moonScale = useTransform(scrollYProgress, [0, 0.6], [1, 1.1]);
+  const moonY = useTransform(scrollYProgress, [0, 0.6], [0, -20]);
+  const characterScrollY = useTransform(scrollYProgress, [0, 0.6], [0, 16]);
   const overlayOpacity = useTransform(scrollYProgress, [0.35, 0.75], [0, 0.85]);
   const titleY = useTransform(scrollYProgress, [0, 0.5], [0, -35]);
 
@@ -29,9 +29,9 @@ export function AmbassadorHero() {
   useEffect(() => {
     setMounted(true);
     // Smooth cinematic sequence:
-    // 0ms: Moon background appears below the navbar
-    // 250ms: Person begins rising smoothly from downward
-    // 1400ms: Title and CTA smoothly glide in
+    // 0ms: Moon background displays full-screen edge-to-edge
+    // 250ms: Character begins rising smoothly from downward
+    // 1400ms: Title and CTA smoothly glide in once character arrives
     const t1 = setTimeout(() => setPhase("character"), 250);
     const t2 = setTimeout(() => setPhase("ready"), 1400);
     return () => {
@@ -56,8 +56,8 @@ export function AmbassadorHero() {
       ref={containerRef}
       className="relative w-full h-[100dvh] min-h-[640px] overflow-hidden bg-black select-none"
     >
-      {/* Scene Wrapper: Starts cleanly below the navbar (top-14 sm:top-18) so moon is never cut off */}
-      <div className="absolute inset-x-0 top-14 sm:top-18 bottom-0 overflow-hidden">
+      {/* Full-screen Edge-to-Edge Scene Container (Zero gap) */}
+      <div className="absolute inset-0 overflow-hidden">
         {/* Layer 1: Crimson Desert & Blood Moon (Original Untouched Artwork) */}
         <motion.div
           className="absolute inset-0 z-0"

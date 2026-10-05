@@ -9,7 +9,6 @@ export function AmbassadorHero() {
   const [mounted, setMounted] = useState(false);
 
   const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 35, damping: 30 });
 
   // Parallax on scroll
@@ -18,11 +17,11 @@ export function AmbassadorHero() {
     offset: ["start start", "end start"],
   });
 
-  const moonScale = useTransform(scrollYProgress, [0, 0.6], [1, 1.15]);
-  const moonY = useTransform(scrollYProgress, [0, 0.6], [0, -30]);
-  const characterScrollY = useTransform(scrollYProgress, [0, 0.6], [0, 20]);
-  const overlayOpacity = useTransform(scrollYProgress, [0.3, 0.7], [0, 0.85]);
-  const titleY = useTransform(scrollYProgress, [0, 0.5], [0, -40]);
+  const moonScale = useTransform(scrollYProgress, [0, 0.6], [1, 1.12]);
+  const moonY = useTransform(scrollYProgress, [0, 0.6], [0, -25]);
+  const characterScrollY = useTransform(scrollYProgress, [0, 0.6], [0, 18]);
+  const overlayOpacity = useTransform(scrollYProgress, [0.35, 0.75], [0, 0.85]);
+  const titleY = useTransform(scrollYProgress, [0, 0.5], [0, -35]);
 
   // Subtle 3D parallax on mouse move
   const charSpringX = useTransform(springX, (v) => v * 1.25);
@@ -30,10 +29,10 @@ export function AmbassadorHero() {
   useEffect(() => {
     setMounted(true);
     // Smooth cinematic sequence:
-    // 0ms: Crimson moon & desert lands
-    // 300ms: Person begins rising smoothly from downward with a generous, luxurious duration
-    // 2400ms: Title and CTA smoothly glide in once person is nearly in position
-    const t1 = setTimeout(() => setPhase("character"), 300);
+    // 0ms: Crimson moon & starry sky loads with full dome visible below navbar
+    // 250ms: Person begins rising smoothly from downward
+    // 1400ms: Title and CTA smoothly glide in once person has settled
+    const t1 = setTimeout(() => setPhase("character"), 250);
     const t2 = setTimeout(() => setPhase("ready"), 1400);
     return () => {
       clearTimeout(t1);
@@ -55,20 +54,20 @@ export function AmbassadorHero() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-[100dvh] min-h-[640px] overflow-hidden bg-[#050101] select-none"
+      className="relative w-full h-[100dvh] min-h-[640px] overflow-hidden bg-black select-none"
     >
-      {/* Layer 1: Crimson Desert & Blood Moon (Static Base) */}
+      {/* Layer 1: Crimson Desert & Blood Moon (Static Base with full circular moon dome) */}
       <motion.div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 top-3 sm:top-6"
         style={{ scale: moonScale, y: moonY, x: springX }}
       >
         <motion.img
           src="/images/redmoon1.png"
           alt="TechSrijan Crimson Moon"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          initial={{ opacity: 0, scale: 1.05 }}
+          className="absolute inset-0 w-full h-full object-cover object-top"
+          initial={{ opacity: 0, scale: 1.04 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
           draggable={false}
           priority-component="true"
         />
@@ -76,17 +75,17 @@ export function AmbassadorHero() {
 
       {/* Layer 2: Atmospheric Red Mist & Glow Behind Person */}
       <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/80 via-transparent to-black/35 pointer-events-none" />
-      <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[650px] h-[400px] sm:h-[650px] rounded-full bg-red-600/10 blur-[130px] pointer-events-none" />
+      <div className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[650px] h-[400px] sm:h-[650px] rounded-full bg-red-600/10 blur-[130px] pointer-events-none" />
 
-      {/* Layer 3: Person Rising from Downward (User-provided image.png with ultra-smooth extended transition) */}
+      {/* Layer 3: Person Rising from Downward (User-provided image.png perfectly aligned) */}
       <motion.div
-        className="absolute inset-0 z-[2] pointer-events-none flex items-center justify-center"
+        className="absolute inset-0 z-[2] top-3 sm:top-6 pointer-events-none"
         style={{ y: characterScrollY, x: charSpringX }}
       >
         <motion.img
           src="/images/ambassador-character.png"
           alt="TechSrijan Ambassador"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover object-top"
           initial={{ y: "24%", opacity: 0 }}
           animate={
             phase !== "moon"
@@ -94,14 +93,14 @@ export function AmbassadorHero() {
               : { y: "24%", opacity: 0 }
           }
           transition={{
-            duration: 1.4, // Restored normal cinematic transition duration
-            ease: [0.16, 1, 0.3, 1], // Smooth deceleration
+            duration: 1.4, // Normal cinematic duration as requested
+            ease: [0.16, 1, 0.3, 1], // Smooth deceleration curve
           }}
           draggable={false}
         />
       </motion.div>
 
-      {/* Layer 4: Lower gradient vignette to ensure high text contrast while keeping character's upper body & moon clear */}
+      {/* Layer 4: Lower gradient vignette to ensure high text contrast while keeping moon and character upper body clear */}
       <div className="absolute inset-x-0 bottom-0 h-[48%] sm:h-[42%] z-[3] bg-gradient-to-t from-black via-black/85 to-transparent pointer-events-none" />
 
       {/* Layer 5: Floating Sand Embers (Client-only to avoid hydration mismatch) */}
@@ -143,16 +142,16 @@ export function AmbassadorHero() {
         </div>
       )}
 
-      {/* Layer 6: Hero Content & Typography (Positioned in lower third with high breathing room) */}
+      {/* Layer 6: Hero Content & Typography (Placed in lower third with high breathing room) */}
       <motion.div
-        className="absolute inset-0 z-[5] flex flex-col items-center justify-end pb-[4vh] sm:pb-[6vh] px-4 text-center pointer-events-none"
+        className="absolute inset-0 z-[5] flex flex-col items-center justify-end pb-[4vh] sm:pb-[5vh] px-4 text-center pointer-events-none"
         style={{ y: titleY }}
       >
         {/* Monogram tag */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={phase === "ready" ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.1 }}
+          transition={{ duration: 0.7, delay: 0.1 }}
           className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-red-500/30 bg-black/60 backdrop-blur-md mb-2 sm:mb-3 shadow-lg"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
@@ -165,7 +164,7 @@ export function AmbassadorHero() {
         <motion.h1
           initial={{ opacity: 0, y: 25 }}
           animate={phase === "ready" ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
           className="font-serif text-[clamp(1.9rem,5.5vw,4.2rem)] font-extrabold leading-[0.95] tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]"
         >
           <span className="block">CAMPUS</span>
@@ -178,7 +177,7 @@ export function AmbassadorHero() {
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={phase === "ready" ? { opacity: 0.9, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.35 }}
+          transition={{ duration: 0.7, delay: 0.3 }}
           className="mt-2.5 max-w-md text-xs sm:text-sm text-neutral-300 leading-relaxed font-sans font-light drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
         >
           Become the vanguard of Eastern UP&apos;s grandest technical festival.
@@ -189,7 +188,7 @@ export function AmbassadorHero() {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={phase === "ready" ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.5 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
           className="mt-5 flex flex-wrap items-center justify-center gap-3 sm:gap-4 pointer-events-auto"
         >
           <a
@@ -216,7 +215,7 @@ export function AmbassadorHero() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={phase === "ready" ? { opacity: 0.55 } : {}}
-          transition={{ delay: 1.1, duration: 0.8 }}
+          transition={{ delay: 0.9, duration: 0.7 }}
           className="mt-5 flex flex-col items-center gap-1 text-neutral-400 hover:text-red-400 transition-colors pointer-events-auto"
         >
           <a href="#perks" className="flex flex-col items-center gap-0.5 group">

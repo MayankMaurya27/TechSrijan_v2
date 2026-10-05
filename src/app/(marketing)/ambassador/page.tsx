@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 
 export default function AmbassadorPage() {
   return (
-    <main className="relative min-h-screen bg-black text-[#f8eed9] overflow-x-hidden">
+    <div className="relative min-h-screen bg-black text-[#f8eed9] overflow-x-hidden -mt-16">
       {/* Cinematic Hero: Red Moon 1 background + Character spawn from below */}
       <AmbassadorHero />
 
@@ -53,6 +53,6 @@ export default function AmbassadorPage() {
 
       {/* Interactive Application Form */}
       <AmbassadorApply />
-    </main>
+    </div>
   );
 }

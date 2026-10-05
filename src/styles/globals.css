@@ -530,3 +530,7 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
 .font-serif {
   font-family: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
+
+.font-editorial {
+  font-family: var(--font-editorial), "Playfair Display", Georgia, "Times New Roman", serif;
+}

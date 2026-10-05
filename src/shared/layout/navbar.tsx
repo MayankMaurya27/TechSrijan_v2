@@ -231,10 +231,10 @@ export function Navbar() {
             <span className="text-[rgba(212,168,67,0.3)] select-none">|</span>
 
             <Link
-              href="/cap"
+              href="/ambassador"
               className="px-1.5 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
             >
-              <span>CAP</span>
+              <span>Ambassador</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
             </Link>
 
@@ -321,11 +321,11 @@ export function Navbar() {
                 Sponsors
               </Link>
               <Link
-                href="/cap"
+                href="/ambassador"
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)]"
               >
-                CAP
+                Ambassador
               </Link>
               <Link
                 href="/accommodation"

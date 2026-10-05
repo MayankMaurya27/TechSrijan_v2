@@ -81,9 +81,9 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     if (scrollProgress >= 0.86) {
       const p = Math.min(1, Math.max(0, (scrollProgress - 0.86) / 0.11));
       const eased = p * p * (3 - 2 * p);
-      // On desktop: settle smoothly toward left (-34%) and slightly down (+4%)
+      // On desktop: settle smoothly toward left (-36.5%) and slightly down (+4%)
       // On mobile: stay centered and grounded at bottom
-      translateXPercent = isMobile ? 0 : -34 * eased;
+      translateXPercent = isMobile ? 0 : -36.5 * eased;
       translateYPercent = isMobile ? 2 * eased : 4 * eased;
       scale = isMobile ? 1.0 : 1.0 - 0.05 * eased;
     }
@@ -330,7 +330,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-x-0 bottom-0 z-[25] flex flex-col items-center justify-end select-none pointer-events-none overflow-hidden"
+      className="absolute inset-x-0 bottom-0 z-[25] flex flex-col items-center justify-end select-none pointer-events-none"
       style={{
         opacity: anim.opacity,
         visibility: anim.visible ? "visible" : "hidden",
@@ -342,7 +342,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
       {/* 3D Model Viewport — constrained height showing upper 60-70% with soft bottom dissolve */}
       <div
         ref={viewportRef}
-        className="relative z-20 h-[42vh] sm:h-[48vh] md:h-[52vh] max-h-[520px] w-full max-w-[440px] sm:max-w-[520px] flex items-end justify-center touch-none -bottom-2 sm:-bottom-3 overflow-hidden"
+        className="relative z-20 h-[42vh] sm:h-[48vh] md:h-[52vh] max-h-[520px] w-full max-w-[460px] sm:max-w-[530px] flex items-end justify-center touch-none -bottom-2 sm:-bottom-3"
         style={{
           cursor: isHovered ? (isDraggingRef.current ? "grabbing" : "grab") : "default",
           pointerEvents: anim.visible ? "auto" : "none",

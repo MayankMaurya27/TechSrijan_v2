@@ -549,7 +549,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
           {/* CARD #1 — EVENTS (Primary Module: Image 4 Box)               */}
           {/* ═════════════════════════════════════════════════════════════ */}
           <div
-            className="archive-card pointer-events-auto transition-transform duration-300 absolute left-[26%] lg:left-[29%] xl:left-[30%] top-0 h-full w-[38vw] max-w-[430px] min-w-[310px]"
+            className="archive-card pointer-events-auto transition-transform duration-300 absolute left-[19%] lg:left-[21%] xl:left-[23%] top-0 h-full w-[35vw] max-w-[405px] min-w-[290px]"
             style={{
               transform: `translate3d(0, ${emergeY}px, ${30 + emergeZ}px) rotateY(${
                 1.5 + mouseTilt.y * 0.4
@@ -656,7 +656,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
           {/* RIGHT COLUMN: 2 SEPARATE BOXES                                */}
           {/* ═════════════════════════════════════════════════════════════ */}
           <div
-            className="pointer-events-none absolute right-[4%] lg:right-[5%] xl:right-[6%] top-0 h-full w-[24vw] max-w-[285px] min-w-[220px] flex flex-col justify-between gap-3 sm:gap-3.5"
+            className="pointer-events-none absolute right-[18.5%] lg:right-[19.5%] xl:right-[20.5%] top-0 h-full w-[22vw] max-w-[275px] min-w-[210px] flex flex-col justify-between gap-3 sm:gap-3.5"
             style={{
               transformStyle: "preserve-3d",
             }}

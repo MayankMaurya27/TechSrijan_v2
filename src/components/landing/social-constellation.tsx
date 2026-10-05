@@ -128,11 +128,20 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const filterId = useId();
 
-  // Smooth scroll exit synchronized with the TechSrijan hero text exit
-  const fadeOutThreshold = 0.08;
-  const normalizedFade = Math.min(1, Math.max(0, scrollProgress / fadeOutThreshold));
-  const currentOpacity = Math.max(0, 1 - normalizedFade);
-  const currentTranslateY = -normalizedFade * 45;
+  // Synchronized emergence with Paul 3D and Citadel Archive at the end of the scroll journey
+  // (Hidden on landing page, spawns at the end on the far right)
+  const enterStart = 0.84;
+  const enterEnd = 0.91;
+
+  let currentOpacity = 0;
+  let currentTranslateY = 32;
+
+  if (scrollProgress >= enterStart) {
+    const t = Math.min(1, Math.max(0, (scrollProgress - enterStart) / (enterEnd - enterStart)));
+    const eased = t * t * (3 - 2 * t);
+    currentOpacity = eased * 0.98;
+    currentTranslateY = (1 - eased) * 32;
+  }
 
   if (currentOpacity <= 0.005) {
     return null;
@@ -142,16 +151,16 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
     <div
       className="hidden lg:block pointer-events-none absolute z-30 select-none transition-all duration-700"
       style={{
-        // Positioned cleanly on the left rock flank, flush to the very bottom
-        left: "clamp(-18px, -0.8vw, 8px)",
-        bottom: "0px",
+        // Positioned cleanly on the far right plaza flank, anchored at the bottom corner
+        right: "clamp(12px, 1.8vw, 36px)",
+        bottom: "clamp(4px, 1vh, 16px)",
         opacity: currentOpacity,
         transform: `translateY(${currentTranslateY}px)`,
         willChange: "transform, opacity",
       }}
     >
-      {/* Compact container size: strictly stays on the left rock flank */}
-      <div className="relative w-[215px] xs:w-[245px] sm:w-[270px] md:w-[295px] lg:w-[315px] h-[280px] xs:h-[310px] sm:h-[345px] md:h-[380px]">
+      {/* Refined compact container size: gracefully fits into right corner without overcrowding */}
+      <div className="relative w-[190px] sm:w-[215px] md:w-[235px] lg:w-[250px] h-[250px] sm:h-[275px] md:h-[300px] lg:h-[320px]">
         {/* SVG Holographic Beams, Orbit Rings, and Rock-Integrated Pedestal */}
         <svg
           viewBox="0 0 270 390"

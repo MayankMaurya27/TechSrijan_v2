@@ -469,8 +469,6 @@ export function ScrollJourney({
           <HeroTitle scrollProgress={scrollProgress} />
         </div>
 
-        {/* Layer 3.5: Celestial Social Constellation Hologram on the Rock (Desktop Only) */}
-        {!isMobile && <SocialConstellation scrollProgress={scrollProgress} />}
 
         {/* Layer 3.8: Cinematic Solar Gate Flash & Flare (Blends optically on top of video) */}
         {totalFlashIntensity > 0.001 && (
@@ -540,6 +538,13 @@ export function ScrollJourney({
         <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
           <CitadelArchive scrollProgress={scrollProgress} />
         </div>
+
+        {/* Layer 5.5: Celestial Social Constellation Hologram (Anchored on the far right end) */}
+        {!isMobile && (
+          <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 28 }}>
+            <SocialConstellation scrollProgress={scrollProgress} />
+          </div>
+        )}
       </div>
     </div>
   );

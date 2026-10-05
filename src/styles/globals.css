@@ -534,3 +534,7 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
 .font-editorial {
   font-family: var(--font-editorial), "Playfair Display", Georgia, "Times New Roman", serif;
 }
+
+.font-impact {
+  font-family: var(--font-impact), "Bebas Neue", "Space Grotesk", Impact, sans-serif;
+}

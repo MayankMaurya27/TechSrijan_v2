@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display } from "next/font/google";
+import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue } from "next/font/google";
 import { ThemeProvider, LenisProvider } from "@/core";
 import { AmbientParticles, TwinSunsRays, Navbar } from "@/shared";
 import "@/styles/globals.css";
@@ -28,6 +28,13 @@ const playfairDisplay = Playfair_Display({
   variable: "--font-editorial",
   display: "swap",
   weight: ["400", "500", "600", "700", "800", "900"],
+});
+
+const bebasNeue = Bebas_Neue({
+  subsets: ["latin"],
+  variable: "--font-impact",
+  weight: "400",
+  display: "swap",
 });
 
 export const viewport: Viewport = {
@@ -130,7 +137,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="arrakis-day" suppressHydrationWarning className={`${jetbrainsMono.variable} ${spaceGrotesk.variable} ${cinzel.variable} ${playfairDisplay.variable}`}>
+    <html lang="en" data-theme="arrakis-day" suppressHydrationWarning className={`${jetbrainsMono.variable} ${spaceGrotesk.variable} ${cinzel.variable} ${playfairDisplay.variable} ${bebasNeue.variable}`}>
       <head>
         <script
           type="application/ld+json"

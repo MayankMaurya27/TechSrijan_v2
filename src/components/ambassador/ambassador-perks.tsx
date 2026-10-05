@@ -21,7 +21,6 @@ const RosetteMedalIcon = ({ className }: { className?: string }) => (
     strokeLinejoin="round"
     className={className}
   >
-    {/* Rosette scalloped ribbon medal */}
     <circle cx="16" cy="12" r="8" />
     <circle cx="16" cy="12" r="5" strokeDasharray="1.5 2" />
     <path d="M12 18.5 L9 28 L16 24.5 L23 28 L20 18.5" />
@@ -39,7 +38,6 @@ const NetworkIcon = ({ className }: { className?: string }) => (
     strokeLinejoin="round"
     className={className}
   >
-    {/* 3 Linked team nodes */}
     <circle cx="16" cy="9" r="4" />
     <path d="M10 19 C10 15.5 13 14 16 14 C19 14 22 15.5 22 19" />
     <circle cx="7" cy="14" r="3" />
@@ -59,7 +57,6 @@ const GrowthBarsIcon = ({ className }: { className?: string }) => (
     strokeLinejoin="round"
     className={className}
   >
-    {/* 4 ascending vertical bars */}
     <path d="M6 25 L6 21" strokeWidth={2.2} />
     <path d="M12 25 L12 16" strokeWidth={2.2} />
     <path d="M18 25 L18 11" strokeWidth={2.2} />
@@ -78,7 +75,6 @@ const MentorshipIcon = ({ className }: { className?: string }) => (
     strokeLinejoin="round"
     className={className}
   >
-    {/* User silhouette inside security/mentorship shield */}
     <circle cx="16" cy="10" r="3.5" />
     <path d="M10 19 C10 16.5 12.5 15.5 16 15.5 C19.5 15.5 22 16.5 22 19" />
     <path d="M16 29 C22 26 25 21 25 15 L25 7 L16 4 L7 7 L7 15 C7 21 10 26 16 29 Z" />
@@ -95,7 +91,6 @@ const InternshipsIcon = ({ className }: { className?: string }) => (
     strokeLinejoin="round"
     className={className}
   >
-    {/* Executive Briefcase */}
     <rect x="5" y="10" width="22" height="16" rx="2.5" />
     <path d="M11 10 L11 7 C11 5.9 11.9 5 13 5 L19 5 C20.1 5 21 5.9 21 7 L21 10" />
     <path d="M5 16 L27 16" opacity={0.6} />
@@ -113,7 +108,6 @@ const RewardsGiftIcon = ({ className }: { className?: string }) => (
     strokeLinejoin="round"
     className={className}
   >
-    {/* Gift Box with Bow */}
     <rect x="6" y="13" width="20" height="14" rx="1.5" />
     <rect x="4.5" y="9" width="23" height="4.5" rx="1" />
     <path d="M16 9 L16 27" />
@@ -235,7 +229,7 @@ export function AmbassadorPerks() {
           {/* ----------------------------------------------------
               LEFT COLUMN: Impact Headline, Mission, CTA & Insignia
               ---------------------------------------------------- */}
-          <div className="lg:col-span-5 flex flex-col justify-between h-full pt-2">
+          <div className="lg:col-span-5 flex flex-col pt-2">
             <div>
               {/* Massive Industrial Headline: WHY JOIN THE VANGUARD */}
               <motion.div
@@ -287,85 +281,295 @@ export function AmbassadorPerks() {
               </motion.div>
             </div>
 
-            {/* Lower-Left Insignia & Mountain Silhouette (From Image 2) */}
+            {/* --------------------------------------------------
+                LOWER-LEFT RETICLE INSIGNIA (Exact Replica of Image 2)
+                Shifted upward (mt-6 sm:mt-8 lg:mt-10) with High Fidelity
+                -------------------------------------------------- */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ duration: 1, delay: 0.4 }}
-              className="mt-16 lg:mt-24 pt-4 relative"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-6 sm:mt-8 lg:mt-10 relative w-full max-w-[480px]"
             >
-              {/* Dark Jagged Mountain Ridge Silhouette in Background */}
-              <svg
-                viewBox="0 0 400 120"
-                fill="none"
-                className="w-full h-24 text-neutral-900/60 pointer-events-none absolute -top-8 left-0 opacity-40"
-              >
-                <path
-                  d="M0 120 L0 85 L40 60 L90 85 L140 45 L190 75 L240 30 L290 65 L340 40 L400 80 L400 120 Z"
-                  fill="currentColor"
-                />
-              </svg>
+              {/* Main SVG Composition: Craggy Mountains + Reticle + Faceted Stealth Wings */}
+              <div className="relative w-full aspect-[16/10]">
+                <svg
+                  viewBox="0 0 500 310"
+                  fill="none"
+                  className="w-full h-full select-none"
+                >
+                  <defs>
+                    {/* Stealth Wing Crimson Gradients */}
+                    <linearGradient id="wing-top-left" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#8A0B12" stopOpacity="0.85" />
+                      <stop offset="50%" stopColor="#C4131C" stopOpacity="0.75" />
+                      <stop offset="100%" stopColor="#FF1E27" stopOpacity="0.9" />
+                    </linearGradient>
 
-              <div className="relative flex items-center justify-between">
-                {/* Tech Reticle Emblem (Crosshair + Wings + Pulsing Core) */}
-                <div className="relative w-44 h-44 flex items-center justify-center">
-                  {/* Outer Concentric Radar Rings */}
-                  <svg
-                    viewBox="0 0 180 180"
-                    fill="none"
-                    className="absolute inset-0 w-full h-full text-red-600/35"
-                  >
-                    <circle cx="90" cy="90" r="76" stroke="currentColor" strokeWidth="0.8" strokeDasharray="3 4" />
-                    <circle cx="90" cy="90" r="54" stroke="currentColor" strokeWidth="0.8" />
-                    <circle cx="90" cy="90" r="30" stroke="currentColor" strokeWidth="0.8" strokeDasharray="2 3" />
-                    {/* Compass Crosshair Lines */}
-                    <line x1="90" y1="6" x2="90" y2="174" stroke="currentColor" strokeWidth="0.8" strokeDasharray="4 4" />
-                    <line x1="6" y1="90" x2="174" y2="90" stroke="currentColor" strokeWidth="0.8" strokeDasharray="4 4" />
-                    {/* Stealth Wing Chevron Crest */}
+                    <linearGradient id="wing-top-right" x1="100%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#8A0B12" stopOpacity="0.85" />
+                      <stop offset="50%" stopColor="#C4131C" stopOpacity="0.75" />
+                      <stop offset="100%" stopColor="#FF1E27" stopOpacity="0.9" />
+                    </linearGradient>
+
+                    <linearGradient id="wing-facet-dark" x1="0%" y1="50%" x2="100%" y2="50%">
+                      <stop offset="0%" stopColor="#4A050A" stopOpacity="0.9" />
+                      <stop offset="100%" stopColor="#7A0A10" stopOpacity="0.85" />
+                    </linearGradient>
+
+                    {/* Mountain Shading Gradients */}
+                    <linearGradient id="mountain-rock-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#1E2228" stopOpacity="0.85" />
+                      <stop offset="50%" stopColor="#121518" stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="#08090B" stopOpacity="1" />
+                    </linearGradient>
+
+                    <linearGradient id="mountain-rock-2" x1="100%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#282D35" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="#0C0E10" stopOpacity="0.95" />
+                    </linearGradient>
+
+                    {/* Radial Glow Filter */}
+                    <filter id="core-glow" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="6" result="blur" />
+                      <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+
+                  {/* ----------------------------------------------
+                      LAYER 1: Textured Jagged Obsidian Mountain Crags
+                      ---------------------------------------------- */}
+                  <g opacity="0.65">
+                    {/* Far background mountain ridges */}
                     <polygon
-                      points="90,45 130,85 155,90 125,105 90,140 55,105 25,90 50,85"
-                      stroke="#FF2A36"
-                      strokeWidth="1.2"
-                      fill="rgba(255,42,54,0.06)"
+                      points="0,170 30,140 70,165 110,120 160,175 220,130 280,185 360,125 430,170 500,140 500,310 0,310"
+                      fill="#0C0E11"
                     />
-                    {/* Reticle Central Spikes */}
-                    <line x1="90" y1="36" x2="90" y2="148" stroke="#FF2A36" strokeWidth="1.8" />
-                  </svg>
+                    {/* Mid-ground crags with shaded facets */}
+                    <polygon
+                      points="0,200 45,160 85,190 135,145 190,210 260,165 330,225 410,175 500,210 500,310 0,310"
+                      fill="url(#mountain-rock-1)"
+                    />
+                    <polygon
+                      points="45,160 85,190 60,240 0,220"
+                      fill="url(#mountain-rock-2)"
+                      opacity="0.7"
+                    />
+                    <polygon
+                      points="135,145 190,210 160,260 90,220"
+                      fill="url(#mountain-rock-2)"
+                      opacity="0.8"
+                    />
+                    <polygon
+                      points="260,165 330,225 290,280 220,240"
+                      fill="url(#mountain-rock-2)"
+                      opacity="0.6"
+                    />
+                    <polygon
+                      points="410,175 500,210 470,270 380,240"
+                      fill="url(#mountain-rock-2)"
+                      opacity="0.75"
+                    />
 
-                  {/* Pulsing Core Radar Beacon */}
-                  <div className="relative flex items-center justify-center">
-                    <span className="w-3 h-3 rounded-full bg-[#FF2A36] shadow-[0_0_15px_#FF2A36]" />
-                    <span className="absolute w-7 h-7 rounded-full border border-red-500/60 animate-ping" />
-                  </div>
-                </div>
+                    {/* Sharp Rocky Ridge Rim Lines with subtle ambient red lighting */}
+                    <polyline
+                      points="0,200 45,160 85,190 135,145 190,210 260,165 330,225 410,175 500,210"
+                      stroke="#FF2A36"
+                      strokeWidth="0.8"
+                      strokeOpacity="0.35"
+                    />
+                    <polyline
+                      points="45,160 135,145 260,165 410,175"
+                      stroke="#6B7280"
+                      strokeWidth="0.6"
+                      strokeOpacity="0.4"
+                    />
+                  </g>
 
-                {/* Right Stacked Labels: PEOPLE, IDEAS, CAMPUS, BEYOND */}
-                <div className="flex flex-col gap-1 text-right">
-                  <span className="font-mono text-[9px] tracking-[0.28em] text-[#D4A373]/90 uppercase font-semibold">
+                  {/* ----------------------------------------------
+                      LAYER 2: Cyber Crosshairs & Concentric Rings
+                      ---------------------------------------------- */}
+                  {/* Concentric Radar Rings */}
+                  <circle cx="250" cy="155" r="135" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.18" strokeDasharray="3 5" />
+                  <circle cx="250" cy="155" r="105" stroke="#FF2A36" strokeWidth="0.9" strokeOpacity="0.32" />
+                  <circle cx="250" cy="155" r="72" stroke="#FF2A36" strokeWidth="1.1" strokeOpacity="0.45" />
+                  <circle cx="250" cy="155" r="28" stroke="#FF2A36" strokeWidth="1.5" strokeOpacity="0.85" />
+
+                  {/* Horizontal Crosshair Ray segments */}
+                  <line x1="30" y1="155" x2="80" y2="155" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.4" strokeDasharray="3 3" />
+                  <line x1="420" y1="155" x2="470" y2="155" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.4" strokeDasharray="3 3" />
+
+                  {/* Vertical Needle Spire (Top & Center) */}
+                  <line x1="250" y1="30" x2="250" y2="125" stroke="#FF2A36" strokeWidth="1.8" strokeLinecap="round" />
+                  <line x1="250" y1="185" x2="250" y2="280" stroke="#FF2A36" strokeWidth="1.8" strokeLinecap="round" />
+
+                  {/* Bottom Dagger Sheath Contour (Exact from Image 2) */}
+                  <polygon
+                    points="241,215 241,260 250,285 259,260 259,215"
+                    stroke="#FF2A36"
+                    strokeWidth="1.4"
+                    fill="rgba(255, 42, 54, 0.08)"
+                  />
+
+                  {/* Diagonal 45-degree Targeting Ray shooting Up-Right */}
+                  <line x1="250" y1="155" x2="425" y2="20" stroke="#FF2A36" strokeWidth="1.2" strokeOpacity="0.85" />
+                  <line x1="340" y1="65" x2="355" y2="80" stroke="#FF2A36" strokeWidth="1" strokeOpacity="0.7" />
+                  {/* Small Square Beacon on Grid Ray */}
+                  <rect x="342" y="48" width="6" height="6" fill="#FF2A36" opacity="0.65" />
+
+                  {/* ----------------------------------------------
+                      LAYER 3: 4 Faceted 3D Stealth Wings (The Emblem)
+                      ---------------------------------------------- */}
+                  {/* UPPER-LEFT WING (Faceted 3D Planes) */}
+                  <g>
+                    {/* Upper Outer Facet */}
+                    <polygon
+                      points="240,88 185,118 60,155 160,146 228,105"
+                      fill="url(#wing-top-left)"
+                      stroke="#FF2A36"
+                      strokeWidth="1.7"
+                      strokeLinejoin="round"
+                    />
+                    {/* Inner Shaded Facet */}
+                    <polygon
+                      points="240,88 160,146 200,138 234,112"
+                      fill="url(#wing-facet-dark)"
+                      stroke="#FF2A36"
+                      strokeWidth="1.1"
+                      strokeLinejoin="round"
+                    />
+                    {/* Highlight Crease line */}
+                    <line x1="240" y1="88" x2="60" y2="155" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                  </g>
+
+                  {/* UPPER-RIGHT WING (Faceted 3D Planes) */}
+                  <g>
+                    {/* Upper Outer Facet */}
+                    <polygon
+                      points="260,88 315,118 440,155 340,146 272,105"
+                      fill="url(#wing-top-right)"
+                      stroke="#FF2A36"
+                      strokeWidth="1.7"
+                      strokeLinejoin="round"
+                    />
+                    {/* Inner Shaded Facet */}
+                    <polygon
+                      points="260,88 340,146 300,138 266,112"
+                      fill="url(#wing-facet-dark)"
+                      stroke="#FF2A36"
+                      strokeWidth="1.1"
+                      strokeLinejoin="round"
+                    />
+                    {/* Highlight Crease line */}
+                    <line x1="260" y1="88" x2="440" y2="155" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                  </g>
+
+                  {/* LOWER-LEFT WING (Faceted 3D Planes) */}
+                  <g>
+                    {/* Lower Outer Facet */}
+                    <polygon
+                      points="240,222 185,192 60,155 160,164 228,205"
+                      fill="url(#wing-top-left)"
+                      stroke="#FF2A36"
+                      strokeWidth="1.7"
+                      strokeLinejoin="round"
+                    />
+                    {/* Inner Shaded Facet */}
+                    <polygon
+                      points="240,222 160,164 200,172 234,198"
+                      fill="url(#wing-facet-dark)"
+                      stroke="#FF2A36"
+                      strokeWidth="1.1"
+                      strokeLinejoin="round"
+                    />
+                    {/* Highlight Crease line */}
+                    <line x1="240" y1="222" x2="60" y2="155" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                  </g>
+
+                  {/* LOWER-RIGHT WING (Faceted 3D Planes) */}
+                  <g>
+                    {/* Lower Outer Facet */}
+                    <polygon
+                      points="260,222 315,192 440,155 340,164 272,205"
+                      fill="url(#wing-top-right)"
+                      stroke="#FF2A36"
+                      strokeWidth="1.7"
+                      strokeLinejoin="round"
+                    />
+                    {/* Inner Shaded Facet */}
+                    <polygon
+                      points="260,222 340,164 300,172 266,198"
+                      fill="url(#wing-facet-dark)"
+                      stroke="#FF2A36"
+                      strokeWidth="1.1"
+                      strokeLinejoin="round"
+                    />
+                    {/* Highlight Crease line */}
+                    <line x1="260" y1="222" x2="440" y2="155" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                  </g>
+
+                  {/* ----------------------------------------------
+                      LAYER 4: Center Core Glowing Beacon
+                      ---------------------------------------------- */}
+                  {/* Ambient Glow */}
+                  <circle cx="250" cy="155" r="16" fill="#FF1E27" opacity="0.45" filter="url(#core-glow)" />
+                  {/* Main Red Core */}
+                  <circle cx="250" cy="155" r="8" fill="#FF2A36" />
+                  {/* Hot Center Point */}
+                  <circle cx="250" cy="155" r="3.5" fill="#FFE5E7" />
+                </svg>
+
+                {/* ----------------------------------------------
+                    TOP-RIGHT MONOSPACE LABELS (Aligned with Ray)
+                    PEOPLE / IDEAS / CAMPUS / BEYOND
+                    ---------------------------------------------- */}
+                <div className="absolute top-2 right-2 flex flex-col gap-1 text-right pointer-events-none">
+                  <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.28em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     PEOPLE
                   </span>
-                  <span className="font-mono text-[9px] tracking-[0.28em] text-[#D4A373]/90 uppercase font-semibold">
+                  <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.28em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     IDEAS
                   </span>
-                  <span className="font-mono text-[9px] tracking-[0.28em] text-[#D4A373]/90 uppercase font-semibold">
+                  <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.28em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     CAMPUS
                   </span>
-                  <span className="font-mono text-[9px] tracking-[0.28em] text-[#D4A373]/90 uppercase font-semibold">
+                  <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.28em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     BEYOND
                   </span>
                 </div>
-              </div>
 
-              {/* Bottom-left Slogan: A BRIGHTER TOMORROW TOGETHER + Red Beacon Square */}
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-3 bg-red-600/70" />
-                  <span className="font-mono text-[8px] sm:text-[9px] tracking-[0.22em] text-neutral-500 uppercase font-medium">
-                    A BRIGHTER TOMORROW TOGETHER.
-                  </span>
+                {/* ----------------------------------------------
+                    LOWER-LEFT TECH BRACKET & MOTTO (Exact from Image 2)
+                    A BRIGHTER / TOMORROW / TOGETHER. ──
+                    ---------------------------------------------- */}
+                <div className="absolute bottom-2 left-1 flex items-end gap-2.5 pointer-events-none">
+                  {/* Red L-Bracket Notch */}
+                  <div className="w-3.5 h-10 border-l-2 border-b-2 border-[#FF2A36]" />
+                  <div className="flex flex-col gap-0.5 pb-0.5">
+                    <span className="font-mono text-[8px] sm:text-[9px] tracking-[0.24em] text-[#D4A373] uppercase font-semibold leading-tight">
+                      A BRIGHTER
+                    </span>
+                    <span className="font-mono text-[8px] sm:text-[9px] tracking-[0.24em] text-[#D4A373] uppercase font-semibold leading-tight">
+                      TOMORROW
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-[8px] sm:text-[9px] tracking-[0.24em] text-[#D4A373] uppercase font-semibold leading-tight">
+                        TOGETHER.
+                      </span>
+                      <div className="w-5 h-[1.5px] bg-[#D4A373]" />
+                    </div>
+                  </div>
                 </div>
-                {/* Red Square Beacon */}
-                <div className="w-2 h-2 bg-[#FF2A36] shadow-[0_0_8px_#FF2A36]" />
+
+                {/* ----------------------------------------------
+                    BOTTOM-RIGHT GLOWING RED SQUARE BEACON
+                    ---------------------------------------------- */}
+                <div className="absolute bottom-4 right-6 pointer-events-none">
+                  <div className="w-3 h-3 bg-[#FF2A36] shadow-[0_0_12px_#FF2A36] rounded-[1px] animate-pulse" />
+                </div>
               </div>
             </motion.div>
           </div>

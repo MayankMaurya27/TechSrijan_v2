@@ -23,7 +23,7 @@ export function AmbassadorApply() {
     <section
       id="apply"
       ref={ref}
-      className="relative py-24 sm:py-32 bg-black overflow-hidden"
+      className="relative py-14 sm:py-18 lg:py-20 bg-black overflow-hidden"
     >
       {/* Atmospheric effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-red-900/6 blur-[140px] rounded-full pointer-events-none" />
@@ -34,7 +34,7 @@ export function AmbassadorApply() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-8 sm:mb-10"
         >
           <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight leading-[1.1]">
             Join the{" "}

@@ -182,7 +182,7 @@ export function AmbassadorPerks() {
   return (
     <section
       ref={containerRef}
-      className="relative pt-28 sm:pt-36 lg:pt-44 pb-20 sm:pb-28 lg:pb-36 bg-[#040303] overflow-hidden select-none"
+      className="relative pt-16 sm:pt-20 lg:pt-24 pb-12 sm:pb-16 lg:pb-20 bg-[#040303] overflow-hidden select-none"
     >
       {/* ========================================================
           BACKGROUND LAYER: Topographic Contours & Sci-Fi Grids
@@ -224,12 +224,12 @@ export function AmbassadorPerks() {
           MAIN CONTENT CONTAINER (Matches Image 2 Split Layout)
           ======================================================== */}
       <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
           
           {/* ----------------------------------------------------
               LEFT COLUMN: Impact Headline, Mission, CTA & Insignia
               ---------------------------------------------------- */}
-          <div className="lg:col-span-5 flex flex-col pt-2">
+          <div className="lg:col-span-5 flex flex-col pt-1">
             <div>
               {/* Massive Industrial Headline: WHY JOIN THE VANGUARD */}
               <motion.div
@@ -237,7 +237,7 @@ export function AmbassadorPerks() {
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               >
-                <h2 className="font-impact text-[clamp(3.5rem,7.5vw,6.5rem)] font-normal leading-[0.88] tracking-tight">
+                <h2 className="font-impact text-[clamp(3.2rem,6.8vw,5.8rem)] font-normal leading-[0.88] tracking-tight">
                   <span className="block text-[#FAF6EE] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
                     WHY JOIN
                   </span>
@@ -252,7 +252,7 @@ export function AmbassadorPerks() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-6 max-w-md text-sm sm:text-base text-neutral-400 font-sans font-light leading-relaxed"
+                className="mt-4 sm:mt-5 max-w-md text-xs sm:text-sm text-neutral-400 font-sans font-light leading-relaxed"
               >
                 More than a title. A launchpad for your career, a badge of
                 leadership, and your gateway into Eastern UP&apos;s biggest tech
@@ -264,11 +264,11 @@ export function AmbassadorPerks() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-8"
+                className="mt-6 sm:mt-7"
               >
                 <a
                   href="#apply"
-                  className="group relative overflow-hidden inline-flex items-center justify-center px-8 py-3.5 font-mono text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-white bg-gradient-to-r from-[#991B1B] via-[#C51D24] to-[#991B1B] hover:from-[#B91C1C] hover:to-[#E61924] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.5)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98] border border-red-500/50"
+                  className="group relative overflow-hidden inline-flex items-center justify-center px-7 py-3 font-mono text-xs sm:text-xs font-bold tracking-[0.2em] uppercase text-white bg-gradient-to-r from-[#991B1B] via-[#C51D24] to-[#991B1B] hover:from-[#B91C1C] hover:to-[#E61924] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.5)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98] border border-red-500/50"
                   style={{
                     clipPath:
                       "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
@@ -282,19 +282,18 @@ export function AmbassadorPerks() {
             </div>
 
             {/* --------------------------------------------------
-                LOWER-LEFT RETICLE INSIGNIA (Exact Replica of Image 2)
-                Shifted upward (mt-6 sm:mt-8 lg:mt-10) with High Fidelity
+                LOWER-LEFT RETICLE INSIGNIA (Scaled to fit frame perfectly like Image 2)
                 -------------------------------------------------- */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-6 sm:mt-8 lg:mt-10 relative w-full max-w-[480px]"
+              className="mt-6 sm:mt-7 relative w-full max-w-[340px] sm:max-w-[360px] lg:max-w-[375px]"
             >
-              {/* Main SVG Composition: Craggy Mountains + Reticle + Faceted Stealth Wings */}
-              <div className="relative w-full aspect-[16/10]">
+              {/* Scaled SVG Composition: Craggy Mountains + Reticle + Faceted Stealth Wings */}
+              <div className="relative w-full aspect-[16/9.6]">
                 <svg
-                  viewBox="0 0 500 310"
+                  viewBox="0 0 460 275"
                   fill="none"
                   className="w-full h-full select-none"
                 >
@@ -331,7 +330,7 @@ export function AmbassadorPerks() {
 
                     {/* Radial Glow Filter */}
                     <filter id="core-glow" x="-30%" y="-30%" width="160%" height="160%">
-                      <feGaussianBlur stdDeviation="6" result="blur" />
+                      <feGaussianBlur stdDeviation="5" result="blur" />
                       <feMerge>
                         <feMergeNode in="blur" />
                         <feMergeNode in="SourceGraphic" />
@@ -345,47 +344,41 @@ export function AmbassadorPerks() {
                   <g opacity="0.65">
                     {/* Far background mountain ridges */}
                     <polygon
-                      points="0,170 30,140 70,165 110,120 160,175 220,130 280,185 360,125 430,170 500,140 500,310 0,310"
+                      points="0,150 25,125 65,150 100,105 150,155 205,115 260,165 330,110 395,150 460,125 460,275 0,275"
                       fill="#0C0E11"
                     />
                     {/* Mid-ground crags with shaded facets */}
                     <polygon
-                      points="0,200 45,160 85,190 135,145 190,210 260,165 330,225 410,175 500,210 500,310 0,310"
+                      points="0,180 40,140 80,170 125,130 175,185 240,145 305,200 380,155 460,190 460,275 0,275"
                       fill="url(#mountain-rock-1)"
                     />
                     <polygon
-                      points="45,160 85,190 60,240 0,220"
+                      points="40,140 80,170 55,215 0,195"
                       fill="url(#mountain-rock-2)"
                       opacity="0.7"
                     />
                     <polygon
-                      points="135,145 190,210 160,260 90,220"
+                      points="125,130 175,185 145,230 80,195"
                       fill="url(#mountain-rock-2)"
                       opacity="0.8"
                     />
                     <polygon
-                      points="260,165 330,225 290,280 220,240"
+                      points="240,145 305,200 270,250 205,215"
                       fill="url(#mountain-rock-2)"
                       opacity="0.6"
                     />
                     <polygon
-                      points="410,175 500,210 470,270 380,240"
+                      points="380,155 460,190 430,240 350,215"
                       fill="url(#mountain-rock-2)"
                       opacity="0.75"
                     />
 
                     {/* Sharp Rocky Ridge Rim Lines with subtle ambient red lighting */}
                     <polyline
-                      points="0,200 45,160 85,190 135,145 190,210 260,165 330,225 410,175 500,210"
+                      points="0,180 40,140 80,170 125,130 175,185 240,145 305,200 380,155 460,190"
                       stroke="#FF2A36"
                       strokeWidth="0.8"
                       strokeOpacity="0.35"
-                    />
-                    <polyline
-                      points="45,160 135,145 260,165 410,175"
-                      stroke="#6B7280"
-                      strokeWidth="0.6"
-                      strokeOpacity="0.4"
                     />
                   </g>
 
@@ -393,150 +386,135 @@ export function AmbassadorPerks() {
                       LAYER 2: Cyber Crosshairs & Concentric Rings
                       ---------------------------------------------- */}
                   {/* Concentric Radar Rings */}
-                  <circle cx="250" cy="155" r="135" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.18" strokeDasharray="3 5" />
-                  <circle cx="250" cy="155" r="105" stroke="#FF2A36" strokeWidth="0.9" strokeOpacity="0.32" />
-                  <circle cx="250" cy="155" r="72" stroke="#FF2A36" strokeWidth="1.1" strokeOpacity="0.45" />
-                  <circle cx="250" cy="155" r="28" stroke="#FF2A36" strokeWidth="1.5" strokeOpacity="0.85" />
+                  <circle cx="230" cy="138" r="120" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.18" strokeDasharray="3 5" />
+                  <circle cx="230" cy="138" r="92" stroke="#FF2A36" strokeWidth="0.9" strokeOpacity="0.32" />
+                  <circle cx="230" cy="138" r="64" stroke="#FF2A36" strokeWidth="1.1" strokeOpacity="0.45" />
+                  <circle cx="230" cy="138" r="25" stroke="#FF2A36" strokeWidth="1.5" strokeOpacity="0.85" />
 
                   {/* Horizontal Crosshair Ray segments */}
-                  <line x1="30" y1="155" x2="80" y2="155" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.4" strokeDasharray="3 3" />
-                  <line x1="420" y1="155" x2="470" y2="155" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.4" strokeDasharray="3 3" />
+                  <line x1="25" y1="138" x2="70" y2="138" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.4" strokeDasharray="3 3" />
+                  <line x1="390" y1="138" x2="435" y2="138" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.4" strokeDasharray="3 3" />
 
                   {/* Vertical Needle Spire (Top & Center) */}
-                  <line x1="250" y1="30" x2="250" y2="125" stroke="#FF2A36" strokeWidth="1.8" strokeLinecap="round" />
-                  <line x1="250" y1="185" x2="250" y2="280" stroke="#FF2A36" strokeWidth="1.8" strokeLinecap="round" />
+                  <line x1="230" y1="25" x2="230" y2="110" stroke="#FF2A36" strokeWidth="1.8" strokeLinecap="round" />
+                  <line x1="230" y1="165" x2="230" y2="250" stroke="#FF2A36" strokeWidth="1.8" strokeLinecap="round" />
 
                   {/* Bottom Dagger Sheath Contour (Exact from Image 2) */}
                   <polygon
-                    points="241,215 241,260 250,285 259,260 259,215"
+                    points="222,190 222,232 230,255 238,232 238,190"
                     stroke="#FF2A36"
                     strokeWidth="1.4"
                     fill="rgba(255, 42, 54, 0.08)"
                   />
 
                   {/* Diagonal 45-degree Targeting Ray shooting Up-Right */}
-                  <line x1="250" y1="155" x2="425" y2="20" stroke="#FF2A36" strokeWidth="1.2" strokeOpacity="0.85" />
-                  <line x1="340" y1="65" x2="355" y2="80" stroke="#FF2A36" strokeWidth="1" strokeOpacity="0.7" />
+                  <line x1="230" y1="138" x2="385" y2="18" stroke="#FF2A36" strokeWidth="1.2" strokeOpacity="0.85" />
+                  <line x1="308" y1="58" x2="322" y2="72" stroke="#FF2A36" strokeWidth="1" strokeOpacity="0.7" />
                   {/* Small Square Beacon on Grid Ray */}
-                  <rect x="342" y="48" width="6" height="6" fill="#FF2A36" opacity="0.65" />
+                  <rect x="310" y="42" width="5.5" height="5.5" fill="#FF2A36" opacity="0.65" />
 
                   {/* ----------------------------------------------
                       LAYER 3: 4 Faceted 3D Stealth Wings (The Emblem)
                       ---------------------------------------------- */}
-                  {/* UPPER-LEFT WING (Faceted 3D Planes) */}
+                  {/* UPPER-LEFT WING */}
                   <g>
-                    {/* Upper Outer Facet */}
                     <polygon
-                      points="240,88 185,118 60,155 160,146 228,105"
+                      points="220,78 170,105 55,138 148,130 210,93"
                       fill="url(#wing-top-left)"
                       stroke="#FF2A36"
-                      strokeWidth="1.7"
+                      strokeWidth="1.6"
                       strokeLinejoin="round"
                     />
-                    {/* Inner Shaded Facet */}
                     <polygon
-                      points="240,88 160,146 200,138 234,112"
+                      points="220,78 148,130 185,123 216,99"
                       fill="url(#wing-facet-dark)"
                       stroke="#FF2A36"
                       strokeWidth="1.1"
                       strokeLinejoin="round"
                     />
-                    {/* Highlight Crease line */}
-                    <line x1="240" y1="88" x2="60" y2="155" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                    <line x1="220" y1="78" x2="55" y2="138" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
                   </g>
 
-                  {/* UPPER-RIGHT WING (Faceted 3D Planes) */}
+                  {/* UPPER-RIGHT WING */}
                   <g>
-                    {/* Upper Outer Facet */}
                     <polygon
-                      points="260,88 315,118 440,155 340,146 272,105"
+                      points="240,78 290,105 405,138 312,130 250,93"
                       fill="url(#wing-top-right)"
                       stroke="#FF2A36"
-                      strokeWidth="1.7"
+                      strokeWidth="1.6"
                       strokeLinejoin="round"
                     />
-                    {/* Inner Shaded Facet */}
                     <polygon
-                      points="260,88 340,146 300,138 266,112"
+                      points="240,78 312,130 275,123 244,99"
                       fill="url(#wing-facet-dark)"
                       stroke="#FF2A36"
                       strokeWidth="1.1"
                       strokeLinejoin="round"
                     />
-                    {/* Highlight Crease line */}
-                    <line x1="260" y1="88" x2="440" y2="155" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                    <line x1="240" y1="78" x2="405" y2="138" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
                   </g>
 
-                  {/* LOWER-LEFT WING (Faceted 3D Planes) */}
+                  {/* LOWER-LEFT WING */}
                   <g>
-                    {/* Lower Outer Facet */}
                     <polygon
-                      points="240,222 185,192 60,155 160,164 228,205"
+                      points="220,198 170,171 55,138 148,146 210,183"
                       fill="url(#wing-top-left)"
                       stroke="#FF2A36"
-                      strokeWidth="1.7"
+                      strokeWidth="1.6"
                       strokeLinejoin="round"
                     />
-                    {/* Inner Shaded Facet */}
                     <polygon
-                      points="240,222 160,164 200,172 234,198"
+                      points="220,198 148,146 185,153 216,177"
                       fill="url(#wing-facet-dark)"
                       stroke="#FF2A36"
                       strokeWidth="1.1"
                       strokeLinejoin="round"
                     />
-                    {/* Highlight Crease line */}
-                    <line x1="240" y1="222" x2="60" y2="155" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                    <line x1="220" y1="198" x2="55" y2="138" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
                   </g>
 
-                  {/* LOWER-RIGHT WING (Faceted 3D Planes) */}
+                  {/* LOWER-RIGHT WING */}
                   <g>
-                    {/* Lower Outer Facet */}
                     <polygon
-                      points="260,222 315,192 440,155 340,164 272,205"
+                      points="240,198 290,171 405,138 312,146 250,183"
                       fill="url(#wing-top-right)"
                       stroke="#FF2A36"
-                      strokeWidth="1.7"
+                      strokeWidth="1.6"
                       strokeLinejoin="round"
                     />
-                    {/* Inner Shaded Facet */}
                     <polygon
-                      points="260,222 340,164 300,172 266,198"
+                      points="240,198 312,146 275,153 244,177"
                       fill="url(#wing-facet-dark)"
                       stroke="#FF2A36"
                       strokeWidth="1.1"
                       strokeLinejoin="round"
                     />
-                    {/* Highlight Crease line */}
-                    <line x1="260" y1="222" x2="440" y2="155" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                    <line x1="240" y1="198" x2="405" y2="138" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
                   </g>
 
                   {/* ----------------------------------------------
                       LAYER 4: Center Core Glowing Beacon
                       ---------------------------------------------- */}
-                  {/* Ambient Glow */}
-                  <circle cx="250" cy="155" r="16" fill="#FF1E27" opacity="0.45" filter="url(#core-glow)" />
-                  {/* Main Red Core */}
-                  <circle cx="250" cy="155" r="8" fill="#FF2A36" />
-                  {/* Hot Center Point */}
-                  <circle cx="250" cy="155" r="3.5" fill="#FFE5E7" />
+                  <circle cx="230" cy="138" r="14" fill="#FF1E27" opacity="0.45" filter="url(#core-glow)" />
+                  <circle cx="230" cy="138" r="7" fill="#FF2A36" />
+                  <circle cx="230" cy="138" r="3" fill="#FFE5E7" />
                 </svg>
 
                 {/* ----------------------------------------------
                     TOP-RIGHT MONOSPACE LABELS (Aligned with Ray)
                     PEOPLE / IDEAS / CAMPUS / BEYOND
                     ---------------------------------------------- */}
-                <div className="absolute top-2 right-2 flex flex-col gap-1 text-right pointer-events-none">
-                  <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.28em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                <div className="absolute top-1.5 right-1.5 flex flex-col gap-0.5 text-right pointer-events-none">
+                  <span className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     PEOPLE
                   </span>
-                  <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.28em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                  <span className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     IDEAS
                   </span>
-                  <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.28em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                  <span className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     CAMPUS
                   </span>
-                  <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.28em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                  <span className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     BEYOND
                   </span>
                 </div>
@@ -545,21 +523,21 @@ export function AmbassadorPerks() {
                     LOWER-LEFT TECH BRACKET & MOTTO (Exact from Image 2)
                     A BRIGHTER / TOMORROW / TOGETHER. ──
                     ---------------------------------------------- */}
-                <div className="absolute bottom-2 left-1 flex items-end gap-2.5 pointer-events-none">
+                <div className="absolute bottom-1.5 left-1 flex items-end gap-2 pointer-events-none">
                   {/* Red L-Bracket Notch */}
-                  <div className="w-3.5 h-10 border-l-2 border-b-2 border-[#FF2A36]" />
+                  <div className="w-3 h-8 border-l-2 border-b-2 border-[#FF2A36]" />
                   <div className="flex flex-col gap-0.5 pb-0.5">
-                    <span className="font-mono text-[8px] sm:text-[9px] tracking-[0.24em] text-[#D4A373] uppercase font-semibold leading-tight">
+                    <span className="font-mono text-[7.5px] sm:text-[8px] tracking-[0.22em] text-[#D4A373] uppercase font-semibold leading-tight">
                       A BRIGHTER
                     </span>
-                    <span className="font-mono text-[8px] sm:text-[9px] tracking-[0.24em] text-[#D4A373] uppercase font-semibold leading-tight">
+                    <span className="font-mono text-[7.5px] sm:text-[8px] tracking-[0.22em] text-[#D4A373] uppercase font-semibold leading-tight">
                       TOMORROW
                     </span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-[8px] sm:text-[9px] tracking-[0.24em] text-[#D4A373] uppercase font-semibold leading-tight">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-mono text-[7.5px] sm:text-[8px] tracking-[0.22em] text-[#D4A373] uppercase font-semibold leading-tight">
                         TOGETHER.
                       </span>
-                      <div className="w-5 h-[1.5px] bg-[#D4A373]" />
+                      <div className="w-4 h-[1.5px] bg-[#D4A373]" />
                     </div>
                   </div>
                 </div>
@@ -567,8 +545,8 @@ export function AmbassadorPerks() {
                 {/* ----------------------------------------------
                     BOTTOM-RIGHT GLOWING RED SQUARE BEACON
                     ---------------------------------------------- */}
-                <div className="absolute bottom-4 right-6 pointer-events-none">
-                  <div className="w-3 h-3 bg-[#FF2A36] shadow-[0_0_12px_#FF2A36] rounded-[1px] animate-pulse" />
+                <div className="absolute bottom-3 right-5 pointer-events-none">
+                  <div className="w-2.5 h-2.5 bg-[#FF2A36] shadow-[0_0_10px_#FF2A36] rounded-[1px] animate-pulse" />
                 </div>
               </div>
             </motion.div>
@@ -582,7 +560,7 @@ export function AmbassadorPerks() {
               variants={listContainerVariants}
               initial="hidden"
               animate={isInView ? "visible" : "hidden"}
-              className="flex flex-col gap-3 sm:gap-3.5"
+              className="flex flex-col gap-2.5 sm:gap-3"
             >
               {PERKS.map((perk, index) => {
                 const Icon = perk.icon;
@@ -595,7 +573,7 @@ export function AmbassadorPerks() {
                     onMouseEnter={() => setActivePerk(index)}
                     className={`group relative rounded-[3px] transition-all duration-300 cursor-pointer ${
                       isActive
-                        ? "bg-gradient-to-r from-red-950/40 via-[#0e0909]/90 to-[#0c0808] border border-[#FF2A36] shadow-[0_0_26px_rgba(255,42,54,0.32)]"
+                        ? "bg-gradient-to-r from-red-950/40 via-[#0e0909]/90 to-[#0c0808] border border-[#FF2A36] shadow-[0_0_24px_rgba(255,42,54,0.32)]"
                         : "bg-[#0b0808]/85 hover:bg-[#120a0a]/90 border border-neutral-800/80 hover:border-red-500/60 shadow-[0_4px_20px_rgba(0,0,0,0.6)]"
                     }`}
                   >
@@ -628,22 +606,22 @@ export function AmbassadorPerks() {
                     />
 
                     {/* Row Content */}
-                    <div className="py-4 sm:py-5 px-5 sm:px-7 flex items-center justify-between gap-4">
+                    <div className="py-3.5 sm:py-4 px-5 sm:px-6 flex items-center justify-between gap-4">
                       {/* Left: Red Monospace Number */}
-                      <div className="flex items-center gap-4 sm:gap-5 flex-shrink-0">
-                        <span className="font-impact text-2xl sm:text-3xl lg:text-4xl text-[#FF2A36] tracking-wider drop-shadow-[0_0_12px_rgba(255,42,54,0.45)] w-9 sm:w-12 text-center">
+                      <div className="flex items-center gap-3.5 sm:gap-4 flex-shrink-0">
+                        <span className="font-impact text-2xl sm:text-3xl text-[#FF2A36] tracking-wider drop-shadow-[0_0_12px_rgba(255,42,54,0.45)] w-8 sm:w-10 text-center">
                           {perk.number}
                         </span>
                         {/* Vertical Hairline Divider */}
-                        <div className="h-9 w-[1px] bg-red-500/20 hidden sm:block" />
+                        <div className="h-8 w-[1px] bg-red-500/20 hidden sm:block" />
                       </div>
 
                       {/* Middle: Title & Description */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-impact text-sm sm:text-base lg:text-[17px] font-normal tracking-[0.14em] text-white uppercase group-hover:text-red-100 transition-colors">
+                        <h3 className="font-impact text-sm sm:text-base font-normal tracking-[0.14em] text-white uppercase group-hover:text-red-100 transition-colors">
                           {perk.title}
                         </h3>
-                        <p className="mt-0.5 text-xs sm:text-[13px] text-neutral-400 font-sans font-light leading-snug group-hover:text-neutral-300 transition-colors">
+                        <p className="mt-0.5 text-xs text-neutral-400 font-sans font-light leading-snug group-hover:text-neutral-300 transition-colors">
                           {perk.description}
                         </p>
                       </div>
@@ -651,13 +629,13 @@ export function AmbassadorPerks() {
                       {/* Right: Crimson Line-Art Icon */}
                       <div className="flex-shrink-0 ml-2">
                         <div
-                          className={`w-9 h-9 sm:w-10 sm:h-10 rounded-sm flex items-center justify-center transition-all duration-300 ${
+                          className={`w-8 h-8 sm:w-9 sm:h-9 rounded-sm flex items-center justify-center transition-all duration-300 ${
                             isActive
                               ? "text-[#FF2A36] scale-110 drop-shadow-[0_0_10px_rgba(255,42,54,0.6)]"
                               : "text-[#FF2A36]/80 group-hover:text-[#FF2A36] group-hover:scale-110"
                           }`}
                         >
-                          <Icon className="w-7 h-7 sm:w-8 sm:h-8" />
+                          <Icon className="w-6 h-6 sm:w-7 sm:h-7" />
                         </div>
                       </div>
                     </div>

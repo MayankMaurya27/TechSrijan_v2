@@ -268,6 +268,10 @@ export function AmbassadorPerks() {
               >
                 <a
                   href="#apply"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.dispatchEvent(new CustomEvent("open-ambassador-modal"));
+                  }}
                   className="group relative overflow-hidden inline-flex items-center justify-center px-7 py-3 font-mono text-xs sm:text-xs font-bold tracking-[0.2em] uppercase text-white bg-gradient-to-r from-[#991B1B] via-[#C51D24] to-[#991B1B] hover:from-[#B91C1C] hover:to-[#E61924] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.5)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98] border border-red-500/50"
                   style={{
                     clipPath:

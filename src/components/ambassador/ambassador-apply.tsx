@@ -1,23 +1,52 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Send, User, Mail, BookOpen, GraduationCap, Phone, Loader2 } from "lucide-react";
+import { Shield, Award, Sparkles, Users, ArrowRight, Zap, CheckCircle2 } from "lucide-react";
+import { AmbassadorModal } from "./ambassador-modal";
+
+const PRIVILEGES = [
+  {
+    icon: Award,
+    title: "Official LOR & Certificate",
+    description: "Verified recommendation letter signed directly by the MMMUT Technical Sub Council.",
+  },
+  {
+    icon: Shield,
+    title: "VIP Passes & Access",
+    description: "Complimentary all-access passes, speaker dinners, and backstage hospitality privileges.",
+  },
+  {
+    icon: Sparkles,
+    title: "Cash Bounties & Apparel",
+    description: "Tiered cash awards, exclusive Vanguard hoodie kits, and customized fest merchandise.",
+  },
+  {
+    icon: Users,
+    title: "Priority Sponsor Leads",
+    description: "Fast-track interview and internship opportunities with prominent sponsoring tech brands.",
+  },
+];
 
 export function AmbassadorApply() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }, 1500);
-  };
+  // Listen for global open requests (e.g. from hero/perks buttons)
+  useEffect(() => {
+    const handleOpen = () => setIsModalOpen(true);
+    window.addEventListener("open-ambassador-modal", handleOpen);
+
+    // Also check if initial URL had #apply
+    if (window.location.hash === "#apply") {
+      setIsModalOpen(true);
+    }
+
+    return () => {
+      window.removeEventListener("open-ambassador-modal", handleOpen);
+    };
+  }, []);
 
   return (
     <section
@@ -25,9 +54,9 @@ export function AmbassadorApply() {
       ref={ref}
       className="relative pt-6 sm:pt-8 lg:pt-10 pb-14 sm:pb-18 lg:pb-20 bg-black overflow-hidden select-none"
     >
-      {/* Atmospheric effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-red-950/15 blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-red-900/10 blur-[120px] rounded-full pointer-events-none" />
+      {/* Ambient background bloom */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[850px] h-[400px] bg-red-950/15 blur-[160px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[350px] bg-red-900/10 blur-[130px] rounded-full pointer-events-none" />
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-8">
         
@@ -46,150 +75,94 @@ export function AmbassadorApply() {
               LEGION
             </span>
           </h2>
-          <p className="mt-2 max-w-md mx-auto text-xs sm:text-sm text-neutral-400 font-sans font-light leading-relaxed">
-            Applications are open. Fill in your details and begin your
-            journey as a TechSrijan&apos;27 Campus Ambassador.
+          <p className="mt-2 max-w-lg mx-auto text-xs sm:text-sm text-neutral-400 font-sans font-light leading-relaxed">
+            Applications are officially open across Gorakhpur and Eastern UP. Claim
+            your command post as a TechSrijan&apos;27 Campus Ambassador.
           </p>
         </motion.div>
 
-        {submitted ? (
-          /* Success state */
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="max-w-md mx-auto p-8 sm:p-10 rounded-lg border border-red-500/30 bg-gradient-to-b from-[#140406] to-black text-center shadow-[0_0_30px_rgba(220,38,38,0.2)]"
-          >
-            <div className="w-16 h-16 mx-auto rounded-full bg-red-950/60 border border-red-500/40 flex items-center justify-center mb-5 shadow-[0_0_15px_rgba(255,42,54,0.3)]">
-              <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
+        {/* ========================================================
+            VANGUARD ENLISTMENT CONSOLE DECK
+            ======================================================== */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="relative p-6 sm:p-9 rounded-2xl border-2 border-red-500/30 bg-gradient-to-br from-[#160407]/90 via-[#0B0204]/95 to-black/95 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.95)] overflow-hidden"
+        >
+          {/* Tech Corner Brackets */}
+          <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t-2 border-l-2 border-red-500 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-3.5 h-3.5 border-t-2 border-r-2 border-red-500 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b-2 border-l-2 border-red-500 pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 border-red-500 pointer-events-none" />
+
+          {/* Top Live Status Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-5 mb-6 border-b border-red-900/30">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#FF1E27] shadow-[0_0_8px_#FF1E27] animate-pulse" />
+              <span className="font-mono text-[11px] font-bold tracking-[0.2em] uppercase text-red-400">
+                SYSTEM: ENLISTMENT WINDOW ACTIVE
+              </span>
             </div>
-            <h3 className="font-impact text-2xl text-white uppercase tracking-wide">
-              Application Transmitted
-            </h3>
-            <p className="mt-2 text-neutral-400 text-xs sm:text-sm leading-relaxed font-sans">
-              Our team will review your application and send your official CA ID
-              within 48 hours. Watch your inbox.
-            </p>
-            <div className="mt-6 font-mono text-[10px] tracking-[0.2em] uppercase text-red-400 border border-red-500/20 bg-red-950/30 py-2 px-4 rounded-sm inline-block">
-              STATUS: UNDER REVIEW
+            <div className="flex items-center gap-3 font-mono text-[10px] tracking-widest uppercase text-neutral-400">
+              <span className="hidden sm:inline">ZERO REGISTRATION FEE</span>
+              <span className="text-red-500">•</span>
+              <span>48-HR VERIFICATION SLA</span>
             </div>
-          </motion.div>
-        ) : (
-          /* Form */
-          <motion.form
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            onSubmit={handleSubmit}
-            className="max-w-2xl mx-auto"
-          >
-            <div className="p-6 sm:p-8 rounded-lg border border-red-500/25 bg-gradient-to-br from-[#140406]/90 via-[#0B0204]/95 to-black/95 shadow-[0_15px_40px_rgba(0,0,0,0.9)]">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {/* Full Name */}
-                <div className="space-y-1.5">
-                  <label className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-red-400/90">
-                    <User className="w-3 h-3 text-red-500" /> Full Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Your full name"
-                    className="w-full px-4 py-2.5 bg-black/60 border border-red-950/60 rounded-sm text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-red-500/70 focus:shadow-[0_0_12px_rgba(255,42,54,0.25)] transition-all font-sans"
-                  />
-                </div>
+          </div>
 
-                {/* Email */}
-                <div className="space-y-1.5">
-                  <label className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-red-400/90">
-                    <Mail className="w-3 h-3 text-red-500" /> Email
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="you@college.edu"
-                    className="w-full px-4 py-2.5 bg-black/60 border border-red-950/60 rounded-sm text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-red-500/70 focus:shadow-[0_0_12px_rgba(255,42,54,0.25)] transition-all font-sans"
-                  />
+          {/* 4 Command Privileges Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-8">
+            {PRIVILEGES.map((priv) => (
+              <div
+                key={priv.title}
+                className="p-4 rounded-lg border border-red-500/15 bg-black/40 hover:border-red-500/40 transition-colors flex items-start gap-3.5"
+              >
+                <div className="w-8 h-8 rounded-md bg-red-950/60 border border-red-500/30 flex items-center justify-center text-red-400 shrink-0 shadow-[0_0_10px_rgba(220,38,38,0.2)]">
+                  <priv.icon className="w-4 h-4" />
                 </div>
-
-                {/* Phone */}
-                <div className="space-y-1.5">
-                  <label className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-red-400/90">
-                    <Phone className="w-3 h-3 text-red-500" /> Phone
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="+91 XXXXX XXXXX"
-                    className="w-full px-4 py-2.5 bg-black/60 border border-red-950/60 rounded-sm text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-red-500/70 focus:shadow-[0_0_12px_rgba(255,42,54,0.25)] transition-all font-sans"
-                  />
-                </div>
-
-                {/* College */}
-                <div className="space-y-1.5">
-                  <label className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-red-400/90">
-                    <GraduationCap className="w-3 h-3 text-red-500" /> College
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Your college name"
-                    className="w-full px-4 py-2.5 bg-black/60 border border-red-950/60 rounded-sm text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-red-500/70 focus:shadow-[0_0_12px_rgba(255,42,54,0.25)] transition-all font-sans"
-                  />
-                </div>
-
-                {/* Year / Branch */}
-                <div className="space-y-1.5">
-                  <label className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-red-400/90">
-                    <BookOpen className="w-3 h-3 text-red-500" /> Year & Branch
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. 2nd Year CSE"
-                    className="w-full px-4 py-2.5 bg-black/60 border border-red-950/60 rounded-sm text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-red-500/70 focus:shadow-[0_0_12px_rgba(255,42,54,0.25)] transition-all font-sans"
-                  />
-                </div>
-
-                {/* Why you? */}
-                <div className="space-y-1.5">
-                  <label className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-red-400/90">
-                    <Send className="w-3 h-3 text-red-500" /> Why you?
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="One line about yourself"
-                    className="w-full px-4 py-2.5 bg-black/60 border border-red-950/60 rounded-sm text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-red-500/70 focus:shadow-[0_0_12px_rgba(255,42,54,0.25)] transition-all font-sans"
-                  />
+                <div>
+                  <h4 className="font-impact text-base text-white tracking-wide uppercase">
+                    {priv.title}
+                  </h4>
+                  <p className="mt-0.5 text-xs text-neutral-400 font-sans leading-relaxed">
+                    {priv.description}
+                  </p>
                 </div>
               </div>
+            ))}
+          </div>
 
-              {/* Submit Button */}
-              <div className="mt-8 flex flex-col items-center gap-3">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="group relative inline-flex items-center gap-3 px-10 py-3.5 font-mono text-xs sm:text-sm tracking-[0.2em] uppercase font-bold text-white border border-red-500/60 bg-gradient-to-r from-[#991B1B] via-[#C51D24] to-[#991B1B] hover:from-[#B91C1C] hover:to-[#E61924] disabled:opacity-50 transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.4)] hover:shadow-[0_0_36px_rgba(255,42,54,0.65)] active:scale-95"
-                  style={{ clipPath: "polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%)" }}
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <>
-                      <span>Submit Application</span>
-                      <Send className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                    </>
-                  )}
-                </button>
-                <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-500">
-                  Registrations close 15 Dec 2026
-                </span>
-              </div>
-            </div>
-          </motion.form>
-        )}
+          {/* Interactive Enlistment Trigger Button */}
+          <div className="flex flex-col items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="group relative inline-flex items-center justify-center gap-3 px-10 sm:px-14 py-4 font-mono text-xs sm:text-sm tracking-[0.25em] uppercase font-bold text-white bg-gradient-to-r from-[#991B1B] via-[#C51D24] to-[#991B1B] hover:from-[#B91C1C] hover:to-[#E61924] transition-all duration-300 shadow-[0_0_30px_rgba(220,38,38,0.5)] hover:shadow-[0_0_45px_rgba(255,42,54,0.8)] active:scale-[0.98] border border-red-500/60"
+              style={{
+                clipPath: "polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%)",
+              }}
+            >
+              {/* Shimmer light bar */}
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              <Zap className="w-4 h-4 text-white animate-pulse" />
+              <span className="relative z-10">ENLIST IN THE VANGUARD</span>
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </button>
+
+            <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-500">
+              CLICK TO LAUNCH OFFICIAL APPLICATION TERMINAL // BATCH 2026-27
+            </span>
+          </div>
+        </motion.div>
       </div>
+
+      {/* ========================================================
+          POPUP MODAL COMPONENT (Self-contained, Multi-step)
+          ======================================================== */}
+      <AmbassadorModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </section>
   );
 }

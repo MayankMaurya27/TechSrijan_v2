@@ -26,7 +26,7 @@ export function AmbassadorLeaderboard() {
   return (
     <section
       ref={ref}
-      className="relative py-14 sm:py-18 lg:py-20 bg-black overflow-hidden"
+      className="relative pt-6 sm:pt-8 lg:pt-10 pb-8 sm:pb-10 lg:pb-12 bg-black overflow-hidden"
     >
       {/* Crimson bleed */}
       <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[400px] h-[400px] bg-red-900/6 blur-[120px] rounded-full pointer-events-none" />

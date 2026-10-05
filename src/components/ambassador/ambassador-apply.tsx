@@ -23,7 +23,7 @@ export function AmbassadorApply() {
     <section
       id="apply"
       ref={ref}
-      className="relative py-14 sm:py-18 lg:py-20 bg-black overflow-hidden"
+      className="relative pt-6 sm:pt-8 lg:pt-10 pb-14 sm:pb-18 lg:pb-20 bg-black overflow-hidden"
     >
       {/* Atmospheric effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-red-900/6 blur-[140px] rounded-full pointer-events-none" />

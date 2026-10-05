@@ -41,7 +41,7 @@ export function AmbassadorJourney() {
   return (
     <section
       ref={ref}
-      className="relative py-14 sm:py-18 lg:py-20 bg-black overflow-hidden"
+      className="relative pt-6 sm:pt-8 lg:pt-10 pb-8 sm:pb-10 lg:pb-12 bg-black overflow-hidden"
     >
       {/* Radial glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-red-900/5 blur-[150px] rounded-full pointer-events-none" />
@@ -51,7 +51,7 @@ export function AmbassadorJourney() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-10 sm:mb-12"
+          className="text-center mb-8 sm:mb-10"
         >
           <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight leading-[1.1]">
             Your{" "}

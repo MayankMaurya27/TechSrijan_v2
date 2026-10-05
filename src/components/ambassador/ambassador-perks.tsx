@@ -182,7 +182,7 @@ export function AmbassadorPerks() {
   return (
     <section
       ref={containerRef}
-      className="relative pt-16 sm:pt-20 lg:pt-24 pb-12 sm:pb-16 lg:pb-20 bg-[#040303] overflow-hidden select-none"
+      className="relative pt-12 sm:pt-16 lg:pt-20 pb-6 sm:pb-8 lg:pb-10 bg-[#040303] overflow-hidden select-none"
     >
       {/* ========================================================
           BACKGROUND LAYER: Topographic Contours & Sci-Fi Grids

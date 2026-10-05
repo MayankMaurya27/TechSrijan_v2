@@ -45,8 +45,8 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   // - ONLY as the gate flash light ends and Image 2 is on screen:
   // - Paul emerges purely through a silky-smooth opacity fade right where he stands (NO translation upward or downward)
   const anim = useMemo(() => {
-    const enterStart = isMobile ? 0.74 : 0.78; // begins fading in as the flash ends
-    const enterEnd = isMobile ? 0.86 : 0.89;   // fully faded in to normal solid presence
+    const enterStart = isMobile ? 0.73 : 0.77; // Begins materializing as the light is in its warm decay phase
+    const enterEnd = isMobile ? 0.84 : 0.86;   // Fully settled into solid presence exactly as the light finishes ending
 
     // Before flash light ends: completely invisible
     if (scrollProgress < enterStart) {

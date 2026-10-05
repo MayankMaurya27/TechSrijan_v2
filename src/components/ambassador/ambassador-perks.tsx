@@ -264,7 +264,7 @@ export function AmbassadorPerks() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-4 sm:mt-5"
+                className="mt-3.5 sm:mt-4"
               >
                 <a
                   href="#apply"
@@ -288,7 +288,7 @@ export function AmbassadorPerks() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-2 sm:mt-2.5 lg:mt-3 relative w-full max-w-[325px] sm:max-w-[345px] lg:max-w-[360px]"
+              className="-mt-1 sm:-mt-2 lg:-mt-2.5 relative w-full max-w-[315px] sm:max-w-[335px] lg:max-w-[350px]"
             >
               {/* Scaled SVG Composition: Craggy Mountains + Reticle + Faceted Stealth Wings */}
               <div className="relative w-full aspect-[16/9.6]">

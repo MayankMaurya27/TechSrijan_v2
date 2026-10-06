@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useTheme } from "@/core";
-import { EventsHeroScroll } from "./events-hero-scroll";
-import { SpatialEventsGrid } from "./spatial-events-grid";
+import { EventsHeroScroll } from "@/components/events/events-hero-scroll";
+import { SpatialEventsGrid } from "@/components/events/spatial-events-grid";
 import { ChevronDown, Database } from "lucide-react";
 
 export function EventsPageView() {

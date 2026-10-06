@@ -8,11 +8,15 @@ const SESSION_KEY = "techsrijan_intro_video_played";
 export interface IntroVideoProps {
   src?: string;
   poster?: string;
+  onComplete?: () => void;
+  isFading?: boolean;
 }
 
 export function IntroVideo({
   src = "/intro.mp4",
   poster = "/intro-poster.jpg",
+  onComplete,
+  isFading: externalIsFading,
 }: IntroVideoProps) {
   // Initialize to true so initial SSR markup and first client paint covers the viewport completely with zero flash
   const [shouldRender, setShouldRender] = useState(true);
@@ -80,12 +84,13 @@ export function IntroVideo({
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("intro-complete"));
     }
+    onComplete?.();
 
     setTimeout(() => {
       setShouldRender(false);
       forceScrollTop();
     }, 700);
-  }, [forceScrollTop]);
+  }, [forceScrollTop, onComplete]);
 
   // Robust muted autoplay attempt
   useEffect(() => {

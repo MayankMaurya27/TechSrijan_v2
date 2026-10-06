@@ -35,7 +35,8 @@ export function TwinSunsRays() {
     };
     window.addEventListener("mousemove", onMouseMove);
 
-    const rayCount = 14;
+    const isMobile = width < 768;
+    const rayCount = isMobile ? 6 : 14;
     const rays = Array.from({ length: rayCount }, (_, i) => ({
       angleOffset: (i / rayCount) * Math.PI * 0.9 + 0.1,
       width: Math.random() * 0.12 + 0.05,
@@ -45,8 +46,22 @@ export function TwinSunsRays() {
     }));
 
     let time = 0;
+    let frameCount = 0;
 
     const render = () => {
+      // Pause completely if tab is hidden or user has scrolled past hero section
+      if (document.hidden || window.scrollY > height * 1.5) {
+        animId = requestAnimationFrame(render);
+        return;
+      }
+
+      // Throttle to ~30fps on mobile to preserve GPU fill rate
+      frameCount++;
+      if (isMobile && frameCount % 2 !== 0) {
+        animId = requestAnimationFrame(render);
+        return;
+      }
+
       time += 0.01;
       ctx.clearRect(0, 0, width, height);
 

@@ -27,6 +27,8 @@ export function ScrollJourney({
   const targetTimeRef = useRef(0);
   const isSeekingRef = useRef(false);
   const seekWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSeekTimeRef = useRef(0);
+  const throttledSeekTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isPrimedRef = useRef(false);
   const isMobileRef = useRef(false);
   const rafIdRef = useRef<number>(0);
@@ -165,15 +167,32 @@ export function ScrollJourney({
     if (!video || !video.duration) return;
     if (isSeekingRef.current) return;
 
+    // Mobile hardware decoder optimization: throttle rapid seek flooding
+    if (isMobileRef.current) {
+      const now = performance.now();
+      const elapsed = now - lastSeekTimeRef.current;
+      if (elapsed < 40) {
+        if (!throttledSeekTimerRef.current) {
+          throttledSeekTimerRef.current = setTimeout(() => {
+            throttledSeekTimerRef.current = null;
+            attemptSeek();
+          }, 40 - elapsed);
+        }
+        return;
+      }
+    }
+
     // Desktop: clamp to 3.65s (Image 2) so Image 3 (end plaza) is never reached!
     // Mobile: keep full mobile video duration.
     const maxSafe = isMobileRef.current
       ? Math.max(0, video.duration - 0.05)
       : Math.min(3.65, Math.max(0, video.duration - 0.05));
     const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
+    const minDelta = isMobileRef.current ? 0.045 : 0.015;
 
-    if (Math.abs(video.currentTime - target) > 0.015) {
+    if (Math.abs(video.currentTime - target) > minDelta) {
       isSeekingRef.current = true;
+      lastSeekTimeRef.current = performance.now();
 
       // Use fastSeek on supported mobile browsers (instant hardware keyframe seek)
       const v = video as HTMLVideoElement & { fastSeek?: (time: number) => void };
@@ -209,7 +228,8 @@ export function ScrollJourney({
         ? Math.max(0, video.duration - 0.05)
         : Math.min(3.65, Math.max(0, video.duration - 0.05));
       const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
-      if (Math.abs(video.currentTime - target) > 0.015) {
+      const minDelta = isMobileRef.current ? 0.045 : 0.015;
+      if (Math.abs(video.currentTime - target) > minDelta) {
         attemptSeek();
       }
     }
@@ -315,6 +335,7 @@ export function ScrollJourney({
       window.removeEventListener("touchstart", primeMobileVideo);
       window.removeEventListener("pointerdown", primeMobileVideo);
       if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
+      if (throttledSeekTimerRef.current) clearTimeout(throttledSeekTimerRef.current);
     };
   }, [attemptSeek, primeMobileVideo]);
 

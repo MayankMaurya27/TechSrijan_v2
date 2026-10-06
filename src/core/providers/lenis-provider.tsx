@@ -16,6 +16,12 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
         window.history.scrollRestoration = "manual";
       }
       window.scrollTo(0, 0);
+
+      // Mobile Touch Devices: bypass Lenis completely to use 120Hz native momentum scrolling
+      const isTouch = window.innerWidth < 768 || ("ontouchstart" in window && window.innerWidth < 1024);
+      if (isTouch) {
+        return;
+      }
     }
 
     const lenis = new Lenis({
@@ -25,6 +31,7 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 0.9,
+      syncTouch: false,
     });
 
     window.__lenis = lenis;

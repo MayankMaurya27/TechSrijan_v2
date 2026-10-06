@@ -28,6 +28,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   const targetRotationYRef = useRef(DEFAULT_ROTATION_Y);
   const currentRotationYRef = useRef(DEFAULT_ROTATION_Y);
   const [isHovered, setIsHovered] = useState(false);
+  const [isModelLoaded, setIsModelLoaded] = useState(false);
   const isVisibleRef = useRef(false);
 
   const [isMobile, setIsMobile] = useState(false);
@@ -205,12 +206,24 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
         root.position.z = -centerZ;
 
         modelGroup.add(root);
+        setIsModelLoaded(true);
       },
       undefined,
       (err) => {
         console.error("Error loading Paul 3D model:", err);
       }
     );
+
+    // WebGL context resilience on mobile
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+      setIsModelLoaded(false);
+    };
+    const handleContextRestored = () => {
+      setIsModelLoaded(true);
+    };
+    canvas.addEventListener("webglcontextlost", handleContextLost);
+    canvas.addEventListener("webglcontextrestored", handleContextRestored);
 
     // 7. Animation Loop with visibility-aware throttling
     let animationFrameId: number;
@@ -274,6 +287,8 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", updateSize);
       resizeObserver.disconnect();
+      canvas.removeEventListener("webglcontextlost", handleContextLost);
+      canvas.removeEventListener("webglcontextrestored", handleContextRestored);
       renderer.dispose();
     };
   }, []);
@@ -367,10 +382,26 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
           }}
         />
 
-        {/* WebGL Canvas for 3D Model (Always mounted and ready) */}
+        {/* Instant Fallback & Poster: Guarantees Paul is ALWAYS present even during network slow-down or WebGL recovery */}
+        <div
+          className={`absolute inset-0 flex items-end justify-center pointer-events-none transition-opacity duration-700 ${
+            isModelLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/paul-atreides.png"
+            alt="Paul Atreides"
+            className="h-[92%] w-auto max-w-full object-contain object-bottom drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)]"
+          />
+        </div>
+
+        {/* WebGL Canvas for 3D Model */}
         <canvas
           ref={canvasRef}
-          className="w-full h-full object-contain pointer-events-auto select-none"
+          className={`w-full h-full object-contain pointer-events-auto select-none transition-opacity duration-700 ${
+            isModelLoaded ? "opacity-100" : "opacity-0"
+          }`}
         />
       </div>
     </div>

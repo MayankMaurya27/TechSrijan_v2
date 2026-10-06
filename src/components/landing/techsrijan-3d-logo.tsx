@@ -81,6 +81,8 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const particlesCanvasRef = useRef<HTMLCanvasElement>(null);
+  const scrollProgressRef = useRef(scrollProgress);
+  scrollProgressRef.current = scrollProgress;
 
   // Synchronize active theme dynamically with zero latency
   const themeContext = useTheme();
@@ -234,6 +236,11 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
       if (!isRunning) return;
       requestAnimationFrame(animateParticles);
 
+      // Skip GPU computation & render when logo is scrolled out of view or tab is hidden
+      if (scrollProgressRef.current > 0.15 || document.hidden) {
+        return;
+      }
+
       const elapsed = (performance.now() - startTime) * 0.001;
       const posAttr = geometry.attributes.position as THREE.BufferAttribute;
       const pos = posAttr.array as Float32Array;
@@ -277,25 +284,47 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
     };
   }, []);
 
-  // Spring physics loop for 3D tilt and specular lighting
+  // Spring physics loop for 3D tilt and specular lighting (pauses when logo offscreen or at rest)
   useEffect(() => {
     let active = true;
 
     const updatePhysics = () => {
       if (!active) return;
 
-      const target = targetTiltRef.current;
-      setTilt((prev) => ({
-        rotX: prev.rotX + (target.rotX - prev.rotX) * 0.08,
-        rotY: prev.rotY + (target.rotY - prev.rotY) * 0.08,
-        translateZ: prev.translateZ + (target.translateZ - prev.translateZ) * 0.1,
-      }));
+      // When scrolled out of view or tab hidden, throttle physics updates
+      if (scrollProgressRef.current > 0.15 || document.hidden) {
+        animFrameRef.current = requestAnimationFrame(updatePhysics);
+        return;
+      }
 
-      setSpecularPos((prev) => ({
-        x: prev.x + (target.lightX - prev.x) * 0.1,
-        y: prev.y + (target.lightY - prev.y) * 0.1,
-        opacity: prev.opacity + (target.lightOpacity - prev.opacity) * 0.08,
-      }));
+      const target = targetTiltRef.current;
+      setTilt((prev) => {
+        const diffX = target.rotX - prev.rotX;
+        const diffY = target.rotY - prev.rotY;
+        const diffZ = target.translateZ - prev.translateZ;
+        if (Math.abs(diffX) < 0.005 && Math.abs(diffY) < 0.005 && Math.abs(diffZ) < 0.01) {
+          return prev; // Same reference: zero React re-render!
+        }
+        return {
+          rotX: prev.rotX + diffX * 0.08,
+          rotY: prev.rotY + diffY * 0.08,
+          translateZ: prev.translateZ + diffZ * 0.1,
+        };
+      });
+
+      setSpecularPos((prev) => {
+        const diffX = target.lightX - prev.x;
+        const diffY = target.lightY - prev.y;
+        const diffOp = target.lightOpacity - prev.opacity;
+        if (Math.abs(diffX) < 0.05 && Math.abs(diffY) < 0.05 && Math.abs(diffOp) < 0.005) {
+          return prev; // Same reference: zero React re-render!
+        }
+        return {
+          x: prev.x + diffX * 0.1,
+          y: prev.y + diffY * 0.1,
+          opacity: prev.opacity + diffOp * 0.08,
+        };
+      });
 
       animFrameRef.current = requestAnimationFrame(updatePhysics);
     };
@@ -455,8 +484,8 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
                     alt="TechSrijan '27 — The Awakening Begins — Coming Soon"
                     width={2172}
                     height={724}
-                    priority
-                    quality={100}
+                    priority={isActive}
+                    quality={90}
                     className="w-full h-auto object-contain"
                     style={{
                       imageRendering: "-webkit-optimize-contrast",

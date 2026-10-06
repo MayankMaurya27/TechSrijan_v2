@@ -662,6 +662,12 @@ html[data-intro-played="true"] #techsrijan-intro-video {
   display: none !important;
 }
 
+@media (max-width: 767px) {
+  #techsrijan-intro-video {
+    display: none !important;
+  }
+}
+
 /* Universal scrollbar elimination across all viewports & browsers */
 html, body, :root {
   scrollbar-width: none !important;

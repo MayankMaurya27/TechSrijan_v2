@@ -143,7 +143,7 @@ export default function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('techsrijan-theme')||localStorage.getItem('imperium-theme');if(s){s=s.trim().toLowerCase();var t='arrakis-day';if(s==='geass-moon'||s==='giedi-prime'||s==='geass')t='geass-moon';else if(s==='krelln-night'||s==='kelln-night'||s==='krelln')t='krelln-night';document.documentElement.setAttribute('data-theme',t);}}catch(e){}try{if(sessionStorage.getItem('techsrijan_intro_video_played')){document.documentElement.setAttribute('data-intro-played','true');}}catch(e){}})();`,
+            __html: `(function(){try{var s=localStorage.getItem('techsrijan-theme')||localStorage.getItem('imperium-theme');if(s){s=s.trim().toLowerCase();var t='arrakis-day';if(s==='geass-moon'||s==='giedi-prime'||s==='geass')t='geass-moon';else if(s==='krelln-night'||s==='kelln-night'||s==='krelln')t='krelln-night';document.documentElement.setAttribute('data-theme',t);}}catch(e){}try{var isMob=(window.innerWidth<768)||/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);if(isMob||sessionStorage.getItem('techsrijan_intro_video_played')){document.documentElement.setAttribute('data-intro-played','true');sessionStorage.setItem('techsrijan_intro_video_played','true');}}catch(e){}})();`,
           }}
         />
         <script

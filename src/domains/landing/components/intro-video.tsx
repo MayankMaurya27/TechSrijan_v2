@@ -40,13 +40,22 @@ export function IntroVideo({
     }
   }, []);
 
-  // Per-tab check: if already watched in this tab, dismiss instantly with zero flash
+  // Per-tab check: if already watched or on mobile phone, dismiss instantly with zero flash
   useEffect(() => {
     forceScrollTop();
-    if (isMobileDevice()) {
-      setActiveSrc("/intro-mobile.mp4");
-    }
     if (typeof window !== "undefined") {
+      const isMobile = window.innerWidth < 768 || isMobileDevice();
+      if (isMobile) {
+        // Mobile phones bypass intro video directly to the landing page
+        setShouldRender(false);
+        document.documentElement.setAttribute("data-intro-played", "true");
+        try {
+          sessionStorage.setItem(SESSION_KEY, "true");
+        } catch {}
+        window.dispatchEvent(new CustomEvent("intro-complete"));
+        return;
+      }
+
       try {
         const hasPlayedInTab = sessionStorage.getItem(SESSION_KEY);
         if (hasPlayedInTab) {

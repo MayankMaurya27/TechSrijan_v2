@@ -39,7 +39,7 @@ const LOGO_THEMES: Record<
     shockwaveBorder: "border-amber-400/80",
     shockwaveShadow:
       "0 0 25px 6px rgba(245, 158, 11, 0.6), inset 0 0 15px 4px rgba(254, 240, 138, 0.4)",
-    dropGlow: "drop-shadow(0 0 30px rgba(212, 168, 67, 0.42))",
+    dropGlow: "drop-shadow(0 0 4px rgba(212, 168, 67, 0.2))",
   },
 
   // Geass Moon - The Iconic Piercing Crimson & Sakuradite Core
@@ -52,28 +52,28 @@ const LOGO_THEMES: Record<
       "rgba(184, 0, 12, 0.25)",
     ],
     specularGradient:
-      "radial-gradient(circle, rgba(255, 230, 235, 0.95) 0%, rgba(255, 60, 70, 0.55) 35%, rgba(200, 0, 20, 0.2) 65%, transparent 80%)",
+      "radial-gradient(circle, rgba(255, 230, 235, 0.95) 0%, rgba(255, 60, 70, 0.55) 35%, rgba(200, 0, 20, 0.15) 65%, transparent 80%)",
     shockwaveBorder: "border-red-500/80",
     shockwaveShadow:
-      "0 0 25px 6px rgba(255, 30, 39, 0.6), inset 0 0 15px 4px rgba(255, 166, 172, 0.4)",
-    dropGlow: "drop-shadow(0 0 30px rgba(255, 30, 39, 0.45))",
+      "0 0 15px 3px rgba(255, 30, 39, 0.4), inset 0 0 8px 2px rgba(255, 166, 172, 0.3)",
+    dropGlow: "drop-shadow(0 0 4px rgba(255, 30, 39, 0.2))",
   },
 
-  // Krelln Night - Moonlit Dust & Stark Platinum Silver
+  // Krelln Night - Moonlit Dust & Stark Monochromatic Silver / Grey
   "krelln-night": {
     imageSrcWebp: "/hero-logo-krelln-night.webp",
     imageSrcPng: "/hero-logo-krelln-night.png",
     particleGrad: [
-      "rgba(248, 250, 252, 1)",
-      "rgba(203, 213, 225, 0.85)",
-      "rgba(56, 189, 248, 0.25)",
+      "rgba(255, 255, 255, 1)",
+      "rgba(215, 220, 228, 0.85)",
+      "rgba(148, 163, 184, 0.25)",
     ],
     specularGradient:
-      "radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(203, 213, 225, 0.55) 35%, rgba(56, 189, 248, 0.2) 65%, transparent 80%)",
-    shockwaveBorder: "border-slate-300/80",
+      "radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(215, 220, 228, 0.55) 35%, rgba(148, 163, 184, 0.15) 65%, transparent 80%)",
+    shockwaveBorder: "border-slate-400/80",
     shockwaveShadow:
-      "0 0 25px 6px rgba(148, 163, 184, 0.6), inset 0 0 15px 4px rgba(56, 189, 248, 0.4)",
-    dropGlow: "drop-shadow(0 0 30px rgba(148, 163, 184, 0.40))",
+      "0 0 15px 3px rgba(148, 163, 184, 0.4), inset 0 0 8px 2px rgba(241, 245, 249, 0.3)",
+    dropGlow: "drop-shadow(0 0 4px rgba(148, 163, 184, 0.2))",
   },
 };
 
@@ -457,10 +457,10 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
                     height={724}
                     priority
                     quality={100}
-                    className="w-full h-auto object-contain filter drop-shadow-[0_8px_24px_rgba(0,0,0,0.85)] drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]"
+                    className="w-full h-auto object-contain"
                     style={{
                       imageRendering: "-webkit-optimize-contrast",
-                      filter: `drop-shadow(0 8px 24px rgba(0,0,0,0.85)) drop-shadow(0 1px 4px rgba(0,0,0,0.95)) ${conf.dropGlow}`,
+                      filter: `drop-shadow(0 3px 8px rgba(0,0,0,0.75)) ${conf.dropGlow}`,
                     }}
                   />
                 </picture>

@@ -36,8 +36,8 @@
   <!-- Guard Center Crest -->
   <circle cx="17.5" cy="17.5" r="3.2" fill="#94A3B8" stroke="#050203" stroke-width="0.8" />
 
-  <!-- LUNAR ICE SAPPHIRE CORE GEM -->
-  <polygon points="17.5,15.2 19.8,17.5 17.5,19.8 15.2,17.5" fill="#38BDF8" stroke="#050203" stroke-width="0.6" />
-  <polygon points="17.5,16 19,17.5 17.5,19 16,17.5" fill="#E0F2FE" />
+  <!-- DIAMOND SILVER CORE GEM -->
+  <polygon points="17.5,15.2 19.8,17.5 17.5,19.8 15.2,17.5" fill="#E2E8F0" stroke="#050203" stroke-width="0.6" />
+  <polygon points="17.5,16 19,17.5 17.5,19 16,17.5" fill="#FFFFFF" />
   <circle cx="17.5" cy="17.5" r="0.6" fill="#FFFFFF" />
 </svg>

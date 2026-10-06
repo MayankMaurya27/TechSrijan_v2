@@ -69,7 +69,7 @@ const SWORD_THEMES: Record<CanonicalTheme, SwordThemePalette> = {
     dropShadowHover: "rgba(255,30,39,0.9)",
   },
 
-  // Krelln Night - Moonlit Dust, Stark Platinum & Lunar Sapphire
+  // Krelln Night - Moonlit Dust, Stark Platinum & Lunar Silver
   "krelln-night": {
     coreBeam: "#FFFFFF",
     bladeLit: "#E2E8F0",
@@ -81,14 +81,14 @@ const SWORD_THEMES: Record<CanonicalTheme, SwordThemePalette> = {
     guardMain: "#94A3B8",
     guardAlt: "#64748B",
     guardHighlight: "#F1F5F9",
-    gemFill: "#38BDF8", // Lunar Ice Sapphire
-    gemShine: "#E0F2FE",
-    gemGlow: "#38BDF8",
+    gemFill: "#E2E8F0", // Stark Diamond Silver
+    gemShine: "#FFFFFF",
+    gemGlow: "#CBD5E1",
     gripBand: "#CBD5E1",
     pommelFill: "#94A3B8",
     pommelStroke: "#F8FAFC",
-    dropShadow: "rgba(148,163,184,0.55)",
-    dropShadowHover: "rgba(203,213,225,0.85)",
+    dropShadow: "rgba(148,163,184,0.35)",
+    dropShadowHover: "rgba(203,213,225,0.65)",
   },
 };
 

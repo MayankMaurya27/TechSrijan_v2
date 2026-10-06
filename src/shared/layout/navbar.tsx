@@ -200,11 +200,23 @@ export function Navbar() {
 
         <div className="relative flex h-[54px] sm:h-[64px] items-center justify-between px-4 sm:px-8">
           <div className="flex items-center">
-            <Link href="/" className="group flex items-center">
+            <Link href="/" className="group relative flex items-center" aria-label="TechSrijan Home">
+              {/* Ambient radial neon aura behind logo */}
+              <div
+                className="absolute -inset-1 rounded-full blur-[10px] opacity-40 group-hover:opacity-80 transition-opacity duration-300 pointer-events-none"
+                style={{
+                  background: `radial-gradient(circle, ${currentThemeConfig.laserStrokeAura} 0%, transparent 70%)`,
+                }}
+              />
+
+              {/* Luminous Logo with dual-layer neon drop-shadow */}
               <img
                 src="/images/TS LOGO NEW.png"
-                alt="TechSrijan"
-                className="h-8 w-auto sm:h-9 object-contain drop-shadow-[0_0_12px_rgba(212,168,67,0.4)] transition-transform group-hover:scale-105"
+                alt="TechSrijan Logo"
+                className="relative h-8 w-auto sm:h-9 object-contain brightness-110 transition-all duration-300 group-hover:scale-105 group-hover:brightness-125"
+                style={{
+                  filter: `drop-shadow(0 0 2px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 6px ${currentThemeConfig.laserStrokeAura}) drop-shadow(0 0 14px ${currentThemeConfig.laserStrokeAura})`,
+                }}
               />
             </Link>
           </div>

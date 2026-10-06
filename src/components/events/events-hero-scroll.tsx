@@ -91,9 +91,9 @@ export function EventsHeroScroll({ onScrollProgress }: EventsHeroScrollProps) {
         if (onScrollProgress) onScrollProgress(p);
 
         // Calibrated two-phase video timeline:
-        // - Frame 1 (t = 0.0s): Hero close-up with sword down
-        // - Frame 2 (t = 2.85s): Feyd walking down steps, sword held high on podium
-        // - Arena (t = 3.71s): Wide stadium arena cut
+        // - Frame 1 (t = 0.0s): Hero close-up
+        // - Frame 2 (t = 3.50s): Feyd walking on podium, sword held high
+        // - Arena (t = 5.04s): Wide stadium arena cut
         //
         // Phase 1 (SLOW): p = 0.00 -> 0.65 (65% of scroll distance allocated to Frame 1 -> Frame 2)
         // Phase 2 (FAST): p = 0.65 -> 0.78 (only 13% of scroll distance to transition from Frame 2 into the Arena)
@@ -101,8 +101,8 @@ export function EventsHeroScroll({ onScrollProgress }: EventsHeroScrollProps) {
         const video = videoRef.current;
         if (video && video.duration) {
           const tFrame1 = 0;
-          const tFrame2 = 2.85;
-          const tArena = 3.71;
+          const tFrame2 = 3.5;
+          const tArena = 5.04;
 
           let target = 0;
           if (p <= 0.65) {
@@ -115,7 +115,7 @@ export function EventsHeroScroll({ onScrollProgress }: EventsHeroScrollProps) {
             target = tFrame2 + norm * (tArena - tFrame2);
           } else {
             // Settle in the arena
-            target = Math.min(video.duration - 0.05, tArena + (p - 0.78) * 0.4);
+            target = Math.min(video.duration - 0.05, tArena + (p - 0.78) * 4.0);
           }
 
           targetTimeRef.current = Math.max(0, Math.min(video.duration - 0.05, target));
@@ -143,53 +143,50 @@ export function EventsHeroScroll({ onScrollProgress }: EventsHeroScrollProps) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-[300vh] sm:min-h-[320vh] bg-black select-none"
+      className="relative w-full min-h-[280vh] sm:min-h-[320vh] bg-black select-none"
     >
       {/* Sticky Fullscreen Arena Stage */}
       <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden bg-black">
         {/* Layer 0: High-Resolution Baseline Posters */}
         <div
-          className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-500"
+          className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-500 bg-cover bg-[72%_center] sm:bg-center"
           style={{
-            backgroundImage: "url('/events-hero-poster.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center right",
+            backgroundImage: "url('/events-hero-poster.webp')",
             opacity: progress < 0.60 ? 1 : 0,
           }}
         />
         <div
-          className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-500"
+          className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-500 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/events-mid-poster.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundImage: "url('/events-mid-poster.webp')",
             opacity: progress >= 0.60 && progress < 0.76 ? 1 : 0,
           }}
         />
         <div
-          className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-500"
+          className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-500 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/events-arena-poster.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundImage: "url('/events-arena-poster.webp')",
             opacity: progress >= 0.76 ? 1 : 0,
           }}
         />
 
-        {/* Layer 1: Hardware-Accelerated Video Scrubber */}
+        {/* Layer 1: Hardware-Accelerated Video Scrubber (Upscaled 2560x1440 QHD) */}
         <video
           ref={videoRef}
-          src="/events.mp4"
-          poster="/events-hero-poster.png"
+          src="/event_video.mp4"
+          poster="/events-hero-poster.webp"
           playsInline
           muted
           preload="auto"
           onLoadedMetadata={handleLoadedMetadata}
           onSeeked={handleSeeked}
-          className="absolute inset-0 h-full w-full object-cover object-right sm:object-center pointer-events-none transition-opacity duration-300"
+          className="absolute inset-0 h-full w-full object-cover object-[72%_center] sm:object-center pointer-events-none transition-opacity duration-300"
           style={{
             opacity: isVideoLoaded ? 1 : 0.9,
             zIndex: 2,
+            filter: "contrast(1.04) brightness(1.02)",
+            transform: "translate3d(0, 0, 0)",
+            backfaceVisibility: "hidden",
           }}
         />
 
@@ -208,23 +205,29 @@ export function EventsHeroScroll({ onScrollProgress }: EventsHeroScrollProps) {
 
         {/* Layer 3: Left-Side Hero Text (Stuck at first frame with Feyd-Rautha on right) */}
         <div
-          className="absolute inset-0 z-30 flex items-center px-6 sm:px-12 md:px-16 lg:px-24 pointer-events-none"
+          className="absolute inset-0 z-30 flex items-center px-5 sm:px-12 md:px-16 lg:px-24 pointer-events-none"
           style={{
             opacity: heroOpacity,
             transform: `translateY(${heroTranslateY}px)`,
             display: heroOpacity <= 0.01 ? "none" : "flex",
           }}
         >
-          <div className="max-w-xl text-left">
+          <div className="max-w-[85vw] sm:max-w-xl text-left">
             {/* Stark Monochromatic Hero Title */}
-            <h1 className="font-serif tracking-tight text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white uppercase drop-shadow-[0_4px_30px_rgba(0,0,0,1)]">
+            <h1 className="font-serif tracking-tight text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white uppercase drop-shadow-[0_4px_30px_rgba(0,0,0,1)]">
               EVENTS
             </h1>
 
             {/* Dune Style Morale Quote */}
-            <p className="mt-6 sm:mt-8 font-serif text-lg sm:text-xl md:text-2xl tracking-[0.15em] text-neutral-300 max-w-2xl leading-relaxed uppercase drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] italic">
-              "Fear is the mind-killer. Beyond fear lies destiny. Step into the crucible and forge your legacy."
+            <p className="mt-4 sm:mt-8 font-serif text-sm sm:text-xl md:text-2xl tracking-[0.1em] sm:tracking-[0.15em] text-neutral-300 max-w-2xl leading-relaxed uppercase drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] italic">
+              &ldquo;Fear is the mind-killer. Beyond fear lies destiny. Step into the crucible and forge your legacy.&rdquo;
             </p>
+
+            {/* Mobile scroll cue pill */}
+            <div className="mt-6 sm:hidden inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-300">SCROLL TO ENTER THE ARENA</span>
+            </div>
           </div>
         </div>
 

@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue } from "next/font/google";
+import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue, Geist } from "next/font/google";
 import { ThemeProvider, LenisProvider } from "@/core";
 import { AmbientParticles, TwinSunsRays, Navbar } from "@/shared";
 import "@/styles/globals.css";
+import { cn } from "@/lib/utils";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -10,11 +11,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -137,7 +134,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="arrakis-day" suppressHydrationWarning className={`${jetbrainsMono.variable} ${spaceGrotesk.variable} ${cinzel.variable} ${playfairDisplay.variable} ${bebasNeue.variable}`}>
+    <html lang="en" data-theme="arrakis-day" suppressHydrationWarning className={cn(jetbrainsMono.variable, cinzel.variable, playfairDisplay.variable, bebasNeue.variable, "font-sans", geist.variable)}>
       <head>
         <script
           type="application/ld+json"

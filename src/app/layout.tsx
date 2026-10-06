@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue, Geist } from "next/font/google";
 import { ThemeProvider, LenisProvider } from "@/core";
 import { AmbientParticles, TwinSunsRays, Navbar } from "@/shared";
+import { SwordCursor } from "@/components/effects/sword-cursor";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 
@@ -154,6 +155,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans relative selection:bg-[var(--accent-primary)] selection:text-[var(--bg-primary)]">
         <ThemeProvider>
           <LenisProvider>
+            <SwordCursor />
             <div className="pointer-events-none fixed inset-0 z-40 film-grain" />
             <TwinSunsRays />
             <AmbientParticles />

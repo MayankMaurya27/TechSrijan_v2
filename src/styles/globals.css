@@ -170,7 +170,15 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
   }
 }
 
-/* Custom Golden Blade / Sword Cursor */
+/* When custom sword cursor is active on fine pointer devices, hide system arrow pointer */
+@media (pointer: fine) {
+  body.has-sword-cursor,
+  body.has-sword-cursor * {
+    cursor: none !important;
+  }
+}
+
+/* Custom Golden Blade / Sword Cursor (hardware / SSR fallback) */
 *,
 *::before,
 *::after,

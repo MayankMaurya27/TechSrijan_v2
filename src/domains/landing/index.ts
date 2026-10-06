@@ -1,7 +1,7 @@
-export { SequentialLanding } from "./components/sequential-landing";
-export type { LandingFlowState } from "./components/sequential-landing";
-export { IntroVideo } from "./components/intro-video";
-export type { IntroVideoProps } from "./components/intro-video";
-export { EventTitle, HeroTitle } from "./components/event-title";
-export type { HeroTitleProps } from "./components/hero-title";
-export { CitadelScrollVideo, ScrollJourney } from "./components/citadel-scroll-video";
+export { IntroVideo, type IntroVideoProps } from "./components/intro-video";
+export { ScrollJourney, CitadelScrollVideo } from "./components/scroll-journey";
+export { HeroTitle, EventTitle, type HeroTitleProps } from "./components/hero-title";
+export { Paul3D } from "@/components/landing/paul-3d";
+export { CountdownHUD } from "@/components/landing/countdown-hud";
+export { CitadelArchive } from "@/components/landing/citadel-archive";
+export { SocialConstellation } from "@/components/landing/social-constellation";

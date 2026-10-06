@@ -145,6 +145,11 @@ export default function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('techsrijan-theme')||localStorage.getItem('imperium-theme');if(s){s=s.trim().toLowerCase();var t='arrakis-day';if(s==='geass-moon'||s==='giedi-prime'||s==='geass')t='geass-moon';else if(s==='krelln-night'||s==='kelln-night'||s==='krelln')t='krelln-night';else if(s==='avron-night'||s==='arvon-night'||s==='avron')t='avron-night';document.documentElement.setAttribute('data-theme',t);}}catch(e){}try{if(sessionStorage.getItem('techsrijan_intro_video_played')){document.documentElement.setAttribute('data-intro-played','true');}}catch(e){}})();`,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
             __html: `if('scrollRestoration' in history){history.scrollRestoration='manual';}window.scrollTo(0,0);`,
           }}
         />

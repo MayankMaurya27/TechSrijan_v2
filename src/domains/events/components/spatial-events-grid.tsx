@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useTransition, useEffect } from "react";
+import { useState, useMemo, useTransition, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Trophy, Users, Clock, MapPin, X, Copy, Check } from "lucide-react";
 import { Button } from "@/shared";
@@ -168,6 +168,17 @@ const EVENTS_DATABASE: EventDossier[] = [
 
 const CATEGORIES = ["ALL", "CODING", "ROBOTICS", "CIRCUITS", "GAMING"];
 
+// Precomputed static category index for O(1) instantaneous lookups
+const CATEGORY_MAP: Record<string, EventDossier[]> = {
+  ALL: EVENTS_DATABASE,
+};
+for (const ev of EVENTS_DATABASE) {
+  if (!CATEGORY_MAP[ev.category]) {
+    CATEGORY_MAP[ev.category] = [];
+  }
+  CATEGORY_MAP[ev.category].push(ev);
+}
+
 export function SpatialEventsGrid() {
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [activeEvent, setActiveEvent] = useState<EventDossier | null>(null);
@@ -176,8 +187,15 @@ export function SpatialEventsGrid() {
   const [inviteCode, setInviteCode] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
   const [isCopied, setIsCopied] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!activeEvent) return;
@@ -195,13 +213,8 @@ export function SpatialEventsGrid() {
     };
   }, [activeEvent]);
 
-  const filteredEvents = useMemo(
-    () =>
-      EVENTS_DATABASE.filter(
-        (ev) => selectedCategory === "ALL" || ev.category === selectedCategory
-      ),
-    [selectedCategory]
-  );
+  // O(1) Category lookup without per-render filtering or array allocation
+  const filteredEvents = CATEGORY_MAP[selectedCategory] || EVENTS_DATABASE;
 
   const handleOpenEvent = (ev: EventDossier) => {
     setActiveEvent(ev);
@@ -233,7 +246,8 @@ export function SpatialEventsGrid() {
         .writeText(generatedCode)
         .then(() => {
           setIsCopied(true);
-          setTimeout(() => setIsCopied(false), 2000);
+          if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+          copyTimeoutRef.current = setTimeout(() => setIsCopied(false), 2000);
         })
         .catch(() => {});
     }

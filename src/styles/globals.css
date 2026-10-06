@@ -50,27 +50,7 @@ html[data-theme="krelln-night"], html[data-theme="kelln-night"] {
     --text-main: var(--text-primary);
   }
 
-html[data-theme="avron-night"], html[data-theme="arvon-night"] {
-    --bg-primary: #221B2A;        
-    --bg-secondary: #17121E;      
-    --surface: rgba(81, 72, 86, 0.48); 
-    --surface-hover: rgba(81, 72, 86, 0.75);
-    --accent-primary: #5793CE;    
-    --accent-secondary: #8EB7E5;  
-    --accent-glow: rgba(87, 147, 206, 0.48);
-    --text-primary: #B3B0B7;      
-    --text-secondary: #8E8795;    
-    --text-muted: #5A5362;        
-    --border: rgba(81, 72, 86, 0.42);
-    --border-accent: #5793CE;
-    --glow: 0 0 35px rgba(87, 147, 206, 0.40);
-    --geass-crimson: #E61924;
-    --grid-line: rgba(87, 147, 206, 0.08);
-    --hud-bracket: #5793CE;
-    --ray-color: rgba(87, 147, 206, 0.12);
-    --accent: var(--accent-primary);
-    --text-main: var(--text-primary);
-  }
+
 
 html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
     --bg-primary: #190912;        
@@ -123,19 +103,7 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
       --hud-bracket: oklch(0.55 0.04 260);
     }
 
-    html[data-theme="avron-night"], html[data-theme="arvon-night"] {
-      --bg-primary: oklch(0.16 0.04 285);
-      --surface: oklch(0.35 0.04 285 / 0.48);
-      --surface-hover: oklch(0.35 0.04 285 / 0.75);
-      --text-primary: oklch(0.72 0.01 285);
-      --accent-primary: oklch(0.60 0.14 250);
-      --accent-secondary: oklch(0.75 0.10 250);
-      --accent-glow: oklch(0.60 0.14 250 / 0.48);
-      --border: oklch(0.35 0.04 285 / 0.42);
-      --border-accent: oklch(0.60 0.14 250);
-      --glow: 0 0 35px oklch(0.60 0.14 250 / 0.40);
-      --hud-bracket: oklch(0.60 0.14 250);
-    }
+
 
     html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
       --bg-primary: oklch(12.65% 0.032 342.18);
@@ -170,23 +138,110 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
   }
 }
 
-/* When custom sword cursor is active on fine pointer devices, hide system arrow pointer */
-@media (pointer: fine) {
-  body.has-sword-cursor,
-  body.has-sword-cursor * {
-    cursor: none !important;
-  }
+/* ==========================================================================
+   AUTHENTIC VIBRO-BLADE SWORD CURSORS (THEMED HARDWARE / SSR FALLBACKS)
+   ========================================================================== */
+
+/* 1. Arrakis Solar Day (Imperial Gold & Spice Blue Gem) */
+html[data-theme="arrakis-day"] *,
+html[data-theme="arrakis-day"] *::before,
+html[data-theme="arrakis-day"] *::after,
+html[data-theme="arrakis"] *,
+html[data-theme="arrakis"] *::before,
+html[data-theme="arrakis"] *::after {
+  cursor: url("/cursors/mvs-sword-arrakis-day.svg") 2 2, auto;
+}
+html[data-theme="arrakis-day"] a,
+html[data-theme="arrakis-day"] button,
+html[data-theme="arrakis-day"] [role="button"],
+html[data-theme="arrakis-day"] input,
+html[data-theme="arrakis-day"] select,
+html[data-theme="arrakis-day"] textarea,
+html[data-theme="arrakis-day"] [tabindex="0"],
+html[data-theme="arrakis-day"] label,
+html[data-theme="arrakis-day"] .cursor-pointer,
+html[data-theme="arrakis"] a,
+html[data-theme="arrakis"] button,
+html[data-theme="arrakis"] [role="button"],
+html[data-theme="arrakis"] input,
+html[data-theme="arrakis"] select,
+html[data-theme="arrakis"] textarea,
+html[data-theme="arrakis"] [tabindex="0"],
+html[data-theme="arrakis"] label,
+html[data-theme="arrakis"] .cursor-pointer {
+  cursor: url("/cursors/mvs-sword-pointer-arrakis-day.svg") 2 2, pointer;
 }
 
-/* Authentic Vibro-Blade Sword Cursor (hardware / SSR fallback) */
+/* 2. Geass Moon (Crimson Scarlet Vibro-Blade & Sakuradite Emerald) */
+html[data-theme="geass-moon"] *,
+html[data-theme="geass-moon"] *::before,
+html[data-theme="geass-moon"] *::after,
+html[data-theme="giedi-prime"] *,
+html[data-theme="giedi-prime"] *::before,
+html[data-theme="giedi-prime"] *::after {
+  cursor: url("/cursors/mvs-sword.svg") 2 2, auto;
+}
+html[data-theme="geass-moon"] a,
+html[data-theme="geass-moon"] button,
+html[data-theme="geass-moon"] [role="button"],
+html[data-theme="geass-moon"] input,
+html[data-theme="geass-moon"] select,
+html[data-theme="geass-moon"] textarea,
+html[data-theme="geass-moon"] [tabindex="0"],
+html[data-theme="geass-moon"] label,
+html[data-theme="geass-moon"] .cursor-pointer,
+html[data-theme="giedi-prime"] a,
+html[data-theme="giedi-prime"] button,
+html[data-theme="giedi-prime"] [role="button"],
+html[data-theme="giedi-prime"] input,
+html[data-theme="giedi-prime"] select,
+html[data-theme="giedi-prime"] textarea,
+html[data-theme="giedi-prime"] [tabindex="0"],
+html[data-theme="giedi-prime"] label,
+html[data-theme="giedi-prime"] .cursor-pointer {
+  cursor: url("/cursors/mvs-sword-pointer.svg") 2 2, pointer;
+}
+
+/* 3. Krelln Night (Lunar Platinum Silver & Sapphire Core) */
+html[data-theme="krelln-night"] *,
+html[data-theme="krelln-night"] *::before,
+html[data-theme="krelln-night"] *::after,
+html[data-theme="kelln-night"] *,
+html[data-theme="kelln-night"] *::before,
+html[data-theme="kelln-night"] *::after {
+  cursor: url("/cursors/mvs-sword-krelln-night.svg") 2 2, auto;
+}
+html[data-theme="krelln-night"] a,
+html[data-theme="krelln-night"] button,
+html[data-theme="krelln-night"] [role="button"],
+html[data-theme="krelln-night"] input,
+html[data-theme="krelln-night"] select,
+html[data-theme="krelln-night"] textarea,
+html[data-theme="krelln-night"] [tabindex="0"],
+html[data-theme="krelln-night"] label,
+html[data-theme="krelln-night"] .cursor-pointer,
+html[data-theme="kelln-night"] a,
+html[data-theme="kelln-night"] button,
+html[data-theme="kelln-night"] [role="button"],
+html[data-theme="kelln-night"] input,
+html[data-theme="kelln-night"] select,
+html[data-theme="kelln-night"] textarea,
+html[data-theme="kelln-night"] [tabindex="0"],
+html[data-theme="kelln-night"] label,
+html[data-theme="kelln-night"] .cursor-pointer {
+  cursor: url("/cursors/mvs-sword-pointer-krelln-night.svg") 2 2, pointer;
+}
+
+
+
+/* Default / root fallback */
 *,
 *::before,
 *::after,
 html,
 body {
-  cursor: url("/cursors/mvs-sword.svg") 2 2, url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 2 L20.5 16.5 L16.5 20.5 Z' fill='%23FF1E27' fill-opacity='0.25'/%3E%3Cpath d='M2 2 L21 16 L16 21 Z' stroke='%23FF1E27' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' opacity='0.35'/%3E%3Cpath d='M2 2 L20 16.2 L16.2 20 Z' stroke='%23FF404A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='0.6'/%3E%3Cpath d='M2 2 L20 16.2 L18.5 18.5 L16.2 20 Z' fill='%23050203' stroke='%23050203' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M2.4 2.4 L19.4 16.4 L18.2 18.2 Z' fill='%23FF2632'/%3E%3Cpath d='M2.4 2.4 L19.4 16.4' stroke='%23FFA6AC' stroke-width='0.75' stroke-linecap='round'/%3E%3Cpath d='M2.4 2.4 L18.2 18.2 L16.4 19.4 Z' fill='%23B8000C'/%3E%3Cpath d='M2.4 2.4 L17.5 17.5' stroke='%23FFFFFF' stroke-width='0.85' stroke-linecap='round'/%3E%3Cpath d='M18.5 18.5 L26 26' stroke='%230D0B08' stroke-width='3.2' stroke-linecap='square'/%3E%3Cpath d='M19.5 19.5 L25.5 25.5' stroke='%2342372A' stroke-width='2.2' stroke-linecap='square'/%3E%3Cpath d='M20.5 21.5 L21.5 20.5' stroke='%23D4A843' stroke-width='1.2'/%3E%3Cpath d='M22.5 23.5 L23.5 22.5' stroke='%23D4A843' stroke-width='1.2'/%3E%3Cpath d='M24.5 25.5 L25.5 24.5' stroke='%23D4A843' stroke-width='1.2'/%3E%3Cpath d='M25 27 L27 25 L31 29 L29 31 Z' fill='%23050203'/%3E%3Cpath d='M25.5 26.5 L26.5 25.5 L30 29 L29 30 Z' fill='%23D4A843' stroke='%23FFE58F' stroke-width='0.5'/%3E%3Cpath d='M17.5 15.5 L23.5 10.5 L22 8 L18.5 13.5 L13.5 18.5 L8 22 L10.5 23.5 L15.5 17.5 Z' fill='%23050203' stroke='%23050203' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cpath d='M18 15.5 L23 11 L21.8 9 L19 13.8 Z' fill='%23D4A843'/%3E%3Cpath d='M18 15.5 L22.8 11.2' stroke='%23FFF1BA' stroke-width='0.8'/%3E%3Cpath d='M15.5 18 L11 23 L9 21.8 L13.8 19 Z' fill='%23B88A27'/%3E%3Cpath d='M15.5 18 L11.2 22.8' stroke='%23FFF1BA' stroke-width='0.8'/%3E%3Ccircle cx='17.5' cy='17.5' r='3.2' fill='%23D4A843' stroke='%23050203' stroke-width='0.8'/%3E%3Cpolygon points='17.5,15.2 19.8,17.5 17.5,19.8 15.2,17.5' fill='%2300E676' stroke='%23050203' stroke-width='0.6'/%3E%3Cpolygon points='17.5,16 19,17.5 17.5,19 16,17.5' fill='%23B9F6CA'/%3E%3Ccircle cx='17.5' cy='17.5' r='0.6' fill='%23FFFFFF'/%3E%3C/svg%3E") 2 2, auto !important;
+  cursor: url("/cursors/mvs-sword-arrakis-day.svg") 2 2, auto;
 }
-
 a,
 button,
 [role="button"],
@@ -196,7 +251,43 @@ textarea,
 [tabindex="0"],
 label,
 .cursor-pointer {
-  cursor: url("/cursors/mvs-sword-pointer.svg") 2 2, url("data:image/svg+xml,%3Csvg width='34' height='34' viewBox='0 0 34 34' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='17.5' cy='17.5' r='9' fill='%23FF1E27' fill-opacity='0.25'/%3E%3Cpath d='M2 2 L23 15 L15 23 Z' fill='%23FF1E27' fill-opacity='0.4'/%3E%3Cpath d='M2 2 L22.5 15.5 L15.5 22.5 Z' stroke='%23FF1E27' stroke-width='5' stroke-linecap='round' stroke-linejoin='round' opacity='0.45'/%3E%3Cpath d='M2 2 L21 16 L16 21 Z' stroke='%23FF5E68' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' opacity='0.8'/%3E%3Cpath d='M2 2 L20 16.2 L18.5 18.5 L16.2 20 Z' fill='%23050203' stroke='%23050203' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M2.4 2.4 L19.4 16.4 L18.2 18.2 Z' fill='%23FF2632'/%3E%3Cpath d='M2.4 2.4 L19.4 16.4' stroke='%23FFFFFF' stroke-width='1.2' stroke-linecap='round'/%3E%3Cpath d='M2.4 2.4 L18.2 18.2 L16.4 19.4 Z' fill='%23D40010'/%3E%3Cpath d='M2.4 2.4 L17.5 17.5' stroke='%23FFFFFF' stroke-width='1.4' stroke-linecap='round'/%3E%3Cpath d='M18.5 18.5 L26 26' stroke='%230D0B08' stroke-width='3.2' stroke-linecap='square'/%3E%3Cpath d='M19.5 19.5 L25.5 25.5' stroke='%2342372A' stroke-width='2.2' stroke-linecap='square'/%3E%3Cpath d='M20.5 21.5 L21.5 20.5' stroke='%23FFE58F' stroke-width='1.4'/%3E%3Cpath d='M22.5 23.5 L23.5 22.5' stroke='%23FFE58F' stroke-width='1.4'/%3E%3Cpath d='M24.5 25.5 L25.5 24.5' stroke='%23FFE58F' stroke-width='1.4'/%3E%3Cpath d='M25 27 L27 25 L31 29 L29 31 Z' fill='%23050203'/%3E%3Cpath d='M25.5 26.5 L26.5 25.5 L30 29 L29 30 Z' fill='%23F59E0B' stroke='%23FFFBEB' stroke-width='0.6'/%3E%3Cpath d='M17.5 15.5 L24 10 L22.5 7.5 L18.5 13.5 L13.5 18.5 L7.5 22.5 L10 24 L15.5 17.5 Z' fill='%23050203' stroke='%23050203' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M18 15.5 L23.5 10.5 L22.2 8.5 L19 13.8 Z' fill='%23F59E0B'/%3E%3Cpath d='M18 15.5 L23.2 10.8' stroke='%23FFFFFF' stroke-width='1'/%3E%3Cpath d='M15.5 18 L10.5 23.5 L8.5 22.2 L13.8 19 Z' fill='%23D97706'/%3E%3Cpath d='M15.5 18 L10.8 23.2' stroke='%23FFFFFF' stroke-width='1'/%3E%3Ccircle cx='17.5' cy='17.5' r='3.4' fill='%23F59E0B' stroke='%23050203' stroke-width='0.8'/%3E%3Ccircle cx='17.5' cy='17.5' r='4.5' fill='%2300E676' fill-opacity='0.4'/%3E%3Cpolygon points='17.5,14.8 20.2,17.5 17.5,20.2 14.8,17.5' fill='%2300E676' stroke='%23FFFFFF' stroke-width='0.8'/%3E%3Cpolygon points='17.5,15.8 19.2,17.5 17.5,19.2 15.8,17.5' fill='%23E8FFF3'/%3E%3Ccircle cx='17.5' cy='17.5' r='1.2' fill='%23FFFFFF'/%3E%3C/svg%3E") 2 2, pointer !important;
+  cursor: url("/cursors/mvs-sword-pointer-arrakis-day.svg") 2 2, pointer;
+}
+
+/* ==========================================================================
+   DYNAMIC INTERACTIVE SWORD CURSOR SUPPRESSION
+   When custom hardware-accelerated SwordCursor component is mounted,
+   suppress OS default pointer everywhere so only the glowing sword is visible.
+   ========================================================================== */
+@media (pointer: fine) {
+  html.has-sword-cursor,
+  html.has-sword-cursor *,
+  html.has-sword-cursor *::before,
+  html.has-sword-cursor *::after,
+  body.has-sword-cursor,
+  body.has-sword-cursor *,
+  body.has-sword-cursor *::before,
+  body.has-sword-cursor *::after,
+  html.has-sword-cursor a,
+  html.has-sword-cursor button,
+  html.has-sword-cursor [role="button"],
+  html.has-sword-cursor input,
+  html.has-sword-cursor select,
+  html.has-sword-cursor textarea,
+  html.has-sword-cursor [tabindex="0"],
+  html.has-sword-cursor label,
+  html.has-sword-cursor .cursor-pointer,
+  body.has-sword-cursor a,
+  body.has-sword-cursor button,
+  body.has-sword-cursor [role="button"],
+  body.has-sword-cursor input,
+  body.has-sword-cursor select,
+  body.has-sword-cursor textarea,
+  body.has-sword-cursor [tabindex="0"],
+  body.has-sword-cursor label,
+  body.has-sword-cursor .cursor-pointer {
+    cursor: none !important;
+  }
 }
 
 .mecha-bracket {

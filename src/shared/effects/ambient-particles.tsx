@@ -20,8 +20,6 @@ export function AmbientParticles() {
   let particleColor = "196, 125, 72";
   if (theme === "krelln-night" || theme === "kelln-night") {
     particleColor = "119, 130, 146";
-  } else if (theme === "avron-night" || theme === "arvon-night") {
-    particleColor = "87, 147, 206";
   } else if (theme === "geass-moon" || theme === "giedi-prime") {
     particleColor = "255, 30, 39";
   }

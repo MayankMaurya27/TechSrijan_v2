@@ -11,7 +11,6 @@ const SESSION_KEY = "techsrijan_intro_video_played";
 const THEME_CYCLE = [
   "arrakis-day",
   "krelln-night",
-  "avron-night",
   "geass-moon",
 ] as const;
 
@@ -35,16 +34,6 @@ const THEME_CONFIG = {
     frameStroke: "rgba(119, 130, 146, 0.45)",
     flareGradient: "bg-gradient-to-t from-[#778292]/80 via-[#778292]/40 to-transparent",
     beaconShadow: "shadow-[0_0_12px_#D7DBE2]",
-  },
-  "avron-night": {
-    label: "Avron Night",
-    title: "Arrakis Night Avron (Eyes of Ibad Melange Glow)",
-    orbClass: "bg-gradient-to-br from-[#B3B0B7] via-[#5793CE] to-[#221B2A] shadow-[0_0_8px_#5793CE]",
-    laserStrokeAura: "#5793CE",
-    laserStrokeBeam: "#8EB7E5",
-    frameStroke: "rgba(87, 147, 206, 0.45)",
-    flareGradient: "bg-gradient-to-t from-[#5793CE]/80 via-[#5793CE]/40 to-transparent",
-    beaconShadow: "shadow-[0_0_12px_#5793CE]",
   },
   "geass-moon": {
     label: "Geass Moon",

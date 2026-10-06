@@ -64,10 +64,6 @@ export function TwinSunsRays() {
         primaryColor = "119, 130, 146";
         secondaryColor = "215, 219, 226";
         glowAlpha = 0.10;
-      } else if (theme === "avron-night") {
-        primaryColor = "87, 147, 206";
-        secondaryColor = "179, 176, 183";
-        glowAlpha = 0.12;
       } else if (theme === "geass-moon" || theme === "giedi-prime") {
         primaryColor = "200, 0, 20";
         secondaryColor = "255, 30, 39";

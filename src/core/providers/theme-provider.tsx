@@ -12,7 +12,6 @@ import React, {
 export type CanonicalTheme =
   | "arrakis-day"
   | "krelln-night"
-  | "avron-night"
   | "geass-moon";
 
 export type Theme =
@@ -20,7 +19,6 @@ export type Theme =
   | "arrakis"
   | "giedi-prime"
   | "kelln-night"
-  | "arvon-night"
   | "geass";
 
 export function normalizeTheme(raw: string | null | undefined): CanonicalTheme {
@@ -28,7 +26,6 @@ export function normalizeTheme(raw: string | null | undefined): CanonicalTheme {
   const lower = raw.trim().toLowerCase();
   if (lower === "arrakis" || lower === "arrakis-day") return "arrakis-day";
   if (lower === "krelln-night" || lower === "kelln-night" || lower === "krelln") return "krelln-night";
-  if (lower === "avron-night" || lower === "arvon-night" || lower === "avron") return "avron-night";
   if (lower === "geass-moon" || lower === "giedi-prime" || lower === "geass") return "geass-moon";
   return "arrakis-day";
 }

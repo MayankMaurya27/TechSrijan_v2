@@ -4,16 +4,119 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import * as THREE from "three";
 import gsap from "gsap";
+import { useTheme, normalizeTheme, type CanonicalTheme } from "@/core";
 
 interface TechSrijan3DLogoProps {
   scrollProgress: number;
   hasEntered: boolean;
 }
 
+const ALL_THEMES: CanonicalTheme[] = ["arrakis-day", "geass-moon", "krelln-night"];
+
+const LOGO_THEMES: Record<
+  CanonicalTheme,
+  {
+    imageSrcWebp: string;
+    imageSrcPng: string;
+    particleGrad: [string, string, string];
+    specularGradient: string;
+    shockwaveBorder: string;
+    shockwaveShadow: string;
+    dropGlow: string;
+  }
+> = {
+  // Arrakis Solar Day - Imperial Sand Gold & Radiant Solar Amber
+  "arrakis-day": {
+    imageSrcWebp: "/hero-logo-arrakis-day.webp",
+    imageSrcPng: "/hero-logo-arrakis-day.png",
+    particleGrad: [
+      "rgba(255, 245, 215, 1)",
+      "rgba(245, 158, 11, 0.85)",
+      "rgba(180, 83, 9, 0.25)",
+    ],
+    specularGradient:
+      "radial-gradient(circle, rgba(255, 245, 215, 0.95) 0%, rgba(255, 205, 120, 0.55) 35%, rgba(245, 158, 11, 0.2) 65%, transparent 80%)",
+    shockwaveBorder: "border-amber-400/80",
+    shockwaveShadow:
+      "0 0 25px 6px rgba(245, 158, 11, 0.6), inset 0 0 15px 4px rgba(254, 240, 138, 0.4)",
+    dropGlow: "drop-shadow(0 0 30px rgba(212, 168, 67, 0.42))",
+  },
+
+  // Geass Moon - The Iconic Piercing Crimson & Sakuradite Core
+  "geass-moon": {
+    imageSrcWebp: "/hero-logo-geass-moon.webp",
+    imageSrcPng: "/hero-logo-geass-moon.png",
+    particleGrad: [
+      "rgba(255, 215, 220, 1)",
+      "rgba(255, 30, 39, 0.85)",
+      "rgba(184, 0, 12, 0.25)",
+    ],
+    specularGradient:
+      "radial-gradient(circle, rgba(255, 230, 235, 0.95) 0%, rgba(255, 60, 70, 0.55) 35%, rgba(200, 0, 20, 0.2) 65%, transparent 80%)",
+    shockwaveBorder: "border-red-500/80",
+    shockwaveShadow:
+      "0 0 25px 6px rgba(255, 30, 39, 0.6), inset 0 0 15px 4px rgba(255, 166, 172, 0.4)",
+    dropGlow: "drop-shadow(0 0 30px rgba(255, 30, 39, 0.45))",
+  },
+
+  // Krelln Night - Moonlit Dust & Stark Platinum Silver
+  "krelln-night": {
+    imageSrcWebp: "/hero-logo-krelln-night.webp",
+    imageSrcPng: "/hero-logo-krelln-night.png",
+    particleGrad: [
+      "rgba(248, 250, 252, 1)",
+      "rgba(203, 213, 225, 0.85)",
+      "rgba(56, 189, 248, 0.25)",
+    ],
+    specularGradient:
+      "radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(203, 213, 225, 0.55) 35%, rgba(56, 189, 248, 0.2) 65%, transparent 80%)",
+    shockwaveBorder: "border-slate-300/80",
+    shockwaveShadow:
+      "0 0 25px 6px rgba(148, 163, 184, 0.6), inset 0 0 15px 4px rgba(56, 189, 248, 0.4)",
+    dropGlow: "drop-shadow(0 0 30px rgba(148, 163, 184, 0.40))",
+  },
+};
+
 export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLogoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const particlesCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Synchronize active theme dynamically with zero latency
+  const themeContext = useTheme();
+  const [currentTheme, setCurrentTheme] = useState<CanonicalTheme>(() =>
+    normalizeTheme(themeContext?.resolvedTheme)
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const resolveCurrent = (): CanonicalTheme => {
+      const domTheme = document.documentElement.getAttribute("data-theme");
+      return normalizeTheme(domTheme || themeContext?.resolvedTheme);
+    };
+
+    const apply = () => {
+      setCurrentTheme(resolveCurrent());
+    };
+
+    apply();
+
+    const observer = new MutationObserver(apply);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    window.addEventListener("techsrijan-theme-change", apply);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("techsrijan-theme-change", apply);
+    };
+  }, [themeContext?.resolvedTheme]);
+
+  const activeConf = LOGO_THEMES[currentTheme] || LOGO_THEMES["arrakis-day"];
 
   // Mouse & interactive 3D physics
   const [tilt, setTilt] = useState({ rotX: 0, rotY: 0, translateZ: 0 });
@@ -27,7 +130,33 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
   const [shockwaves, setShockwaves] = useState<Array<{ id: number; x: number; y: number }>>([]);
   const shockwaveIdRef = useRef(0);
 
-  // Three.js Ember Particles System (delicate golden/ruby stardust floating in 3D depth)
+  // Ref for Three.js texture updating
+  const spriteCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const particleTextureRef = useRef<THREE.CanvasTexture | null>(null);
+
+  // Update Three.js particle colors when theme changes
+  useEffect(() => {
+    const sCanvas = spriteCanvasRef.current;
+    const pTexture = particleTextureRef.current;
+    if (!sCanvas || !pTexture) return;
+
+    const sCtx = sCanvas.getContext("2d");
+    if (!sCtx) return;
+
+    const [c0, c1, c2] = activeConf.particleGrad;
+    sCtx.clearRect(0, 0, 32, 32);
+    const grad = sCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+    grad.addColorStop(0, c0);
+    grad.addColorStop(0.28, c1);
+    grad.addColorStop(0.65, c2);
+    grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+    sCtx.fillStyle = grad;
+    sCtx.fillRect(0, 0, 32, 32);
+
+    pTexture.needsUpdate = true;
+  }, [currentTheme, activeConf]);
+
+  // Three.js Ember Particles System
   useEffect(() => {
     const canvas = particlesCanvasRef.current;
     if (!canvas) return;
@@ -52,17 +181,21 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
     const spriteCanvas = document.createElement("canvas");
     spriteCanvas.width = 32;
     spriteCanvas.height = 32;
+    spriteCanvasRef.current = spriteCanvas;
+
     const sCtx = spriteCanvas.getContext("2d");
     if (sCtx) {
+      const [c0, c1, c2] = activeConf.particleGrad;
       const grad = sCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
-      grad.addColorStop(0, "rgba(255, 235, 190, 1)");
-      grad.addColorStop(0.25, "rgba(255, 160, 50, 0.85)");
-      grad.addColorStop(0.6, "rgba(220, 60, 20, 0.25)");
+      grad.addColorStop(0, c0);
+      grad.addColorStop(0.28, c1);
+      grad.addColorStop(0.65, c2);
       grad.addColorStop(1, "rgba(0, 0, 0, 0)");
       sCtx.fillStyle = grad;
       sCtx.fillRect(0, 0, 32, 32);
     }
     const particleTexture = new THREE.CanvasTexture(spriteCanvas);
+    particleTextureRef.current = particleTexture;
 
     // Particle geometries
     const particleCount = 45;
@@ -179,7 +312,6 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
   useEffect(() => {
     if (!hasEntered) return;
 
-    // Specular light sweeps across letters from left to right on initial entrance
     const target = targetTiltRef.current;
     target.lightOpacity = 0.85;
     target.lightX = -20;
@@ -204,18 +336,16 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
   // Pointer movement tracking
   const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width; // 0 to 1
-    const y = (e.clientY - rect.top) / rect.height; // 0 to 1
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
 
-    const normX = (x - 0.5) * 2; // -1 to 1
-    const normY = (y - 0.5) * 2; // -1 to 1
+    const normX = (x - 0.5) * 2;
+    const normY = (y - 0.5) * 2;
 
-    // Gentle 3D perspective tilt
-    targetTiltRef.current.rotX = -normY * 7.5; // Max 7.5 deg tilt
-    targetTiltRef.current.rotY = normX * 10.5; // Max 10.5 deg swivel
+    targetTiltRef.current.rotX = -normY * 7.5;
+    targetTiltRef.current.rotY = normX * 10.5;
     targetTiltRef.current.translateZ = 12;
 
-    // Move specular sheen highlight across the metallic surface
     targetTiltRef.current.lightX = x * 100;
     targetTiltRef.current.lightY = y * 100;
     targetTiltRef.current.lightOpacity = 0.65;
@@ -244,12 +374,10 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
     const newId = ++shockwaveIdRef.current;
     setShockwaves((prev) => [...prev, { id: newId, x: clickX, y: clickY }]);
 
-    // Remove shockwave after animation completes
     setTimeout(() => {
       setShockwaves((prev) => prev.filter((sw) => sw.id !== newId));
     }, 900);
 
-    // Tactile card bounce with GSAP
     if (cardRef.current) {
       gsap.killTweensOf(cardRef.current);
       gsap.timeline()
@@ -265,7 +393,6 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
         });
     }
 
-    // Flash specular sheen
     targetTiltRef.current.lightOpacity = 1.0;
   }, []);
 
@@ -307,30 +434,46 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
           willChange: "transform",
         }}
       >
-        {/* Layer 1: The Exact, Authentic High-Resolution Emblem (100% faithful to Image 2) */}
+        {/* Layer 1: The Stacked Dynamic Themed Emblem with Smooth Crossfade Transitions */}
         <div className="relative w-full flex justify-center">
-          <picture className="w-full flex justify-center">
-            <source srcSet="/hero-logo.webp" type="image/webp" />
-            <Image
-              src="/hero-logo.png"
-              alt="TechSrijan '27 — The Awakening Begins — Coming Soon"
-              width={2172}
-              height={724}
-              priority
-              quality={100}
-              className="w-full h-auto object-contain filter drop-shadow-[0_8px_24px_rgba(0,0,0,0.85)] drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]"
-              style={{
-                imageRendering: "-webkit-optimize-contrast",
-              }}
-            />
-          </picture>
+          {ALL_THEMES.map((tKey) => {
+            const conf = LOGO_THEMES[tKey];
+            const isActive = currentTheme === tKey;
+            return (
+              <div
+                key={tKey}
+                className={`w-full flex justify-center transition-all duration-700 ease-out ${
+                  isActive
+                    ? "opacity-100 z-10 relative scale-100"
+                    : "opacity-0 pointer-events-none absolute inset-0 z-0 scale-[0.985]"
+                }`}
+              >
+                <picture className="w-full flex justify-center">
+                  <source srcSet={conf.imageSrcWebp} type="image/webp" />
+                  <Image
+                    src={conf.imageSrcPng}
+                    alt="TechSrijan '27 — The Awakening Begins — Coming Soon"
+                    width={2172}
+                    height={724}
+                    priority
+                    quality={100}
+                    className="w-full h-auto object-contain filter drop-shadow-[0_8px_24px_rgba(0,0,0,0.85)] drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]"
+                    style={{
+                      imageRendering: "-webkit-optimize-contrast",
+                      filter: `drop-shadow(0 8px 24px rgba(0,0,0,0.85)) drop-shadow(0 1px 4px rgba(0,0,0,0.95)) ${conf.dropGlow}`,
+                    }}
+                  />
+                </picture>
+              </div>
+            );
+          })}
 
-          {/* Layer 2: Interactive Specular Sheen (Gleams across the metallic bevels on cursor move without shifting colors) */}
+          {/* Layer 2: Interactive Specular Sheen (Gleams across the metallic bevels in theme colors) */}
           <div
-            className="absolute inset-0 pointer-events-none overflow-hidden"
+            className="absolute inset-0 pointer-events-none overflow-hidden z-20"
             style={{
-              maskImage: "url(/hero-logo.webp)",
-              WebkitMaskImage: "url(/hero-logo.webp)",
+              maskImage: `url(${activeConf.imageSrcWebp})`,
+              WebkitMaskImage: `url(${activeConf.imageSrcWebp})`,
               maskSize: "contain",
               WebkitMaskSize: "contain",
               maskRepeat: "no-repeat",
@@ -350,33 +493,29 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
                 left: `${specularPos.x}%`,
                 top: `${specularPos.y}%`,
                 transform: "translate(-50%, -50%)",
-                background:
-                  "radial-gradient(circle, rgba(255, 245, 215, 0.95) 0%, rgba(255, 205, 120, 0.55) 35%, rgba(255, 140, 50, 0.2) 65%, transparent 80%)",
+                background: activeConf.specularGradient,
               }}
             />
           </div>
 
-          {/* Layer 3: Interactive Click Shockwave Rings */}
+          {/* Layer 3: Interactive Click Shockwave Rings in Theme Colors */}
           {shockwaves.map((sw) => (
             <div
               key={sw.id}
-              className="absolute pointer-events-none rounded-full border border-amber-400/80 animate-ping"
+              className={`absolute pointer-events-none rounded-full border ${activeConf.shockwaveBorder} animate-ping z-30`}
               style={{
                 left: sw.x,
                 top: sw.y,
                 width: "40px",
                 height: "40px",
                 transform: "translate(-50%, -50%)",
-                boxShadow:
-                  "0 0 25px 6px rgba(255, 180, 50, 0.6), inset 0 0 15px 4px rgba(255, 220, 100, 0.4)",
+                boxShadow: activeConf.shockwaveShadow,
                 animationDuration: "0.85s",
               }}
             />
           ))}
         </div>
       </div>
-
-
     </div>
   );
 }

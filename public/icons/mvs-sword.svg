@@ -1,4 +1,44 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M3 3L10.5 19.5L13.5 13.5L19.5 10.5L3 3Z" fill="#D4A843" stroke="#0D0904" stroke-width="1.5" stroke-linejoin="round"/>
-  <circle cx="13.5" cy="13.5" r="1.5" fill="#FFFFFF"/>
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- MVS VIBRATION GLOW AURA (HIGH FREQUENCY OSCILLATION) -->
+  <path d="M2 2 L20.5 16.5 L16.5 20.5 Z" fill="#FF1E27" fill-opacity="0.25" />
+  <path d="M2 2 L21 16 L16 21 Z" stroke="#FF1E27" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.35" />
+  <path d="M2 2 L20 16.2 L16.2 20 Z" stroke="#FF404A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" />
+
+  <!-- BLADE BLACK SILHOUETTE OUTLINE FOR MAXIMUM CONTRAST -->
+  <path d="M2 2 L20 16.2 L18.5 18.5 L16.2 20 Z" fill="#050203" stroke="#050203" stroke-width="1.5" stroke-linejoin="round" />
+
+  <!-- BLADE RED VIBRO-FACETS (UPPER LIT / LOWER SHADOW) -->
+  <path d="M2.4 2.4 L19.4 16.4 L18.2 18.2 Z" fill="#FF2632" />
+  <path d="M2.4 2.4 L19.4 16.4" stroke="#FFA6AC" stroke-width="0.75" stroke-linecap="round" />
+  <path d="M2.4 2.4 L18.2 18.2 L16.4 19.4 Z" fill="#B8000C" />
+
+  <!-- WHITE-HOT HIGH FREQUENCY BLADE CORE -->
+  <path d="M2.4 2.4 L17.5 17.5" stroke="#FFFFFF" stroke-width="0.85" stroke-linecap="round" />
+
+  <!-- HILT / GRIP -->
+  <path d="M18.5 18.5 L26 26" stroke="#0D0B08" stroke-width="3.2" stroke-linecap="square" />
+  <path d="M19.5 19.5 L25.5 25.5" stroke="#42372A" stroke-width="2.2" stroke-linecap="square" />
+  <!-- Grip gold bands -->
+  <path d="M20.5 21.5 L21.5 20.5" stroke="#D4A843" stroke-width="1.2" />
+  <path d="M22.5 23.5 L23.5 22.5" stroke="#D4A843" stroke-width="1.2" />
+  <path d="M24.5 25.5 L25.5 24.5" stroke="#D4A843" stroke-width="1.2" />
+
+  <!-- GOLD POMMEL -->
+  <path d="M25 27 L27 25 L31 29 L29 31 Z" fill="#050203" />
+  <path d="M25.5 26.5 L26.5 25.5 L30 29 L29 30 Z" fill="#D4A843" stroke="#FFE58F" stroke-width="0.5" />
+
+  <!-- GOLD CROSSGUARD (FORWARD-SWEEPING WINGS) -->
+  <path d="M17.5 15.5 L23.5 10.5 L22 8 L18.5 13.5 L13.5 18.5 L8 22 L10.5 23.5 L15.5 17.5 Z" fill="#050203" stroke="#050203" stroke-width="1.2" stroke-linejoin="round" />
+  <path d="M18 15.5 L23 11 L21.8 9 L19 13.8 Z" fill="#D4A843" />
+  <path d="M18 15.5 L22.8 11.2" stroke="#FFF1BA" stroke-width="0.8" />
+  <path d="M15.5 18 L11 23 L9 21.8 L13.8 19 Z" fill="#B88A27" />
+  <path d="M15.5 18 L11.2 22.8" stroke="#FFF1BA" stroke-width="0.8" />
+
+  <!-- Guard Center Crest -->
+  <circle cx="17.5" cy="17.5" r="3.2" fill="#D4A843" stroke="#050203" stroke-width="0.8" />
+
+  <!-- EMERALD SAKURADITE CORE GEM -->
+  <polygon points="17.5,15.2 19.8,17.5 17.5,19.8 15.2,17.5" fill="#00E676" stroke="#050203" stroke-width="0.6" />
+  <polygon points="17.5,16 19,17.5 17.5,19 16,17.5" fill="#B9F6CA" />
+  <circle cx="17.5" cy="17.5" r="0.6" fill="#FFFFFF" />
 </svg>

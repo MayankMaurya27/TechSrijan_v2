@@ -43,7 +43,7 @@ export function Navbar() {
           : "opacity-0 -translate-y-8 invisible"
       }`}
     >
-      <div className="group/navbar relative w-[96%] max-w-[1100px] lg:max-w-[1150px] xl:max-w-[1200px] hover:max-w-[1180px] lg:hover:max-w-[1240px] xl:hover:max-w-[1290px] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto">
+      <div className="group/navbar relative w-[95%] max-w-[960px] lg:max-w-[1000px] xl:max-w-[1040px] hover:max-w-[1180px] lg:hover:max-w-[1240px] xl:hover:max-w-[1290px] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto">
         {/* SVG Mecha HUD Frame with Live Moving Neon Laser Border */}
         <svg
           className="absolute inset-0 w-full h-[54px] sm:h-[62px] pointer-events-none -z-10 transition-all duration-500 group-hover/navbar:brightness-115"
@@ -153,7 +153,7 @@ export function Navbar() {
         />
 
         {/* Inner Content Bar */}
-        <div className="relative flex h-[50px] sm:h-[58px] items-center justify-between px-3 sm:px-6">
+        <div className="relative flex h-[50px] sm:h-[58px] items-center justify-between px-3 sm:px-5">
           {/* LEFT: [ TS ] Badge + TECHSRIJAN Title */}
           <div className="flex items-center gap-3 sm:gap-4">
             <Link href="/" className="group flex items-center gap-2.5">
@@ -175,7 +175,7 @@ export function Navbar() {
           </div>
 
           {/* CENTER: Navigation Links with Vertical Dividers */}
-          <nav className="hidden lg:flex items-center gap-3 xl:gap-5 font-sans text-[11px] xl:text-xs tracking-[0.22em] text-[#d6c7b2]">
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-4 group-hover/navbar:gap-3 xl:group-hover/navbar:gap-5 transition-all duration-500 font-sans text-[10px] xl:text-[11px] group-hover/navbar:text-[11.5px] xl:group-hover/navbar:text-xs tracking-[0.16em] group-hover/navbar:tracking-[0.22em] text-[#d6c7b2]">
             <Link
               href="/"
               className="px-1.5 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"

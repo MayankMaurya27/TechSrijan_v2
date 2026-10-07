@@ -92,7 +92,7 @@ export function Navbar() {
           : "opacity-0 -translate-y-8 invisible"
       }`}
     >
-      <div className="group/navbar relative w-[96%] max-w-[1100px] lg:max-w-[1150px] xl:max-w-[1200px] hover:max-w-[1180px] lg:hover:max-w-[1240px] xl:hover:max-w-[1290px] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto">
+      <div className="group/navbar relative w-[95%] max-w-[960px] lg:max-w-[1000px] xl:max-w-[1040px] hover:max-w-[1180px] lg:hover:max-w-[1240px] xl:hover:max-w-[1290px] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto">
         <svg
           className="absolute inset-0 w-full h-[54px] sm:h-[62px] pointer-events-none -z-10 transition-all duration-500 group-hover/navbar:brightness-115"
           style={{ filter: currentThemeConfig.ambientChassisGlow }}
@@ -187,7 +187,7 @@ export function Navbar() {
           className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary,#d4a843)] pointer-events-none animate-pulse ${currentThemeConfig.beaconShadow}`}
         />
 
-        <div className="relative flex h-[50px] sm:h-[58px] items-center justify-between px-3 sm:px-6">
+        <div className="relative flex h-[50px] sm:h-[58px] items-center justify-between px-3 sm:px-5">
           <div className="flex items-center flex-shrink-0 mr-2 sm:mr-3">
             <Link href="/" className="group relative flex items-center" aria-label="TechSrijan Home">
               {/* Luminous Logo */}
@@ -202,90 +202,90 @@ export function Navbar() {
             </Link>
           </div>
 
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-2 group-hover/navbar:gap-2 xl:group-hover/navbar:gap-3 transition-all duration-500 font-sans text-[9px] xl:text-[10px] 2xl:text-[10.5px] tracking-[0.11em] xl:tracking-[0.15em] text-[#d6c7b2]">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 group-hover/navbar:gap-2 xl:group-hover/navbar:gap-3 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] font-sans text-[9px] xl:text-[9.5px] 2xl:text-[10px] group-hover/navbar:text-[10.5px] xl:group-hover/navbar:text-[11px] 2xl:group-hover/navbar:text-[11.5px] tracking-[0.10em] xl:tracking-[0.14em] group-hover/navbar:tracking-[0.14em] xl:group-hover/navbar:tracking-[0.18em] text-[#d6c7b2]">
             <Link
               href="/about"
-              className="px-1 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group whitespace-nowrap"
+              className="px-1 py-0.5 group-hover/navbar:px-1.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-500 relative group whitespace-nowrap"
             >
               <span>About</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
             </Link>
 
-            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px]">|</span>
+            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px] group-hover/navbar:text-[9px] xl:group-hover/navbar:text-[10px] transition-all duration-500">|</span>
 
             <Link
               href="/events"
-              className="px-1 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group whitespace-nowrap"
+              className="px-1 py-0.5 group-hover/navbar:px-1.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-500 relative group whitespace-nowrap"
             >
               <span>Events</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
             </Link>
 
-            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px]">|</span>
+            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px] group-hover/navbar:text-[9px] xl:group-hover/navbar:text-[10px] transition-all duration-500">|</span>
 
             <Link
               href="/guests"
-              className="px-1 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group whitespace-nowrap"
+              className="px-1 py-0.5 group-hover/navbar:px-1.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-500 relative group whitespace-nowrap"
             >
               <span>Guests</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
             </Link>
 
-            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px]">|</span>
+            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px] group-hover/navbar:text-[9px] xl:group-hover/navbar:text-[10px] transition-all duration-500">|</span>
 
             <Link
               href="/team"
-              className="px-1 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group whitespace-nowrap"
+              className="px-1 py-0.5 group-hover/navbar:px-1.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-500 relative group whitespace-nowrap"
             >
               <span>Team</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
             </Link>
 
-            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px]">|</span>
+            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px] group-hover/navbar:text-[9px] xl:group-hover/navbar:text-[10px] transition-all duration-500">|</span>
 
             <Link
               href="/sponsors"
-              className="px-1 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group whitespace-nowrap"
+              className="px-1 py-0.5 group-hover/navbar:px-1.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-500 relative group whitespace-nowrap"
             >
               <span>Sponsors</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
             </Link>
 
-            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px]">|</span>
+            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px] group-hover/navbar:text-[9px] xl:group-hover/navbar:text-[10px] transition-all duration-500">|</span>
 
             <Link
               href="/ambassador"
-              className="px-1 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group whitespace-nowrap"
+              className="px-1 py-0.5 group-hover/navbar:px-1.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-500 relative group whitespace-nowrap"
             >
               <span>Ambassador</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
             </Link>
 
-            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px]">|</span>
+            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px] group-hover/navbar:text-[9px] xl:group-hover/navbar:text-[10px] transition-all duration-500">|</span>
 
             <Link
               href="/accommodation"
-              className="px-1 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group whitespace-nowrap"
+              className="px-1 py-0.5 group-hover/navbar:px-1.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-500 relative group whitespace-nowrap"
             >
               <span>Stay</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
             </Link>
 
-            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px]">|</span>
+            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px] group-hover/navbar:text-[9px] xl:group-hover/navbar:text-[10px] transition-all duration-500">|</span>
 
             <Link
               href="/developers"
-              className="px-1 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group whitespace-nowrap"
+              className="px-1 py-0.5 group-hover/navbar:px-1.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-500 relative group whitespace-nowrap"
             >
               <span>Developers</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
             </Link>
 
-            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px]">|</span>
+            <span className="text-[rgba(212,168,67,0.25)] select-none text-[8px] xl:text-[9px] group-hover/navbar:text-[9px] xl:group-hover/navbar:text-[10px] transition-all duration-500">|</span>
 
             <Link
               href="/contact"
-              className="px-1 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group whitespace-nowrap"
+              className="px-1 py-0.5 group-hover/navbar:px-1.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-500 relative group whitespace-nowrap"
             >
               <span>Contact</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
@@ -296,21 +296,21 @@ export function Navbar() {
             <button
               type="button"
               onClick={toggleTheme}
-              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full border border-[rgba(212,168,67,0.45)] bg-black/60 shadow-[0_0_12px_rgba(212,168,67,0.18)] hover:border-[var(--accent-primary,#d4a843)] transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 group-hover/navbar:px-3 sm:group-hover/navbar:px-3.5 py-1 rounded-full border border-[rgba(212,168,67,0.45)] bg-black/60 shadow-[0_0_12px_rgba(212,168,67,0.18)] hover:border-[var(--accent-primary,#d4a843)] transition-all duration-500 active:scale-95 cursor-pointer whitespace-nowrap"
               title={`Active Theme: ${currentThemeConfig.title} (Click to cycle)`}
             >
               <div
-                className={`w-3 h-3 rounded-full transition-all duration-500 relative flex-shrink-0 ${currentThemeConfig.orbClass}`}
+                className={`w-3 h-3 group-hover/navbar:w-3.5 group-hover/navbar:h-3.5 rounded-full transition-all duration-500 relative flex-shrink-0 ${currentThemeConfig.orbClass}`}
               />
 
-              <span className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.18em] font-semibold text-[#f8eed9] uppercase">
+              <span className="font-mono text-[8.5px] sm:text-[9.5px] group-hover/navbar:text-[9.5px] sm:group-hover/navbar:text-[10.5px] tracking-[0.18em] group-hover/navbar:tracking-[0.20em] font-semibold text-[#f8eed9] uppercase transition-all duration-500">
                 {currentThemeConfig.label}
               </span>
             </button>
 
             <Link
               href="/dashboard"
-              className="hidden sm:inline-block clip-mecha-btn relative px-3 sm:px-4 py-1.5 font-sans font-bold text-[9.5px] sm:text-[10px] tracking-[0.18em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.22)] via-[rgba(212,168,67,0.1)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_25px_rgba(212,168,67,0.65)] transition-all active:scale-95 text-center whitespace-nowrap"
+              className="hidden sm:inline-block clip-mecha-btn relative px-3 sm:px-4 group-hover/navbar:px-3.5 sm:group-hover/navbar:px-4.5 py-1.5 font-sans font-bold text-[9.5px] sm:text-[10px] group-hover/navbar:text-[10.5px] sm:group-hover/navbar:text-[11px] tracking-[0.18em] group-hover/navbar:tracking-[0.20em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.22)] via-[rgba(212,168,67,0.1)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_25px_rgba(212,168,67,0.65)] transition-all duration-500 active:scale-95 text-center whitespace-nowrap"
             >
               Login/Sign Up
             </Link>

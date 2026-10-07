@@ -210,10 +210,20 @@ export function Navbar() {
             </Link>
           </div>
 
-          <nav className="hidden lg:flex items-center gap-3 xl:gap-5 font-sans text-[11px] xl:text-xs tracking-[0.22em] text-[#d6c7b2]">
+          <nav className="hidden lg:flex items-center gap-1.5 xl:gap-3 font-sans text-[10px] xl:text-[11px] tracking-[0.14em] xl:tracking-[0.18em] text-[#d6c7b2]">
+            <Link
+              href="/about"
+              className="px-1 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
+            >
+              <span>About</span>
+              <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
+            </Link>
+
+            <span className="text-[rgba(212,168,67,0.3)] select-none">|</span>
+
             <Link
               href="/events"
-              className="px-1.5 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
+              className="px-1 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
             >
               <span>Events</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
@@ -222,8 +232,28 @@ export function Navbar() {
             <span className="text-[rgba(212,168,67,0.3)] select-none">|</span>
 
             <Link
+              href="/guests"
+              className="px-1 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
+            >
+              <span>Guests</span>
+              <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
+            </Link>
+
+            <span className="text-[rgba(212,168,67,0.3)] select-none">|</span>
+
+            <Link
+              href="/team"
+              className="px-1 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
+            >
+              <span>Team</span>
+              <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
+            </Link>
+
+            <span className="text-[rgba(212,168,67,0.3)] select-none">|</span>
+
+            <Link
               href="/sponsors"
-              className="px-1.5 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
+              className="px-1 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
             >
               <span>Sponsors</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
@@ -233,7 +263,7 @@ export function Navbar() {
 
             <Link
               href="/ambassador"
-              className="px-1.5 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
+              className="px-1 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
             >
               <span>Ambassador</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
@@ -243,7 +273,7 @@ export function Navbar() {
 
             <Link
               href="/accommodation"
-              className="px-1.5 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
+              className="px-1 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
             >
               <span>Stay</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
@@ -253,7 +283,7 @@ export function Navbar() {
 
             <Link
               href="/developers"
-              className="px-1.5 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
+              className="px-1 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
             >
               <span>Developers</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
@@ -263,7 +293,7 @@ export function Navbar() {
 
             <Link
               href="/contact"
-              className="px-1.5 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
+              className="px-1 py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-colors relative group"
             >
               <span>Contact</span>
               <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-[var(--accent-primary,#d4a843)] transition-all duration-300 group-hover:w-full" />
@@ -308,11 +338,32 @@ export function Navbar() {
           <div className="lg:hidden mt-2 mx-2 rounded-lg border border-[rgba(212,168,67,0.4)] bg-[#0c0805]/95 backdrop-blur-2xl p-5 shadow-2xl">
             <div className="flex flex-col gap-4 font-sans text-xs tracking-[0.2em] text-[#d6c7b2]">
               <Link
+                href="/about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)]"
+              >
+                About
+              </Link>
+              <Link
                 href="/events"
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)]"
               >
                 Events
+              </Link>
+              <Link
+                href="/guests"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)]"
+              >
+                Guests
+              </Link>
+              <Link
+                href="/team"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-1 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)]"
+              >
+                Team
               </Link>
               <Link
                 href="/sponsors"

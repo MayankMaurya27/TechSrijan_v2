@@ -8,48 +8,19 @@ import { Menu, X } from "lucide-react";
 
 const SESSION_KEY = "techsrijan_intro_video_played";
 
+const NAVBAR_PATH =
+  "M 24,0 L 1176,0 C 1192,0 1200,8 1200,22 L 1200,42 C 1200,56 1192,64 1176,64 L 760,64 C 752,64 746,67 740,74 L 635,74 C 620,62 580,62 565,74 L 460,74 C 454,67 448,64 440,64 L 24,64 C 8,64 0,56 0,42 L 0,22 C 0,8 8,0 24,0 Z";
+
 export function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const { theme, setTheme } = useTheme();
   const isArrakis = theme === "arrakis";
 
-  // Check intro status: hide during intro on landing page, show after intro-complete
   useEffect(() => {
-    if (pathname !== "/") {
-      setIsVisible(true);
-      return;
-    }
-
-    // If already played in this tab (e.g. refresh), show immediately
-    if (typeof window !== "undefined") {
-      const hasPlayed = sessionStorage.getItem(SESSION_KEY);
-      if (hasPlayed) {
-        setIsVisible(true);
-        return;
-      }
-    }
-
-    // Otherwise, wait for intro video to complete
-    setIsVisible(false);
-
-    const handleIntroComplete = () => {
-      setIsVisible(true);
-    };
-
-    window.addEventListener("intro-complete", handleIntroComplete);
-
-    // Fallback timer: ensure navbar reveals if video is skipped/fails
-    const fallbackTimer = setTimeout(() => {
-      setIsVisible(true);
-    }, 4500);
-
-    return () => {
-      window.removeEventListener("intro-complete", handleIntroComplete);
-      clearTimeout(fallbackTimer);
-    };
+    setIsVisible(true);
   }, [pathname]);
 
   useEffect(() => {
@@ -72,78 +43,94 @@ export function Navbar() {
           : "opacity-0 -translate-y-8 invisible"
       }`}
     >
-      <div className="relative w-full max-w-[1020px] pointer-events-auto">
+      <div className="group/navbar relative w-[96%] max-w-[1100px] lg:max-w-[1150px] xl:max-w-[1200px] hover:max-w-[1180px] lg:hover:max-w-[1240px] xl:hover:max-w-[1290px] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto">
         {/* SVG Mecha HUD Frame with Live Moving Neon Laser Border */}
         <svg
-          className="absolute inset-0 w-full h-[62px] sm:h-[72px] pointer-events-none -z-10"
+          className="absolute inset-0 w-full h-[54px] sm:h-[62px] pointer-events-none -z-10 transition-all duration-500 group-hover/navbar:brightness-115"
+          style={{
+            filter: isArrakis
+              ? "drop-shadow(0 0 10px rgba(245, 158, 11, 0.7)) drop-shadow(0 0 24px rgba(217, 119, 6, 0.45))"
+              : "drop-shadow(0 0 10px rgba(239, 68, 68, 0.7)) drop-shadow(0 0 24px rgba(220, 38, 38, 0.45))",
+          }}
           viewBox="0 0 1200 76"
           preserveAspectRatio="none"
         >
           <defs>
             {/* Deep basalt dark glass fill with subtle warm gradient */}
             <linearGradient id="hud-bg-fill" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#120d08" stopOpacity="0.94" />
-              <stop offset="50%" stopColor="#080604" stopOpacity="0.97" />
-              <stop offset="100%" stopColor="#150e07" stopOpacity="0.95" />
+              <stop offset="0%" stopColor="#100b07" stopOpacity="0.95" />
+              <stop offset="50%" stopColor="#080604" stopOpacity="0.98" />
+              <stop offset="100%" stopColor="#130d07" stopOpacity="0.96" />
             </linearGradient>
 
-            {/* Glowing filter for the neon beam */}
-            <filter id="neon-beam-glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3.5" result="blur1" />
-              <feGaussianBlur stdDeviation="7" result="blur2" />
+            {/* High-Impact Radiant Neon Edge Halo */}
+            <filter id="neon-subtle-aura" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="4" result="blur1" />
+              <feGaussianBlur stdDeviation="8" result="blur2" />
               <feMerge>
                 <feMergeNode in="blur2" />
                 <feMergeNode in="blur1" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
+
+            {/* Crisp Laser Beam Glow */}
+            <filter id="neon-crisp-beam" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="2" result="blurCore" />
+              <feGaussianBlur stdDeviation="4.5" result="blurMid" />
+              <feMerge>
+                <feMergeNode in="blurMid" />
+                <feMergeNode in="blurCore" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
 
-          {/* 1. Backdrop Glass Fill with exact chamfered corners & bottom center arch notch */}
+          {/* 1. Backdrop Glass Fill with curved corners */}
           <path
-            d="M 16,0 L 1184,0 L 1200,16 L 1200,48 L 1184,64 L 760,64 L 740,74 L 635,74 C 620,62 580,62 565,74 L 460,74 L 440,64 L 16,64 L 0,48 L 0,16 Z"
+            d={NAVBAR_PATH}
             fill="url(#hud-bg-fill)"
             className="backdrop-blur-xl"
           />
 
-          {/* 2. Base Subtle Frame Stroke */}
+          {/* Base Frame Border */}
           <path
-            d="M 16,0 L 1184,0 L 1200,16 L 1200,48 L 1184,64 L 760,64 L 740,74 L 635,74 C 620,62 580,62 565,74 L 460,74 L 440,64 L 16,64 L 0,48 L 0,16 Z"
+            d={NAVBAR_PATH}
             fill="none"
-            stroke={isArrakis ? "rgba(212, 168, 67, 0.45)" : "rgba(255, 255, 255, 0.45)"}
-            strokeWidth="1.5"
+            stroke={isArrakis ? "rgba(245, 158, 11, 0.45)" : "rgba(239, 68, 68, 0.45)"}
+            strokeWidth="1.2"
             vectorEffect="non-scaling-stroke"
           />
 
-          {/* 3. LIVE MOVING NEON LASER BORDER - Layer 1: Wide Radiant Aura Bloom */}
+          {/* Flowing Radiant Outer Aura */}
           <path
-            d="M 16,0 L 1184,0 L 1200,16 L 1200,48 L 1184,64 L 760,64 L 740,74 L 635,74 C 620,62 580,62 565,74 L 460,74 L 440,64 L 16,64 L 0,48 L 0,16 Z"
+            d={NAVBAR_PATH}
             fill="none"
-            stroke={isArrakis ? "#ffb703" : "rgba(255, 255, 255, 0.7)"}
-            strokeWidth="7"
-            strokeOpacity="0.8"
+            stroke={isArrakis ? "#F59E0B" : "#FF1E27"}
+            strokeWidth="5.5"
+            strokeOpacity="0.75"
             vectorEffect="non-scaling-stroke"
-            filter="url(#neon-beam-glow)"
-            className="animate-neon-border-glow"
-          />
-
-          {/* 4. LIVE MOVING NEON LASER BORDER - Layer 2: Vivid High-Intensity Laser Arc */}
-          <path
-            d="M 16,0 L 1184,0 L 1200,16 L 1200,48 L 1184,64 L 760,64 L 740,74 L 635,74 C 620,62 580,62 565,74 L 460,74 L 440,64 L 16,64 L 0,48 L 0,16 Z"
-            fill="none"
-            stroke={isArrakis ? "#ffd700" : "#ffffff"}
-            strokeWidth="3.6"
-            strokeOpacity="1"
-            vectorEffect="non-scaling-stroke"
-            filter="url(#neon-beam-glow)"
+            filter="url(#neon-subtle-aura)"
             className="animate-neon-border"
           />
 
-          {/* 5. LIVE MOVING NEON LASER BORDER - Layer 3: White-Hot Core Laser Needle */}
+          {/* Flowing Saturated Mid Beam */}
           <path
-            d="M 16,0 L 1184,0 L 1200,16 L 1200,48 L 1184,64 L 760,64 L 740,74 L 635,74 C 620,62 580,62 565,74 L 460,74 L 440,64 L 16,64 L 0,48 L 0,16 Z"
+            d={NAVBAR_PATH}
             fill="none"
-            stroke="#ffffff"
+            stroke={isArrakis ? "#FBBF24" : "#EF4444"}
+            strokeWidth="3"
+            strokeOpacity="0.95"
+            vectorEffect="non-scaling-stroke"
+            filter="url(#neon-crisp-beam)"
+            className="animate-neon-border"
+          />
+
+          {/* Flowing Hot Theme Core Filament (NO WHITE) */}
+          <path
+            d={NAVBAR_PATH}
+            fill="none"
+            stroke={isArrakis ? "#D97706" : "#DC2626"}
             strokeWidth="1.8"
             strokeOpacity="1"
             vectorEffect="non-scaling-stroke"
@@ -153,7 +140,7 @@ export function Navbar() {
 
         {/* Bottom Center Solar Beacon Flare */}
         <div
-          className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-16 h-4 rounded-t-full blur-[3px] pointer-events-none ${
+          className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-16 h-3.5 rounded-t-full blur-[3px] pointer-events-none transition-all duration-500 group-hover/navbar:w-24 group-hover/navbar:blur-[4px] ${
             isArrakis
               ? "bg-gradient-to-t from-amber-400/80 via-amber-500/40 to-transparent"
               : "bg-gradient-to-t from-white/80 via-white/40 to-transparent"
@@ -166,7 +153,7 @@ export function Navbar() {
         />
 
         {/* Inner Content Bar */}
-        <div className="relative flex h-[54px] sm:h-[64px] items-center justify-between px-4 sm:px-8">
+        <div className="relative flex h-[50px] sm:h-[58px] items-center justify-between px-3 sm:px-6">
           {/* LEFT: [ TS ] Badge + TECHSRIJAN Title */}
           <div className="flex items-center gap-3 sm:gap-4">
             <Link href="/" className="group flex items-center gap-2.5">

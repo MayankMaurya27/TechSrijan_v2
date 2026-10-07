@@ -632,17 +632,17 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
 }
 
 .animate-neon-border {
-  stroke-dasharray: 850 1750;
+  stroke-dasharray: 380 920 380 920;
   animation: neonBorderTravel 5s linear infinite;
 }
 
 .animate-neon-border-glow {
-  stroke-dasharray: 900 1700;
+  stroke-dasharray: 400 900 400 900;
   animation: neonBorderTravel 5s linear infinite;
 }
 
 .animate-neon-border-fast {
-  stroke-dasharray: 700 1900;
+  stroke-dasharray: 380 920 380 920;
   animation: neonBorderTravel 3.5s linear infinite;
 }
 

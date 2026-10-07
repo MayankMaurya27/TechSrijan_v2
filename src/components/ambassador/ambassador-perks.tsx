@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, type Variants } from "framer-motion";
+import { useAmbassadorTheme } from "./ambassador-theme";
 
 interface PerkItem {
   number: string;
@@ -175,6 +176,7 @@ const rowVariants: Variants = {
 };
 
 export function AmbassadorPerks() {
+  const t = useAmbassadorTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.15 });
   const [activePerk, setActivePerk] = useState<number>(0);
@@ -190,7 +192,8 @@ export function AmbassadorPerks() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Topographic Elevation Curves (SVG Contour Lines) */}
         <svg
-          className="absolute -top-10 -right-10 w-[700px] lg:w-[1000px] h-[600px] lg:h-[800px] opacity-[0.08] text-red-500 pointer-events-none"
+          className="absolute -top-10 -right-10 w-[700px] lg:w-[1000px] h-[600px] lg:h-[800px] opacity-[0.08] pointer-events-none transition-colors duration-500"
+          style={{ color: t.accent }}
           viewBox="0 0 1000 800"
           fill="none"
           stroke="currentColor"
@@ -206,15 +209,15 @@ export function AmbassadorPerks() {
           <circle cx="850" cy="220" r="100" strokeDasharray="2 3" opacity="0.3" />
         </svg>
 
-        {/* Ambient Crimson Glow behind HUD Cards */}
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[550px] h-[550px] bg-red-600/10 blur-[150px] rounded-full pointer-events-none" />
+        {/* Ambient Theme Glow behind HUD Cards */}
+        <div className={`absolute top-1/2 right-0 -translate-y-1/2 w-[550px] h-[550px] ${t.perksAtmosphereClass} blur-[150px] rounded-full pointer-events-none transition-colors duration-500`} />
 
         {/* Subtle Sci-Fi Dot Matrix & Reticle Crosshairs */}
         <div
-          className="absolute inset-0 opacity-[0.035]"
+          className="absolute inset-0 opacity-[0.035] transition-all duration-500"
           style={{
             backgroundImage:
-              "radial-gradient(rgba(239,68,68,0.8) 1px, transparent 1px)",
+              `radial-gradient(${t.perksDotMatrixColor} 1px, transparent 1px)`,
             backgroundSize: "40px 40px",
           }}
         />
@@ -241,7 +244,7 @@ export function AmbassadorPerks() {
                   <span className="block text-[#FAF6EE] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
                     WHY JOIN
                   </span>
-                  <span className="block text-[#FF2A36] drop-shadow-[0_0_35px_rgba(255,42,54,0.55)]">
+                  <span className={`block ${t.perksHeaderAccent} drop-shadow-[0_0_35px_${t.accentGlow}] transition-colors duration-500`}>
                     THE VANGUARD
                   </span>
                 </h2>
@@ -272,7 +275,7 @@ export function AmbassadorPerks() {
                     e.preventDefault();
                     window.dispatchEvent(new CustomEvent("open-ambassador-modal"));
                   }}
-                  className="group relative overflow-hidden inline-flex items-center justify-center px-7 py-3 font-mono text-xs sm:text-xs font-bold tracking-[0.2em] uppercase text-white bg-gradient-to-r from-[#991B1B] via-[#C51D24] to-[#991B1B] hover:from-[#B91C1C] hover:to-[#E61924] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.5)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98] border border-red-500/50"
+                  className={`group relative overflow-hidden inline-flex items-center justify-center px-7 py-3 font-mono text-xs sm:text-xs font-bold tracking-[0.2em] uppercase text-white ${t.primaryBtnBg} ${t.primaryBtnHoverBg} transition-all duration-300 ${t.primaryBtnShadow} ${t.primaryBtnHoverShadow} active:scale-[0.98] border ${t.primaryBtnBorder}`}
                   style={{
                     clipPath:
                       "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
@@ -302,22 +305,22 @@ export function AmbassadorPerks() {
                   className="w-full h-full select-none"
                 >
                   <defs>
-                    {/* Stealth Wing Crimson Gradients */}
+                    {/* Stealth Wing Theme Gradients */}
                     <linearGradient id="wing-top-left" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#8A0B12" stopOpacity="0.85" />
-                      <stop offset="50%" stopColor="#C4131C" stopOpacity="0.75" />
-                      <stop offset="100%" stopColor="#FF1E27" stopOpacity="0.9" />
+                      <stop offset="0%" stopColor={t.perksInsignia.wingTopLeft0} stopOpacity="0.85" />
+                      <stop offset="50%" stopColor={t.perksInsignia.wingTopLeft50} stopOpacity="0.75" />
+                      <stop offset="100%" stopColor={t.perksInsignia.wingTopLeft100} stopOpacity="0.9" />
                     </linearGradient>
 
                     <linearGradient id="wing-top-right" x1="100%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#8A0B12" stopOpacity="0.85" />
-                      <stop offset="50%" stopColor="#C4131C" stopOpacity="0.75" />
-                      <stop offset="100%" stopColor="#FF1E27" stopOpacity="0.9" />
+                      <stop offset="0%" stopColor={t.perksInsignia.wingTopLeft0} stopOpacity="0.85" />
+                      <stop offset="50%" stopColor={t.perksInsignia.wingTopLeft50} stopOpacity="0.75" />
+                      <stop offset="100%" stopColor={t.perksInsignia.wingTopLeft100} stopOpacity="0.9" />
                     </linearGradient>
 
                     <linearGradient id="wing-facet-dark" x1="0%" y1="50%" x2="100%" y2="50%">
-                      <stop offset="0%" stopColor="#4A050A" stopOpacity="0.9" />
-                      <stop offset="100%" stopColor="#7A0A10" stopOpacity="0.85" />
+                      <stop offset="0%" stopColor={t.perksInsignia.wingFacetDark0} stopOpacity="0.9" />
+                      <stop offset="100%" stopColor={t.perksInsignia.wingFacetDark100} stopOpacity="0.85" />
                     </linearGradient>
 
                     {/* Mountain Shading Gradients */}
@@ -377,10 +380,10 @@ export function AmbassadorPerks() {
                       opacity="0.75"
                     />
 
-                    {/* Sharp Rocky Ridge Rim Lines with subtle ambient red lighting */}
+                    {/* Sharp Rocky Ridge Rim Lines with themed lighting */}
                     <polyline
                       points="0,180 40,140 80,170 125,130 175,185 240,145 305,200 380,155 460,190"
-                      stroke="#FF2A36"
+                      stroke={t.perksInsignia.ridgeColor}
                       strokeWidth="0.8"
                       strokeOpacity="0.35"
                     />
@@ -390,32 +393,32 @@ export function AmbassadorPerks() {
                       LAYER 2: Cyber Crosshairs & Concentric Rings
                       ---------------------------------------------- */}
                   {/* Concentric Radar Rings */}
-                  <circle cx="230" cy="138" r="120" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.18" strokeDasharray="3 5" />
-                  <circle cx="230" cy="138" r="92" stroke="#FF2A36" strokeWidth="0.9" strokeOpacity="0.32" />
-                  <circle cx="230" cy="138" r="64" stroke="#FF2A36" strokeWidth="1.1" strokeOpacity="0.45" />
-                  <circle cx="230" cy="138" r="25" stroke="#FF2A36" strokeWidth="1.5" strokeOpacity="0.85" />
+                  <circle cx="230" cy="138" r="120" stroke={t.perksInsignia.ridgeColor} strokeWidth="0.8" strokeOpacity="0.18" strokeDasharray="3 5" />
+                  <circle cx="230" cy="138" r="92" stroke={t.perksInsignia.ridgeColor} strokeWidth="0.9" strokeOpacity="0.32" />
+                  <circle cx="230" cy="138" r="64" stroke={t.perksInsignia.ridgeColor} strokeWidth="1.1" strokeOpacity="0.45" />
+                  <circle cx="230" cy="138" r="25" stroke={t.perksInsignia.ridgeColor} strokeWidth="1.5" strokeOpacity="0.85" />
 
                   {/* Horizontal Crosshair Ray segments */}
-                  <line x1="25" y1="138" x2="70" y2="138" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.4" strokeDasharray="3 3" />
-                  <line x1="390" y1="138" x2="435" y2="138" stroke="#FF2A36" strokeWidth="0.8" strokeOpacity="0.4" strokeDasharray="3 3" />
+                  <line x1="25" y1="138" x2="70" y2="138" stroke={t.perksInsignia.ridgeColor} strokeWidth="0.8" strokeOpacity="0.4" strokeDasharray="3 3" />
+                  <line x1="390" y1="138" x2="435" y2="138" stroke={t.perksInsignia.ridgeColor} strokeWidth="0.8" strokeOpacity="0.4" strokeDasharray="3 3" />
 
                   {/* Vertical Needle Spire (Top & Center) */}
-                  <line x1="230" y1="25" x2="230" y2="110" stroke="#FF2A36" strokeWidth="1.8" strokeLinecap="round" />
-                  <line x1="230" y1="165" x2="230" y2="250" stroke="#FF2A36" strokeWidth="1.8" strokeLinecap="round" />
+                  <line x1="230" y1="25" x2="230" y2="110" stroke={t.perksInsignia.ridgeColor} strokeWidth="1.8" strokeLinecap="round" />
+                  <line x1="230" y1="165" x2="230" y2="250" stroke={t.perksInsignia.ridgeColor} strokeWidth="1.8" strokeLinecap="round" />
 
                   {/* Bottom Dagger Sheath Contour (Exact from Image 2) */}
                   <polygon
                     points="222,190 222,232 230,255 238,232 238,190"
-                    stroke="#FF2A36"
+                    stroke={t.perksInsignia.ridgeColor}
                     strokeWidth="1.4"
-                    fill="rgba(255, 42, 54, 0.08)"
+                    fill="rgba(0, 0, 0, 0.4)"
                   />
 
                   {/* Diagonal 45-degree Targeting Ray shooting Up-Right */}
-                  <line x1="230" y1="138" x2="385" y2="18" stroke="#FF2A36" strokeWidth="1.2" strokeOpacity="0.85" />
-                  <line x1="308" y1="58" x2="322" y2="72" stroke="#FF2A36" strokeWidth="1" strokeOpacity="0.7" />
+                  <line x1="230" y1="138" x2="385" y2="18" stroke={t.perksInsignia.ridgeColor} strokeWidth="1.2" strokeOpacity="0.85" />
+                  <line x1="308" y1="58" x2="322" y2="72" stroke={t.perksInsignia.ridgeColor} strokeWidth="1" strokeOpacity="0.7" />
                   {/* Small Square Beacon on Grid Ray */}
-                  <rect x="310" y="42" width="5.5" height="5.5" fill="#FF2A36" opacity="0.65" />
+                  <rect x="310" y="42" width="5.5" height="5.5" fill={t.perksInsignia.beaconColor} opacity="0.75" />
 
                   {/* ----------------------------------------------
                       LAYER 3: 4 Faceted 3D Stealth Wings (The Emblem)
@@ -425,18 +428,18 @@ export function AmbassadorPerks() {
                     <polygon
                       points="220,78 170,105 55,138 148,130 210,93"
                       fill="url(#wing-top-left)"
-                      stroke="#FF2A36"
+                      stroke={t.perksInsignia.ridgeColor}
                       strokeWidth="1.6"
                       strokeLinejoin="round"
                     />
                     <polygon
                       points="220,78 148,130 185,123 216,99"
                       fill="url(#wing-facet-dark)"
-                      stroke="#FF2A36"
+                      stroke={t.perksInsignia.ridgeColor}
                       strokeWidth="1.1"
                       strokeLinejoin="round"
                     />
-                    <line x1="220" y1="78" x2="55" y2="138" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                    <line x1="220" y1="78" x2="55" y2="138" stroke={t.perksInsignia.labelColor} strokeWidth="0.8" opacity="0.65" />
                   </g>
 
                   {/* UPPER-RIGHT WING */}
@@ -444,18 +447,18 @@ export function AmbassadorPerks() {
                     <polygon
                       points="240,78 290,105 405,138 312,130 250,93"
                       fill="url(#wing-top-right)"
-                      stroke="#FF2A36"
+                      stroke={t.perksInsignia.ridgeColor}
                       strokeWidth="1.6"
                       strokeLinejoin="round"
                     />
                     <polygon
                       points="240,78 312,130 275,123 244,99"
                       fill="url(#wing-facet-dark)"
-                      stroke="#FF2A36"
+                      stroke={t.perksInsignia.ridgeColor}
                       strokeWidth="1.1"
                       strokeLinejoin="round"
                     />
-                    <line x1="240" y1="78" x2="405" y2="138" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                    <line x1="240" y1="78" x2="405" y2="138" stroke={t.perksInsignia.labelColor} strokeWidth="0.8" opacity="0.65" />
                   </g>
 
                   {/* LOWER-LEFT WING */}
@@ -463,18 +466,18 @@ export function AmbassadorPerks() {
                     <polygon
                       points="220,198 170,171 55,138 148,146 210,183"
                       fill="url(#wing-top-left)"
-                      stroke="#FF2A36"
+                      stroke={t.perksInsignia.ridgeColor}
                       strokeWidth="1.6"
                       strokeLinejoin="round"
                     />
                     <polygon
                       points="220,198 148,146 185,153 216,177"
                       fill="url(#wing-facet-dark)"
-                      stroke="#FF2A36"
+                      stroke={t.perksInsignia.ridgeColor}
                       strokeWidth="1.1"
                       strokeLinejoin="round"
                     />
-                    <line x1="220" y1="198" x2="55" y2="138" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                    <line x1="220" y1="198" x2="55" y2="138" stroke={t.perksInsignia.labelColor} strokeWidth="0.8" opacity="0.65" />
                   </g>
 
                   {/* LOWER-RIGHT WING */}
@@ -482,26 +485,26 @@ export function AmbassadorPerks() {
                     <polygon
                       points="240,198 290,171 405,138 312,146 250,183"
                       fill="url(#wing-top-right)"
-                      stroke="#FF2A36"
+                      stroke={t.perksInsignia.ridgeColor}
                       strokeWidth="1.6"
                       strokeLinejoin="round"
                     />
                     <polygon
                       points="240,198 312,146 275,153 244,177"
                       fill="url(#wing-facet-dark)"
-                      stroke="#FF2A36"
+                      stroke={t.perksInsignia.ridgeColor}
                       strokeWidth="1.1"
                       strokeLinejoin="round"
                     />
-                    <line x1="240" y1="198" x2="405" y2="138" stroke="#FFA6AC" strokeWidth="0.8" opacity="0.65" />
+                    <line x1="240" y1="198" x2="405" y2="138" stroke={t.perksInsignia.labelColor} strokeWidth="0.8" opacity="0.65" />
                   </g>
 
                   {/* ----------------------------------------------
                       LAYER 4: Center Core Glowing Beacon
                       ---------------------------------------------- */}
-                  <circle cx="230" cy="138" r="14" fill="#FF1E27" opacity="0.45" filter="url(#core-glow)" />
-                  <circle cx="230" cy="138" r="7" fill="#FF2A36" />
-                  <circle cx="230" cy="138" r="3" fill="#FFE5E7" />
+                  <circle cx="230" cy="138" r="14" fill={t.perksInsignia.beaconColor} opacity="0.45" filter="url(#core-glow)" />
+                  <circle cx="230" cy="138" r="7" fill={t.perksInsignia.beaconColor} />
+                  <circle cx="230" cy="138" r="3" fill="#FFFFFF" />
                 </svg>
 
                 {/* ----------------------------------------------
@@ -509,16 +512,28 @@ export function AmbassadorPerks() {
                     PEOPLE / IDEAS / CAMPUS / BEYOND
                     ---------------------------------------------- */}
                 <div className="absolute top-1.5 right-1.5 flex flex-col gap-0.5 text-right pointer-events-none">
-                  <span className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                  <span
+                    className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] transition-colors duration-500"
+                    style={{ color: t.perksInsignia.labelColor }}
+                  >
                     PEOPLE
                   </span>
-                  <span className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                  <span
+                    className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] transition-colors duration-500"
+                    style={{ color: t.perksInsignia.labelColor }}
+                  >
                     IDEAS
                   </span>
-                  <span className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                  <span
+                    className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] transition-colors duration-500"
+                    style={{ color: t.perksInsignia.labelColor }}
+                  >
                     CAMPUS
                   </span>
-                  <span className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] text-[#D4A373] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                  <span
+                    className="font-mono text-[8.5px] sm:text-[9.5px] tracking-[0.26em] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] transition-colors duration-500"
+                    style={{ color: t.perksInsignia.labelColor }}
+                  >
                     BEYOND
                   </span>
                 </div>
@@ -528,29 +543,50 @@ export function AmbassadorPerks() {
                     A BRIGHTER / TOMORROW / TOGETHER. ──
                     ---------------------------------------------- */}
                 <div className="absolute bottom-1.5 left-1 flex items-end gap-2 pointer-events-none">
-                  {/* Red L-Bracket Notch */}
-                  <div className="w-3 h-8 border-l-2 border-b-2 border-[#FF2A36]" />
+                  {/* Themed L-Bracket Notch */}
+                  <div
+                    className="w-3 h-8 border-l-2 border-b-2 transition-colors duration-500"
+                    style={{ borderColor: t.perksInsignia.bracketColor }}
+                  />
                   <div className="flex flex-col gap-0.5 pb-0.5">
-                    <span className="font-mono text-[7.5px] sm:text-[8px] tracking-[0.22em] text-[#D4A373] uppercase font-semibold leading-tight">
+                    <span
+                      className="font-mono text-[7.5px] sm:text-[8px] tracking-[0.22em] uppercase font-semibold leading-tight transition-colors duration-500"
+                      style={{ color: t.perksInsignia.labelColor }}
+                    >
                       A BRIGHTER
                     </span>
-                    <span className="font-mono text-[7.5px] sm:text-[8px] tracking-[0.22em] text-[#D4A373] uppercase font-semibold leading-tight">
+                    <span
+                      className="font-mono text-[7.5px] sm:text-[8px] tracking-[0.22em] uppercase font-semibold leading-tight transition-colors duration-500"
+                      style={{ color: t.perksInsignia.labelColor }}
+                    >
                       TOMORROW
                     </span>
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono text-[7.5px] sm:text-[8px] tracking-[0.22em] text-[#D4A373] uppercase font-semibold leading-tight">
+                      <span
+                        className="font-mono text-[7.5px] sm:text-[8px] tracking-[0.22em] uppercase font-semibold leading-tight transition-colors duration-500"
+                        style={{ color: t.perksInsignia.labelColor }}
+                      >
                         TOGETHER.
                       </span>
-                      <div className="w-4 h-[1.5px] bg-[#D4A373]" />
+                      <div
+                        className="w-4 h-[1.5px] transition-colors duration-500"
+                        style={{ background: t.perksInsignia.labelColor }}
+                      />
                     </div>
                   </div>
                 </div>
 
                 {/* ----------------------------------------------
-                    BOTTOM-RIGHT GLOWING RED SQUARE BEACON
+                    BOTTOM-RIGHT GLOWING SQUARE BEACON
                     ---------------------------------------------- */}
                 <div className="absolute bottom-3 right-5 pointer-events-none">
-                  <div className="w-2.5 h-2.5 bg-[#FF2A36] shadow-[0_0_10px_#FF2A36] rounded-[1px] animate-pulse" />
+                  <div
+                    className="w-2.5 h-2.5 rounded-[1px] animate-pulse transition-all duration-500"
+                    style={{
+                      background: t.perksInsignia.beaconColor,
+                      boxShadow: `0 0 10px ${t.perksInsignia.beaconColor}`,
+                    }}
+                  />
                 </div>
               </div>
             </motion.div>
@@ -577,52 +613,55 @@ export function AmbassadorPerks() {
                     onMouseEnter={() => setActivePerk(index)}
                     className={`group relative rounded-[3px] transition-all duration-300 cursor-pointer ${
                       isActive
-                        ? "bg-gradient-to-r from-red-950/40 via-[#0e0909]/90 to-[#0c0808] border border-[#FF2A36] shadow-[0_0_24px_rgba(255,42,54,0.32)]"
-                        : "bg-[#0b0808]/85 hover:bg-[#120a0a]/90 border border-neutral-800/80 hover:border-red-500/60 shadow-[0_4px_20px_rgba(0,0,0,0.6)]"
+                        ? `${t.perksCardActiveBg} border ${t.perksCardActiveBorder} ${t.perksCardActiveShadow}`
+                        : `bg-[#0b0808]/85 hover:bg-[#120a0a]/90 border border-neutral-800/80 ${t.perksCardHoverBorder} shadow-[0_4px_20px_rgba(0,0,0,0.6)]`
                     }`}
                   >
                     {/* Left Sci-Fi Corner Brackets (⌜ and ⌞) */}
                     <div
                       className={`absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 transition-colors duration-300 pointer-events-none ${
                         isActive
-                          ? "border-[#FF2A36]"
-                          : "border-red-500/50 group-hover:border-[#FF2A36]"
+                          ? t.perksBracketActive
+                          : t.perksBracketDefault
                       }`}
                     />
                     <div
                       className={`absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 transition-colors duration-300 pointer-events-none ${
                         isActive
-                          ? "border-[#FF2A36]"
-                          : "border-red-500/50 group-hover:border-[#FF2A36]"
+                          ? t.perksBracketActive
+                          : t.perksBracketDefault
                       }`}
                     />
 
                     {/* Right Edge Bracket */}
                     <div
                       className={`absolute top-0 right-0 w-1.5 h-1.5 border-t border-r transition-colors duration-300 pointer-events-none ${
-                        isActive ? "border-[#FF2A36]" : "border-neutral-700/60"
+                        isActive ? t.perksBracketActive : "border-neutral-700/60"
                       }`}
                     />
                     <div
                       className={`absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r transition-colors duration-300 pointer-events-none ${
-                        isActive ? "border-[#FF2A36]" : "border-neutral-700/60"
+                        isActive ? t.perksBracketActive : "border-neutral-700/60"
                       }`}
                     />
 
                     {/* Row Content */}
                     <div className="py-3.5 sm:py-4 px-5 sm:px-6 flex items-center justify-between gap-4">
-                      {/* Left: Red Monospace Number */}
+                      {/* Left: Themed Monospace Number */}
                       <div className="flex items-center gap-3.5 sm:gap-4 flex-shrink-0">
-                        <span className="font-impact text-2xl sm:text-3xl text-[#FF2A36] tracking-wider drop-shadow-[0_0_12px_rgba(255,42,54,0.45)] w-8 sm:w-10 text-center">
+                        <span className={`font-impact text-2xl sm:text-3xl ${t.perksNumberClass} tracking-wider w-8 sm:w-10 text-center transition-all duration-300`}>
                           {perk.number}
                         </span>
                         {/* Vertical Hairline Divider */}
-                        <div className="h-8 w-[1px] bg-red-500/20 hidden sm:block" />
+                        <div
+                          className="h-8 w-[1px] hidden sm:block transition-colors duration-500"
+                          style={{ background: `${t.accent}33` }}
+                        />
                       </div>
 
                       {/* Middle: Title & Description */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-impact text-sm sm:text-base font-normal tracking-[0.14em] text-white uppercase group-hover:text-red-100 transition-colors">
+                        <h3 className="font-impact text-sm sm:text-base font-normal tracking-[0.14em] text-white uppercase group-hover:text-white transition-colors">
                           {perk.title}
                         </h3>
                         <p className="mt-0.5 text-xs text-neutral-400 font-sans font-light leading-snug group-hover:text-neutral-300 transition-colors">
@@ -630,13 +669,13 @@ export function AmbassadorPerks() {
                         </p>
                       </div>
 
-                      {/* Right: Crimson Line-Art Icon */}
+                      {/* Right: Themed Line-Art Icon */}
                       <div className="flex-shrink-0 ml-2">
                         <div
                           className={`w-8 h-8 sm:w-9 sm:h-9 rounded-sm flex items-center justify-center transition-all duration-300 ${
                             isActive
-                              ? "text-[#FF2A36] scale-110 drop-shadow-[0_0_10px_rgba(255,42,54,0.6)]"
-                              : "text-[#FF2A36]/80 group-hover:text-[#FF2A36] group-hover:scale-110"
+                              ? `${t.perksIconActiveColor} scale-110 drop-shadow-[0_0_10px_${t.accentGlow}]`
+                              : `${t.perksIconDefaultColor} group-hover:scale-110`
                           }`}
                         >
                           <Icon className="w-6 h-6 sm:w-7 sm:h-7" />

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { MapPin, ChevronDown, ChevronUp } from "lucide-react";
+import { useAmbassadorTheme } from "./ambassador-theme";
 
 const TARGET_COLLEGES = [
   // Gorakhpur (Host & Local Engineering Colleges)
@@ -106,25 +107,26 @@ const TARGET_COLLEGES = [
   },
 ];
 
-const TIER_LABELS = {
-  host: {
-    label: "HOST UNIVERSITY",
-    color: "text-red-400 border-red-500/50 bg-red-950/40 shadow-[0_0_12px_rgba(255,30,39,0.3)]",
-  },
-  primary: {
-    label: "GORAKHPUR",
-    color: "text-red-400/90 border-red-500/30 bg-red-950/25",
-  },
-  secondary: {
-    label: "EASTERN UP",
-    color: "text-red-300/80 border-red-500/20 bg-red-950/15",
-  },
-};
-
 export function AmbassadorColleges() {
+  const t = useAmbassadorTheme();
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [showAll, setShowAll] = useState(false);
+
+  const tierLabels = {
+    host: {
+      label: "HOST UNIVERSITY",
+      color: t.collegesTierHost,
+    },
+    primary: {
+      label: "GORAKHPUR",
+      color: t.collegesTierPrimary,
+    },
+    secondary: {
+      label: "EASTERN UP",
+      color: t.collegesTierSecondary,
+    },
+  };
 
   const displayColleges = showAll ? TARGET_COLLEGES : TARGET_COLLEGES.slice(0, 8);
 
@@ -133,8 +135,8 @@ export function AmbassadorColleges() {
       ref={ref}
       className="relative pt-6 sm:pt-8 lg:pt-10 pb-8 sm:pb-10 lg:pb-12 bg-black overflow-hidden select-none"
     >
-      {/* Ambient bloody red glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-red-950/15 blur-[150px] rounded-full pointer-events-none" />
+      {/* Ambient Theme glow */}
+      <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] ${t.collegesAtmosphereClass} blur-[150px] rounded-full pointer-events-none transition-colors duration-500`} />
 
       <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         
@@ -149,7 +151,7 @@ export function AmbassadorColleges() {
         >
           <h2 className="font-impact text-4xl sm:text-5xl lg:text-6xl tracking-wide uppercase text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
             TARGET{" "}
-            <span className="text-[#FF2A36] drop-shadow-[0_0_35px_rgba(255,42,54,0.7)]">
+            <span className={`${t.collegesHeaderGradient} drop-shadow-[0_0_35px_${t.accentGlow}] transition-colors duration-500`}>
               COLLEGES
             </span>
           </h2>
@@ -159,7 +161,7 @@ export function AmbassadorColleges() {
           </p>
         </motion.div>
 
-        {/* Stats bar (States removed, strictly focused metrics) */}
+        {/* Stats bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -172,7 +174,7 @@ export function AmbassadorColleges() {
             { value: "10K+", label: "Student Network" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
-              <div className="font-impact text-3xl sm:text-4xl tracking-wider text-transparent bg-clip-text bg-gradient-to-b from-[#FF2A36] to-[#DC2626] drop-shadow-[0_0_15px_rgba(255,42,54,0.5)]">
+              <div className={`font-impact text-3xl sm:text-4xl tracking-wider text-transparent bg-clip-text bg-gradient-to-b ${t.collegesStatGradient} drop-shadow-[0_0_15px_${t.accentGlow}] transition-all duration-500`}>
                 {stat.value}
               </div>
               <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-neutral-400 mt-1">
@@ -182,31 +184,31 @@ export function AmbassadorColleges() {
           ))}
         </motion.div>
 
-        {/* Colleges grid in Bloody Red theme */}
+        {/* Colleges grid in dynamic theme */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
           {displayColleges.map((college, i) => {
-            const tierInfo = TIER_LABELS[college.tier];
+            const tierInfo = tierLabels[college.tier];
             return (
               <motion.div
                 key={college.name}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.04 * i + 0.15 }}
-                className="group relative p-5 rounded-lg border border-red-500/20 bg-gradient-to-br from-[#140406]/90 via-[#0B0203]/95 to-black/95 hover:border-red-500/60 hover:shadow-[0_0_25px_rgba(220,38,38,0.25)] transition-all duration-300 flex flex-col justify-between"
+                className={`group relative p-5 rounded-lg border ${t.collegesCardBorder} bg-gradient-to-br from-[#140406]/90 via-[#0B0203]/95 to-black/95 ${t.collegesCardHoverBorder} ${t.collegesCardHoverShadow} transition-all duration-300 flex flex-col justify-between`}
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2.5">
                     <span
-                      className={`font-mono text-[9px] font-bold tracking-[0.2em] px-2 py-0.5 rounded border ${tierInfo.color}`}
+                      className={`font-mono text-[9px] font-bold tracking-[0.2em] px-2 py-0.5 rounded border ${tierInfo.color} transition-all duration-500`}
                     >
                       {tierInfo.label}
                     </span>
                     <span className="flex items-center gap-1 font-mono text-[10px] text-neutral-400">
-                      <MapPin className="w-2.5 h-2.5 text-red-500" />
+                      <MapPin className={`w-2.5 h-2.5 ${t.collegesPinColor} transition-colors duration-500`} />
                       {college.city}
                     </span>
                   </div>
-                  <h3 className="font-impact text-lg sm:text-xl text-white tracking-wide uppercase group-hover:text-red-400 transition-colors drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+                  <h3 className={`font-impact text-lg sm:text-xl text-white tracking-wide uppercase group-hover:${t.accentTextClass} transition-colors drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]`}>
                     {college.name}
                   </h3>
                   <p className="mt-1 text-xs text-neutral-400 font-sans leading-relaxed line-clamp-2">
@@ -223,7 +225,7 @@ export function AmbassadorColleges() {
           <div className="mt-8 text-center">
             <button
               onClick={() => setShowAll(!showAll)}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-sm font-mono text-xs tracking-[0.2em] uppercase text-white border border-red-500/40 bg-red-950/30 hover:bg-red-900/40 hover:border-red-500/70 transition-all duration-300 shadow-[0_0_15px_rgba(220,38,38,0.2)]"
+              className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-sm font-mono text-xs tracking-[0.2em] uppercase text-white border ${t.collegesExpandBtn} transition-all duration-300`}
             >
               <span>
                 {showAll
@@ -231,9 +233,9 @@ export function AmbassadorColleges() {
                   : `View All (${TARGET_COLLEGES.length}) Colleges`}
               </span>
               {showAll ? (
-                <ChevronUp className="w-3.5 h-3.5 text-red-400" />
+                <ChevronUp className={`w-3.5 h-3.5 ${t.accentTextClass}`} />
               ) : (
-                <ChevronDown className="w-3.5 h-3.5 text-red-400" />
+                <ChevronDown className={`w-3.5 h-3.5 ${t.accentTextClass}`} />
               )}
             </button>
           </div>

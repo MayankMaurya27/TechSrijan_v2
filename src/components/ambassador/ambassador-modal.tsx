@@ -13,6 +13,7 @@ import {
   Share2,
   Check,
 } from "lucide-react";
+import { useAmbassadorTheme } from "./ambassador-theme";
 
 const GORAKHPUR_COLLEGES = [
   "MMMUT Gorakhpur (Madan Mohan Malaviya Univ. of Tech)",
@@ -50,6 +51,7 @@ interface AmbassadorModalProps {
 }
 
 export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
+  const t = useAmbassadorTheme();
   const [step, setStep] = useState<1 | 2>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -178,25 +180,28 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
             className="fixed inset-0 bg-black/85 backdrop-blur-2xl"
           />
 
-          {/* Modal Card Chassis (Matches Image 1 Exact Theme) */}
+          {/* Modal Card Chassis */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-3xl my-auto rounded-2xl border border-neutral-800 bg-[#0C0D10] shadow-[0_0_80px_rgba(220,38,38,0.25),0_30px_70px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col max-h-[92vh]"
+            className="relative w-full max-w-3xl my-auto rounded-2xl border border-neutral-800 bg-[#0C0D10] overflow-hidden flex flex-col max-h-[92vh] transition-shadow duration-500"
+            style={{
+              boxShadow: `0 0 80px ${t.accentGlow}, 0 30px 70px rgba(0,0,0,0.95)`,
+            }}
           >
             {/* ====================================================
-                IMAGE 1 CORNER ARMOR PLATES & RED RAZOR ACCENTS
+                CORNER ARMOR PLATES & RAZOR ACCENTS
                 ==================================================== */}
-            {/* Top-Left Beveled Armor Plate with Red Slice */}
+            {/* Top-Left Beveled Armor Plate */}
             <div className="absolute top-0 left-0 w-32 h-32 pointer-events-none overflow-hidden z-10">
               <svg viewBox="0 0 120 120" fill="none" className="w-full h-full">
                 <path
                   d="M0,0 L70,0 L0,70 Z"
                   fill="#15171C"
-                  stroke="#FF1E27"
+                  stroke={t.modalArmorFillStroke}
                   strokeWidth="1.5"
                   strokeOpacity="0.75"
                 />
@@ -205,20 +210,22 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                   y1="70"
                   x2="70"
                   y2="0"
-                  stroke="#FF2A36"
+                  stroke={t.modalArmorLineStroke}
                   strokeWidth="2"
-                  className="drop-shadow-[0_0_8px_#FF1E27]"
+                  style={{
+                    filter: `drop-shadow(0 0 8px ${t.accent})`,
+                  }}
                 />
               </svg>
             </div>
 
-            {/* Bottom-Right Beveled Armor Plate with Red Slice */}
+            {/* Bottom-Right Beveled Armor Plate */}
             <div className="absolute bottom-0 right-0 w-36 h-36 pointer-events-none overflow-hidden z-30">
               <svg viewBox="0 0 140 140" fill="none" className="w-full h-full">
                 <path
                   d="M140,50 L140,140 L50,140 Z"
                   fill="#15171C"
-                  stroke="#DC2626"
+                  stroke={t.modalArmorFillStroke}
                   strokeWidth="1.5"
                   strokeOpacity="0.75"
                 />
@@ -227,9 +234,11 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                   y1="140"
                   x2="140"
                   y2="50"
-                  stroke="#FF2A36"
+                  stroke={t.modalArmorLineStroke}
                   strokeWidth="2"
-                  className="drop-shadow-[0_0_8px_#FF1E27]"
+                  style={{
+                    filter: `drop-shadow(0 0 8px ${t.accent})`,
+                  }}
                 />
               </svg>
             </div>
@@ -237,7 +246,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
             {/* Subtle Close Button Top Right */}
             <button
               onClick={resetAndClose}
-              className="absolute top-4 right-4 sm:top-5 sm:right-5 z-30 w-8 h-8 rounded-full bg-neutral-900/80 border border-neutral-700/60 text-neutral-400 hover:text-white hover:border-red-500/60 flex items-center justify-center transition-all"
+              className="absolute top-4 right-4 sm:top-5 sm:right-5 z-30 w-8 h-8 rounded-full bg-neutral-900/80 border border-neutral-700/60 text-neutral-400 hover:text-white hover:border-neutral-500 flex items-center justify-center transition-all"
               aria-label="Close modal"
             >
               <X className="w-4 h-4" />
@@ -262,7 +271,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                   {/* Progress Track */}
                   <div className="h-[3px] w-full bg-[#24262B] rounded-full overflow-hidden flex">
                     <motion.div
-                      className="h-full bg-[#E61924] shadow-[0_0_10px_#FF1E27]"
+                      className={`h-full ${t.modalProgressBarBg} transition-colors duration-300`}
                       initial={{ width: "50%" }}
                       animate={{ width: step === 1 ? "50%" : "100%" }}
                       transition={{ duration: 0.3 }}
@@ -271,7 +280,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                 </div>
 
                 {/* ==================================================
-                    STEP 1: YOUR DETAILS (Matches Image 1 Exactly)
+                    STEP 1: YOUR DETAILS
                     ================================================== */}
                 {step === 1 && (
                   <motion.form
@@ -288,11 +297,17 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                       {/* Big Headline */}
                       <h2 className="font-impact text-4xl sm:text-5xl lg:text-6xl leading-none uppercase tracking-wide">
                         <span className="text-white">YOUR </span>
-                        <span className="text-[#E61924]">DETAILS</span>
+                        <span className={`${t.accentTextClass} transition-colors duration-300`}>DETAILS</span>
                       </h2>
 
-                      {/* Red Accent Dash */}
-                      <div className="w-8 h-[3.5px] bg-[#E61924] mt-2 mb-4 sm:mb-5 shadow-[0_0_8px_#FF1E27]" />
+                      {/* Accent Dash */}
+                      <div
+                        className="w-8 h-[3.5px] mt-2 mb-4 sm:mb-5 transition-all duration-300"
+                        style={{
+                          backgroundColor: t.accent,
+                          boxShadow: `0 0 8px ${t.accent}`,
+                        }}
+                      />
 
                       {/* 2-Column Form Grid */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3.5 sm:gap-y-4">
@@ -306,7 +321,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.fullName}
                             onChange={(e) => handleChange("fullName", e.target.value)}
                             placeholder="Enter your full name"
-                            className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.fullName && (
                             <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -325,7 +340,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.email}
                             onChange={(e) => handleChange("email", e.target.value)}
                             placeholder="Enter your email address"
-                            className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.email && (
                             <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -344,7 +359,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.phone}
                             onChange={(e) => handleChange("phone", e.target.value)}
                             placeholder="Enter your mobile number"
-                            className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.phone && (
                             <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -364,7 +379,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.college}
                             onChange={(e) => handleChange("college", e.target.value)}
                             placeholder="Enter your college or university name"
-                            className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           <datalist id="colleges-list">
                             {GORAKHPUR_COLLEGES.map((col) => (
@@ -387,7 +402,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             <select
                               value={formData.courseYear}
                               onChange={(e) => handleChange("courseYear", e.target.value)}
-                              className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white focus:outline-none focus:border-red-500/80 transition-all font-sans appearance-none pr-10 cursor-pointer"
+                              className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white focus:outline-none ${t.modalInputFocusBorder} transition-all font-sans appearance-none pr-10 cursor-pointer`}
                             >
                               {COURSE_YEAR_OPTIONS.map((opt) => (
                                 <option key={opt} value={opt} className="bg-[#121316] text-white">
@@ -409,7 +424,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.city}
                             onChange={(e) => handleChange("city", e.target.value)}
                             placeholder="Enter your city"
-                            className="w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.city && (
                             <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -426,7 +441,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             onClick={() => handleChange("agreeContact", !formData.agreeContact)}
                             className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${
                               formData.agreeContact
-                                ? "bg-[#E61924] border-[#E61924]"
+                                ? `${t.modalCheckboxCheckedBg}`
                                 : "border-neutral-500 bg-transparent"
                             }`}
                           >
@@ -444,11 +459,11 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                       </div>
                     </div>
 
-                    {/* Pinned Action Footer (Always 100% visible) */}
+                    {/* Pinned Action Footer */}
                     <div className="shrink-0 px-6 sm:px-9 py-3.5 bg-[#0C0D10]/95 backdrop-blur-md border-t border-neutral-800/80 flex items-center justify-end z-20">
                       <button
                         type="submit"
-                        className="group relative inline-flex items-center justify-center px-8 sm:px-10 py-3 font-mono text-xs sm:text-sm font-bold tracking-[0.18em] uppercase text-white bg-gradient-to-r from-[#C51D24] via-[#E61924] to-[#C51D24] hover:from-[#DC2626] hover:to-[#FF2A36] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.45)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98]"
+                        className={`group relative inline-flex items-center justify-center px-8 sm:px-10 py-3 font-mono text-xs sm:text-sm font-bold tracking-[0.18em] uppercase text-white ${t.primaryBtnBg} ${t.primaryBtnHoverBg} transition-all duration-300 ${t.primaryBtnShadow} ${t.primaryBtnHoverShadow} active:scale-[0.98] border ${t.primaryBtnBorder}`}
                         style={{
                           clipPath:
                             "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
@@ -481,11 +496,17 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                       {/* Big Headline */}
                       <h2 className="font-impact text-4xl sm:text-5xl lg:text-6xl leading-none uppercase tracking-wide">
                         <span className="text-white">CAMPUS </span>
-                        <span className="text-[#E61924]">DETAILS</span>
+                        <span className={`${t.accentTextClass} transition-colors duration-300`}>DETAILS</span>
                       </h2>
 
-                      {/* Red Accent Dash */}
-                      <div className="w-8 h-[3.5px] bg-[#E61924] mt-2 mb-3.5 sm:mb-4 shadow-[0_0_8px_#FF1E27]" />
+                      {/* Accent Dash */}
+                      <div
+                        className="w-8 h-[3.5px] mt-2 mb-3.5 sm:mb-4 transition-all duration-300"
+                        style={{
+                          backgroundColor: t.accent,
+                          boxShadow: `0 0 8px ${t.accent}`,
+                        }}
+                      />
 
                       {/* 2-Column Form Grid */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 sm:gap-y-3.5">
@@ -499,7 +520,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.branch}
                             onChange={(e) => handleChange("branch", e.target.value)}
                             placeholder="e.g. Computer Science, IT, ECE"
-                            className="w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans"
+                            className={`w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.branch && (
                             <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -518,7 +539,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.rollNo}
                             onChange={(e) => handleChange("rollNo", e.target.value)}
                             placeholder="Enter your roll number"
-                            className="w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 transition-all font-sans"
+                            className={`w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} transition-all font-sans`}
                           />
                         </div>
 
@@ -531,7 +552,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             <select
                               value={formData.experience}
                               onChange={(e) => handleChange("experience", e.target.value)}
-                              className="w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white focus:outline-none focus:border-red-500/80 transition-all font-sans appearance-none pr-10 cursor-pointer"
+                              className={`w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white focus:outline-none ${t.modalInputFocusBorder} transition-all font-sans appearance-none pr-10 cursor-pointer`}
                             >
                               <option value="Club Core Member / PR Lead" className="bg-[#121316]">
                                 Club Core Member / PR Lead
@@ -563,7 +584,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             value={formData.socialLink}
                             onChange={(e) => handleChange("socialLink", e.target.value)}
                             placeholder="LinkedIn or Instagram profile URL"
-                            className="w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 transition-all font-sans"
+                            className={`w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} transition-all font-sans`}
                           />
                         </div>
                       </div>
@@ -578,7 +599,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                           value={formData.statement}
                           onChange={(e) => handleChange("statement", e.target.value)}
                           placeholder="Tell us briefly how you plan to mobilize your campus..."
-                          className="w-full px-4 py-2 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 focus:shadow-[0_0_15px_rgba(255,30,39,0.2)] transition-all font-sans resize-none"
+                          className={`w-full px-4 py-2 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans resize-none`}
                         />
                         {errors.statement && (
                           <span className="text-xs text-red-400 mt-1 block font-sans">
@@ -597,12 +618,12 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                           value={formData.referralCode}
                           onChange={(e) => handleChange("referralCode", e.target.value)}
                           placeholder="e.g. TS27-VANGUARD"
-                          className="w-full px-3.5 py-1.5 sm:py-2 bg-[#111215] border border-neutral-700/60 rounded-md text-xs sm:text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-red-500/80 font-mono uppercase"
+                          className={`w-full px-3.5 py-1.5 sm:py-2 bg-[#111215] border border-neutral-700/60 rounded-md text-xs sm:text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} font-mono uppercase`}
                         />
                       </div>
                     </div>
 
-                    {/* Pinned Action Footer (Always 100% visible on screen) */}
+                    {/* Pinned Action Footer */}
                     <div className="shrink-0 px-6 sm:px-9 py-3.5 bg-[#0C0D10]/95 backdrop-blur-md border-t border-neutral-800/80 flex items-center justify-between z-20">
                       <button
                         type="button"
@@ -616,7 +637,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="group relative inline-flex items-center justify-center px-8 sm:px-11 py-3 font-mono text-xs sm:text-sm font-bold tracking-[0.18em] uppercase text-white bg-gradient-to-r from-[#C51D24] via-[#E61924] to-[#C51D24] hover:from-[#DC2626] hover:to-[#FF2A36] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.5)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98] disabled:opacity-50"
+                        className={`group relative inline-flex items-center justify-center px-8 sm:px-11 py-3 font-mono text-xs sm:text-sm font-bold tracking-[0.18em] uppercase text-white ${t.primaryBtnBg} ${t.primaryBtnHoverBg} transition-all duration-300 ${t.primaryBtnShadow} ${t.primaryBtnHoverShadow} active:scale-[0.98] disabled:opacity-50 border ${t.primaryBtnBorder}`}
                         style={{
                           clipPath:
                             "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
@@ -649,8 +670,14 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                   transition={{ duration: 0.35 }}
                   className="py-4 text-center"
                 >
-                  <div className="w-14 h-14 mx-auto rounded-full bg-red-950/60 border border-red-500/50 flex items-center justify-center mb-4 shadow-[0_0_24px_rgba(255,30,39,0.45)]">
-                    <CheckCircle2 className="w-7 h-7 text-[#FF1E27]" />
+                  <div
+                    className="w-14 h-14 mx-auto rounded-full bg-neutral-900 border flex items-center justify-center mb-4 transition-all duration-300"
+                    style={{
+                      borderColor: `${t.accent}80`,
+                      boxShadow: `0 0 24px ${t.accentGlow}`,
+                    }}
+                  >
+                    <CheckCircle2 className="w-7 h-7" style={{ color: t.accent }} />
                   </div>
 
                   <h3 className="font-impact text-3xl sm:text-4xl text-white tracking-wide uppercase">
@@ -661,22 +688,36 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                   </p>
 
                   {/* Operative Card Pass */}
-                  <div className="mt-6 p-6 max-w-md mx-auto rounded-xl border border-neutral-700/80 bg-[#111215] text-left shadow-[0_0_35px_rgba(220,38,38,0.25)] relative overflow-hidden">
+                  <div
+                    className="mt-6 p-6 max-w-md mx-auto rounded-xl border border-neutral-700/80 bg-[#111215] text-left relative overflow-hidden transition-all duration-300"
+                    style={{
+                      boxShadow: `0 0 35px ${t.accentGlow}`,
+                    }}
+                  >
                     <div className="flex items-start gap-4">
                       {/* QR Mockup */}
-                      <div className="w-16 h-16 rounded-md bg-black border border-red-500/30 flex items-center justify-center text-red-400 shrink-0">
+                      <div
+                        className="w-16 h-16 rounded-md bg-black border flex items-center justify-center shrink-0 transition-colors"
+                        style={{
+                          borderColor: `${t.accent}50`,
+                          color: t.accent,
+                        }}
+                      >
                         <QrCode className="w-10 h-10" />
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <div className="font-mono text-[10px] tracking-widest text-red-400 font-bold uppercase">
+                        <div
+                          className="font-mono text-[10px] tracking-widest font-bold uppercase transition-colors"
+                          style={{ color: t.accent }}
+                        >
                           OPERATIVE ID
                         </div>
                         <div className="font-mono text-xl font-black text-white tracking-wider flex items-center gap-2">
                           <span>{operativeId}</span>
                           <button
                             onClick={handleCopyId}
-                            className="p-1 hover:text-red-400 transition-colors"
+                            className="p-1 hover:opacity-80 transition-opacity"
                             title="Copy ID"
                           >
                             <Copy className="w-3.5 h-3.5" />
@@ -699,7 +740,9 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                     <div className="mt-4 pt-3 border-t border-neutral-800 flex items-center justify-between text-[10px] font-mono text-neutral-400">
                       <span>STATUS: PENDING 48-HR SLA</span>
-                      <span className="text-red-400 font-bold">LEVEL 1 APPLICANT</span>
+                      <span className="font-bold" style={{ color: t.accent }}>
+                        LEVEL 1 APPLICANT
+                      </span>
                     </div>
                   </div>
 
@@ -709,7 +752,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                       href="https://whatsapp.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-md font-mono text-xs tracking-wider uppercase font-bold text-white bg-gradient-to-r from-[#991B1B] via-[#C51D24] to-[#991B1B] hover:from-[#B91C1C] hover:to-[#E61924] shadow-[0_0_20px_rgba(220,38,38,0.4)]"
+                      className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-md font-mono text-xs tracking-wider uppercase font-bold text-white ${t.primaryBtnBg} ${t.primaryBtnHoverBg} ${t.primaryBtnShadow} transition-all duration-300 border ${t.primaryBtnBorder}`}
                     >
                       <Share2 className="w-3.5 h-3.5" />
                       <span>Join Vanguard WhatsApp HQ</span>
@@ -732,3 +775,4 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
     </AnimatePresence>
   );
 }
+

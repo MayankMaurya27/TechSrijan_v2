@@ -5,3 +5,4 @@ export { AmbassadorColleges } from "./ambassador-colleges";
 export { AmbassadorLeaderboard } from "./ambassador-leaderboard";
 export { AmbassadorApply } from "./ambassador-apply";
 export { AmbassadorModal } from "./ambassador-modal";
+export { useAmbassadorTheme, AMBASSADOR_THEMES } from "./ambassador-theme";

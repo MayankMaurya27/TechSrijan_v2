@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { AmbassadorModal } from "./ambassador-modal";
+import { useAmbassadorTheme } from "./ambassador-theme";
 
 export function AmbassadorApply() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const t = useAmbassadorTheme();
 
   // Global trigger listener
   useEffect(() => {
@@ -33,21 +35,24 @@ export function AmbassadorApply() {
           BACKGROUND LAYER: Cinematic Razor Edges, Gradients & Vignettes
           ======================================================== */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Deep ambient red glows */}
-        <div className="absolute top-1/4 -left-32 w-[600px] h-[600px] bg-red-950/20 blur-[160px] rounded-full" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-red-900/10 blur-[150px] rounded-full" />
+        {/* Deep ambient theme glows */}
+        <div
+          className={`absolute top-1/4 -left-32 w-[600px] h-[600px] ${t.applyAtmosphereClass} blur-[160px] rounded-full transition-colors duration-500`}
+        />
+        <div
+          className={`absolute bottom-0 right-0 w-[500px] h-[500px] ${t.applyAtmosphereClass} blur-[150px] rounded-full transition-colors duration-500`}
+        />
 
         {/* Subtle noise / grunge texture */}
         <div
           className="absolute inset-0 opacity-[0.035]"
           style={{
-            backgroundImage:
-              "radial-gradient(rgba(255,42,54,0.8) 1px, transparent 1px)",
+            backgroundImage: `radial-gradient(${t.accent} 1px, transparent 1px)`,
             backgroundSize: "32px 32px",
           }}
         />
 
-        {/* Diagonal Crimson Razor Slice (Matches Image 1 Angled Plate) */}
+        {/* Diagonal Razor Slice (Matches Angled Plate Architecture) */}
         <svg
           className="absolute inset-0 w-full h-full opacity-60"
           preserveAspectRatio="none"
@@ -58,7 +63,7 @@ export function AmbassadorApply() {
           <path
             d="M-50,0 L180,0 L90,180 L-50,180 Z"
             fill="#0F0305"
-            stroke="#DC2626"
+            stroke={t.applyArmorStroke}
             strokeWidth="1.5"
             strokeOpacity="0.4"
           />
@@ -68,24 +73,24 @@ export function AmbassadorApply() {
             y1="780"
             x2="850"
             y2="380"
-            stroke="#FF1E27"
+            stroke={t.applyRazorLinePrimary}
             strokeWidth="1.5"
-            strokeOpacity="0.35"
+            strokeOpacity="0.4"
           />
           <line
             x1="850"
             y1="380"
             x2="1500"
             y2="750"
-            stroke="#991B1B"
+            stroke={t.applyRazorLineSecondary}
             strokeWidth="1.2"
-            strokeOpacity="0.25"
+            strokeOpacity="0.3"
           />
           {/* Bottom right beveled plate */}
           <path
             d="M1200,900 L1440,720 L1440,900 Z"
             fill="#0A0203"
-            stroke="#DC2626"
+            stroke={t.applyArmorStroke}
             strokeWidth="1.2"
             strokeOpacity="0.3"
           />
@@ -93,7 +98,7 @@ export function AmbassadorApply() {
       </div>
 
       {/* ========================================================
-          MAIN CONTENT CONTAINER (Matches Image 1 Exact Layout)
+          MAIN CONTENT CONTAINER
           ======================================================== */}
       <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 xl:gap-20 items-start">
@@ -108,12 +113,18 @@ export function AmbassadorApply() {
             className="lg:col-span-7 flex flex-col justify-between"
           >
             <div>
-              {/* Overline with Red Dot */}
+              {/* Overline with Theme Dot */}
               <div className="flex items-center gap-2 mb-3">
                 <span className="font-mono text-xs sm:text-[13px] tracking-[0.25em] uppercase text-neutral-400 font-medium">
                   TECHSRIJAN &apos;27
                 </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FF2A36] shadow-[0_0_8px_#FF2A36]" />
+                <span
+                  className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                  style={{
+                    backgroundColor: t.accent,
+                    boxShadow: `0 0 8px ${t.accent}`,
+                  }}
+                />
                 <span className="font-mono text-xs sm:text-[13px] tracking-[0.25em] uppercase text-neutral-400 font-medium">
                   MMMUT GORAKHPUR
                 </span>
@@ -124,13 +135,24 @@ export function AmbassadorApply() {
                 <span className="block text-[#FAF6EE] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
                   TAKE YOUR
                 </span>
-                <span className="block text-[#FF2A36] drop-shadow-[0_0_35px_rgba(255,42,54,0.6)]">
+                <span
+                  className={`block ${t.applyHeaderGradient} transition-colors duration-300`}
+                  style={{
+                    filter: `drop-shadow(0 0 35px ${t.accentGlow})`,
+                  }}
+                >
                   PLACE
                 </span>
               </h2>
 
-              {/* Red Accent Dash */}
-              <div className="w-8 h-[3px] bg-[#FF2A36] mt-4 mb-4 sm:mt-5 sm:mb-5 shadow-[0_0_10px_#FF2A36]" />
+              {/* Accent Dash */}
+              <div
+                className="w-8 h-[3px] mt-4 mb-4 sm:mt-5 sm:mb-5 transition-all duration-300"
+                style={{
+                  backgroundColor: t.accent,
+                  boxShadow: `0 0 10px ${t.accent}`,
+                }}
+              />
 
               {/* Mission Statement Paragraph */}
               <p className="text-neutral-300 text-sm sm:text-base font-sans font-light leading-relaxed max-w-md">
@@ -139,11 +161,11 @@ export function AmbassadorApply() {
                 Represent your campus at Techsrijan &apos;27.
               </p>
 
-              {/* Primary Chamfered Red CTA Button */}
+              {/* Primary Chamfered Themed CTA Button */}
               <div className="mt-6 sm:mt-7">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="group relative inline-flex items-center justify-center px-8 sm:px-11 py-3.5 sm:py-4 font-mono text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-white bg-gradient-to-r from-[#991B1B] via-[#C51D24] to-[#991B1B] hover:from-[#B91C1C] hover:to-[#E61924] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.5)] hover:shadow-[0_0_40px_rgba(255,42,54,0.75)] active:scale-[0.98] border border-red-500/50"
+                  className={`group relative inline-flex items-center justify-center px-8 sm:px-11 py-3.5 sm:py-4 font-mono text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-white ${t.primaryBtnBg} ${t.primaryBtnHoverBg} transition-all duration-300 ${t.primaryBtnShadow} ${t.primaryBtnHoverShadow} active:scale-[0.98] border ${t.primaryBtnBorder}`}
                   style={{
                     clipPath:
                       "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
@@ -164,34 +186,37 @@ export function AmbassadorApply() {
             </div>
 
             {/* --------------------------------------------------
-                BOTTOM FACETED GEOMETRIC CREST (Matches Image 1)
+                BOTTOM FACETED GEOMETRIC CREST
                 -------------------------------------------------- */}
             <div className="mt-8 sm:mt-12 lg:mt-14 w-32 sm:w-44 select-none">
               <svg
                 viewBox="0 0 200 100"
                 fill="none"
-                className="w-full h-auto drop-shadow-[0_0_20px_rgba(220,38,38,0.45)]"
+                className="w-full h-auto transition-all duration-500"
+                style={{
+                  filter: `drop-shadow(0 0 20px ${t.accentGlow})`,
+                }}
               >
                 <defs>
                   <linearGradient id="crest-center" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#FF1E27" />
-                    <stop offset="100%" stopColor="#7F0909" />
+                    <stop offset="0%" stopColor={t.applyCrestCenter0} />
+                    <stop offset="100%" stopColor={t.applyCrestCenter100} />
                   </linearGradient>
                   <linearGradient id="crest-wing-l" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#DC2626" />
-                    <stop offset="100%" stopColor="#450A0A" />
+                    <stop offset="0%" stopColor={t.applyCrestWing0} />
+                    <stop offset="100%" stopColor={t.applyCrestWing100} />
                   </linearGradient>
                   <linearGradient id="crest-wing-r" x1="100%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#DC2626" />
-                    <stop offset="100%" stopColor="#450A0A" />
+                    <stop offset="0%" stopColor={t.applyCrestWing0} />
+                    <stop offset="100%" stopColor={t.applyCrestWing100} />
                   </linearGradient>
                   <linearGradient id="crest-flank-l" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#991B1B" />
-                    <stop offset="100%" stopColor="#1A0204" />
+                    <stop offset="0%" stopColor={t.applyCrestFlank0} />
+                    <stop offset="100%" stopColor={t.applyCrestFlank100} />
                   </linearGradient>
                   <linearGradient id="crest-flank-r" x1="100%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#991B1B" />
-                    <stop offset="100%" stopColor="#1A0204" />
+                    <stop offset="0%" stopColor={t.applyCrestFlank0} />
+                    <stop offset="100%" stopColor={t.applyCrestFlank100} />
                   </linearGradient>
                 </defs>
 
@@ -206,7 +231,7 @@ export function AmbassadorApply() {
                   y1="10"
                   x2="100"
                   y2="90"
-                  stroke="#FFA3A8"
+                  stroke={t.applyCrestHighlight}
                   strokeWidth="1.2"
                   opacity="0.8"
                 />
@@ -234,11 +259,11 @@ export function AmbassadorApply() {
                 {/* Sharp Bottom Dagger Ticks */}
                 <polygon
                   points="100,65 115,82 100,88"
-                  fill="#7F0909"
+                  fill={t.applyCrestCenter100}
                 />
                 <polygon
                   points="100,65 85,82 100,88"
-                  fill="#450A0A"
+                  fill={t.applyCrestWing100}
                 />
               </svg>
             </div>
@@ -253,8 +278,14 @@ export function AmbassadorApply() {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-5 pt-2"
           >
-            {/* Top Red Accent Dash */}
-            <div className="w-10 h-1 bg-[#FF2A36] mb-3 shadow-[0_0_10px_#FF2A36]" />
+            {/* Top Accent Dash */}
+            <div
+              className="w-10 h-1 mb-3 transition-all duration-300"
+              style={{
+                backgroundColor: t.accent,
+                boxShadow: `0 0 10px ${t.accent}`,
+              }}
+            />
 
             {/* Headline */}
             <h2 className="font-impact text-5xl sm:text-6xl lg:text-[4.5rem] leading-[0.9] text-white tracking-wide uppercase mb-10 sm:mb-12">
@@ -264,8 +295,8 @@ export function AmbassadorApply() {
             {/* Vertical Steps Timeline */}
             <div className="relative pl-1 sm:pl-2">
               
-              {/* Vertical Continuous Red Laser Spine */}
-              <div className="absolute left-[13px] sm:left-[15px] top-4 bottom-4 w-[2px] bg-red-600/80 shadow-[0_0_10px_#FF1E27]" />
+              {/* Vertical Continuous Themed Laser Spine */}
+              <div className={`absolute left-[13px] sm:left-[15px] top-4 bottom-4 w-[2px] ${t.applyTimelineSpine} transition-all duration-500`} />
 
               <div className="space-y-9 sm:space-y-11">
                 
@@ -274,13 +305,23 @@ export function AmbassadorApply() {
                     ---------------------------------------------- */}
                 <div className="relative flex items-center group">
                   {/* Glowing Active Outer/Inner Node */}
-                  <div className="absolute left-0 -translate-x-[4px] sm:-translate-x-[3px] w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-red-500 bg-black flex items-center justify-center shadow-[0_0_16px_#FF1E27] z-10">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#FF2A36] shadow-[0_0_8px_#FF2A36]" />
+                  <div
+                    className={`absolute left-0 -translate-x-[4px] sm:-translate-x-[3px] w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 bg-black flex items-center justify-center z-10 transition-all duration-300 ${t.applyStepActiveNode}`}
+                  >
+                    <div
+                      className="w-2.5 h-2.5 rounded-full transition-all duration-300"
+                      style={{
+                        backgroundColor: t.accent,
+                        boxShadow: `0 0 8px ${t.accent}`,
+                      }}
+                    />
                   </div>
 
                   {/* Step Item Content */}
                   <div className="flex items-center gap-4 sm:gap-6 ml-12 sm:ml-14">
-                    <span className="font-impact text-4xl sm:text-5xl text-[#FF2A36] tracking-wider drop-shadow-[0_0_15px_rgba(255,42,54,0.6)] shrink-0">
+                    <span
+                      className={`font-impact text-4xl sm:text-5xl ${t.applyStepActiveNumber} tracking-wider shrink-0 transition-colors duration-300`}
+                    >
                       01
                     </span>
 
@@ -303,7 +344,7 @@ export function AmbassadorApply() {
                     ---------------------------------------------- */}
                 <div className="relative flex items-center group">
                   {/* Ring Circle Node */}
-                  <div className="absolute left-0 -translate-x-[4px] sm:-translate-x-[3px] w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-neutral-600 bg-black z-10 group-hover:border-red-500/60 transition-colors" />
+                  <div className="absolute left-0 -translate-x-[4px] sm:-translate-x-[3px] w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-neutral-600 bg-black z-10 group-hover:border-neutral-400 transition-colors" />
 
                   {/* Step Item Content */}
                   <div className="flex items-center gap-4 sm:gap-6 ml-12 sm:ml-14">
@@ -330,7 +371,7 @@ export function AmbassadorApply() {
                     ---------------------------------------------- */}
                 <div className="relative flex items-center group">
                   {/* Ring Circle Node */}
-                  <div className="absolute left-0 -translate-x-[4px] sm:-translate-x-[3px] w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-neutral-600 bg-black z-10 group-hover:border-red-500/60 transition-colors" />
+                  <div className="absolute left-0 -translate-x-[4px] sm:-translate-x-[3px] w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-neutral-600 bg-black z-10 group-hover:border-neutral-400 transition-colors" />
 
                   {/* Step Item Content */}
                   <div className="flex items-center gap-4 sm:gap-6 ml-12 sm:ml-14">
@@ -369,3 +410,4 @@ export function AmbassadorApply() {
     </section>
   );
 }
+

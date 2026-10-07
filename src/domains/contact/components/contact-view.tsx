@@ -449,9 +449,8 @@ export function ContactView() {
           ============================================================ */}
       <section className="py-20 sm:py-24 px-6 sm:px-12 lg:px-16 max-w-7xl mx-auto border-t border-white/[0.1]">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/[0.15] px-4 py-1.5 text-xs font-mono text-[#79c7e3] mb-4">
-            <Shield className="h-3.5 w-3.5 text-[#e2a850]" />
-            <span>CENTRAL COUNCIL DIRECTORY</span>
+          <div className="text-xs font-mono tracking-[0.25em] text-[#79c7e3] uppercase mb-3 font-semibold">
+            CENTRAL COUNCIL DIRECTORY
           </div>
           <h2 className="text-3xl sm:text-5xl font-serif font-black tracking-tight text-white leading-tight">
             <span className="font-editorial italic font-normal text-[#e8d4ff] mr-3">Department</span>
@@ -508,9 +507,8 @@ export function ContactView() {
           ============================================================ */}
       <section className="py-20 sm:py-24 px-6 sm:px-12 lg:px-16 max-w-7xl mx-auto border-t border-white/[0.1]">
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/[0.15] px-4 py-1.5 text-xs font-mono text-[#e2a850] mb-4">
-            <Compass className="h-3.5 w-3.5 text-[#e2a850]" />
-            <span>CAMPUS LOCATION & TRANSIT</span>
+          <div className="text-xs font-mono tracking-[0.25em] text-[#e2a850] uppercase mb-3 font-semibold">
+            CAMPUS LOCATION & TRANSIT
           </div>
           <h2 className="text-3xl sm:text-5xl font-serif font-black tracking-tight text-white leading-tight">
             <span className="font-editorial italic font-normal text-[#e8d4ff] mr-3">Campus Location</span>
@@ -637,9 +635,8 @@ export function ContactView() {
         </div>
 
         <div className="relative z-10 text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/[0.15] px-4 py-1.5 text-xs font-mono text-[#e8d4ff] mb-4">
-            <HelpCircle className="h-3.5 w-3.5 text-[#e8d4ff]" />
-            <span>TRANSMISSION RESOLUTION</span>
+          <div className="text-xs font-mono tracking-[0.25em] text-[#e8d4ff] uppercase mb-3 font-semibold">
+            TRANSMISSION RESOLUTION
           </div>
           <h2 className="text-3xl sm:text-5xl font-serif font-black tracking-tight text-white leading-tight">
             <span className="font-editorial italic font-normal text-[#e8d4ff] mr-3">Frequently</span>

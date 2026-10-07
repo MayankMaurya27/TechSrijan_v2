@@ -165,7 +165,7 @@ export function AboutView() {
               <span className="h-1.5 w-1.5 rounded-full bg-[#79C7E3] animate-pulse" />
               MMMUT GORAKHPUR • EST. 1962
             </span>
-            <span className="rounded-full bg-white/[0.1] px-3 py-1 text-[11px] font-sans font-medium text-white border border-white/[0.15]">
+            <span className="text-xs font-mono text-zinc-300">
               25 — 27 DEC 2026
             </span>
           </div>
@@ -178,8 +178,8 @@ export function AboutView() {
           <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-16 items-center">
             {/* Left Column: Festival Manifesto & Action Links */}
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/[0.15] px-4 py-1.5 text-xs font-mono text-[#79C7E3] mb-6">
-                <Sparkles className="h-3.5 w-3.5" />
+              <div className="text-xs font-mono tracking-[0.25em] text-[#79C7E3] uppercase mb-4 font-semibold flex items-center gap-3">
+                <span className="h-px w-6 bg-[#79C7E3]/60" />
                 <span>ANNUAL TECHNO-MANAGEMENT FESTIVAL</span>
               </div>
 
@@ -290,9 +290,8 @@ export function AboutView() {
         <section className="mb-32">
           {/* Centered Editorial Section Header */}
           <div className="text-center mb-16 sm:mb-24 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/[0.15] px-4 py-1.5 text-xs font-mono text-[#79C7E3] mb-4">
-              <Sparkles className="h-3.5 w-3.5 text-[#D4A843]" />
-              <span>EXECUTIVE CITADEL LEADERSHIP</span>
+            <div className="text-xs font-mono tracking-[0.25em] text-[#D4A843] uppercase mb-3 font-semibold">
+              EXECUTIVE CITADEL LEADERSHIP
             </div>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-black tracking-tight text-white leading-tight">
               <span className="font-editorial italic font-normal text-[#E8D4FF] mr-3">
@@ -341,11 +340,11 @@ export function AboutView() {
                         {/* Subtle internal vignette for luxury editorial depth */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
-                        {/* Top Pill Badge */}
+                        {/* Top Tag */}
                         <div className="absolute top-5 left-5 right-5 flex items-center justify-between pointer-events-none">
                           <span
-                            className="px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-widest uppercase border bg-black/60 backdrop-blur-md"
-                            style={{ borderColor: `${patron.accent}66`, color: patron.accent }}
+                            className="text-[10px] font-mono font-bold tracking-widest uppercase bg-black/70 px-2.5 py-1 rounded"
+                            style={{ color: patron.accent }}
                           >
                             {patron.title}
                           </span>
@@ -553,17 +552,15 @@ export function AboutView() {
               <div>
                 <div className="flex flex-wrap items-center gap-3 mb-4">
                   <span
-                    className="px-3.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-widest uppercase border"
+                    className="text-xs font-mono font-bold tracking-widest uppercase"
                     style={{
-                      backgroundColor: activeHouse.badgeBg,
-                      borderColor: activeHouse.badgeBorder,
                       color: activeHouse.accentColor,
                     }}
                   >
                     {activeHouse.designation}
                   </span>
-                  <span className="text-xs font-mono text-zinc-300">
-                    {activeHouse.established}
+                  <span className="text-xs font-mono text-zinc-400">
+                    • {activeHouse.established}
                   </span>
                 </div>
 
@@ -666,7 +663,7 @@ export function AboutView() {
                     <span className="text-2xl font-serif font-black text-transparent bg-clip-text bg-gradient-to-r from-[#A5E5FF] to-[#D4A843]">
                       {item.year}
                     </span>
-                    <span className="text-[10px] font-mono tracking-widest text-[#79C7E3] border border-[#79C7E3]/30 px-2.5 py-0.5 rounded-full bg-[#79C7E3]/10">
+                    <span className="text-[11px] font-mono tracking-widest text-[#79C7E3] font-semibold">
                       {item.era}
                     </span>
                   </div>

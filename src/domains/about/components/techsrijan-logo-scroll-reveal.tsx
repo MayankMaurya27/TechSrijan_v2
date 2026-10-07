@@ -88,14 +88,13 @@ export function TechSrijanLogoScrollReveal() {
             className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.12] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"
           />
 
-          {/* Top Pill Badges */}
+          {/* Top Header Labels */}
           <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 mb-6 sm:mb-8 text-xs font-mono">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/[0.08] border border-white/[0.18] px-4 py-1.5 text-[#79C7E3] tracking-widest uppercase">
-              <Sparkles className="h-3.5 w-3.5 text-[#D4A843]" />
+            <span className="text-xs font-mono tracking-[0.25em] text-[#79C7E3] uppercase font-semibold">
               OFFICIAL IMPERIAL CREST
             </span>
 
-            <span className="rounded-full bg-black/40 border border-white/[0.12] px-4 py-1.5 text-zinc-300 tracking-wider">
+            <span className="text-xs font-mono text-zinc-400 tracking-wider">
               MMMUT GORAKHPUR • EST. 1962
             </span>
           </div>
@@ -122,20 +121,13 @@ export function TechSrijanLogoScrollReveal() {
               <span className="text-white font-semibold">MMMUT Gorakhpur</span>.
             </p>
 
-            {/* Quick Feature Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 pt-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] border border-white/[0.12] px-3.5 py-1 text-[11px] font-mono text-zinc-300">
-                <Zap className="h-3 w-3 text-[#79C7E3]" />
-                30+ Arena Contests
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] border border-white/[0.12] px-3.5 py-1 text-[11px] font-mono text-zinc-300">
-                <Shield className="h-3 w-3 text-[#D4A843]" />
-                ₹10L+ Prize Purse
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] border border-white/[0.12] px-3.5 py-1 text-[11px] font-mono text-zinc-300">
-                <Compass className="h-3 w-3 text-[#CAA4CF]" />
-                60+ Top Institutes
-              </span>
+            {/* Quick Feature Badges - Clean Text Divider format */}
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2 text-xs font-mono text-zinc-300">
+              <span className="text-[#79C7E3] font-medium">30+ Arena Contests</span>
+              <span className="text-zinc-600">•</span>
+              <span className="text-[#D4A843] font-medium">₹10L+ Prize Purse</span>
+              <span className="text-zinc-600">•</span>
+              <span className="text-[#CAA4CF] font-medium">60+ Top Institutes</span>
             </div>
 
             {/* Action CTA */}

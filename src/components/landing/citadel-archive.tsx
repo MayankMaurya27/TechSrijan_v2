@@ -176,29 +176,38 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
     setActiveMobileCard(closestIndex);
   };
 
-  if (scrollProgress < 0.84) return null;
+  // Check if active on screen (starts earlier on mobile to align with arrival)
+  const isVisible = scrollProgress >= (isMobile ? 0.76 : 0.80);
 
-  const phaseA = smoothstep(0.85, 0.90, scrollProgress);
-  const phaseB = smoothstep(0.90, 0.94, scrollProgress);
+  // Progressive Emergence Curve:
+  // Mobile flight completes at 0.80, so mobile cards start revealing at 0.77 and settle by 0.86
+  // Desktop flight finishes at 0.82, so desktop slabs start revealing at 0.81 and settle by 0.89
+  const pStart = isMobile ? 0.77 : 0.81;
+  const pSettle = isMobile ? 0.86 : 0.89;
+
+  const phaseA = smoothstep(pStart, pStart + 0.04, scrollProgress);
+  const phaseB = smoothstep(pStart + 0.02, pSettle, scrollProgress);
 
   // Phase C staggered content reveals
-  const contentEvents = smoothstep(0.938, 0.958, scrollProgress);
-  const contentSponsors = smoothstep(0.946, 0.966, scrollProgress);
-  const contentTrans = smoothstep(0.954, 0.975, scrollProgress);
+  const contentEvents = smoothstep(pStart + 0.02, pSettle, scrollProgress);
+  const contentSponsors = smoothstep(pStart + 0.03, pSettle, scrollProgress);
+  const contentTrans = smoothstep(pStart + 0.04, pSettle, scrollProgress);
 
   // Overall master container opacity
-  const containerOpacity = smoothstep(0.85, 0.89, scrollProgress);
+  const containerOpacity = smoothstep(pStart, pStart + 0.05, scrollProgress);
 
   // Physical emergence transforms for the frames (Phase B)
-  const emergeY = (1 - phaseB) * 90; // 90px -> 0px
-  const emergeZ = (1 - phaseB) * -90; // -90px -> 0px
+  const emergeY = (1 - phaseB) * 60; // 60px -> 0px
+  const emergeZ = (1 - phaseB) * -60; // -60px -> 0px
   const frameAlpha = phaseB;
 
   return (
     <div
       className="absolute inset-0 pointer-events-none select-none z-20 flex flex-col justify-center overflow-hidden"
       style={{
-        opacity: containerOpacity,
+        opacity: isVisible ? containerOpacity : 0,
+        visibility: isVisible ? "visible" : "hidden",
+        pointerEvents: isVisible && containerOpacity > 0.4 ? "auto" : "none",
         perspective: isMobile ? "none" : "1600px",
         transformStyle: isMobile ? "flat" : "preserve-3d",
       }}

@@ -130,8 +130,8 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
 
   // Synchronized emergence with Paul 3D and Citadel Archive at the end of the scroll journey
   // (Hidden on landing page, spawns at the end on the far right)
-  const enterStart = 0.84;
-  const enterEnd = 0.91;
+  const enterStart = 0.81;
+  const enterEnd = 0.89;
 
   let currentOpacity = 0;
   let currentTranslateY = 32;
@@ -143,9 +143,7 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
     currentTranslateY = (1 - eased) * 32;
   }
 
-  if (currentOpacity <= 0.005) {
-    return null;
-  }
+  const isVisible = currentOpacity > 0.005;
 
   return (
     <div
@@ -155,6 +153,8 @@ export function SocialConstellation({ scrollProgress = 0 }: SocialConstellationP
         right: "clamp(12px, 1.8vw, 36px)",
         bottom: "clamp(4px, 1vh, 16px)",
         opacity: currentOpacity,
+        visibility: isVisible ? "visible" : "hidden",
+        pointerEvents: currentOpacity > 0.4 ? "auto" : "none",
         transform: `translateY(${currentTranslateY}px)`,
         willChange: "transform, opacity",
       }}

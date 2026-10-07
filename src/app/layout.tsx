@@ -137,6 +137,8 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="arrakis-day" suppressHydrationWarning className={cn(jetbrainsMono.variable, cinzel.variable, playfairDisplay.variable, bebasNeue.variable, "font-sans", geist.variable)}>
       <head>
+        <link rel="preload" href="/hero-logo-arrakis-day.webp" as="image" type="image/webp" />
+        <link rel="preload" href="/images/citadel-frame.webp" as="image" type="image/webp" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

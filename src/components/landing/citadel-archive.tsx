@@ -188,11 +188,6 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
   const phaseA = smoothstep(pStart, pStart + 0.04, scrollProgress);
   const phaseB = smoothstep(pStart + 0.02, pSettle, scrollProgress);
 
-  // Phase C staggered content reveals
-  const contentEvents = smoothstep(pStart + 0.02, pSettle, scrollProgress);
-  const contentSponsors = smoothstep(pStart + 0.03, pSettle, scrollProgress);
-  const contentTrans = smoothstep(pStart + 0.04, pSettle, scrollProgress);
-
   // Overall master container opacity
   const containerOpacity = smoothstep(pStart, pStart + 0.05, scrollProgress);
 
@@ -303,10 +298,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                   className="archive-frame pointer-events-none absolute inset-0 w-full h-full object-fill z-20 select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)]"
                   loading="eager"
                 />
-                <div
-                  className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[16%] pb-[18%] px-[13%] pointer-events-auto text-[#F0EAE1]"
-                  style={{ opacity: contentEvents }}
-                >
+                <div className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[16%] pb-[18%] px-[13%] pointer-events-auto text-[#F0EAE1]">
                   {/* Header info */}
                   <div className="flex-shrink-0">
                     <div className="flex items-center justify-between">
@@ -373,10 +365,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                   className="archive-frame pointer-events-none absolute inset-0 w-full h-full object-fill z-20 select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)]"
                   loading="eager"
                 />
-                <div
-                  className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[16%] pb-[18%] px-[13%] pointer-events-auto text-[#F0EAE1]"
-                  style={{ opacity: contentSponsors }}
-                >
+                <div className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[16%] pb-[18%] px-[13%] pointer-events-auto text-[#F0EAE1]">
                   <div className="flex-shrink-0">
                     <span className="text-[7.5px] font-mono tracking-[0.2em] text-[#d4a843] uppercase block">
                       CITADEL ARCHIVE
@@ -466,10 +455,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                   className="archive-frame pointer-events-none absolute inset-0 w-full h-full object-fill z-20 select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)]"
                   loading="eager"
                 />
-                <div
-                  className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[16%] pb-[18%] px-[13%] pointer-events-auto text-[#F0EAE1]"
-                  style={{ opacity: contentTrans }}
-                >
+                <div className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[16%] pb-[18%] px-[13%] pointer-events-auto text-[#F0EAE1]">
                   <div className="flex-shrink-0">
                     <div className="flex items-center justify-between">
                       <span className="text-[7.5px] font-mono tracking-[0.2em] text-[#d4a843] uppercase">
@@ -582,9 +568,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
             <div
               className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[21%] pb-[19%] px-[15%] pointer-events-auto text-[#F0EAE1]"
               style={{
-                opacity: contentEvents,
-                transform: `translateZ(24px) translateY(${(1 - contentEvents) * 12}px)`,
-                transition: "transform 0.4s ease-out, opacity 0.4s ease-out",
+                transform: "translateZ(24px)",
               }}
             >
               {/* Header info */}
@@ -698,9 +682,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
               <div
                 className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[20%] pb-[17%] px-[15%] pointer-events-auto text-[#F0EAE1]"
                 style={{
-                  opacity: contentSponsors,
-                  transform: `translateZ(18px) translateY(${(1 - contentSponsors) * 12}px)`,
-                  transition: "transform 0.4s ease-out, opacity 0.4s ease-out",
+                  transform: "translateZ(18px)",
                 }}
               >
                 {/* Header */}
@@ -830,9 +812,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
               <div
                 className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[20%] pb-[17%] px-[15%] pointer-events-auto text-[#F0EAE1]"
                 style={{
-                  opacity: contentTrans,
-                  transform: `translateZ(18px) translateY(${(1 - contentTrans) * 12}px)`,
-                  transition: "transform 0.4s ease-out, opacity 0.4s ease-out",
+                  transform: "translateZ(18px)",
                 }}
               >
                 {/* Header */}

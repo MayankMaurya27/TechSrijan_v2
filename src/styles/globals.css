@@ -143,100 +143,86 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
 }
 
 /* ==========================================================================
-   AUTHENTIC VIBRO-BLADE SWORD CURSORS (THEMED HARDWARE / SSR FALLBACKS)
+   PRECISION KINETIC HUD CURSORS (THEMED HARDWARE / SSR FALLBACKS)
    ========================================================================== */
 
-/* 1. Arrakis Solar Day (Imperial Gold & Spice Blue Gem) */
+/* 1. Arrakis Solar Day (Imperial Gold & Spice Blue Core) */
 html[data-theme="arrakis-day"] *,
 html[data-theme="arrakis-day"] *::before,
 html[data-theme="arrakis-day"] *::after,
 html[data-theme="arrakis"] *,
 html[data-theme="arrakis"] *::before,
 html[data-theme="arrakis"] *::after {
-  cursor: url("/cursors/mvs-sword-arrakis-day.svg") 2 2, auto;
+  cursor: url("/cursors/mvs-sword-arrakis-day.svg") 3 2, auto;
 }
 html[data-theme="arrakis-day"] a,
 html[data-theme="arrakis-day"] button,
 html[data-theme="arrakis-day"] [role="button"],
-html[data-theme="arrakis-day"] input,
 html[data-theme="arrakis-day"] select,
-html[data-theme="arrakis-day"] textarea,
 html[data-theme="arrakis-day"] [tabindex="0"],
 html[data-theme="arrakis-day"] label,
 html[data-theme="arrakis-day"] .cursor-pointer,
 html[data-theme="arrakis"] a,
 html[data-theme="arrakis"] button,
 html[data-theme="arrakis"] [role="button"],
-html[data-theme="arrakis"] input,
 html[data-theme="arrakis"] select,
-html[data-theme="arrakis"] textarea,
 html[data-theme="arrakis"] [tabindex="0"],
 html[data-theme="arrakis"] label,
 html[data-theme="arrakis"] .cursor-pointer {
-  cursor: url("/cursors/mvs-sword-pointer-arrakis-day.svg") 2 2, pointer;
+  cursor: url("/cursors/mvs-sword-pointer-arrakis-day.svg") 3 2, pointer;
 }
 
-/* 2. Geass Moon (Crimson Scarlet Vibro-Blade & Sakuradite Emerald) */
+/* 2. Geass Moon (Crimson Scarlet Kinetic HUD & Obsidian) */
 html[data-theme="geass-moon"] *,
 html[data-theme="geass-moon"] *::before,
 html[data-theme="geass-moon"] *::after,
 html[data-theme="giedi-prime"] *,
 html[data-theme="giedi-prime"] *::before,
 html[data-theme="giedi-prime"] *::after {
-  cursor: url("/cursors/mvs-sword.svg") 2 2, auto;
+  cursor: url("/cursors/mvs-sword.svg") 3 2, auto;
 }
 html[data-theme="geass-moon"] a,
 html[data-theme="geass-moon"] button,
 html[data-theme="geass-moon"] [role="button"],
-html[data-theme="geass-moon"] input,
 html[data-theme="geass-moon"] select,
-html[data-theme="geass-moon"] textarea,
 html[data-theme="geass-moon"] [tabindex="0"],
 html[data-theme="geass-moon"] label,
 html[data-theme="geass-moon"] .cursor-pointer,
 html[data-theme="giedi-prime"] a,
 html[data-theme="giedi-prime"] button,
 html[data-theme="giedi-prime"] [role="button"],
-html[data-theme="giedi-prime"] input,
 html[data-theme="giedi-prime"] select,
-html[data-theme="giedi-prime"] textarea,
 html[data-theme="giedi-prime"] [tabindex="0"],
 html[data-theme="giedi-prime"] label,
 html[data-theme="giedi-prime"] .cursor-pointer {
-  cursor: url("/cursors/mvs-sword-pointer.svg") 2 2, pointer;
+  cursor: url("/cursors/mvs-sword-pointer.svg") 3 2, pointer;
 }
 
-/* 3. Krelln Night (Lunar Platinum Silver & Sapphire Core) */
+/* 3. Krelln Night (Lunar Platinum Silver & Cyan HUD) */
 html[data-theme="krelln-night"] *,
 html[data-theme="krelln-night"] *::before,
 html[data-theme="krelln-night"] *::after,
 html[data-theme="kelln-night"] *,
 html[data-theme="kelln-night"] *::before,
 html[data-theme="kelln-night"] *::after {
-  cursor: url("/cursors/mvs-sword-krelln-night.svg") 2 2, auto;
+  cursor: url("/cursors/mvs-sword-krelln-night.svg") 3 2, auto;
 }
 html[data-theme="krelln-night"] a,
 html[data-theme="krelln-night"] button,
 html[data-theme="krelln-night"] [role="button"],
-html[data-theme="krelln-night"] input,
 html[data-theme="krelln-night"] select,
-html[data-theme="krelln-night"] textarea,
 html[data-theme="krelln-night"] [tabindex="0"],
 html[data-theme="krelln-night"] label,
 html[data-theme="krelln-night"] .cursor-pointer,
 html[data-theme="kelln-night"] a,
 html[data-theme="kelln-night"] button,
 html[data-theme="kelln-night"] [role="button"],
-html[data-theme="kelln-night"] input,
 html[data-theme="kelln-night"] select,
-html[data-theme="kelln-night"] textarea,
 html[data-theme="kelln-night"] [tabindex="0"],
 html[data-theme="kelln-night"] label,
 html[data-theme="kelln-night"] .cursor-pointer {
-  cursor: url("/cursors/mvs-sword-pointer-krelln-night.svg") 2 2, pointer;
+  cursor: url("/cursors/mvs-sword-pointer-krelln-night.svg") 3 2, pointer;
 }
-
-
 
 /* Default / root fallback */
 *,
@@ -244,53 +230,69 @@ html[data-theme="kelln-night"] .cursor-pointer {
 *::after,
 html,
 body {
-  cursor: url("/cursors/mvs-sword-arrakis-day.svg") 2 2, auto;
+  cursor: url("/cursors/mvs-sword-arrakis-day.svg") 3 2, auto;
 }
 a,
 button,
 [role="button"],
-input,
 select,
-textarea,
 [tabindex="0"],
 label,
 .cursor-pointer {
-  cursor: url("/cursors/mvs-sword-pointer-arrakis-day.svg") 2 2, pointer;
+  cursor: url("/cursors/mvs-sword-pointer-arrakis-day.svg") 3 2, pointer;
+}
+
+/* Inputs and textareas preserve native I-beam cursor for pixel-perfect editing */
+input,
+textarea {
+  cursor: text !important;
 }
 
 /* ==========================================================================
-   DYNAMIC INTERACTIVE SWORD CURSOR SUPPRESSION
-   When custom hardware-accelerated SwordCursor component is mounted,
-   suppress OS default pointer everywhere so only the glowing sword is visible.
+   DYNAMIC INTERACTIVE KINETIC CURSOR SUPPRESSION
+   When custom hardware-accelerated EnhancedCursor component is mounted,
+   suppress OS default pointer everywhere except text inputs so the kinetic HUD is visible.
    ========================================================================== */
 @media (pointer: fine) {
+  html.has-enhanced-cursor,
+  html.has-enhanced-cursor *,
+  html.has-enhanced-cursor *::before,
+  html.has-enhanced-cursor *::after,
+  body.has-enhanced-cursor,
+  body.has-enhanced-cursor *,
+  body.has-enhanced-cursor *::before,
+  body.has-enhanced-cursor *::after,
+  html.has-enhanced-cursor a,
+  html.has-enhanced-cursor button,
+  html.has-enhanced-cursor [role="button"],
+  html.has-enhanced-cursor select,
+  html.has-enhanced-cursor [tabindex="0"],
+  html.has-enhanced-cursor label,
+  html.has-enhanced-cursor .cursor-pointer,
+  body.has-enhanced-cursor a,
+  body.has-enhanced-cursor button,
+  body.has-enhanced-cursor [role="button"],
+  body.has-enhanced-cursor select,
+  body.has-enhanced-cursor [tabindex="0"],
+  body.has-enhanced-cursor label,
+  body.has-enhanced-cursor .cursor-pointer,
   html.has-sword-cursor,
   html.has-sword-cursor *,
-  html.has-sword-cursor *::before,
-  html.has-sword-cursor *::after,
   body.has-sword-cursor,
-  body.has-sword-cursor *,
-  body.has-sword-cursor *::before,
-  body.has-sword-cursor *::after,
-  html.has-sword-cursor a,
-  html.has-sword-cursor button,
-  html.has-sword-cursor [role="button"],
-  html.has-sword-cursor input,
-  html.has-sword-cursor select,
-  html.has-sword-cursor textarea,
-  html.has-sword-cursor [tabindex="0"],
-  html.has-sword-cursor label,
-  html.has-sword-cursor .cursor-pointer,
-  body.has-sword-cursor a,
-  body.has-sword-cursor button,
-  body.has-sword-cursor [role="button"],
-  body.has-sword-cursor input,
-  body.has-sword-cursor select,
-  body.has-sword-cursor textarea,
-  body.has-sword-cursor [tabindex="0"],
-  body.has-sword-cursor label,
-  body.has-sword-cursor .cursor-pointer {
+  body.has-sword-cursor * {
     cursor: none !important;
+  }
+
+  /* Unconditionally allow native text cursor for text editing */
+  html.has-enhanced-cursor input,
+  html.has-enhanced-cursor textarea,
+  body.has-enhanced-cursor input,
+  body.has-enhanced-cursor textarea,
+  html.has-sword-cursor input,
+  html.has-sword-cursor textarea,
+  body.has-sword-cursor input,
+  body.has-sword-cursor textarea {
+    cursor: text !important;
   }
 }
 

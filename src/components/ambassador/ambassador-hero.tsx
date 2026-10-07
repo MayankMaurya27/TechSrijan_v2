@@ -209,17 +209,17 @@ export function AmbassadorHero() {
             perspective: 1000,
           }}
         >
-          {/* Character Container: Elevated slightly higher & Balanced */}
+          {/* Character Container: Showing 70-80% of character with head aligned in center */}
           <motion.div
-            className="relative w-[260px] sm:w-[340px] md:w-[390px] lg:w-[440px] xl:w-[475px] flex items-end justify-center bottom-5 sm:bottom-7 md:bottom-8 lg:bottom-9"
+            className="relative w-[295px] sm:w-[370px] md:w-[420px] lg:w-[465px] xl:w-[505px] flex items-end justify-center bottom-2 sm:bottom-3 md:bottom-4 lg:bottom-5"
             style={{
               rotateY: charTiltY,
               transformStyle: "preserve-3d",
-              // Silky smooth mask fading the bottom 25-30% from the leg side
+              // Soft feather at bottom where knees meet the dark dune ridge
               maskImage:
-                "linear-gradient(to top, transparent 0%, transparent 6%, rgba(0,0,0,0.4) 14%, black 26%, black 100%)",
+                "linear-gradient(to top, transparent 0%, rgba(0,0,0,0.4) 5%, black 16%, black 100%)",
               WebkitMaskImage:
-                "linear-gradient(to top, transparent 0%, transparent 6%, rgba(0,0,0,0.4) 14%, black 26%, black 100%)",
+                "linear-gradient(to top, transparent 0%, rgba(0,0,0,0.4) 5%, black 16%, black 100%)",
             }}
             initial={{ scale: 0.84, opacity: 0, y: 38 }}
             animate={
@@ -242,13 +242,13 @@ export function AmbassadorHero() {
               }}
             />
 
-            {/* Character Cutout showing Upper 70-75% with Centered Head */}
+            {/* Character Cutout showing 70-80% with Centered Head */}
             <picture className="w-full h-auto flex justify-center">
               <source srcSet="/images/ambassador-character-upper.webp" type="image/webp" />
               <img
                 src="/images/ambassador-character-upper.png"
                 alt="TechSrijan Campus Ambassador Hero"
-                className={`w-full h-auto max-h-[50vh] sm:max-h-[55vh] lg:max-h-[62vh] object-contain object-bottom ${t.characterDropShadow} transition-all duration-700`}
+                className={`w-full h-auto max-h-[50vh] sm:max-h-[55vh] lg:max-h-[61vh] object-contain object-bottom ${t.characterDropShadow} transition-all duration-700`}
                 draggable={false}
               />
             </picture>

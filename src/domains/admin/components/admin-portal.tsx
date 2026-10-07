@@ -3,6 +3,7 @@
 import { useState, useMemo, useTransition } from "react";
 import { Download, Search, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Button } from "@/shared";
+import { generateSafeCsv, downloadCsv } from "@/core";
 import type { RegistrantRow } from "../types/admin.types";
 
 const INITIAL_REGISTRANTS: RegistrantRow[] = [
@@ -95,26 +96,33 @@ export function AdminPortal() {
   }, [rows, filter, search]);
 
   const exportCSV = () => {
-    const escapeCsv = (str: string) => `"${str.replace(/"/g, '""')}"`;
-    const headers = "ID,Name,Email,College,Event,Amount,OrderID,Status,Timestamp\n";
-    const csvContent =
-      headers +
-      rows
-        .map(
-          (r) =>
-            `${escapeCsv(r.id)},${escapeCsv(r.name)},${escapeCsv(r.email)},${escapeCsv(r.college)},${escapeCsv(r.event)},${escapeCsv(r.amount)},${escapeCsv(r.orderId)},${escapeCsv(r.status)},${escapeCsv(r.timestamp)}`
-        )
-        .join("\n");
+    const headers = [
+      "ID",
+      "Name",
+      "Email",
+      "College",
+      "Event",
+      "Amount",
+      "OrderID",
+      "Status",
+      "Timestamp",
+    ];
 
-    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `TechSrijan_Registrations_${new Date().toISOString().replace(/[:.]/g, "-")}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    const dataRows = rows.map((r) => [
+      r.id,
+      r.name,
+      r.email,
+      r.college,
+      r.event,
+      r.amount,
+      r.orderId,
+      r.status,
+      r.timestamp,
+    ]);
+
+    const csvContent = generateSafeCsv(headers, dataRows);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    downloadCsv(`TechSrijan_Registrations_${timestamp}.csv`, csvContent);
   };
 
   return (
@@ -251,9 +259,10 @@ export function AdminPortal() {
                       variant="danger"
                       size="sm"
                       onClick={() => handleApprove(row.id)}
+                      disabled={isPending}
                       className="text-[10px]"
                     >
-                      <span>APPROVE & ISSUE PASS</span>
+                      <span>{isPending ? "PROCESSING..." : "APPROVE & ISSUE PASS"}</span>
                     </Button>
                   ) : (
                     <span className="text-[10px] text-[var(--text-muted)] tracking-widest">

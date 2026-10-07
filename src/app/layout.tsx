@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue } from "next/font/google";
+import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue, Geist } from "next/font/google";
 import { ThemeProvider, LenisProvider } from "@/core";
 import { AmbientParticles, TwinSunsRays, Navbar } from "@/shared";
+import { SwordCursor } from "@/components/effects/sword-cursor";
 import "@/styles/globals.css";
+import { cn } from "@/lib/utils";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -10,11 +12,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -137,11 +135,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="arrakis-day" suppressHydrationWarning className={`${jetbrainsMono.variable} ${spaceGrotesk.variable} ${cinzel.variable} ${playfairDisplay.variable} ${bebasNeue.variable}`}>
+    <html lang="en" data-theme="arrakis-day" suppressHydrationWarning className={cn(jetbrainsMono.variable, cinzel.variable, playfairDisplay.variable, bebasNeue.variable, "font-sans", geist.variable)}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('techsrijan-theme')||localStorage.getItem('imperium-theme');if(s){s=s.trim().toLowerCase();var t='arrakis-day';if(s==='geass-moon'||s==='giedi-prime'||s==='geass')t='geass-moon';else if(s==='krelln-night'||s==='kelln-night'||s==='krelln')t='krelln-night';document.documentElement.setAttribute('data-theme',t);}}catch(e){}try{var isMob=(window.innerWidth<768)||/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);if(isMob||sessionStorage.getItem('techsrijan_intro_video_played')){document.documentElement.setAttribute('data-intro-played','true');sessionStorage.setItem('techsrijan_intro_video_played','true');}}catch(e){}})();`,
+          }}
         />
         <script
           dangerouslySetInnerHTML={{
@@ -152,6 +155,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans relative selection:bg-[var(--accent-primary)] selection:text-[var(--bg-primary)]">
         <ThemeProvider>
           <LenisProvider>
+            <SwordCursor />
             <div className="pointer-events-none fixed inset-0 z-40 film-grain" />
             <TwinSunsRays />
             <AmbientParticles />

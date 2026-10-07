@@ -10,29 +10,29 @@ export function EventsArenaGrid() {
   const [isReserved, setIsReserved] = useState(false);
 
   return (
-    <section className="relative w-full z-30 pt-16 sm:pt-24 pb-36 px-4 sm:px-8 max-w-7xl mx-auto">
+    <section className="relative w-full z-30 pt-12 sm:pt-24 pb-24 sm:pb-36 px-3 sm:px-8 max-w-7xl mx-auto">
       {/* Tactical Section Header (Placed directly below navbar) */}
-      <div className="text-center md:text-left mb-12 sm:mb-16 border-b border-white/15 pb-8">
-        <div className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-xs tracking-[0.35em] text-white/60 uppercase mb-3">
+      <div className="text-center md:text-left mb-8 sm:mb-16 border-b border-white/15 pb-6 sm:pb-8">
+        <div className="inline-flex items-center gap-2 font-mono text-[9px] sm:text-xs tracking-[0.3em] sm:tracking-[0.35em] text-white/60 uppercase mb-3">
           <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
           <span>// IMPERIUM COMBAT DIRECTIVES // THE ARENA ROSTER</span>
         </div>
         
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6">
           <div>
-            <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-black text-white uppercase tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
+            <h2 className="font-serif text-2xl sm:text-5xl lg:text-6xl font-black text-white uppercase tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
               ACTIVE DIRECTIVES
             </h2>
-            <p className="mt-3 max-w-2xl font-mono text-xs sm:text-sm text-neutral-400 uppercase tracking-wider leading-relaxed">
+            <p className="mt-2 sm:mt-3 max-w-2xl font-mono text-[10px] sm:text-sm text-neutral-400 uppercase tracking-wider leading-relaxed">
               CHOOSE A CLASSIFIED MISSION DOSSIER TO ENGAGE OPERATIONAL PARAMETERS, CAPACITY CONSTRAINTS, AND SQUAD RESERVATIONS.
             </p>
           </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex items-center gap-2 font-mono text-[10px] sm:text-xs tracking-wider self-center md:self-end">
+          {/* Category Filter Pills - scrollable on mobile */}
+          <div className="flex items-center gap-2 font-mono text-[9px] sm:text-xs tracking-wider self-start sm:self-center md:self-end overflow-x-auto pb-1 sm:pb-0 scrollbar-hide flex-nowrap">
             <button
               onClick={() => setSelectedFilter("ALL")}
-              className={`px-3 py-1.5 rounded-sm border transition-all ${
+              className={`px-3 py-1.5 rounded-sm border transition-all whitespace-nowrap active:scale-95 ${
                 selectedFilter === "ALL"
                   ? "border-white bg-white text-black font-bold shadow-[0_0_12px_rgba(255,255,255,0.4)]"
                   : "border-white/20 bg-black/40 text-neutral-400 hover:text-white hover:border-white/40"
@@ -42,7 +42,7 @@ export function EventsArenaGrid() {
             </button>
             <button
               onClick={() => setSelectedFilter("WORKSHOPS")}
-              className={`px-3 py-1.5 rounded-sm border transition-all ${
+              className={`px-3 py-1.5 rounded-sm border transition-all whitespace-nowrap active:scale-95 ${
                 selectedFilter === "WORKSHOPS"
                   ? "border-white bg-white text-black font-bold shadow-[0_0_12px_rgba(255,255,255,0.4)]"
                   : "border-white/20 bg-black/40 text-neutral-400 hover:text-white hover:border-white/40"
@@ -52,7 +52,7 @@ export function EventsArenaGrid() {
             </button>
             <button
               onClick={() => setSelectedFilter("UPCOMING")}
-              className={`px-3 py-1.5 rounded-sm border transition-all ${
+              className={`px-3 py-1.5 rounded-sm border transition-all whitespace-nowrap active:scale-95 ${
                 selectedFilter === "UPCOMING"
                   ? "border-white bg-white text-black font-bold shadow-[0_0_12px_rgba(255,255,255,0.4)]"
                   : "border-white/20 bg-black/40 text-neutral-400 hover:text-white hover:border-white/40"
@@ -64,8 +64,8 @@ export function EventsArenaGrid() {
         </div>
       </div>
 
-      {/* Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-8 justify-items-center items-start">
+      {/* Cards Grid - 2 cols on mobile, scales up on larger screens */}
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-8 lg:gap-8 justify-items-center items-start">
         {/* CARD 1: THE SIGNAL (Reference Event Card with Content) */}
         {(selectedFilter === "ALL" || selectedFilter === "WORKSHOPS") && (
           <div className="flex flex-col items-center w-full max-w-[340px]">
@@ -85,7 +85,7 @@ export function EventsArenaGrid() {
             >
               {/* Outer sculpt image */}
               <img
-                src="/Event_box.png"
+                src="/real-event.webp"
                 alt="The Signal Event Card"
                 className="w-full h-full object-contain pointer-events-none drop-shadow-[0_10px_25px_rgba(0,0,0,0.9)]"
               />
@@ -128,7 +128,7 @@ export function EventsArenaGrid() {
             <div className="relative w-full aspect-[2/3] group select-none transition-all duration-500 hover:-translate-y-1 hover:drop-shadow-[0_10px_25px_rgba(255,255,255,0.08)]">
               {/* Outer sculpt image */}
               <img
-                src="/Event_box.png"
+                src="/real-event.webp"
                 alt="Empty Event Card Slot"
                 className="w-full h-full object-contain pointer-events-none drop-shadow-[0_10px_25px_rgba(0,0,0,0.9)] opacity-90"
               />
@@ -187,7 +187,7 @@ export function EventsArenaGrid() {
 
             <div className="relative w-full aspect-[2/3] group select-none transition-all duration-500 hover:-translate-y-1 hover:drop-shadow-[0_10px_25px_rgba(255,255,255,0.08)]">
               <img
-                src="/Event_box.png"
+                src="/real-event.webp"
                 alt="Empty Event Card Slot"
                 className="w-full h-full object-contain pointer-events-none drop-shadow-[0_10px_25px_rgba(0,0,0,0.9)] opacity-90"
               />
@@ -242,7 +242,7 @@ export function EventsArenaGrid() {
 
             <div className="relative w-full aspect-[2/3] group select-none transition-all duration-500 hover:-translate-y-1 hover:drop-shadow-[0_10px_25px_rgba(255,255,255,0.08)]">
               <img
-                src="/Event_box.png"
+                src="/real-event.webp"
                 alt="Empty Event Card Slot"
                 className="w-full h-full object-contain pointer-events-none drop-shadow-[0_10px_25px_rgba(0,0,0,0.9)] opacity-90"
               />
@@ -303,13 +303,13 @@ export function EventsArenaGrid() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 20 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative w-full max-w-2xl overflow-hidden rounded-xl border border-white/25 bg-[#0d0d0f] p-6 sm:p-10 shadow-2xl text-white z-10"
+              className="relative w-full max-w-2xl max-h-[88dvh] overflow-y-auto overscroll-contain rounded-xl border border-white/25 bg-[#0d0d0f] p-5 sm:p-10 shadow-2xl text-white z-10"
             >
               {/* Close Button */}
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="absolute top-5 right-5 flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-white/5 text-neutral-300 hover:text-white hover:border-white transition-all"
+                className="absolute top-5 right-5 flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-white/5 text-neutral-300 hover:text-white hover:border-white transition-all cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -386,8 +386,8 @@ export function EventsArenaGrid() {
               </div>
 
               {/* Action Button */}
-              <div className="mt-8 pt-4 border-t border-white/10 flex items-center justify-between">
-                <span className="font-mono text-[11px] text-neutral-400">
+              <div className="mt-6 sm:mt-8 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <span className="font-mono text-[10px] sm:text-[11px] text-neutral-400">
                   {isReserved ? "STATUS: SEAT #14 SECURED" : "LIMITED CAPACITY // STRICT CURFEW"}
                 </span>
 
@@ -395,14 +395,14 @@ export function EventsArenaGrid() {
                   type="button"
                   onClick={() => setIsReserved(true)}
                   disabled={isReserved}
-                  className={`px-6 py-2.5 rounded-full font-mono text-xs tracking-[0.2em] uppercase font-bold transition-all ${
+                  className={`w-full sm:w-auto px-6 py-3 rounded-full font-mono text-xs tracking-[0.2em] uppercase font-bold transition-all cursor-pointer active:scale-95 ${
                     isReserved
                       ? "bg-emerald-500 text-black shadow-[0_0_20px_rgba(16,185,129,0.5)] cursor-default"
-                      : "bg-white text-black hover:bg-neutral-200 shadow-[0_0_20px_rgba(255,255,255,0.4)] active:scale-95"
+                      : "bg-white text-black hover:bg-neutral-200 shadow-[0_0_20px_rgba(255,255,255,0.4)]"
                   }`}
                 >
                   {isReserved ? (
-                    <span className="flex items-center gap-1.5">
+                    <span className="flex items-center justify-center gap-1.5">
                       <Check className="w-4 h-4" /> PLACE RESERVED
                     </span>
                   ) : (

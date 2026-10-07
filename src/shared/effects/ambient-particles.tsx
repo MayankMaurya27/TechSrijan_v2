@@ -20,8 +20,6 @@ export function AmbientParticles() {
   let particleColor = "196, 125, 72";
   if (theme === "krelln-night" || theme === "kelln-night") {
     particleColor = "119, 130, 146";
-  } else if (theme === "avron-night" || theme === "arvon-night") {
-    particleColor = "87, 147, 206";
   } else if (theme === "geass-moon" || theme === "giedi-prime") {
     particleColor = "255, 30, 39";
   }
@@ -57,7 +55,8 @@ export function AmbientParticles() {
 
     window.addEventListener("mousemove", handleMouseMove);
 
-    const particleCount = Math.min(80, Math.floor(width / 20));
+    const isMobile = width < 768;
+    const particleCount = isMobile ? 18 : Math.min(80, Math.floor(width / 20));
     const particles: Particle[] = Array.from({ length: particleCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
@@ -68,7 +67,22 @@ export function AmbientParticles() {
       targetOpacity: Math.random() * 0.6 + 0.2,
     }));
 
+    let frameCount = 0;
+
     const render = () => {
+      // Pause completely if tab is hidden or user has scrolled past hero section
+      if (document.hidden || window.scrollY > height * 1.5) {
+        animationFrameId = requestAnimationFrame(render);
+        return;
+      }
+
+      // Throttle to ~30fps on mobile to preserve battery and GPU fill rate
+      frameCount++;
+      if (isMobile && frameCount % 2 !== 0) {
+        animationFrameId = requestAnimationFrame(render);
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
       const color = particleColorRef.current;
 

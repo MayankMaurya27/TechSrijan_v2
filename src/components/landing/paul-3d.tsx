@@ -28,6 +28,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   const targetRotationYRef = useRef(DEFAULT_ROTATION_Y);
   const currentRotationYRef = useRef(DEFAULT_ROTATION_Y);
   const [isHovered, setIsHovered] = useState(false);
+  const [isModelLoaded, setIsModelLoaded] = useState(false);
   const isVisibleRef = useRef(false);
 
   const [isMobile, setIsMobile] = useState(false);
@@ -45,8 +46,8 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   // - ONLY as the gate flash light ends and Image 2 is on screen:
   // - Paul emerges purely through a silky-smooth opacity fade right where he stands (NO translation upward or downward)
   const anim = useMemo(() => {
-    const enterStart = isMobile ? 0.74 : 0.78; // begins fading in as the flash ends
-    const enterEnd = isMobile ? 0.86 : 0.89;   // fully faded in to normal solid presence
+    const enterStart = isMobile ? 0.73 : 0.77; // Begins materializing as the light is in its warm decay phase
+    const enterEnd = isMobile ? 0.84 : 0.86;   // Fully settled into solid presence exactly as the light finishes ending
 
     // Before flash light ends: completely invisible
     if (scrollProgress < enterStart) {
@@ -81,9 +82,9 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     if (scrollProgress >= 0.86) {
       const p = Math.min(1, Math.max(0, (scrollProgress - 0.86) / 0.11));
       const eased = p * p * (3 - 2 * p);
-      // On desktop: settle smoothly toward left (-34%) and slightly down (+4%)
+      // On desktop: settle smoothly toward left (-36.5%) and slightly down (+4%)
       // On mobile: stay centered and grounded at bottom
-      translateXPercent = isMobile ? 0 : -34 * eased;
+      translateXPercent = isMobile ? 0 : -36.5 * eased;
       translateYPercent = isMobile ? 2 * eased : 4 * eased;
       scale = isMobile ? 1.0 : 1.0 - 0.05 * eased;
     }
@@ -205,12 +206,24 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
         root.position.z = -centerZ;
 
         modelGroup.add(root);
+        setIsModelLoaded(true);
       },
       undefined,
       (err) => {
         console.error("Error loading Paul 3D model:", err);
       }
     );
+
+    // WebGL context resilience on mobile
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+      setIsModelLoaded(false);
+    };
+    const handleContextRestored = () => {
+      setIsModelLoaded(true);
+    };
+    canvas.addEventListener("webglcontextlost", handleContextLost);
+    canvas.addEventListener("webglcontextrestored", handleContextRestored);
 
     // 7. Animation Loop with visibility-aware throttling
     let animationFrameId: number;
@@ -274,6 +287,8 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", updateSize);
       resizeObserver.disconnect();
+      canvas.removeEventListener("webglcontextlost", handleContextLost);
+      canvas.removeEventListener("webglcontextrestored", handleContextRestored);
       renderer.dispose();
     };
   }, []);
@@ -330,7 +345,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-x-0 bottom-0 z-[25] flex flex-col items-center justify-end select-none pointer-events-none overflow-hidden"
+      className="absolute inset-x-0 bottom-0 z-[25] flex flex-col items-center justify-end select-none pointer-events-none"
       style={{
         opacity: anim.opacity,
         visibility: anim.visible ? "visible" : "hidden",
@@ -342,7 +357,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
       {/* 3D Model Viewport — constrained height showing upper 60-70% with soft bottom dissolve */}
       <div
         ref={viewportRef}
-        className="relative z-20 h-[42vh] sm:h-[48vh] md:h-[52vh] max-h-[520px] w-full max-w-[440px] sm:max-w-[520px] flex items-end justify-center touch-none -bottom-2 sm:-bottom-3 overflow-hidden"
+        className="relative z-20 h-[42vh] sm:h-[48vh] md:h-[52vh] max-h-[520px] w-full max-w-[460px] sm:max-w-[530px] flex items-end justify-center touch-none -bottom-2 sm:-bottom-3"
         style={{
           cursor: isHovered ? (isDraggingRef.current ? "grabbing" : "grab") : "default",
           pointerEvents: anim.visible ? "auto" : "none",
@@ -367,10 +382,26 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
           }}
         />
 
-        {/* WebGL Canvas for 3D Model (Always mounted and ready) */}
+        {/* Instant Fallback & Poster: Guarantees Paul is ALWAYS present even during network slow-down or WebGL recovery */}
+        <div
+          className={`absolute inset-0 flex items-end justify-center pointer-events-none transition-opacity duration-700 ${
+            isModelLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/paul-atreides.png"
+            alt="Paul Atreides"
+            className="h-[92%] w-auto max-w-full object-contain object-bottom drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)]"
+          />
+        </div>
+
+        {/* WebGL Canvas for 3D Model */}
         <canvas
           ref={canvasRef}
-          className="w-full h-full object-contain pointer-events-auto select-none"
+          className={`w-full h-full object-contain pointer-events-auto select-none transition-opacity duration-700 ${
+            isModelLoaded ? "opacity-100" : "opacity-0"
+          }`}
         />
       </div>
     </div>

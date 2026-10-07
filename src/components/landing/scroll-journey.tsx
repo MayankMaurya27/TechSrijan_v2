@@ -27,6 +27,8 @@ export function ScrollJourney({
   const targetTimeRef = useRef(0);
   const isSeekingRef = useRef(false);
   const seekWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSeekTimeRef = useRef(0);
+  const throttledSeekTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isPrimedRef = useRef(false);
   const isMobileRef = useRef(false);
   const rafIdRef = useRef<number>(0);
@@ -165,15 +167,32 @@ export function ScrollJourney({
     if (!video || !video.duration) return;
     if (isSeekingRef.current) return;
 
+    // Mobile hardware decoder optimization: throttle rapid seek flooding
+    if (isMobileRef.current) {
+      const now = performance.now();
+      const elapsed = now - lastSeekTimeRef.current;
+      if (elapsed < 40) {
+        if (!throttledSeekTimerRef.current) {
+          throttledSeekTimerRef.current = setTimeout(() => {
+            throttledSeekTimerRef.current = null;
+            attemptSeek();
+          }, 40 - elapsed);
+        }
+        return;
+      }
+    }
+
     // Desktop: clamp to 3.65s (Image 2) so Image 3 (end plaza) is never reached!
     // Mobile: keep full mobile video duration.
     const maxSafe = isMobileRef.current
       ? Math.max(0, video.duration - 0.05)
       : Math.min(3.65, Math.max(0, video.duration - 0.05));
     const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
+    const minDelta = isMobileRef.current ? 0.045 : 0.015;
 
-    if (Math.abs(video.currentTime - target) > 0.015) {
+    if (Math.abs(video.currentTime - target) > minDelta) {
       isSeekingRef.current = true;
+      lastSeekTimeRef.current = performance.now();
 
       // Use fastSeek on supported mobile browsers (instant hardware keyframe seek)
       const v = video as HTMLVideoElement & { fastSeek?: (time: number) => void };
@@ -209,7 +228,8 @@ export function ScrollJourney({
         ? Math.max(0, video.duration - 0.05)
         : Math.min(3.65, Math.max(0, video.duration - 0.05));
       const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
-      if (Math.abs(video.currentTime - target) > 0.015) {
+      const minDelta = isMobileRef.current ? 0.045 : 0.015;
+      if (Math.abs(video.currentTime - target) > minDelta) {
         attemptSeek();
       }
     }
@@ -315,30 +335,31 @@ export function ScrollJourney({
       window.removeEventListener("touchstart", primeMobileVideo);
       window.removeEventListener("pointerdown", primeMobileVideo);
       if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
+      if (throttledSeekTimerRef.current) clearTimeout(throttledSeekTimerRef.current);
     };
   }, [attemptSeek, primeMobileVideo]);
 
-  // Trigger a blinding temporal solar burst (lasts ~850ms) as the user traverses the gate portal
+  // Trigger a blinding temporal solar burst (lasts ~1450ms) as the user traverses the gate portal
   useEffect(() => {
-    const gateThreshold = isMobile ? 0.54 : 0.70;
+    const gateThreshold = isMobile ? 0.54 : 0.68;
     if (
       scrollProgress >= gateThreshold &&
-      scrollProgress <= gateThreshold + 0.16 &&
+      scrollProgress <= gateThreshold + 0.18 &&
       prevProgressRef.current < gateThreshold
     ) {
       const now = performance.now();
-      if (now - lastPulseTimeRef.current > 750) {
+      if (now - lastPulseTimeRef.current > 850) {
         lastPulseTimeRef.current = now;
         setPulseIntensity(1);
 
         let start: number | null = null;
-        const duration = 850; // 850ms intense solar exposure burst
+        const duration = 1450; // Sustained solar brilliance (~1450ms) so light lingers as character materializes
         const step = (timestamp: number) => {
           if (!start) start = timestamp;
           const elapsed = timestamp - start;
           const p = Math.min(1, elapsed / duration);
-          // Blinding hold for ~280ms, then smooth cinematic light dissipation
-          const intensity = p < 0.32 ? 1 : Math.max(0, 1 - Math.pow((p - 0.32) / 0.68, 1.3));
+          // Blinding hold for ~420ms, then silky-smooth dissipation as Paul spawns
+          const intensity = p < 0.29 ? 1 : Math.max(0, 1 - Math.pow((p - 0.29) / 0.71, 1.2));
           setPulseIntensity(intensity);
           if (p < 1) {
             requestAnimationFrame(step);
@@ -354,10 +375,10 @@ export function ScrollJourney({
   const landingOpacity = Math.max(0, 1 - scrollProgress * 12);
   const scrollVideoOpacity = Math.min(1, scrollProgress * 14);
 
-  // Gate Solar Flash Light curve (fires as the gate opens from Image 1 to Image 2)
-  const flashStart = isMobile ? 0.48 : 0.64;
-  const flashPeak = isMobile ? 0.60 : 0.74;
-  const flashEnd = isMobile ? 0.76 : 0.82;
+  // Gate Solar Flash Light curve (fires as the gate opens and lingers as Paul 3D spawns)
+  const flashStart = isMobile ? 0.48 : 0.62;
+  const flashPeak = isMobile ? 0.60 : 0.73;
+  const flashEnd = isMobile ? 0.80 : 0.86; // Light gently concludes right as Paul finishes materializing
 
   let scrollFlash = 0;
   if (scrollProgress >= flashStart && scrollProgress <= flashEnd) {
@@ -366,14 +387,14 @@ export function ScrollJourney({
       const t = (scrollProgress - flashStart) / (flashPeak - flashStart);
       scrollFlash = Math.sin((t * Math.PI) / 2);
     } else {
-      // Smooth decay into the open citadel
+      // Smooth decay that gently blankets Paul's spawn at 0.77-0.85
       const t = (scrollProgress - flashPeak) / (flashEnd - flashPeak);
       scrollFlash = Math.cos((t * Math.PI) / 2);
     }
   }
 
-  // Combined high-intensity solar flash (intense, properly visible, sustained for hundreds of ms)
-  const totalFlashIntensity = Math.min(1, Math.max(scrollFlash * 1.45, pulseIntensity));
+  // Combined high-intensity solar flash (more intense, radiant, sustained)
+  const totalFlashIntensity = Math.min(1, Math.max(scrollFlash * 1.55, pulseIntensity));
 
   return (
     <div
@@ -469,10 +490,8 @@ export function ScrollJourney({
           <HeroTitle scrollProgress={scrollProgress} />
         </div>
 
-        {/* Layer 3.5: Celestial Social Constellation Hologram on the Rock (Desktop Only) */}
-        {!isMobile && <SocialConstellation scrollProgress={scrollProgress} />}
 
-        {/* Layer 3.8: Cinematic Solar Gate Flash & Flare (Blends optically on top of video) */}
+        {/* Layer 3.8: Cinematic Solar Gate Flash & Flare (Natural Volumetric Illumination) */}
         {totalFlashIntensity > 0.001 && (
           <div
             className="absolute inset-0 pointer-events-none overflow-hidden transition-opacity duration-75"
@@ -482,50 +501,48 @@ export function ScrollJourney({
               mixBlendMode: "screen",
             }}
           >
-            {/* 1. Warm radiant solar illumination wash directly over video */}
+            {/* 1. Full-screen warm solar exposure wash */}
             <div
               className="absolute inset-0 w-full h-full"
               style={{
                 background:
-                  "radial-gradient(ellipse 90% 75% at 50% 50%, rgba(255, 240, 190, 0.70) 0%, rgba(255, 185, 75, 0.45) 40%, rgba(215, 110, 20, 0.20) 70%, transparent 100%)",
+                  "radial-gradient(ellipse 95% 85% at 50% 46%, rgba(255, 252, 225, 0.95) 0%, rgba(255, 220, 120, 0.70) 35%, rgba(240, 145, 45, 0.32) 68%, transparent 100%)",
               }}
             />
 
-            {/* 2. Intense center portal gateway solar bloom */}
+            {/* 2. Intense center portal gateway solar bloom (Deep volumetric spherical core) */}
             <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[60vh] max-w-[900px] rounded-full blur-[28px]"
+              className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[88vw] h-[80vh] max-w-[1150px] rounded-full blur-[44px]"
               style={{
                 background:
-                  "radial-gradient(circle at center, rgba(255, 255, 250, 0.85) 0%, rgba(255, 215, 130, 0.60) 35%, rgba(245, 140, 30, 0.25) 70%, transparent 100%)",
+                  "radial-gradient(circle at center, rgba(255, 255, 255, 1.0) 0%, rgba(255, 235, 160, 0.85) 28%, rgba(250, 165, 50, 0.45) 62%, transparent 100%)",
               }}
             />
 
-            {/* 3. Cinematic anamorphic horizontal lens flare streak */}
+            {/* 2.5. Blinding white-hot gateway epicenter surge */}
             <div
-              className="absolute top-1/2 left-0 w-full h-[6px] -translate-y-1/2 blur-[1px]"
+              className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[48vw] h-[48vh] max-w-[580px] rounded-full blur-[26px]"
               style={{
                 background:
-                  "linear-gradient(90deg, transparent 0%, rgba(255, 180, 60, 0.3) 15%, rgba(255, 250, 220, 0.95) 50%, rgba(255, 180, 60, 0.3) 85%, transparent 100%)",
-                boxShadow:
-                  "0 0 25px 8px rgba(255, 210, 100, 0.85), 0 0 60px 20px rgba(240, 130, 30, 0.4)",
+                  "radial-gradient(circle at center, rgba(255, 255, 255, 0.98) 0%, rgba(255, 245, 205, 0.65) 45%, transparent 80%)",
               }}
             />
 
-            {/* 4. Sharp central white core flare */}
+            {/* 3. Soft broad horizontal atmospheric light halo (Extremely feathered, zero line artifact) */}
             <div
-              className="absolute top-1/2 left-0 w-full h-[2px] -translate-y-1/2 bg-white/90"
-              style={{
-                boxShadow:
-                  "0 0 12px 3px rgba(255, 255, 255, 0.9), 0 0 30px 8px rgba(255, 195, 70, 0.6)",
-              }}
-            />
-
-            {/* 5. Vertical light shaft pouring through the open gate */}
-            <div
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-[180px] sm:w-[260px] h-full blur-[20px] opacity-75"
+              className="absolute top-[46%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] h-[240px] max-h-[38vh] blur-[52px]"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(255, 245, 210, 0.65) 0%, rgba(255, 190, 80, 0.35) 45%, transparent 85%)",
+                  "radial-gradient(ellipse 90% 70% at center, rgba(255, 252, 235, 0.85) 0%, rgba(255, 215, 120, 0.45) 45%, rgba(240, 140, 40, 0.18) 75%, transparent 100%)",
+              }}
+            />
+
+            {/* 4. Broad vertical volumetric sunlight pouring down through the portal opening */}
+            <div
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-[360px] sm:w-[520px] h-full blur-[36px] opacity-85"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255, 252, 230, 0.88) 0%, rgba(255, 215, 110, 0.50) 40%, rgba(240, 140, 35, 0.20) 75%, transparent 95%)",
               }}
             />
           </div>
@@ -540,6 +557,13 @@ export function ScrollJourney({
         <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
           <CitadelArchive scrollProgress={scrollProgress} />
         </div>
+
+        {/* Layer 5.5: Celestial Social Constellation Hologram (Anchored on the far right end) */}
+        {!isMobile && (
+          <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 28 }}>
+            <SocialConstellation scrollProgress={scrollProgress} />
+          </div>
+        )}
       </div>
     </div>
   );

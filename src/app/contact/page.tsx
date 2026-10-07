@@ -2,17 +2,25 @@ import type { Metadata } from "next";
 import { ContactView } from "@/domains/contact";
 
 export const metadata: Metadata = {
-  title: "Contact The Council",
+  title: "Contact Directives & Council Comms | TechSrijan'27",
   description:
-    "Reach the Technical Sub Council (TSC) for events, sponsorship, accommodation or media queries for TechSrijan'27 at MMMUT Gorakhpur. Response within 24–48 hours.",
+    "Official communication relay, venue coordinates, and secretarial support channels for TechSrijan'27 at MMMUT Gorakhpur. Response within 24–48 hours.",
   alternates: {
     canonical: "/contact",
   },
   openGraph: {
-    title: "Contact | TechSrijan'27",
+    title: "Contact Directives & Support | TechSrijan'27",
     description:
-      "Open a channel with the TechSrijan'27 council — events, sponsorship, media and support desks at MMMUT Gorakhpur.",
+      "Official contact directives, campus coordinates, and secretarial support channels for TechSrijan'27 MMMUT Gorakhpur.",
     url: "/contact",
+    siteName: "TechSrijan'27",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Directives & Support | TechSrijan'27",
+    description:
+      "Official contact directives, venue coordinates, and secretarial support channels for TechSrijan'27 MMMUT Gorakhpur.",
   },
 };
 

@@ -182,7 +182,7 @@ export function AmbassadorPerks() {
   return (
     <section
       ref={containerRef}
-      className="relative pt-16 sm:pt-20 lg:pt-24 pb-12 sm:pb-16 lg:pb-20 bg-[#040303] overflow-hidden select-none"
+      className="relative pt-12 sm:pt-16 lg:pt-20 pb-6 sm:pb-8 lg:pb-10 bg-[#040303] overflow-hidden select-none"
     >
       {/* ========================================================
           BACKGROUND LAYER: Topographic Contours & Sci-Fi Grids
@@ -264,10 +264,14 @@ export function AmbassadorPerks() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-3.5 sm:mt-4"
+                className="mt-4 sm:mt-5"
               >
                 <a
                   href="#apply"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.dispatchEvent(new CustomEvent("open-ambassador-modal"));
+                  }}
                   className="group relative overflow-hidden inline-flex items-center justify-center px-7 py-3 font-mono text-xs sm:text-xs font-bold tracking-[0.2em] uppercase text-white bg-gradient-to-r from-[#991B1B] via-[#C51D24] to-[#991B1B] hover:from-[#B91C1C] hover:to-[#E61924] transition-all duration-300 shadow-[0_0_24px_rgba(220,38,38,0.5)] hover:shadow-[0_0_36px_rgba(255,42,54,0.7)] active:scale-[0.98] border border-red-500/50"
                   style={{
                     clipPath:
@@ -288,7 +292,7 @@ export function AmbassadorPerks() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="-mt-1 sm:-mt-2 lg:-mt-2.5 relative w-full max-w-[315px] sm:max-w-[335px] lg:max-w-[350px]"
+              className="mt-0.5 sm:mt-1 lg:mt-1.5 relative w-full max-w-[350px] sm:max-w-[375px] lg:max-w-[395px]"
             >
               {/* Scaled SVG Composition: Craggy Mountains + Reticle + Faceted Stealth Wings */}
               <div className="relative w-full aspect-[16/9.6]">

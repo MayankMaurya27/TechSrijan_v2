@@ -10,47 +10,18 @@ export interface HeroTitleProps {
 }
 
 export function HeroTitle({ scrollProgress }: HeroTitleProps) {
-  const [hasEntered, setHasEntered] = useState(() => {
-    if (typeof window !== "undefined") {
-      return (
-        window.innerWidth < 768 ||
-        document.documentElement.getAttribute("data-intro-played") === "true" ||
-        sessionStorage.getItem(SESSION_KEY) === "true"
-      );
-    }
-    return false;
-  });
+  const [hasEntered, setHasEntered] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // If intro has already played in this tab (e.g. user refreshed or mobile), enter immediately!
-    if (typeof window !== "undefined") {
-      const hasPlayedInTab =
-        document.documentElement.getAttribute("data-intro-played") === "true" ||
-        sessionStorage.getItem(SESSION_KEY) === "true" ||
-        window.innerWidth < 768;
-      if (hasPlayedInTab) {
-        setHasEntered(true);
-      }
-    }
-
+    setHasEntered(true);
     const handleIntroComplete = () => {
-      // As intro fades out to the black/ambient landing page, animate in the TechSrijan text
-      setTimeout(() => {
-        setHasEntered(true);
-      }, 80);
+      setHasEntered(true);
     };
 
     window.addEventListener("intro-complete", handleIntroComplete);
-
-    // Fallback: If no intro video is shown or after delay, ensure entered
-    const fallbackTimer = setTimeout(() => {
-      setHasEntered(true);
-    }, 1200);
-
     return () => {
       window.removeEventListener("intro-complete", handleIntroComplete);
-      clearTimeout(fallbackTimer);
     };
   }, []);
 
@@ -58,12 +29,12 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
   // 1. Vignette: Fixed to screen edges, ZERO translation. Fades out smoothly as scroll starts (0 to 3.5% scroll)
   const vignetteFadeThreshold = 0.035;
   const vignetteProgress = Math.min(1, Math.max(0, scrollProgress / vignetteFadeThreshold));
-  const vignetteOpacity = hasEntered ? Math.max(0, 1 - vignetteProgress) : 0;
+  const vignetteOpacity = Math.max(0, 1 - vignetteProgress);
 
   // 2. Main emblem logo: subtle upward drift and scale, fades out completely by 7% scroll
   const emblemFadeThreshold = 0.07;
   const emblemProgress = Math.min(1, Math.max(0, scrollProgress / emblemFadeThreshold));
-  const emblemOpacity = hasEntered ? Math.max(0, 1 - emblemProgress) : 0;
+  const emblemOpacity = Math.max(0, 1 - emblemProgress);
   const emblemTranslateY = -emblemProgress * 32;
   const emblemScale = 1 - emblemProgress * 0.03;
 

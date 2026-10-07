@@ -130,10 +130,14 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     overflow-x: hidden;
+    overscroll-behavior: none !important;
+    overscroll-behavior-y: none !important;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     @apply bg-background text-foreground;
   }
   html {
+    overscroll-behavior: none !important;
+    overscroll-behavior-y: none !important;
     @apply font-sans;
   }
 }

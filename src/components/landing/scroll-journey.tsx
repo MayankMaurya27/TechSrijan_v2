@@ -339,9 +339,10 @@ export function ScrollJourney({
     };
   }, [attemptSeek, primeMobileVideo]);
 
-  // Trigger a blinding temporal solar burst (lasts ~1450ms) as the user traverses the gate portal
+  // Trigger a blinding temporal solar burst on desktop as the user traverses the gate portal
   useEffect(() => {
-    const gateThreshold = isMobile ? 0.54 : 0.68;
+    if (isMobile) return; // Prevent 60fps React state re-renders on mobile CPU/GPU
+    const gateThreshold = 0.68;
     if (
       scrollProgress >= gateThreshold &&
       scrollProgress <= gateThreshold + 0.18 &&
@@ -394,12 +395,14 @@ export function ScrollJourney({
   }
 
   // Combined high-intensity solar flash (more intense, radiant, sustained)
-  const totalFlashIntensity = Math.min(1, Math.max(scrollFlash * 1.55, pulseIntensity));
+  const totalFlashIntensity = isMobile
+    ? Math.min(1, scrollFlash * 1.4)
+    : Math.min(1, Math.max(scrollFlash * 1.55, pulseIntensity));
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-[300vh] sm:min-h-[380vh] md:min-h-[480vh] bg-black -mt-16"
+      className="relative w-full min-h-[250vh] sm:min-h-[340vh] md:min-h-[440vh] bg-black -mt-16"
     >
       {/* Sticky Fullscreen Video Window with dynamic viewport support */}
       <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden select-none bg-black">
@@ -498,53 +501,59 @@ export function ScrollJourney({
             style={{
               opacity: totalFlashIntensity,
               zIndex: 14,
-              mixBlendMode: "screen",
+              mixBlendMode: isMobile ? "normal" : "screen",
             }}
           >
             {/* 1. Full-screen warm solar exposure wash */}
             <div
               className="absolute inset-0 w-full h-full"
               style={{
-                background:
-                  "radial-gradient(ellipse 95% 85% at 50% 46%, rgba(255, 252, 225, 0.95) 0%, rgba(255, 220, 120, 0.70) 35%, rgba(240, 145, 45, 0.32) 68%, transparent 100%)",
+                background: isMobile
+                  ? "radial-gradient(ellipse 95% 85% at 50% 46%, rgba(255, 252, 225, 0.82) 0%, rgba(255, 220, 120, 0.40) 45%, rgba(240, 145, 45, 0.15) 75%, transparent 100%)"
+                  : "radial-gradient(ellipse 95% 85% at 50% 46%, rgba(255, 252, 225, 0.95) 0%, rgba(255, 220, 120, 0.70) 35%, rgba(240, 145, 45, 0.32) 68%, transparent 100%)",
               }}
             />
 
-            {/* 2. Intense center portal gateway solar bloom (Deep volumetric spherical core) */}
-            <div
-              className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[88vw] h-[80vh] max-w-[1150px] rounded-full blur-[44px]"
-              style={{
-                background:
-                  "radial-gradient(circle at center, rgba(255, 255, 255, 1.0) 0%, rgba(255, 235, 160, 0.85) 28%, rgba(250, 165, 50, 0.45) 62%, transparent 100%)",
-              }}
-            />
+            {/* Desktop only: Multi-pass heavy blur bloom to avoid mobile GPU stall */}
+            {!isMobile && (
+              <>
+                {/* 2. Intense center portal gateway solar bloom (Deep volumetric spherical core) */}
+                <div
+                  className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[88vw] h-[80vh] max-w-[1150px] rounded-full blur-[44px]"
+                  style={{
+                    background:
+                      "radial-gradient(circle at center, rgba(255, 255, 255, 1.0) 0%, rgba(255, 235, 160, 0.85) 28%, rgba(250, 165, 50, 0.45) 62%, transparent 100%)",
+                  }}
+                />
 
-            {/* 2.5. Blinding white-hot gateway epicenter surge */}
-            <div
-              className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[48vw] h-[48vh] max-w-[580px] rounded-full blur-[26px]"
-              style={{
-                background:
-                  "radial-gradient(circle at center, rgba(255, 255, 255, 0.98) 0%, rgba(255, 245, 205, 0.65) 45%, transparent 80%)",
-              }}
-            />
+                {/* 2.5. Blinding white-hot gateway epicenter surge */}
+                <div
+                  className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[48vw] h-[48vh] max-w-[580px] rounded-full blur-[26px]"
+                  style={{
+                    background:
+                      "radial-gradient(circle at center, rgba(255, 255, 255, 0.98) 0%, rgba(255, 245, 205, 0.65) 45%, transparent 80%)",
+                  }}
+                />
 
-            {/* 3. Soft broad horizontal atmospheric light halo (Extremely feathered, zero line artifact) */}
-            <div
-              className="absolute top-[46%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] h-[240px] max-h-[38vh] blur-[52px]"
-              style={{
-                background:
-                  "radial-gradient(ellipse 90% 70% at center, rgba(255, 252, 235, 0.85) 0%, rgba(255, 215, 120, 0.45) 45%, rgba(240, 140, 40, 0.18) 75%, transparent 100%)",
-              }}
-            />
+                {/* 3. Soft broad horizontal atmospheric light halo (Extremely feathered, zero line artifact) */}
+                <div
+                  className="absolute top-[46%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] h-[240px] max-h-[38vh] blur-[52px]"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse 90% 70% at center, rgba(255, 252, 235, 0.85) 0%, rgba(255, 215, 120, 0.45) 45%, rgba(240, 140, 40, 0.18) 75%, transparent 100%)",
+                  }}
+                />
 
-            {/* 4. Broad vertical volumetric sunlight pouring down through the portal opening */}
-            <div
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-[360px] sm:w-[520px] h-full blur-[36px] opacity-85"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(255, 252, 230, 0.88) 0%, rgba(255, 215, 110, 0.50) 40%, rgba(240, 140, 35, 0.20) 75%, transparent 95%)",
-              }}
-            />
+                {/* 4. Broad vertical volumetric sunlight pouring down through the portal opening */}
+                <div
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-[360px] sm:w-[520px] h-full blur-[36px] opacity-85"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(255, 252, 230, 0.88) 0%, rgba(255, 215, 110, 0.50) 40%, rgba(240, 140, 35, 0.20) 75%, transparent 95%)",
+                  }}
+                />
+              </>
+            )}
           </div>
         )}
 

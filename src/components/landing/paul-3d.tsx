@@ -295,12 +295,14 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
 
   // Pointer / Mouse interaction: rotates via cursor very less, looking best overall
   const onPointerDown = useCallback((e: React.PointerEvent) => {
+    if (isMobile) return;
     isDraggingRef.current = true;
     startXRef.current = e.clientX;
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  }, []);
+  }, [isMobile]);
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (isMobile) return;
     // If dragging: very gentle rotation sensitivity (0.0012) and very tight clamp (max ±0.08 rad ≈ ±4.5 deg)
     if (isDraggingRef.current) {
       const deltaX = e.clientX - startXRef.current;
@@ -322,9 +324,10 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
         hoverOffsetRef.current = Math.max(-1, Math.min(1, normalizedX)) * 0.03;
       }
     }
-  }, []);
+  }, [isMobile]);
 
   const onPointerUp = useCallback((e: React.PointerEvent) => {
+    if (isMobile) return;
     isDraggingRef.current = false;
     try {
       (e.target as HTMLElement).releasePointerCapture(e.pointerId);
@@ -332,15 +335,16 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
     // Gently ease back to center
     dragRotationRef.current = 0;
     targetRotationYRef.current = DEFAULT_ROTATION_Y;
-  }, []);
+  }, [isMobile]);
 
   const onPointerLeave = useCallback(() => {
+    if (isMobile) return;
     setIsHovered(false);
     isDraggingRef.current = false;
     dragRotationRef.current = 0;
     hoverOffsetRef.current = 0;
     targetRotationYRef.current = DEFAULT_ROTATION_Y;
-  }, []);
+  }, [isMobile]);
 
   return (
     <div
@@ -357,14 +361,14 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
       {/* 3D Model Viewport — constrained height showing upper 60-70% with soft bottom dissolve */}
       <div
         ref={viewportRef}
-        className="relative z-20 h-[42vh] sm:h-[48vh] md:h-[52vh] max-h-[520px] w-full max-w-[460px] sm:max-w-[530px] flex items-end justify-center touch-none -bottom-2 sm:-bottom-3"
+        className="relative z-20 h-[42vh] sm:h-[48vh] md:h-[52vh] max-h-[520px] w-full max-w-[460px] sm:max-w-[530px] flex items-end justify-center touch-pan-y sm:touch-none -bottom-2 sm:-bottom-3"
         style={{
           cursor: isHovered ? (isDraggingRef.current ? "grabbing" : "grab") : "default",
-          pointerEvents: anim.visible ? "auto" : "none",
+          pointerEvents: isMobile ? "none" : (anim.visible ? "auto" : "none"),
           maskImage: "linear-gradient(to top, transparent 0%, black 16%, black 100%)",
           WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 16%, black 100%)",
         }}
-        onMouseEnter={() => setIsHovered(true)}
+        onMouseEnter={() => !isMobile && setIsHovered(true)}
         onMouseLeave={onPointerLeave}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}

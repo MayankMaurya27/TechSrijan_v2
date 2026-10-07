@@ -230,7 +230,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
       {/* MOBILE EXPERIENCE: 3 HORIZONTALLY ALIGNED CARDS (CAROUSEL)    */}
       {/* ───────────────────────────────────────────────────────────── */}
       {isMobile ? (
-        <div className="relative w-full h-full flex flex-col justify-start items-center pt-14 sm:pt-16 px-2 pointer-events-auto">
+        <div className="relative w-full h-full flex flex-col justify-start items-center pt-14 sm:pt-16 px-2 pointer-events-auto touch-pan-y">
           {/* Top Arrakis HUD Tab Selector */}
           <div className="flex items-center justify-center gap-1.5 p-1 rounded-full border border-[#d4a843]/30 bg-black/80 backdrop-blur-md z-30 mb-2 shadow-[0_4px_20px_rgba(0,0,0,0.85)]">
             {[

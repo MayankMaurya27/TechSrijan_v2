@@ -6,7 +6,8 @@ import {
   AmbassadorColleges,
   AmbassadorLeaderboard,
   AmbassadorApply,
-} from "@/components/ambassador";
+} from "@/domains/ambassador";
+
 
 export const metadata: Metadata = {
   title: "Campus Ambassador Program | TechSrijan'27 MMMUT Gorakhpur",

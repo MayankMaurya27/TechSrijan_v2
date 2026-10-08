@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue, Geist } from "next/font/google";
-import { ThemeProvider, LenisProvider } from "@/core";
-import { AmbientParticles, TwinSunsRays, Navbar } from "@/shared";
-import { SwordCursor } from "@/components/effects/sword-cursor";
+import { ThemeProvider, LenisProvider, cn } from "@/core";
+import { AmbientParticles, TwinSunsRays, Navbar, SwordCursor } from "@/shared";
 import "@/styles/globals.css";
-import { cn } from "@/lib/utils";
+
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],

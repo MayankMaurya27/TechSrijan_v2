@@ -1,0 +1,414 @@
+"use client";
+
+import { useEffect, useRef, useMemo, useState, useCallback } from "react";
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { isMobileDevice } from "@/core";
+
+
+interface Paul3DProps {
+  scrollProgress: number;
+}
+
+export function Paul3D({ scrollProgress }: Paul3DProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const modelGroupRef = useRef<THREE.Group | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+
+  // User interactive rotation (subtle cursor drag & hover rotation looking best overall)
+  // -0.10 rad brings his face and chest into ideal heroic balance with cinematic cape silhouette
+  const DEFAULT_ROTATION_Y = -0.10;
+  const isDraggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const dragRotationRef = useRef(0); // drag offset from default
+  const hoverOffsetRef = useRef(0);  // gentle cursor parallax offset
+  const targetRotationYRef = useRef(DEFAULT_ROTATION_Y);
+  const currentRotationYRef = useRef(DEFAULT_ROTATION_Y);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isModelLoaded, setIsModelLoaded] = useState(false);
+  const isVisibleRef = useRef(false);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () =>
+      isMobileDevice() || (typeof window !== "undefined" && window.innerWidth < 1024);
+    setIsMobile(checkMobile());
+    const onResize = () => setIsMobile(checkMobile());
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Timeline:
+  // - ONLY as the gate flash light ends and Image 2 is on screen:
+  // - Paul emerges purely through a silky-smooth opacity fade right where he stands (NO translation upward or downward)
+  const anim = useMemo(() => {
+    const enterStart = isMobile ? 0.73 : 0.77; // Begins materializing as the light is in its warm decay phase
+    const enterEnd = isMobile ? 0.84 : 0.86;   // Fully settled into solid presence exactly as the light finishes ending
+
+    // Before flash light ends: completely invisible
+    if (scrollProgress < enterStart) {
+      return {
+        opacity: 0,
+        translateYPercent: 0,
+        scale: 1.0,
+        visible: false,
+      };
+    }
+
+    const normalOpacity = 0.96; // Restored normal solid cinematic opacity
+
+    // Pure fade and blend: smoothly fades in with zero vertical translation
+    if (scrollProgress < enterEnd) {
+      const t = (scrollProgress - enterStart) / (enterEnd - enterStart);
+      // Hermite smoothstep for natural gradual fade
+      const eased = t * t * (3 - 2 * t);
+      return {
+        opacity: eased * normalOpacity,
+        translateYPercent: 0, // NO upward or downward translation!
+        scale: 1.0,
+        visible: true,
+      };
+    }
+
+    // Grounded presence in Citadel, settling smoothly into lower-left anchor as archive reveals
+    let translateXPercent = 0;
+    let translateYPercent = 0;
+    let scale = 1.0;
+
+    if (scrollProgress >= 0.86) {
+      const p = Math.min(1, Math.max(0, (scrollProgress - 0.86) / 0.11));
+      const eased = p * p * (3 - 2 * p);
+      // On desktop: settle smoothly toward left (-36.5%) and slightly down (+4%)
+      // On mobile: stay centered and grounded at bottom
+      translateXPercent = isMobile ? 0 : -36.5 * eased;
+      translateYPercent = isMobile ? 2 * eased : 4 * eased;
+      scale = isMobile ? 1.0 : 1.0 - 0.05 * eased;
+    }
+
+    return {
+      opacity: normalOpacity,
+      translateXPercent,
+      translateYPercent,
+      scale,
+      visible: true,
+    };
+  }, [scrollProgress, isMobile]);
+
+  // Track visibility so RAF loop can pause when hidden (saves GPU on mobile)
+  useEffect(() => {
+    isVisibleRef.current = anim.visible;
+  }, [anim.visible]);
+
+  // Set up Three.js Scene, Camera, Lights, Renderer, and load Model
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+
+    const mobile = isMobileDevice() || (typeof window !== "undefined" && window.innerWidth < 1024);
+    const el = viewportRef.current || container;
+    let width = el?.clientWidth || (typeof window !== "undefined" ? Math.min(window.innerWidth, 450) : 450);
+    let height = el?.clientHeight || (typeof window !== "undefined" ? Math.round(window.innerHeight * 0.45) : 450);
+
+    // 1. Scene
+    const scene = new THREE.Scene();
+    sceneRef.current = scene;
+
+    // 2. Camera: Focused on upper 60-70% of Paul (head, shoulders, chest, Fremen cape and waist)
+    const camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 100);
+    camera.position.set(0, 0.05, 2.5);
+    camera.lookAt(0, 0.05, 0);
+    cameraRef.current = camera;
+
+    // 3. WebGL Renderer — reduce GPU pressure on mobile
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: !mobile,  // Disable AA on mobile to save GPU
+      powerPreference: mobile ? "low-power" : "high-performance",
+    });
+    // Cap pixel ratio: 1.0 on mobile, 2.0 on desktop
+    renderer.setPixelRatio(mobile ? 1 : Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(width, height);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.35;
+    rendererRef.current = renderer;
+
+    // 4. Cinematic Arrakis Citadel Lighting
+    const ambientLight = new THREE.AmbientLight(0xffeedd, 1.4);
+    scene.add(ambientLight);
+
+    // Main warm key light (torchlight & citadel golden sun)
+    const keyLight = new THREE.DirectionalLight(0xffb74d, 2.8);
+    keyLight.position.set(3, 4, 3);
+    scene.add(keyLight);
+
+    // Secondary fill light for deep basalt folds
+    const fillLight = new THREE.DirectionalLight(0xd4a843, 1.5);
+    fillLight.position.set(-3, 2, 2);
+    scene.add(fillLight);
+
+    // Dramatic rim backlight (highlights curls and cape silhouette)
+    const rimLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    rimLight.position.set(0, 3, -3);
+    scene.add(rimLight);
+
+    // 5. Model Container Group (rotates around model's vertical center)
+    const modelGroup = new THREE.Group();
+    scene.add(modelGroup);
+    modelGroupRef.current = modelGroup;
+
+    // 6. Load Texture and Model
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load("/paul_texture.png", (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.flipY = false;
+    });
+
+    const loader = new GLTFLoader();
+    loader.load(
+      "/paul.glb",
+      (gltf) => {
+        const root = gltf.scene;
+
+        root.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const mesh = child as THREE.Mesh;
+            mesh.geometry.computeVertexNormals();
+
+            // High-resolution texture material for Fremen stillsuit & cape
+            mesh.material = new THREE.MeshStandardMaterial({
+              map: texture,
+              roughness: 0.82,
+              metalness: 0.08,
+              side: THREE.DoubleSide,
+            });
+          }
+        });
+
+        // Compute bounding box to frame upper 60-70% (head, chest, Fremen cloak, waist) removing legs/feet
+        const bbox = new THREE.Box3().setFromObject(root);
+        const centerX = (bbox.min.x + bbox.max.x) / 2;
+        const centerZ = (bbox.min.z + bbox.max.z) / 2;
+        const modelHeight = bbox.max.y - bbox.min.y;
+
+        // Display upper 65% of the model and crop out lower 35% (legs and boots)
+        const visibleHeight = modelHeight * 0.65;
+        const cutoffY = bbox.max.y - visibleHeight;
+        const targetCenterY = (bbox.max.y + cutoffY) / 2;
+
+        root.position.x = -centerX;
+        root.position.y = -targetCenterY;
+        root.position.z = -centerZ;
+
+        modelGroup.add(root);
+        setIsModelLoaded(true);
+      },
+      undefined,
+      (err) => {
+        console.error("Error loading Paul 3D model:", err);
+      }
+    );
+
+    // WebGL context resilience on mobile
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+      setIsModelLoaded(false);
+    };
+    const handleContextRestored = () => {
+      setIsModelLoaded(true);
+    };
+    canvas.addEventListener("webglcontextlost", handleContextLost);
+    canvas.addEventListener("webglcontextrestored", handleContextRestored);
+
+    // 7. Animation Loop with visibility-aware throttling
+    let animationFrameId: number;
+    const startTime = performance.now();
+    let lastRenderTime = 0;
+    // On mobile, throttle to ~30 FPS to reduce GPU heat; desktop runs uncapped
+    const minFrameInterval = mobile ? 33 : 0;
+
+    const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+
+      // Skip rendering entirely when model is off-screen (saves massive GPU on mobile)
+      if (!isVisibleRef.current) return;
+
+      const now = performance.now();
+      if (now - lastRenderTime < minFrameInterval) return;
+      lastRenderTime = now;
+
+      const elapsed = (now - startTime) / 1000;
+
+      if (modelGroupRef.current) {
+        // Idle gentle subtle breathing sway if not being dragged
+        const idleSway = isDraggingRef.current ? 0 : Math.sin(elapsed * 1.0) * 0.008;
+
+        // Smooth damping interpolation towards target rotation
+        const finalTarget = targetRotationYRef.current + hoverOffsetRef.current + idleSway;
+        currentRotationYRef.current +=
+          (finalTarget - currentRotationYRef.current) * 0.07;
+
+        modelGroupRef.current.rotation.y = currentRotationYRef.current;
+      }
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    // 8. Handle Resize dynamically
+    const updateSize = () => {
+      const el = viewportRef.current || container;
+      if (!el || !canvas) return;
+      const w = el.clientWidth || window.innerWidth;
+      const h = el.clientHeight || Math.round(window.innerHeight * 0.42);
+      if (w > 0 && h > 0) {
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      }
+    };
+
+    // Listen for resize
+    window.addEventListener("resize", updateSize);
+    const resizeObserver = new ResizeObserver(updateSize);
+    if (viewportRef.current) {
+      resizeObserver.observe(viewportRef.current);
+    } else {
+      resizeObserver.observe(container);
+    }
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", updateSize);
+      resizeObserver.disconnect();
+      canvas.removeEventListener("webglcontextlost", handleContextLost);
+      canvas.removeEventListener("webglcontextrestored", handleContextRestored);
+      renderer.dispose();
+    };
+  }, []);
+
+  // Pointer / Mouse interaction: rotates via cursor very less, looking best overall
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    if (isMobile) return;
+    isDraggingRef.current = true;
+    startXRef.current = e.clientX;
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }, [isMobile]);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (isMobile) return;
+    // If dragging: very gentle rotation sensitivity (0.0012) and very tight clamp (max ±0.08 rad ≈ ±4.5 deg)
+    if (isDraggingRef.current) {
+      const deltaX = e.clientX - startXRef.current;
+      startXRef.current = e.clientX;
+
+      // Rotate via cursor very less
+      dragRotationRef.current += deltaX * 0.0012;
+      dragRotationRef.current = Math.max(-0.08, Math.min(0.08, dragRotationRef.current));
+      targetRotationYRef.current = DEFAULT_ROTATION_Y + dragRotationRef.current;
+      return;
+    }
+
+    // When hovering/moving cursor across the viewport: micro-parallax (very less, max ±0.03 rad ≈ 1.7 deg)
+    const el = viewportRef.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      if (rect.width > 0) {
+        const normalizedX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+        hoverOffsetRef.current = Math.max(-1, Math.min(1, normalizedX)) * 0.03;
+      }
+    }
+  }, [isMobile]);
+
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    if (isMobile) return;
+    isDraggingRef.current = false;
+    try {
+      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {}
+    // Gently ease back to center
+    dragRotationRef.current = 0;
+    targetRotationYRef.current = DEFAULT_ROTATION_Y;
+  }, [isMobile]);
+
+  const onPointerLeave = useCallback(() => {
+    if (isMobile) return;
+    setIsHovered(false);
+    isDraggingRef.current = false;
+    dragRotationRef.current = 0;
+    hoverOffsetRef.current = 0;
+    targetRotationYRef.current = DEFAULT_ROTATION_Y;
+  }, [isMobile]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-x-0 bottom-0 z-[25] flex flex-col items-center justify-end select-none pointer-events-none"
+      style={{
+        opacity: anim.opacity,
+        visibility: anim.visible ? "visible" : "hidden",
+        transform: `translate3d(${anim.translateXPercent}%, ${anim.translateYPercent}%, 0) scale(${anim.scale})`,
+        transition: "opacity 0.4s ease-out, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+        willChange: "transform, opacity",
+      }}
+    >
+      {/* 3D Model Viewport — constrained height showing upper 60-70% with soft bottom dissolve */}
+      <div
+        ref={viewportRef}
+        className="relative z-20 h-[42vh] sm:h-[48vh] md:h-[52vh] max-h-[520px] w-full max-w-[460px] sm:max-w-[530px] flex items-end justify-center touch-pan-y sm:touch-none -bottom-2 sm:-bottom-3"
+        style={{
+          cursor: isHovered ? (isDraggingRef.current ? "grabbing" : "grab") : "default",
+          pointerEvents: isMobile ? "none" : (anim.visible ? "auto" : "none"),
+          maskImage: "linear-gradient(to top, transparent 0%, black 16%, black 100%)",
+          WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 16%, black 100%)",
+        }}
+        onMouseEnter={() => !isMobile && setIsHovered(true)}
+        onMouseLeave={onPointerLeave}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+      >
+        {/* Soft atmospheric ground contact shadow */}
+        <div
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[85%] h-[20px] rounded-[50%] pointer-events-none z-10"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 80%)",
+            filter: "blur(8px)",
+            opacity: anim.opacity,
+            transition: "opacity 0.4s ease-out",
+          }}
+        />
+
+        {/* Instant Fallback & Poster: Guarantees Paul is ALWAYS present even during network slow-down or WebGL recovery */}
+        <div
+          className={`absolute inset-0 flex items-end justify-center pointer-events-none transition-opacity duration-700 ${
+            isModelLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/paul-atreides.png"
+            alt="Paul Atreides"
+            className="h-[92%] w-auto max-w-full object-contain object-bottom drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)]"
+          />
+        </div>
+
+        {/* WebGL Canvas for 3D Model */}
+        <canvas
+          ref={canvasRef}
+          className={`w-full h-full object-contain pointer-events-auto select-none transition-opacity duration-700 ${
+            isModelLoaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      </div>
+    </div>
+  );
+}

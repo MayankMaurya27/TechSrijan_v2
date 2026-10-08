@@ -20,6 +20,26 @@ export function AmbassadorHero() {
   const [phase, setPhase] = useState<"moon" | "character" | "ready">("moon");
   const [mounted, setMounted] = useState(false);
   const [isMoonHovered, setIsMoonHovered] = useState(false);
+  const [moonHoverOffset, setMoonHoverOffset] = useState({ x: 0, y: 0 });
+
+  const handleMoonMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width - 0.5;
+    const ny = (e.clientY - rect.top) / rect.height - 0.5;
+    setMoonHoverOffset({
+      x: nx * 18,
+      y: ny * 18,
+    });
+  };
+
+  const handleMoonMouseEnter = () => {
+    setIsMoonHovered(true);
+  };
+
+  const handleMoonMouseLeave = () => {
+    setIsMoonHovered(false);
+    setMoonHoverOffset({ x: 0, y: 0 });
+  };
 
   // Mouse parallax motion values
   const mouseX = useMotionValue(0);
@@ -141,13 +161,14 @@ export function AmbassadorHero() {
             scale: moonScrollScale,
             perspective: 1200,
           }}
-          onMouseEnter={() => setIsMoonHovered(true)}
-          onMouseLeave={() => setIsMoonHovered(false)}
-          title="TechSrijan Celestial Body — Hover to illuminate"
+          onMouseEnter={handleMoonMouseEnter}
+          onMouseMove={handleMoonMouseMove}
+          onMouseLeave={handleMoonMouseLeave}
+          title="TechSrijan Celestial Body"
         >
-          {/* Main Moon Container with 3D Tilt and Smooth Spawn Animation */}
+          {/* Main Moon Container with 3D Translation across X, Y, Z axes on hover */}
           <motion.div
-            className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] xl:w-[430px] xl:h-[430px] rounded-full flex items-center justify-center"
+            className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] xl:w-[430px] xl:h-[430px] rounded-full flex items-center justify-center select-none"
             style={{
               rotateX: moonTiltX,
               rotateY: moonTiltY,
@@ -155,38 +176,37 @@ export function AmbassadorHero() {
             }}
             initial={{ y: -90, opacity: 0 }}
             animate={{
-              y: 0,
+              y: isMoonHovered ? -10 + moonHoverOffset.y : 0,
+              x: isMoonHovered ? moonHoverOffset.x : 0,
+              z: isMoonHovered ? 32 : 0,
+              rotateX: isMoonHovered ? -moonHoverOffset.y * 0.9 : 0,
+              rotateY: isMoonHovered ? moonHoverOffset.x * 0.9 : 0,
               opacity: 1,
-              scale: isMoonHovered ? 1.035 : 1.0,
             }}
             transition={{
-              y: { duration: 1.4, ease: [0.16, 1, 0.3, 1] },
-              opacity: { duration: 1.2, ease: [0.16, 1, 0.3, 1] },
-              scale: { duration: 0.35, ease: "easeOut" },
+              type: "spring",
+              stiffness: 160,
+              damping: 20,
+              mass: 0.8,
             }}
           >
-            {/* Solid backing disc to guarantee zero background show-through */}
-            <div className="absolute inset-0 rounded-full bg-black pointer-events-none" />
-
-            {/* Outer Luminous Atmospheric Corona Rim */}
+            {/* Outer Atmospheric Corona Rim (Clean, zero black border, consistent lighting) */}
             <div
-              className="absolute inset-0 rounded-full pointer-events-none transition-all duration-500"
+              className="absolute inset-[1px] rounded-full pointer-events-none transition-all duration-700"
               style={{
-                boxShadow: isMoonHovered
-                  ? t.moonHoverCoronaShadow
-                  : t.moonCoronaShadow,
+                boxShadow: t.moonCoronaShadow,
               }}
             />
 
-            {/* High-Resolution Celestial Texture (Themed filter & dynamic glowing aura) */}
+            {/* High-Resolution Celestial Texture (Theme-specific asset with zero black border and natural lighting) */}
             <picture className="w-full h-full pointer-events-none">
-              <source srcSet="/images/ambassador-moon.webp" type="image/webp" />
+              <source srcSet={t.moonImageWebp} type="image/webp" />
               <img
-                src="/images/ambassador-moon.png"
+                src={t.moonImage}
                 alt="TechSrijan Celestial Body"
-                className="w-full h-full object-contain rounded-full transition-all duration-700"
+                className="w-full h-full object-contain rounded-full transition-all duration-500"
                 style={{
-                  filter: isMoonHovered ? t.moonHoverFilter : t.moonFilter,
+                  filter: t.moonFilter,
                 }}
                 draggable={false}
               />
@@ -242,7 +262,7 @@ export function AmbassadorHero() {
               }}
             />
 
-            {/* Character Cutout showing 70-80% with Centered Head */}
+            {/* Character Cutout showing 70-80% with Centered Head & Theme-Colored Shadow */}
             <picture className="w-full h-auto flex justify-center">
               <source srcSet="/images/ambassador-character-upper.webp" type="image/webp" />
               <img

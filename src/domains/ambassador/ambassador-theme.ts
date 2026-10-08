@@ -17,6 +17,8 @@ export interface AmbassadorThemeTokens {
   heroDotShadow: string;
 
   // Hero Moon & Atmosphere
+  moonImage: string;
+  moonImageWebp: string;
   moonFilter: string;
   moonHoverFilter: string;
   moonCoronaShadow: string;
@@ -159,15 +161,17 @@ export const AMBASSADOR_THEMES: Record<CanonicalTheme, AmbassadorThemeTokens> = 
     heroTitleGradient: "from-[#FF3B20] via-[#FF8533] to-[#FFA726]",
     heroTopDash: "#E5983A",
     heroDotShadow: "shadow-[0_0_12px_#FF2A36]",
+    moonImage: "/images/ambassador-moon.png",
+    moonImageWebp: "/images/ambassador-moon.webp",
     moonFilter: "brightness(1.0)",
-    moonHoverFilter: "drop-shadow(0 0 35px rgba(255,40,20,0.85)) brightness(1.08)",
+    moonHoverFilter: "brightness(1.0)",
     moonCoronaShadow:
-      "0 0 40px 10px rgba(239, 68, 68, 0.45), 0 0 85px 25px rgba(220, 38, 38, 0.22)",
+      "0 0 35px 8px rgba(239, 68, 68, 0.35), 0 0 70px 18px rgba(220, 38, 38, 0.16)",
     moonHoverCoronaShadow:
-      "0 0 55px 15px rgba(255, 50, 30, 0.65), 0 0 110px 35px rgba(220, 38, 38, 0.35)",
+      "0 0 35px 8px rgba(239, 68, 68, 0.35), 0 0 70px 18px rgba(220, 38, 38, 0.16)",
     moonAtmosphereClass: "bg-red-600/25",
     characterDropShadow:
-      "drop-shadow-[0_16px_36px_rgba(0,0,0,0.92)] drop-shadow-[0_0_24px_rgba(220,38,38,0.35)]",
+      "drop-shadow-[0_18px_40px_rgba(0,0,0,0.95)] drop-shadow-[0_0_26px_rgba(239,68,68,0.45)] drop-shadow-[0_0_55px_rgba(220,38,38,0.25)]",
     embers: {
       primaryBg: "rgba(239, 68, 68, 0.75)",
       secondaryBg: "rgba(245, 158, 11, 0.75)",
@@ -313,18 +317,18 @@ export const AMBASSADOR_THEMES: Record<CanonicalTheme, AmbassadorThemeTokens> = 
     heroTitleGradient: "from-[#FF8533] via-[#F59E0B] to-[#FCD34D]",
     heroTopDash: "#E5983A",
     heroDotShadow: "shadow-[0_0_12px_#F59E0B]",
-    // Dune Movie Reference: Radiant Dune solar celestial sphere (pure golden-yellowish, zero pink/magenta)
-    moonFilter:
-      "grayscale(100%) sepia(100%) saturate(380%) hue-rotate(12deg) brightness(1.18) contrast(1.1)",
-    moonHoverFilter:
-      "grayscale(100%) sepia(100%) saturate(440%) hue-rotate(15deg) brightness(1.28) contrast(1.15) drop-shadow(0 0 42px rgba(245,158,11,0.95))",
+    // Dune Movie Reference: Radiant golden celestial sphere matching the exact warm gold of Letter R (#facc48)
+    moonImage: "/images/ambassador-moon-arrakis.png",
+    moonImageWebp: "/images/ambassador-moon-arrakis.webp",
+    moonFilter: "brightness(1.0)",
+    moonHoverFilter: "brightness(1.0)",
     moonCoronaShadow:
-      "0 0 45px 14px rgba(245, 158, 11, 0.55), 0 0 95px 30px rgba(217, 119, 6, 0.3)",
+      "0 0 35px 8px rgba(250, 204, 72, 0.35), 0 0 70px 18px rgba(217, 119, 6, 0.16)",
     moonHoverCoronaShadow:
-      "0 0 65px 20px rgba(251, 191, 36, 0.75), 0 0 125px 42px rgba(245, 158, 11, 0.45)",
+      "0 0 35px 8px rgba(250, 204, 72, 0.35), 0 0 70px 18px rgba(217, 119, 6, 0.16)",
     moonAtmosphereClass: "bg-amber-500/22",
     characterDropShadow:
-      "drop-shadow-[0_16px_36px_rgba(0,0,0,0.92)] drop-shadow-[0_0_24px_rgba(245,158,11,0.35)]",
+      "drop-shadow-[0_18px_40px_rgba(0,0,0,0.95)] drop-shadow-[0_0_26px_rgba(250,204,72,0.48)] drop-shadow-[0_0_55px_rgba(217,119,6,0.25)]",
     embers: {
       primaryBg: "rgba(245, 158, 11, 0.85)",
       secondaryBg: "rgba(252, 211, 77, 0.85)",
@@ -472,16 +476,17 @@ export const AMBASSADOR_THEMES: Record<CanonicalTheme, AmbassadorThemeTokens> = 
     heroTopDash: "#8C97A7",
     heroDotShadow: "shadow-[0_0_12px_#D7DBE2]",
     // Dune Movie Reference: Stark monochrome, photorealistic greyish silver moon (crater maria & platinum rim)
-    moonFilter: "grayscale(100%) brightness(1.08) contrast(1.15)",
-    moonHoverFilter:
-      "grayscale(100%) brightness(1.22) contrast(1.2) drop-shadow(0 0 38px rgba(215,219,226,0.65))",
+    moonImage: "/images/ambassador-moon-krelln.png",
+    moonImageWebp: "/images/ambassador-moon-krelln.webp",
+    moonFilter: "brightness(1.0)",
+    moonHoverFilter: "brightness(1.0)",
     moonCoronaShadow:
-      "0 0 40px 10px rgba(215, 219, 226, 0.32), 0 0 85px 25px rgba(119, 130, 146, 0.2)",
+      "0 0 35px 8px rgba(215, 219, 226, 0.28), 0 0 70px 18px rgba(119, 130, 146, 0.14)",
     moonHoverCoronaShadow:
-      "0 0 55px 15px rgba(245, 247, 250, 0.55), 0 0 110px 35px rgba(215, 219, 226, 0.35)",
+      "0 0 35px 8px rgba(215, 219, 226, 0.28), 0 0 70px 18px rgba(119, 130, 146, 0.14)",
     moonAtmosphereClass: "bg-slate-400/12",
     characterDropShadow:
-      "drop-shadow-[0_16px_36px_rgba(0,0,0,0.92)] drop-shadow-[0_0_24px_rgba(215,219,226,0.25)]",
+      "drop-shadow-[0_18px_40px_rgba(0,0,0,0.95)] drop-shadow-[0_0_26px_rgba(215,219,226,0.42)] drop-shadow-[0_0_55px_rgba(148,163,184,0.22)]",
     embers: {
       primaryBg: "rgba(215, 219, 226, 0.75)",
       secondaryBg: "rgba(148, 163, 184, 0.75)",

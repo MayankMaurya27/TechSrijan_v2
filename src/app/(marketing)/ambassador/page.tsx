@@ -4,7 +4,6 @@ import {
   AmbassadorPerks,
   AmbassadorJourney,
   AmbassadorColleges,
-  AmbassadorLeaderboard,
   AmbassadorApply,
 } from "@/domains/ambassador";
 
@@ -48,9 +47,6 @@ export default function AmbassadorPage() {
 
       {/* Target Engineering Colleges: MMMUT, Gorakhpur, Eastern UP & Beyond */}
       <AmbassadorColleges />
-
-      {/* Live Gamified Leaderboard */}
-      <AmbassadorLeaderboard />
 
       {/* Interactive Application Form */}
       <AmbassadorApply />

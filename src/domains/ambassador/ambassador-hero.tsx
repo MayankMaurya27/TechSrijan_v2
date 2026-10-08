@@ -20,25 +20,46 @@ export function AmbassadorHero() {
   const [phase, setPhase] = useState<"moon" | "character" | "ready">("moon");
   const [mounted, setMounted] = useState(false);
   const [isMoonHovered, setIsMoonHovered] = useState(false);
-  const [moonHoverOffset, setMoonHoverOffset] = useState({ x: 0, y: 0 });
+  const [moonHoverOffset, setMoonHoverOffset] = useState({
+    x: 0,
+    y: 0,
+    z: 0,
+    rotX: 0,
+    rotY: 0,
+  });
 
   const handleMoonMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
+    // Normalized position relative to center (-0.5 to +0.5)
     const nx = (e.clientX - rect.left) / rect.width - 0.5;
     const ny = (e.clientY - rect.top) / rect.height - 0.5;
+
+    // Radial distance from center (0 at center, ~0.5 at edge of orb)
+    const dist = Math.min(Math.sqrt(nx * nx + ny * ny), 0.6);
+    const edgeRatio = Math.min(dist / 0.5, 1.0);
+
+    // Pure 3D Translation along Z axis (inward and outward depth):
+    // Near center: floats gently outward (+14px towards user)
+    // Towards edges: translates inward (-28px into deep space)
+    const zPos = Math.round(14 - edgeRatio * 42);
+
     setMoonHoverOffset({
-      x: nx * 18,
-      y: ny * 18,
+      x: nx * 24,
+      y: ny * 22,
+      z: zPos,
+      rotX: -ny * 12,
+      rotY: nx * 12,
     });
   };
 
-  const handleMoonMouseEnter = () => {
+  const handleMoonMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsMoonHovered(true);
+    handleMoonMouseMove(e);
   };
 
   const handleMoonMouseLeave = () => {
     setIsMoonHovered(false);
-    setMoonHoverOffset({ x: 0, y: 0 });
+    setMoonHoverOffset({ x: 0, y: 0, z: 0, rotX: 0, rotY: 0 });
   };
 
   // Mouse parallax motion values
@@ -166,7 +187,7 @@ export function AmbassadorHero() {
           onMouseLeave={handleMoonMouseLeave}
           title="TechSrijan Celestial Body"
         >
-          {/* Main Moon Container with 3D Translation across X, Y, Z axes on hover */}
+          {/* Main Moon Container: Pure 3D Translation across X, Y, Z without Scale Enlargement */}
           <motion.div
             className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] xl:w-[430px] xl:h-[430px] rounded-full flex items-center justify-center select-none"
             style={{
@@ -176,18 +197,19 @@ export function AmbassadorHero() {
             }}
             initial={{ y: -90, opacity: 0 }}
             animate={{
-              y: isMoonHovered ? -10 + moonHoverOffset.y : 0,
               x: isMoonHovered ? moonHoverOffset.x : 0,
-              z: isMoonHovered ? 32 : 0,
-              rotateX: isMoonHovered ? -moonHoverOffset.y * 0.9 : 0,
-              rotateY: isMoonHovered ? moonHoverOffset.x * 0.9 : 0,
+              y: isMoonHovered ? moonHoverOffset.y : 0,
+              z: isMoonHovered ? moonHoverOffset.z : 0,
+              rotateX: isMoonHovered ? moonHoverOffset.rotX : 0,
+              rotateY: isMoonHovered ? moonHoverOffset.rotY : 0,
+              scale: 1.0,
               opacity: 1,
             }}
             transition={{
               type: "spring",
               stiffness: 160,
-              damping: 20,
-              mass: 0.8,
+              damping: 22,
+              mass: 0.65,
             }}
           >
             {/* Outer Atmospheric Corona Rim (Clean, zero black border, consistent lighting) */}
@@ -262,11 +284,11 @@ export function AmbassadorHero() {
               }}
             />
 
-            {/* Character Cutout showing 70-80% with Centered Head & Theme-Colored Shadow */}
+            {/* Character Cutout showing 70-80% with Centered Head & Theme-Matching Outspread Aura */}
             <picture className="w-full h-auto flex justify-center">
-              <source srcSet="/images/ambassador-character-upper.webp" type="image/webp" />
+              <source srcSet={t.characterImageWebp} type="image/webp" />
               <img
-                src="/images/ambassador-character-upper.png"
+                src={t.characterImage}
                 alt="TechSrijan Campus Ambassador Hero"
                 className={`w-full h-auto max-h-[50vh] sm:max-h-[55vh] lg:max-h-[61vh] object-contain object-bottom ${t.characterDropShadow} transition-all duration-700`}
                 draggable={false}

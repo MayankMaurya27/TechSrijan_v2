@@ -24,6 +24,8 @@ export interface AmbassadorThemeTokens {
   moonCoronaShadow: string;
   moonHoverCoronaShadow: string;
   moonAtmosphereClass: string;
+  characterImage: string;
+  characterImageWebp: string;
   characterDropShadow: string;
   embers: {
     primaryBg: string;
@@ -170,6 +172,8 @@ export const AMBASSADOR_THEMES: Record<CanonicalTheme, AmbassadorThemeTokens> = 
     moonHoverCoronaShadow:
       "0 0 35px 8px rgba(239, 68, 68, 0.35), 0 0 70px 18px rgba(220, 38, 38, 0.16)",
     moonAtmosphereClass: "bg-red-600/25",
+    characterImage: "/images/ambassador-character-geass.png",
+    characterImageWebp: "/images/ambassador-character-geass.webp",
     characterDropShadow:
       "drop-shadow-[0_18px_40px_rgba(0,0,0,0.95)] drop-shadow-[0_0_26px_rgba(239,68,68,0.45)] drop-shadow-[0_0_55px_rgba(220,38,38,0.25)]",
     embers: {
@@ -327,6 +331,8 @@ export const AMBASSADOR_THEMES: Record<CanonicalTheme, AmbassadorThemeTokens> = 
     moonHoverCoronaShadow:
       "0 0 35px 8px rgba(250, 204, 72, 0.35), 0 0 70px 18px rgba(217, 119, 6, 0.16)",
     moonAtmosphereClass: "bg-amber-500/22",
+    characterImage: "/images/ambassador-character-arrakis.png",
+    characterImageWebp: "/images/ambassador-character-arrakis.webp",
     characterDropShadow:
       "drop-shadow-[0_18px_40px_rgba(0,0,0,0.95)] drop-shadow-[0_0_26px_rgba(250,204,72,0.48)] drop-shadow-[0_0_55px_rgba(217,119,6,0.25)]",
     embers: {
@@ -485,6 +491,8 @@ export const AMBASSADOR_THEMES: Record<CanonicalTheme, AmbassadorThemeTokens> = 
     moonHoverCoronaShadow:
       "0 0 35px 8px rgba(215, 219, 226, 0.28), 0 0 70px 18px rgba(119, 130, 146, 0.14)",
     moonAtmosphereClass: "bg-slate-400/12",
+    characterImage: "/images/ambassador-character-krelln.png",
+    characterImageWebp: "/images/ambassador-character-krelln.webp",
     characterDropShadow:
       "drop-shadow-[0_18px_40px_rgba(0,0,0,0.95)] drop-shadow-[0_0_26px_rgba(215,219,226,0.42)] drop-shadow-[0_0_55px_rgba(148,163,184,0.22)]",
     embers: {

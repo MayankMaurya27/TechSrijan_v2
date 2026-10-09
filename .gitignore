@@ -21,6 +21,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+dev-server.log
 
 # local env files
 .env*.local
@@ -32,3 +33,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local folders
+.freebuff/
+hackathon Techsrijan/

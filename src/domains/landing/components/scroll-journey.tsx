@@ -408,7 +408,7 @@ export function ScrollJourney({
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-[250vh] sm:min-h-[340vh] md:min-h-[440vh] bg-black -mt-16"
+      className="relative w-full min-h-[250vh] sm:min-h-[340vh] md:min-h-[440vh] bg-black"
     >
       {/* Sticky Fullscreen Video Window with dynamic viewport support */}
       <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden select-none bg-black">

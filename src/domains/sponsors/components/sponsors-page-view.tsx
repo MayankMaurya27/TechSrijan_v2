@@ -565,7 +565,7 @@ export function SponsorsPageView() {
           ======================================================== */}
       <section
         ref={heroRef}
-        className="relative w-full h-[100dvh] min-h-[640px] max-h-[1080px] flex flex-col justify-between overflow-hidden bg-black select-none pt-20 sm:pt-24 pb-4 sm:pb-6"
+        className="relative w-full h-[100dvh] min-h-[640px] max-h-[1080px] flex flex-col justify-between overflow-hidden bg-black select-none pt-24 sm:pt-28 md:pt-30 lg:pt-[118px] pb-4 sm:pb-6"
       >
         {/* Layer 1: Background Landscape (spons_land.png) */}
         <motion.div

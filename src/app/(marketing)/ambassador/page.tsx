@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 
 export default function AmbassadorPage() {
   return (
-    <div className="relative min-h-screen bg-black text-[#f8eed9] overflow-x-hidden -mt-16">
+    <div className="relative min-h-screen bg-black text-[#f8eed9] overflow-x-hidden">
       {/* Cinematic Hero: Red Moon 1 background + Character spawn from below */}
       <AmbassadorHero />
 

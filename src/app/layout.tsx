@@ -161,7 +161,7 @@ export default function RootLayout({
             <TwinSunsRays />
             <AmbientParticles />
             <Navbar />
-            <main className="relative z-10 flex min-h-screen flex-col pt-16">
+            <main className="relative z-10 flex min-h-screen flex-col">
               {children}
             </main>
           </LenisProvider>

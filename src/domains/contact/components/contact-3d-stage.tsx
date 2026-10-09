@@ -289,7 +289,7 @@ export function Contact3DStage({ theme, onToggleTheme }: Contact3DStageProps) {
         className="pointer-events-none absolute bottom-0 left-1/2 w-[85%] sm:w-[74%] max-w-[530px] aspect-[1/1.5] z-10 transition-transform duration-300 ease-out"
       >
         <Image
-          src="/paul-atreides.png"
+          src="/paul-atreides.webp"
           alt="Paul Atreides — Imperium Leader on Arrakis"
           fill
           priority

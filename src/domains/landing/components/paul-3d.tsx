@@ -165,7 +165,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
 
     // 6. Load Texture and Model
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load("/paul_texture.png", (tex) => {
+    const texture = textureLoader.load("/paul_texture.webp", (tex) => {
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.flipY = false;
     });
@@ -395,7 +395,7 @@ export function Paul3D({ scrollProgress }: Paul3DProps) {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/paul-atreides.png"
+            src="/paul-atreides.webp"
             alt="Paul Atreides"
             className="h-[92%] w-auto max-w-full object-contain object-bottom drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)]"
           />

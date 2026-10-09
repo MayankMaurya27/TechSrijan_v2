@@ -114,7 +114,7 @@ export function ContactHeroCinematic({ onScrollToForm }: ContactHeroCinematicPro
       {!show3dSimulator ? (
         <div className="absolute inset-0 z-0">
           <Image
-            src="/contact-hero.png"
+            src="/contact-hero.webp"
             alt="TechSrijan '27 Contact Citadel & Zero Imperium"
             fill
             priority

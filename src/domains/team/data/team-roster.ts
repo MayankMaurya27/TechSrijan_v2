@@ -148,7 +148,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ONLINE",
     yearOrDesignation: "Final Year",
     branch: "Computer Science & Engg",
-    image: "/images/team/lead-m1.jpg",
+    image: "/images/team/lead-m1.webp",
     bio: "General Secretary and central executive orchestrating TechSrijan'27 across 16 tactical squads, institutional approvals, sponsor commitments, and 35+ national competitions.",
     keyDirectives: [
       "Fest operations command and inter-society delegation",
@@ -177,7 +177,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ONLINE",
     yearOrDesignation: "Final Year",
     branch: "Electronics & Comm. Engg",
-    image: "/images/team/lead-f1.jpg",
+    image: "/images/team/lead-f1.webp",
     bio: "Overseeing inter-collegiate delegations, university hospitality schedules, jury panels, and technical symposiums for nationwide participants.",
     keyDirectives: [
       "Multi-track schedule synchronization and jury management",
@@ -206,7 +206,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ONLINE",
     yearOrDesignation: "Pre-Final Year",
     branch: "Computer Science & Engg",
-    image: "/images/team/lead-m2.jpg",
+    image: "/images/team/lead-m2.webp",
     bio: "Architect behind the Imperium: Requiem web portal, 3D WebGL visuals, real-time Razorpay checkout engine, and distributed QR admission systems.",
     keyDirectives: [
       "Lead developer and architect of TechSrijan 2027 digital systems",
@@ -237,7 +237,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ONLINE",
     yearOrDesignation: "Pre-Final Year",
     branch: "Information Technology",
-    image: "/images/team/lead-f2.jpg",
+    image: "/images/team/lead-f2.webp",
     bio: "Creator of the visual identity and aesthetic systems for TechSrijan'27. Directing 3D Blender modeling, brand tokens, and UI/UX ergonomics.",
     keyDirectives: [
       "Fest visual design guidelines and dark-mode color harmony",
@@ -267,7 +267,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ACTIVE",
     yearOrDesignation: "Final Year",
     branch: "Mechanical Engineering",
-    image: "/images/team/lead-m1.jpg",
+    image: "/images/team/lead-m1.webp",
     bio: "Head of RoboKriti. Engineering the national 60kg RoboWars reinforced combat arena, autonomous line trackers, and obstacle navigation races.",
     keyDirectives: [
       "RoboWars bulletproof arena fabrication and safety interlocks",
@@ -296,7 +296,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ACTIVE",
     yearOrDesignation: "Final Year",
     branch: "Electronics & Comm. Engg",
-    image: "/images/team/lead-f1.jpg",
+    image: "/images/team/lead-f1.webp",
     bio: "Directing floor management, auditorium stages, judge coordination, and live event telemetry across 5 parallel campus battlezones.",
     keyDirectives: [
       "Floor directives across Auditorium, MPH, and CS labs",
@@ -325,7 +325,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ONLINE",
     yearOrDesignation: "Pre-Final Year",
     branch: "Computer Science & Engg",
-    image: "/images/team/lead-m2.jpg",
+    image: "/images/team/lead-m2.webp",
     bio: "Engineering backend cloud infrastructure, database scaling, cryptographic pass generation, and anti-abuse registration security.",
     keyDirectives: [
       "Razorpay webhook idempotency and payment state reconciliation",
@@ -355,7 +355,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ONLINE",
     yearOrDesignation: "Pre-Final Year",
     branch: "Chemical Engineering",
-    image: "/images/team/lead-m1.jpg",
+    image: "/images/team/lead-m1.webp",
     bio: "Directing the nationwide Campus Ambassador Network across 120+ universities with 1,500+ student ambassadors driving awareness and contingents.",
     keyDirectives: [
       "Campus Ambassador gamified leaderboard and milestone incentives",
@@ -384,7 +384,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ONLINE",
     yearOrDesignation: "Pre-Final Year",
     branch: "Information Technology",
-    image: "/images/team/lead-f2.jpg",
+    image: "/images/team/lead-f2.webp",
     bio: "Leading official communications, press releases, social media channels, and real-time fest updates to over 50,000 monthly digital impressions.",
     keyDirectives: [
       "Social media narrative on Instagram, LinkedIn, and YouTube",
@@ -414,7 +414,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ACTIVE",
     yearOrDesignation: "Final Year",
     branch: "Mechanical Engineering",
-    image: "/images/team/lead-m2.jpg",
+    image: "/images/team/lead-m2.webp",
     bio: "Head of automotive design competitions, CAD drafting tournaments, and aeromodelling flight derby challenges.",
     keyDirectives: [
       "CAD SolidWorks design sprints and 3D printing inspections",
@@ -443,7 +443,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "DISPATCHED",
     yearOrDesignation: "Final Year",
     branch: "Mechanical Engineering",
-    image: "/images/team/lead-m1.jpg",
+    image: "/images/team/lead-m1.webp",
     bio: "Overseeing arena entrance security, gate scan checkpoints, electrical power load distribution, and 24/7 participant safety.",
     keyDirectives: [
       "Multi-gate QR check-in infrastructure and hardware scanners",
@@ -470,7 +470,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     clearance: "LEVEL 5 (SUPREME)",
     status: "ONLINE",
     yearOrDesignation: "Professor & Faculty In-Charge",
-    image: "/images/team/lead-m2.jpg",
+    image: "/images/team/lead-m2.webp",
     bio: "Guiding the Technical Sub Council (TSC) governance, budget approvals, and executive coordination between student leads and university officers.",
     keyDirectives: [
       "Statutory approvals and council financial authorizations",

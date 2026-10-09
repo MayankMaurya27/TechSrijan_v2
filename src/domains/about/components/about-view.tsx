@@ -121,7 +121,7 @@ export function AboutView() {
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000"
         style={{
-          backgroundImage: "url('/images/about/about-mesh-bg.jpg')",
+          backgroundImage: "url('/images/about/about-mesh-bg.webp')",
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-[#070712]/40 via-[#070712]/60 to-[#070712]/95" />

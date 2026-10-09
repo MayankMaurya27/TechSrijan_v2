@@ -236,7 +236,7 @@ export function ContactView() {
         {/* Full-Frame Background Artwork */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/contact/contact-hero-bg-clean.jpg"
+            src="/images/contact/contact-hero-bg-clean.webp"
             alt="TechSrijan Citadel Commander overlooking the alien metropolis"
             fill
             priority
@@ -296,7 +296,7 @@ export function ContactView() {
         {/* Full-Frame Background Artwork */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/contact/contact-form-bg-clean.jpg"
+            src="/images/contact/contact-form-bg-clean.webp"
             alt="Blood moon night citadel with commander on the parapet"
             fill
             priority
@@ -489,7 +489,7 @@ export function ContactView() {
         {/* Full-Frame Background Artwork */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/contact/contact-footer-bg-clean.jpg"
+            src="/images/contact/contact-footer-bg-clean.webp"
             alt="Panoramic sunset desert canyon and glowing citadel towers"
             fill
             priority

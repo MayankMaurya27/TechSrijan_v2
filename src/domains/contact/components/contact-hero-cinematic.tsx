@@ -3,7 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Sparkles, ArrowUpRight, Compass, Shield, Eye, Layers } from "lucide-react";
-import { Contact3DStage } from "./contact-3d-stage";
+import dynamic from "next/dynamic";
+
+
+const Contact3DStage = dynamic(
+  () => import("./contact-3d-stage").then((m) => m.Contact3DStage),
+  { ssr: false }
+);
+
 
 interface ContactHeroCinematicProps {
   onScrollToForm: () => void;

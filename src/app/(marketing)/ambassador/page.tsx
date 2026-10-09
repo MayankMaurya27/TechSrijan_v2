@@ -4,9 +4,9 @@ import {
   AmbassadorPerks,
   AmbassadorJourney,
   AmbassadorColleges,
-  AmbassadorLeaderboard,
   AmbassadorApply,
-} from "@/components/ambassador";
+} from "@/domains/ambassador";
+
 
 export const metadata: Metadata = {
   title: "Campus Ambassador Program | TechSrijan'27 MMMUT Gorakhpur",
@@ -47,9 +47,6 @@ export default function AmbassadorPage() {
 
       {/* Target Engineering Colleges: MMMUT, Gorakhpur, Eastern UP & Beyond */}
       <AmbassadorColleges />
-
-      {/* Live Gamified Leaderboard */}
-      <AmbassadorLeaderboard />
 
       {/* Interactive Application Form */}
       <AmbassadorApply />

@@ -19,7 +19,8 @@ import {
   Calendar,
   Sparkles,
 } from "lucide-react";
-import { useTheme } from "@/components/providers/theme-provider";
+import { useTheme } from "@/core";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 

@@ -709,10 +709,10 @@ export function SponsorsPageView() {
               </span>
             </div>
 
-            {/* Main Headline: OUR [sigil] PARTNERS */}
+            {/* Main Headline: OUR [sigil] PARTNERS (Montserrat Heading) */}
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
-                <h1 className="font-serif text-[clamp(2.2rem,4.5vw,4.8rem)] font-extrabold leading-[0.92] tracking-normal text-white uppercase drop-shadow-[0_4px_25px_rgba(0,0,0,0.9)]">
+                <h1 className="font-montserrat text-[clamp(2.2rem,4.5vw,4.8rem)] font-black leading-[0.92] tracking-tight text-white uppercase drop-shadow-[0_4px_25px_rgba(0,0,0,0.9)]">
                   OUR
                 </h1>
                 {/* Geass Wing Sigil */}
@@ -725,7 +725,7 @@ export function SponsorsPageView() {
                 />
               </div>
               <h1
-                className="font-serif text-[clamp(2.2rem,4.5vw,4.8rem)] font-black leading-[0.92] tracking-tight uppercase transition-all duration-500"
+                className="font-montserrat text-[clamp(2.2rem,4.5vw,4.8rem)] font-black leading-[0.92] tracking-tight uppercase transition-all duration-500"
                 style={{
                   color: t.accent,
                   filter: `drop-shadow(0 0 35px ${t.accentGlow})`,
@@ -736,7 +736,7 @@ export function SponsorsPageView() {
             </div>
 
             {/* Subtitle Description */}
-            <p className="mt-2 text-neutral-300 font-sans text-xs sm:text-sm max-w-sm sm:max-w-md leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+            <p className="mt-2 text-neutral-300 font-geist text-xs sm:text-sm max-w-sm sm:max-w-md leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
               Powering innovation, creativity and a bigger tomorrow with brands who believe in technology and youth.
             </p>
           </motion.div>
@@ -1046,13 +1046,13 @@ export function SponsorsPageView() {
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Section Header (Exact Image 4 Replica) */}
           <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-18">
-            {/* Title: PARTNERSHIP AVENUES ✦ */}
+            {/* Title: PARTNERSHIP AVENUES ✦ (Montserrat Heading) */}
             <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
-              <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl font-extrabold uppercase tracking-tight text-white">
+              <h2 className="font-montserrat text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-white">
                 PARTNERSHIP
               </h2>
               <h2
-                className="font-serif text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight flex items-center gap-2 transition-all duration-500"
+                className="font-montserrat text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight flex items-center gap-2 transition-all duration-500"
                 style={{
                   color: t.accent,
                   filter: `drop-shadow(0 0 35px ${t.accentGlow})`,
@@ -1060,7 +1060,7 @@ export function SponsorsPageView() {
               >
                 <span>AVENUES</span>
                 <span
-                  className="text-lg sm:text-2xl font-serif select-none transition-all duration-500"
+                  className="text-lg sm:text-2xl select-none transition-all duration-500"
                   style={{
                     color: t.gold,
                     filter: `drop-shadow(0 0 10px ${t.gold})`,
@@ -1071,8 +1071,8 @@ export function SponsorsPageView() {
               </h2>
             </div>
 
-            {/* Subtitle */}
-            <p className="mt-3 font-serif italic text-neutral-300 text-sm sm:text-base md:text-lg tracking-wide">
+            {/* Subtitle (Chancery Italic) */}
+            <p className="mt-3 font-chancery italic text-neutral-200 text-base sm:text-lg md:text-xl tracking-wide">
               A platform for brands shaping what comes next.
             </p>
 
@@ -1102,7 +1102,7 @@ export function SponsorsPageView() {
                     <div className="flex items-center gap-3">
                       {/* Roman Numeral */}
                       <span
-                        className="font-serif text-xl sm:text-2xl font-bold tracking-normal select-none transition-colors duration-500"
+                        className="font-bebas text-2xl sm:text-3xl tracking-wider select-none transition-colors duration-500"
                         style={{ color: t.gold }}
                       >
                         {col.numeral}
@@ -1209,7 +1209,7 @@ export function SponsorsPageView() {
                 DIRECT INSTITUTIONAL CHANNELS
               </span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase text-white tracking-tight">
+            <h2 className="font-montserrat text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight">
               Executive <span style={{ color: t.gold }}>Liaisons</span>
             </h2>
             <p className="mt-3 text-neutral-400 text-xs sm:text-sm md:text-base leading-relaxed">
@@ -1244,7 +1244,7 @@ export function SponsorsPageView() {
                   </div>
 
                   <h3
-                    className="font-serif text-xl font-bold text-white transition-colors"
+                    className="font-montserrat text-xl font-bold text-white transition-colors"
                   >
                     {c.name}
                   </h3>

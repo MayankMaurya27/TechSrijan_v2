@@ -234,17 +234,17 @@ export function AmbassadorPerks() {
               ---------------------------------------------------- */}
           <div className="lg:col-span-5 flex flex-col pt-1">
             <div>
-              {/* Massive Industrial Headline: WHY JOIN THE VANGUARD */}
+              {/* Massive Industrial Headline: WHY JOIN THE VANGUARD (Bebas Neue) */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               >
-                <h2 className="font-impact text-[clamp(3.2rem,6.8vw,5.8rem)] font-normal leading-[0.88] tracking-tight">
-                  <span className="block text-[#FAF6EE] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
+                <h2 className="font-bebas text-5xl sm:text-6xl md:text-7xl lg:text-[4rem] xl:text-[4.85rem] leading-[0.88] tracking-wider">
+                  <span className="block text-[#FAF6EE] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] whitespace-nowrap">
                     WHY JOIN
                   </span>
-                  <span className={`block ${t.perksHeaderAccent} drop-shadow-[0_0_35px_${t.accentGlow}] transition-colors duration-500`}>
+                  <span className={`block ${t.perksHeaderAccent} drop-shadow-[0_0_35px_${t.accentGlow}] transition-colors duration-500 whitespace-nowrap`}>
                     THE VANGUARD
                   </span>
                 </h2>
@@ -255,7 +255,7 @@ export function AmbassadorPerks() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-4 sm:mt-5 max-w-md text-xs sm:text-sm text-neutral-400 font-sans font-light leading-relaxed"
+                className="mt-4 sm:mt-5 max-w-md text-xs sm:text-sm text-neutral-300 font-geist leading-relaxed"
               >
                 More than a title. A launchpad for your career, a badge of
                 leadership, and your gateway into Eastern UP&apos;s biggest tech
@@ -649,7 +649,7 @@ export function AmbassadorPerks() {
                     <div className="py-3.5 sm:py-4 px-5 sm:px-6 flex items-center justify-between gap-4">
                       {/* Left: Themed Monospace Number */}
                       <div className="flex items-center gap-3.5 sm:gap-4 flex-shrink-0">
-                        <span className={`font-impact text-2xl sm:text-3xl ${t.perksNumberClass} tracking-wider w-8 sm:w-10 text-center transition-all duration-300`}>
+                        <span className={`font-bebas text-2xl sm:text-3xl ${t.perksNumberClass} tracking-wider w-8 sm:w-10 text-center transition-all duration-300`}>
                           {perk.number}
                         </span>
                         {/* Vertical Hairline Divider */}
@@ -661,10 +661,10 @@ export function AmbassadorPerks() {
 
                       {/* Middle: Title & Description */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-impact text-sm sm:text-base font-normal tracking-[0.14em] text-white uppercase group-hover:text-white transition-colors">
+                        <h3 className="font-bebas text-base sm:text-lg tracking-wider text-white uppercase group-hover:text-white transition-colors">
                           {perk.title}
                         </h3>
-                        <p className="mt-0.5 text-xs text-neutral-400 font-sans font-light leading-snug group-hover:text-neutral-300 transition-colors">
+                        <p className="mt-0.5 text-xs text-neutral-300 font-geist leading-snug group-hover:text-neutral-200 transition-colors">
                           {perk.description}
                         </p>
                       </div>

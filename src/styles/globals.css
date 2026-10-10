@@ -2,6 +2,7 @@
 @import "./tw-animate.css";
 
 @theme {
+  --font-sans: var(--font-geist), sans-serif;
   --font-montserrat: var(--font-montserrat), sans-serif;
   --font-heading: var(--font-montserrat), sans-serif;
   --font-geist: var(--font-geist), sans-serif;
@@ -14,14 +15,16 @@
    - Heading: Montserrat (Alternative: Geist)
    - Italic: Chancery
    - Subheading: Bebas Neue
+   - Body/Sans: Geist
 */
+.font-sans,
+.font-geist {
+  font-family: var(--font-geist), sans-serif;
+}
+
 .font-montserrat,
 .font-heading {
   font-family: var(--font-montserrat), sans-serif;
-}
-
-.font-geist {
-  font-family: var(--font-geist), sans-serif;
 }
 
 .font-bebas,
@@ -719,12 +722,8 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
   font-family: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
-.font-editorial {
-  font-family: var(--font-editorial), "Playfair Display", Georgia, "Times New Roman", serif;
-}
-
 .font-impact {
-  font-family: var(--font-impact), "Bebas Neue", "Space Grotesk", Impact, sans-serif;
+  font-family: var(--font-montserrat), var(--font-bebas), sans-serif;
 }
 
 html[data-intro-played="true"] #techsrijan-intro-video {
@@ -756,8 +755,6 @@ html, body, :root {
 }
 
 @theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

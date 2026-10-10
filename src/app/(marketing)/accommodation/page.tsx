@@ -605,10 +605,10 @@ export default function AccommodationPage() {
           <div className="relative z-10 text-center pt-20 px-6 space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900/70 border border-neutral-800/80 backdrop-blur-md">
               <span className="w-1.5 h-1.5 rounded-full bg-[#E61924]" />
-              <p className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#D2CCC0]">CAMPUS ACCOMMODATION</p>
+              <p className="font-bebas text-xs sm:text-sm tracking-wider uppercase text-[#D2CCC0]">CAMPUS ACCOMMODATION</p>
             </div>
-            <h1 className="font-[family-name:var(--font-impact)] text-7xl tracking-widest uppercase text-[#F5F2EB] leading-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">FACILITIES</h1>
-            <p className="font-sans text-xs text-[#C4BEB2] max-w-xs mx-auto leading-relaxed tracking-wide">
+            <h1 className="font-montserrat font-black text-6xl sm:text-7xl tracking-tight uppercase text-[#F5F2EB] leading-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">FACILITIES</h1>
+            <p className="font-geist text-xs text-[#C4BEB2] max-w-xs mx-auto leading-relaxed tracking-wide">
               Secure, connected quarters for every participant throughout the fest.
             </p>
           </div>
@@ -652,8 +652,8 @@ export default function AccommodationPage() {
         {/* ── MOBILE FACILITIES CARDS ── */}
         <section className="relative px-4 py-10 space-y-4">
           <div className="text-center mb-6">
-            <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-neutral-500">// INCLUDED SERVICES</span>
-            <h2 className="font-[family-name:var(--font-impact)] text-3xl uppercase tracking-wider text-[#F5F2EB] mt-1">WHAT YOU GET</h2>
+            <span className="font-bebas text-sm tracking-wider uppercase text-neutral-400">// INCLUDED SERVICES</span>
+            <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-[#F5F2EB] mt-1">WHAT YOU GET</h2>
           </div>
           {ALL_FACILITIES.map((facility, idx) => {
             const Icon = facility.icon;
@@ -701,9 +701,9 @@ export default function AccommodationPage() {
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <div className="space-y-1">
-                    <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[#E61924] font-semibold block">DISPATCH CONFIRMED</span>
-                    <h2 className="font-[family-name:var(--font-impact)] text-3xl uppercase tracking-wider text-[#F5F2EB]">REQUEST RECEIVED</h2>
-                    <p className="font-sans text-xs text-[#A8A49C] max-w-[280px] mx-auto leading-relaxed">Your residency directive has been registered. Check your email for the allocation dossier.</p>
+                    <span className="font-bebas text-sm tracking-wider uppercase text-[#E61924] font-semibold block">DISPATCH CONFIRMED</span>
+                    <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-[#F5F2EB]">REQUEST RECEIVED</h2>
+                    <p className="font-geist text-xs text-[#A8A49C] max-w-[280px] mx-auto leading-relaxed">Your residency directive has been registered. Check your email for the allocation dossier.</p>
                   </div>
                   <div className="p-3 rounded bg-white/[0.02] border border-white/[0.06] text-left font-mono text-[10px] space-y-2">
                     <div className="flex justify-between"><span className="text-neutral-500">REF:</span><span className="text-[#E61924] font-bold">{confirmationId}</span></div>
@@ -722,10 +722,10 @@ export default function AccommodationPage() {
                   <div className="pb-4 border-b border-white/[0.07] space-y-1">
                     <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.08]">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#E61924] shadow-[0_0_6px_#E61924]" />
-                      <span className="font-mono text-[9px] tracking-[0.28em] uppercase text-[#C4BEB2]">RESIDENCE DIRECTIVE</span>
+                      <span className="font-bebas text-xs tracking-wider uppercase text-[#C4BEB2]">RESIDENCE DIRECTIVE</span>
                     </div>
-                    <h2 className="font-[family-name:var(--font-impact)] text-3xl uppercase tracking-wider text-[#F5F2EB] leading-none">RESERVE YOUR STAY</h2>
-                    <p className="font-sans text-xs text-[#A8A49C] tracking-wide">Submit your details to begin your accommodation request.</p>
+                    <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-[#F5F2EB] leading-none">RESERVE YOUR STAY</h2>
+                    <p className="font-geist text-xs text-[#A8A49C] tracking-wide">Submit your details to begin your accommodation request.</p>
                   </div>
 
                   {/* Fields */}
@@ -938,18 +938,18 @@ export default function AccommodationPage() {
                   activeHover === "right" ? "bg-purple-500" : "bg-[#E61924]"
                 }`}
               />
-              <p className="font-mono text-[11px] sm:text-xs tracking-[0.32em] uppercase text-[#D2CCC0] font-medium">
+              <p className="font-bebas text-sm sm:text-base tracking-wider uppercase text-[#D2CCC0] font-medium">
                 CAMPUS ACCOMMODATION · RESIDENT SERVICES
               </p>
             </div>
 
-            {/* Large Centered Heading */}
-            <h1 className="font-[family-name:var(--font-impact)] text-6xl sm:text-7xl lg:text-8xl tracking-widest uppercase text-[#F5F2EB] leading-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
+            {/* Large Centered Heading (Montserrat) */}
+            <h1 className="font-montserrat font-black text-5xl sm:text-7xl lg:text-8xl tracking-tight uppercase text-[#F5F2EB] leading-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
               FACILITIES
             </h1>
 
-            {/* Supporting Line */}
-            <p className="font-sans text-xs sm:text-sm md:text-[15px] text-[#C4BEB2] max-w-2xl mx-auto leading-relaxed tracking-wide font-normal">
+            {/* Supporting Line (Geist) */}
+            <p className="font-geist text-xs sm:text-sm md:text-[15px] text-[#C4BEB2] max-w-2xl mx-auto leading-relaxed tracking-wide font-normal">
               Secure, connected, and comfortable living spaces for every participant throughout the fest.
             </p>
           </section>
@@ -1285,13 +1285,13 @@ export default function AccommodationPage() {
                   <CheckCircle2 className="w-10 h-10" />
                 </div>
                 <div className="space-y-2">
-                  <span className="font-mono text-xs tracking-[0.3em] uppercase text-[#E61924] font-semibold">
+                  <span className="font-bebas text-sm sm:text-base tracking-wider uppercase text-[#E61924] font-semibold">
                     DISPATCH CONFIRMED · ALLOCATION LOGGED
                   </span>
-                  <h2 className="font-[family-name:var(--font-impact)] text-4xl sm:text-5xl uppercase tracking-wider text-[#F5F2EB]">
+                  <h2 className="font-montserrat font-black text-3xl sm:text-4xl md:text-5xl uppercase tracking-tight text-[#F5F2EB]">
                     ACCOMMODATION REQUEST RECEIVED
                   </h2>
-                  <p className="font-sans text-xs sm:text-sm text-[#A8A49C] max-w-lg mx-auto leading-relaxed">
+                  <p className="font-geist text-xs sm:text-sm text-[#A8A49C] max-w-lg mx-auto leading-relaxed">
                     Your residency directive has been securely registered with the Central Directorate.
                     A formal allocation dossier has been dispatched to your institutional email.
                   </p>
@@ -1359,14 +1359,14 @@ export default function AccommodationPage() {
                   <div className="space-y-1.5">
                     <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.08]">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#E61924] shadow-[0_0_6px_#E61924]" />
-                      <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#C4BEB2] font-medium">
+                      <span className="font-bebas text-xs sm:text-sm tracking-wider uppercase text-[#C4BEB2] font-medium">
                         RESIDENCE DIRECTIVE · STEP 01
                       </span>
                     </div>
-                    <h2 className="font-[family-name:var(--font-impact)] text-4xl sm:text-5xl uppercase tracking-wider text-[#F5F2EB] leading-none pt-1">
+                    <h2 className="font-montserrat font-black text-3xl sm:text-4xl md:text-5xl uppercase tracking-tight text-[#F5F2EB] leading-none pt-1">
                       RESERVE YOUR STAY
                     </h2>
-                    <p className="font-sans text-xs sm:text-[13px] text-[#A8A49C] tracking-wide">
+                    <p className="font-geist text-xs sm:text-[13px] text-[#A8A49C] tracking-wide">
                       Submit your details to begin your accommodation request.
                     </p>
                   </div>

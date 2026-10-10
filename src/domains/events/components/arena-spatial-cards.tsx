@@ -134,21 +134,21 @@ function EventCard({ spot, idx, onClick }: { spot: ArenaSpot; idx: number; onCli
       <div className="relative w-full aspect-[2/3] max-h-[38vh] sm:max-h-[48vh] md:max-h-[66vh] max-w-[280px] sm:max-w-[305px] lg:max-w-[330px] flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-1.5">
         {/* Dark Glass Interior Backing (Ensures 100% text legibility over arena background video) */}
         <div className="absolute inset-[4%_4%] sm:inset-[4.5%_4.5%] rounded-[14px] sm:rounded-[22px] bg-black/75 sm:bg-black/80 backdrop-blur-md border border-white/10 pt-[12%] pb-[10%] sm:pt-[14%] sm:pb-[12%] px-[9%] sm:px-[11%] flex flex-col justify-between text-left z-10 transition-all duration-300 group-hover:bg-black/85 group-hover:border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.9)]">
-          {/* 1. Category / Eyebrow Header */}
+          {/* 1. Category / Eyebrow Header (Bebas Neue Subheading) */}
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <span className="font-mono text-[8px] sm:text-[10px] md:text-[10.5px] tracking-[0.2em] sm:tracking-[0.22em] text-neutral-400 uppercase font-bold drop-shadow-[0_1px_3px_rgba(0,0,0,1)]">
+            <span className="font-bebas text-[11px] sm:text-xs md:text-sm tracking-wider text-neutral-300 uppercase drop-shadow-[0_1px_3px_rgba(0,0,0,1)]">
               {spot.category}
             </span>
             <div className="h-[1px] flex-1 max-w-[28px] sm:max-w-[36px] bg-gradient-to-r from-white/40 to-transparent" />
           </div>
 
-          {/* 2. Main Event Title & Tagline */}
+          {/* 2. Main Event Title (Montserrat) & Tagline (Chancery Italic) */}
           <div className="my-auto py-0.5 sm:py-1">
-            <h3 className="font-serif font-black tracking-tight text-white uppercase text-xs sm:text-base md:text-xl lg:text-[22px] leading-[1.08] drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
+            <h3 className="font-montserrat font-black tracking-tight text-white uppercase text-xs sm:text-base md:text-xl lg:text-[22px] leading-[1.08] drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
               {spot.title}
             </h3>
 
-            <p className="mt-0.5 sm:mt-1 font-serif italic text-[8.5px] sm:text-[11px] md:text-[11.5px] text-neutral-300 line-clamp-1 sm:line-clamp-2 leading-tight sm:leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,1)]">
+            <p className="mt-0.5 sm:mt-1 font-chancery italic text-[11px] sm:text-[13px] md:text-[14px] text-neutral-200 line-clamp-1 sm:line-clamp-2 leading-tight sm:leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,1)]">
               "{spot.tagline}"
             </p>
           </div>
@@ -271,18 +271,18 @@ export function ArenaSpatialCards({ isVisible }: ArenaSpatialCardsProps) {
                 <X className="w-4 h-4" />
               </button>
 
-              <div className="flex items-center gap-2 font-mono text-xs tracking-[0.3em] text-neutral-400 uppercase mb-3">
+              <div className="flex items-center gap-2 font-bebas text-sm sm:text-base tracking-wider text-neutral-300 uppercase mb-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span>{selectedSpot.category} // SECTOR {selectedSpot.slotNumber}</span>
               </div>
 
-              <h2 className="font-serif text-3xl sm:text-5xl font-black tracking-tight text-white uppercase">
+              <h2 className="font-montserrat text-3xl sm:text-5xl font-black tracking-tight text-white uppercase">
                 {selectedSpot.title}
               </h2>
-              <p className="mt-2 text-sm sm:text-base text-neutral-300 font-sans leading-relaxed">
-                {selectedSpot.tagline}
+              <p className="mt-2 text-base sm:text-lg text-neutral-200 font-chancery italic leading-relaxed">
+                "{selectedSpot.tagline}"
               </p>
-              <p className="mt-2 text-xs sm:text-sm text-neutral-400 font-sans leading-relaxed">
+              <p className="mt-2 text-xs sm:text-sm text-neutral-300 font-geist leading-relaxed">
                 {selectedSpot.description}
               </p>
 

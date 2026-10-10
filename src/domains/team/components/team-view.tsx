@@ -41,18 +41,18 @@ export function TeamView({
         <div className="pt-6 sm:pt-10 mb-14 sm:mb-20">
           {/* Master Designer Title */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl tracking-tight leading-[1.08] text-white">
-            <span className="font-editorial italic font-normal text-zinc-300 mr-2 sm:mr-3.5">
+            <span className="font-chancery italic text-3xl sm:text-5xl lg:text-6xl text-zinc-300 mr-2 sm:mr-3.5">
               Meet
             </span>
-            <span className="font-sans font-light tracking-tight text-white mr-2 sm:mr-3.5">
+            <span className="font-montserrat font-light tracking-tight text-white mr-2 sm:mr-3.5">
               Our
             </span>
-            <span className="font-serif font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5E6] via-[#E8CF9A] to-[#C49B4D] drop-shadow-[0_0_30px_rgba(212,168,67,0.35)]">
+            <span className="font-montserrat font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5E6] via-[#E8CF9A] to-[#C49B4D] drop-shadow-[0_0_30px_rgba(212,168,67,0.35)]">
               {titleWord}
             </span>
           </h1>
 
-          <p className="mt-3 text-xs sm:text-sm text-zinc-400 font-sans max-w-xl leading-relaxed">
+          <p className="mt-3 text-xs sm:text-sm text-zinc-400 font-geist max-w-xl leading-relaxed">
             {subtitle}
           </p>
         </div>

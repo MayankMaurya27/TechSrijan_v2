@@ -216,7 +216,7 @@ export function ContactHeroCinematic({ onScrollToForm }: ContactHeroCinematicPro
               </defs>
             </svg>
 
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-serif font-black tracking-tight uppercase leading-[0.9] text-white">
+            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-montserrat font-black tracking-tight uppercase leading-[0.9] text-white">
               <span className="block bg-gradient-to-r from-[#ffffff] via-[#f7e6c4] to-[#e2a850] bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(226,168,80,0.35)]">
                 GET IN
               </span>
@@ -227,7 +227,7 @@ export function ContactHeroCinematic({ onScrollToForm }: ContactHeroCinematicPro
           </div>
 
           {/* Subtitle Description */}
-          <p className="text-xs sm:text-sm lg:text-base text-zinc-300 font-sans leading-relaxed max-w-lg">
+          <p className="text-xs sm:text-sm lg:text-base text-zinc-300 font-geist leading-relaxed max-w-lg">
             Have a question, collaboration idea or just want to say hi? We would love to hear from you.
           </p>
 

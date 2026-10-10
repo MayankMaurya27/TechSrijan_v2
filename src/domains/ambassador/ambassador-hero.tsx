@@ -393,8 +393,8 @@ export function AmbassadorHero() {
             />
           </div>
 
-          {/* Main Title: CAMPUS AMBASSADOR */}
-          <h1 className="font-editorial text-[clamp(2.4rem,3.4vw,4.1rem)] font-extrabold leading-[0.94] tracking-tight whitespace-nowrap">
+          {/* Main Title: CAMPUS AMBASSADOR (Montserrat Heading) */}
+          <h1 className="font-montserrat text-[clamp(2.4rem,3.4vw,4.1rem)] font-black leading-[0.94] tracking-tight whitespace-nowrap">
             <span className="block text-white drop-shadow-[0_4px_28px_rgba(0,0,0,0.95)]">
               CAMPUS
             </span>
@@ -490,13 +490,13 @@ export function AmbassadorHero() {
               />
             </div>
 
-            {/* Headline */}
-            <h2 className="relative z-10 font-editorial text-[#FAF6EE] text-lg xl:text-[21px] font-normal leading-[1.32] tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+            {/* Headline (Chancery Italic) */}
+            <h2 className="relative z-10 font-chancery italic text-[#FAF6EE] text-xl xl:text-[23px] font-normal leading-[1.32] tracking-wide drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
               Be the vanguard of Eastern UP&apos;s grandest technical festival.
             </h2>
 
-            {/* Description */}
-            <p className="relative z-10 mt-3 text-neutral-400 font-sans text-xs sm:text-[13px] font-light leading-relaxed">
+            {/* Description (Geist) */}
+            <p className="relative z-10 mt-3 text-neutral-300 font-geist text-xs sm:text-[13px] font-light leading-relaxed">
               Represent your college, lead the revolution, and claim glory.
             </p>
 
@@ -570,7 +570,7 @@ export function AmbassadorHero() {
             </span>
           </div>
 
-          <h1 className="font-editorial text-3xl sm:text-4xl font-extrabold leading-[0.95] tracking-tight">
+          <h1 className="font-montserrat text-3xl sm:text-4xl font-black leading-[0.95] tracking-tight">
             <span className="block text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]">
               CAMPUS
             </span>
@@ -622,7 +622,7 @@ export function AmbassadorHero() {
               />
             </div>
 
-            <p className="font-editorial text-[#FAF6EE] text-sm sm:text-base font-normal leading-snug">
+            <p className="font-chancery italic text-[#FAF6EE] text-base sm:text-lg font-normal leading-snug">
               Be the vanguard of Eastern UP&apos;s grandest technical festival.
             </p>
 

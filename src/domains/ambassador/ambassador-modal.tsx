@@ -295,7 +295,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                     {/* Scrollable Form Body */}
                     <div className="flex-1 overflow-y-auto px-6 sm:px-9 py-2 custom-scrollbar overscroll-contain">
                       {/* Big Headline */}
-                      <h2 className="font-impact text-4xl sm:text-5xl lg:text-6xl leading-none uppercase tracking-wide">
+                      <h2 className="font-bebas text-4xl sm:text-5xl lg:text-6xl leading-none uppercase tracking-wider">
                         <span className="text-white">YOUR </span>
                         <span className={`${t.accentTextClass} transition-colors duration-300`}>DETAILS</span>
                       </h2>
@@ -494,7 +494,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                     {/* Scrollable Form Body */}
                     <div className="flex-1 overflow-y-auto px-6 sm:px-9 py-2 custom-scrollbar overscroll-contain">
                       {/* Big Headline */}
-                      <h2 className="font-impact text-4xl sm:text-5xl lg:text-6xl leading-none uppercase tracking-wide">
+                      <h2 className="font-bebas text-4xl sm:text-5xl lg:text-6xl leading-none uppercase tracking-wider">
                         <span className="text-white">CAMPUS </span>
                         <span className={`${t.accentTextClass} transition-colors duration-300`}>DETAILS</span>
                       </h2>
@@ -680,10 +680,10 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                     <CheckCircle2 className="w-7 h-7" style={{ color: t.accent }} />
                   </div>
 
-                  <h3 className="font-impact text-3xl sm:text-4xl text-white tracking-wide uppercase">
+                  <h3 className="font-bebas text-3xl sm:text-4xl text-white tracking-wider uppercase">
                     APPLICATION SUBMITTED
                   </h3>
-                  <p className="mt-1 text-xs sm:text-sm text-neutral-300 font-sans max-w-md mx-auto">
+                  <p className="mt-1 text-xs sm:text-sm text-neutral-300 font-geist max-w-md mx-auto">
                     Welcome to the Vanguard. Your provisional record has been generated for TechSrijan&apos;27.
                   </p>
 

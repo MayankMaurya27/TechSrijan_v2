@@ -149,13 +149,13 @@ export function AmbassadorColleges() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-8 sm:mb-10"
         >
-          <h2 className="font-impact text-4xl sm:text-5xl lg:text-6xl tracking-wide uppercase text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
+          <h2 className="font-bebas text-5xl sm:text-6xl lg:text-7xl tracking-wider uppercase text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
             TARGET{" "}
             <span className={`${t.collegesHeaderGradient} drop-shadow-[0_0_35px_${t.accentGlow}] transition-colors duration-500`}>
               COLLEGES
             </span>
           </h2>
-          <p className="mt-2 max-w-lg mx-auto text-xs sm:text-sm text-neutral-400 font-sans font-light leading-relaxed">
+          <p className="mt-2 max-w-lg mx-auto text-xs sm:text-sm text-neutral-400 font-geist leading-relaxed">
             Represent your engineering campus at TechSrijan&apos;27. Connect with
             peers across Gorakhpur and Eastern UP.
           </p>
@@ -174,7 +174,7 @@ export function AmbassadorColleges() {
             { value: "10K+", label: "Student Network" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
-              <div className={`font-impact text-3xl sm:text-4xl tracking-wider text-transparent bg-clip-text bg-gradient-to-b ${t.collegesStatGradient} drop-shadow-[0_0_15px_${t.accentGlow}] transition-all duration-500`}>
+              <div className={`font-bebas text-4xl sm:text-5xl tracking-wider text-transparent bg-clip-text bg-gradient-to-b ${t.collegesStatGradient} drop-shadow-[0_0_15px_${t.accentGlow}] transition-all duration-500`}>
                 {stat.value}
               </div>
               <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-neutral-400 mt-1">
@@ -208,10 +208,10 @@ export function AmbassadorColleges() {
                       {college.city}
                     </span>
                   </div>
-                  <h3 className={`font-impact text-lg sm:text-xl text-white tracking-wide uppercase group-hover:${t.accentTextClass} transition-colors drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]`}>
+                  <h3 className={`font-bebas text-xl sm:text-2xl text-white tracking-wider uppercase group-hover:${t.accentTextClass} transition-colors drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]`}>
                     {college.name}
                   </h3>
-                  <p className="mt-1 text-xs text-neutral-400 font-sans leading-relaxed line-clamp-2">
+                  <p className="mt-1 text-xs text-neutral-400 font-geist leading-relaxed line-clamp-2">
                     {college.full}
                   </p>
                 </div>

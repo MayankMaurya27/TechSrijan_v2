@@ -213,20 +213,20 @@ export function EventsHeroScroll({ onScrollProgress }: EventsHeroScrollProps) {
           }}
         >
           <div className="max-w-[85vw] sm:max-w-xl text-left">
-            {/* Stark Monochromatic Hero Title */}
-            <h1 className="font-serif tracking-tight text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white uppercase drop-shadow-[0_4px_30px_rgba(0,0,0,1)]">
+            {/* Stark Monochromatic Hero Title (Montserrat Heading) */}
+            <h1 className="font-montserrat tracking-tight text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white uppercase drop-shadow-[0_4px_30px_rgba(0,0,0,1)]">
               EVENTS
             </h1>
 
-            {/* Dune Style Morale Quote */}
-            <p className="mt-4 sm:mt-8 font-serif text-sm sm:text-xl md:text-2xl tracking-[0.1em] sm:tracking-[0.15em] text-neutral-300 max-w-2xl leading-relaxed uppercase drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] italic">
+            {/* Dune Style Morale Quote (Chancery Italic) */}
+            <p className="mt-4 sm:mt-8 font-chancery text-base sm:text-xl md:text-2xl tracking-wide text-neutral-300 max-w-2xl leading-relaxed drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] italic">
               &ldquo;Fear is the mind-killer. Beyond fear lies destiny. Step into the crucible and forge your legacy.&rdquo;
             </p>
 
-            {/* Mobile scroll cue pill */}
-            <div className="mt-6 sm:hidden inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-sm">
+            {/* Mobile scroll cue pill (Bebas Neue Subheading) */}
+            <div className="mt-6 sm:hidden inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-neutral-300">SCROLL TO ENTER THE ARENA</span>
+              <span className="font-bebas text-xs tracking-widest uppercase text-neutral-300">SCROLL TO ENTER THE ARENA</span>
             </div>
           </div>
         </div>

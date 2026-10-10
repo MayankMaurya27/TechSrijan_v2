@@ -204,10 +204,10 @@ export function SponsorsInquiryModal({
                     DIRECT TRANSMISSION
                   </span>
                 </div>
-                <h3 className="font-serif text-2xl sm:text-3xl font-bold uppercase text-white tracking-tight">
+                <h3 className="font-montserrat text-2xl sm:text-3xl font-black uppercase text-white tracking-tight">
                   Initiate <span className={mt.titleAccent}>Contract Proposal</span>
                 </h3>
-                <p className="mt-1.5 text-neutral-400 text-xs sm:text-sm leading-relaxed">
+                <p className="mt-1.5 font-geist text-neutral-300 text-xs sm:text-sm leading-relaxed">
                   Transmit your activation objectives directly to the Secretariat of Technical Sub Council (TSC). Our convenors respond with official deliverables within 24 hours.
                 </p>
               </div>
@@ -218,7 +218,7 @@ export function SponsorsInquiryModal({
                   <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(16,185,129,0.25)]">
                     <CheckCircle2 className="w-7 h-7" />
                   </div>
-                  <h4 className="font-serif text-xl font-bold text-white uppercase tracking-wider">
+                  <h4 className="font-montserrat text-xl font-extrabold text-white uppercase tracking-tight">
                     Transmission Dispatched
                   </h4>
                   <p className="text-neutral-300 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">

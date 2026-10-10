@@ -102,24 +102,24 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/[0.08] px-3 py-1 text-xs text-zinc-300">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/[0.08] px-3 py-1 text-xs font-bebas tracking-wider text-zinc-300 uppercase">
               <span>{operative.house}</span>
               <span>·</span>
               <span className="text-emerald-400">{operative.status}</span>
             </div>
 
-            <h2 className="mt-2 text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            <h2 className="mt-2 text-2xl sm:text-3xl font-montserrat font-black text-white tracking-tight">
               {operative.name}
             </h2>
 
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm font-geist text-zinc-400">
               {operative.role} {operative.yearOrDesignation ? `— ${operative.yearOrDesignation}` : ""}
             </p>
           </div>
         </div>
 
         {/* Bio */}
-        <div className="mt-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 text-xs sm:text-sm leading-relaxed text-zinc-300">
+        <div className="mt-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 text-xs sm:text-sm font-geist leading-relaxed text-zinc-300">
           {operative.bio}
         </div>
 

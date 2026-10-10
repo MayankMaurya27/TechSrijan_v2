@@ -275,13 +275,13 @@ export function SignInRouteModal({
             ◇
           </div>
 
-          {/* Main Title: Choose your sign-in route */}
-          <h2 className="font-editorial text-[30px] sm:text-[38px] md:text-[44px] font-normal sm:font-medium tracking-tight text-[#f7f2ea] leading-[1.08] mb-2 drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]">
+          {/* Main Title: Choose your sign-in route (Montserrat Heading) */}
+          <h2 className="font-montserrat text-[26px] sm:text-[34px] md:text-[38px] font-black tracking-tight text-[#f7f2ea] leading-[1.08] mb-2 drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]">
             Choose your sign-in route
           </h2>
 
-          {/* Subtitle */}
-          <p className="font-sans text-[13px] sm:text-[14.5px] text-[#a09484] font-normal tracking-wide max-w-md mx-auto mb-7 sm:mb-9">
+          {/* Subtitle (Geist) */}
+          <p className="font-geist text-[13px] sm:text-[14px] text-[#a09484] font-normal tracking-wide max-w-md mx-auto mb-7 sm:mb-9">
             Select the option that matches your college.
           </p>
         </div>
@@ -383,13 +383,13 @@ export function SignInRouteModal({
                 </g>
               </svg>
 
-              {/* Title */}
-              <h3 className="font-editorial text-[22px] sm:text-[25px] font-medium text-[#f7f2ea] mt-3.5 mb-1.5 tracking-normal">
+              {/* Title (Montserrat) */}
+              <h3 className="font-montserrat text-lg sm:text-xl font-bold text-[#f7f2ea] mt-3.5 mb-1.5 tracking-tight">
                 MMMUT student
               </h3>
 
-              {/* Subtext */}
-              <p className="font-sans text-xs sm:text-[13px] text-[#a09484] leading-relaxed max-w-[210px]">
+              {/* Subtext (Geist) */}
+              <p className="font-geist text-xs sm:text-[13px] text-[#a09484] leading-relaxed max-w-[210px]">
                 Continue with your university account.
               </p>
             </div>
@@ -454,13 +454,13 @@ export function SignInRouteModal({
                 </svg>
               </div>
 
-              {/* Title */}
-              <h3 className="font-editorial text-[22px] sm:text-[25px] font-medium text-[#f7f2ea] mt-3.5 mb-1.5 tracking-normal">
+              {/* Title (Montserrat) */}
+              <h3 className="font-montserrat text-lg sm:text-xl font-bold text-[#f7f2ea] mt-3.5 mb-1.5 tracking-tight">
                 Other institution
               </h3>
 
-              {/* Subtext */}
-              <p className="font-sans text-xs sm:text-[13px] text-[#a09484] leading-relaxed max-w-[210px]">
+              {/* Subtext (Geist) */}
+              <p className="font-geist text-xs sm:text-[13px] text-[#a09484] leading-relaxed max-w-[210px]">
                 Sign in with Google, then complete your profile.
               </p>
             </div>

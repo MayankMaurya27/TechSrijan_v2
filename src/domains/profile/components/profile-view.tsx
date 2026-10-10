@@ -205,8 +205,9 @@ export function ProfileView() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 w-full">
             {/* Title & Imperial Divider */}
             <div className="flex flex-col items-start">
-              <h1 className="font-editorial text-3xl sm:text-4xl md:text-[44px] font-normal text-[#f8eed9] tracking-tight leading-none mb-2 drop-shadow-[0_2px_18px_rgba(0,0,0,0.9)]">
-                Welcome, {profile.fullName.split(" ")[0]}
+              <h1 className="text-3xl sm:text-4xl md:text-[44px] tracking-tight leading-none mb-2 drop-shadow-[0_2px_18px_rgba(0,0,0,0.9)]">
+                <span className="font-chancery italic text-[#caa462] mr-2">Welcome,</span>
+                <span className="font-montserrat font-black text-[#f8eed9]">{profile.fullName.split(" ")[0]}</span>
               </h1>
 
               {/* Imperial Divider with Diamond Finial */}
@@ -285,7 +286,7 @@ export function ProfileView() {
               <div className="relative w-16 h-16 sm:w-[74px] sm:h-[74px] rounded-full border-2 border-[#caa462]/75 bg-gradient-to-br from-[#1b1416] via-[#120b0d] to-[#0a0607] shadow-[0_0_22px_rgba(202,164,98,0.35)] flex items-center justify-center flex-shrink-0 group overflow-hidden">
                 {/* Avatar Radial Sheen */}
                 <div className="absolute inset-0 bg-radial-gradient from-[#caa462]/20 via-transparent to-black/60 pointer-events-none" />
-                <span className="font-editorial text-xl sm:text-2xl text-[#f8eed9] tracking-wider relative z-10 font-normal">
+                <span className="font-montserrat font-black text-xl sm:text-2xl text-[#f8eed9] tracking-wider relative z-10">
                   {initials}
                 </span>
                 {/* Subtle border highlight ring */}
@@ -295,7 +296,7 @@ export function ProfileView() {
               {/* Personal Details & Institution Meta */}
               <div className="flex flex-col items-center sm:items-start space-y-1">
                 <div className="flex items-center gap-2">
-                  <h2 className="font-editorial text-xl sm:text-2xl font-normal text-[#f8eed9] tracking-tight leading-tight">
+                  <h2 className="font-montserrat text-xl sm:text-2xl font-black text-[#f8eed9] tracking-tight leading-tight">
                     {profile.fullName}
                   </h2>
                 </div>
@@ -389,10 +390,10 @@ export function ProfileView() {
                   <Ticket className="w-4 h-4 text-red-400" />
                 </div>
                 <div>
-                  <h3 className="font-editorial text-lg sm:text-[19px] font-normal text-[#f8eed9] leading-tight">
+                  <h3 className="font-montserrat text-base sm:text-lg font-bold text-[#f8eed9] leading-tight">
                     Event registration
                   </h3>
-                  <p className="font-sans text-xs text-[#9e9282]">
+                  <p className="font-geist text-xs text-[#9e9282]">
                     {profile.registeredEventsCount > 0
                       ? `${profile.registeredEventsCount} competition(s) confirmed`
                       : "You haven't registered for any events yet."}
@@ -467,10 +468,10 @@ export function ProfileView() {
                   <User className="w-4 h-4 text-red-400" />
                 </div>
                 <div>
-                  <h3 className="font-editorial text-lg sm:text-[19px] font-normal text-[#f8eed9] leading-tight">
+                  <h3 className="font-montserrat text-base sm:text-lg font-bold text-[#f8eed9] leading-tight">
                     Account details
                   </h3>
-                  <p className="font-sans text-xs text-[#9e9282]">
+                  <p className="font-geist text-xs text-[#9e9282]">
                     Your personal information and academic details.
                   </p>
                 </div>
@@ -583,10 +584,10 @@ export function ProfileView() {
                     <Building2 className="w-4 h-4 text-red-400" />
                   </div>
                   <div>
-                    <h3 className="font-editorial text-lg sm:text-[19px] font-normal text-[#f8eed9] leading-tight">
+                    <h3 className="font-montserrat text-base sm:text-lg font-bold text-[#f8eed9] leading-tight">
                       Campus accommodation
                     </h3>
-                    <p className="font-sans text-xs text-[#9e9282]">
+                    <p className="font-geist text-xs text-[#9e9282]">
                       Residence allotment credentials & fest stay status.
                     </p>
                   </div>
@@ -669,10 +670,10 @@ export function ProfileView() {
                     <Trophy className="w-4 h-4 text-red-400" />
                   </div>
                   <div>
-                    <h3 className="font-editorial text-lg sm:text-[19px] font-normal text-[#f8eed9] leading-tight">
+                    <h3 className="font-montserrat text-base sm:text-lg font-bold text-[#f8eed9] leading-tight">
                       Event points & standing
                     </h3>
-                    <p className="font-sans text-xs text-[#9e9282]">
+                    <p className="font-geist text-xs text-[#9e9282]">
                       Merit points gained across TechSrijan &apos;27 arena challenges.
                     </p>
                   </div>
@@ -750,7 +751,7 @@ export function ProfileView() {
               <div className="flex items-center justify-between border-b border-[#caa462]/20 pb-3.5 mb-5">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]" />
-                  <h3 className="font-editorial text-xl text-[#f8eed9]">
+                  <h3 className="font-montserrat text-lg sm:text-xl font-bold text-[#f8eed9]">
                     Edit Account Details
                   </h3>
                 </div>

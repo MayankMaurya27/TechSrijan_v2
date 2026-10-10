@@ -139,7 +139,7 @@ export function AmbassadorJourney() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-10 sm:mb-14"
         >
-          <h2 className="font-impact text-4xl sm:text-5xl lg:text-6xl tracking-wide uppercase text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
+          <h2 className="font-bebas text-5xl sm:text-6xl lg:text-7xl tracking-wider uppercase text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
             YOUR{" "}
             <span
               className={`${t.journeyHeaderGradient} drop-shadow-[0_0_35px_${t.accentGlow}] transition-colors duration-500`}
@@ -147,7 +147,7 @@ export function AmbassadorJourney() {
               JOURNEY
             </span>
           </h2>
-          <p className="mt-2 max-w-md mx-auto text-xs sm:text-sm text-neutral-400 font-sans font-light leading-relaxed">
+          <p className="mt-2 max-w-md mx-auto text-xs sm:text-sm text-neutral-400 font-geist leading-relaxed">
             Four steps from application to campus legend.
           </p>
         </motion.div>
@@ -310,7 +310,7 @@ export function AmbassadorJourney() {
                       {/* Title & Icon Header */}
                       <div className="flex items-center justify-between gap-3 mb-2">
                         <h3
-                          className={`font-impact text-xl sm:text-2xl text-white tracking-wide uppercase leading-tight group-hover:${t.accentTextClass} transition-colors drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]`}
+                          className={`font-bebas text-2xl sm:text-3xl text-white tracking-wider uppercase leading-tight group-hover:${t.accentTextClass} transition-colors drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]`}
                         >
                           {step.title}
                         </h3>
@@ -322,8 +322,8 @@ export function AmbassadorJourney() {
                         </div>
                       </div>
 
-                      {/* Concise, Human-written Description */}
-                      <p className="text-xs sm:text-sm text-neutral-300 font-sans font-light leading-relaxed">
+                      {/* Concise, Human-written Description (Geist Sans) */}
+                      <p className="text-xs sm:text-sm text-neutral-300 font-geist leading-relaxed">
                         {step.description}
                       </p>
                     </div>

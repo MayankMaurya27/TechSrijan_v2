@@ -288,18 +288,18 @@ export function SpatialEventsGrid() {
                 <span className="font-bold text-[var(--accent-primary)]">{ev.id}</span>
               </div>
 
-              <span className="font-mono text-[9px] tracking-[0.25em] text-[var(--accent-primary)] font-bold uppercase">
+              <span className="font-bebas text-xs sm:text-sm tracking-wider text-[var(--accent-primary)] font-bold uppercase">
                 {ev.tagline}
               </span>
 
               <motion.h3
                 layoutId={`title-${ev.id}`}
-                className="mt-2 font-mono text-2xl font-black text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors"
+                className="mt-2 font-montserrat text-xl sm:text-2xl font-black text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors uppercase"
               >
                 {ev.title}
               </motion.h3>
 
-              <p className="mt-3 text-xs leading-relaxed text-[var(--text-secondary)] line-clamp-3">
+              <p className="mt-3 font-geist text-xs leading-relaxed text-[var(--text-secondary)] line-clamp-3">
                 {ev.description}
               </p>
             </div>
@@ -361,18 +361,18 @@ export function SpatialEventsGrid() {
 
               <div className="overflow-y-auto pr-2 pb-6 space-y-8">
                 <div>
-                  <div className="flex items-center gap-3 font-mono text-xs tracking-widest text-[var(--accent-primary)] mb-2">
+                  <div className="flex items-center gap-3 font-bebas text-sm sm:text-base tracking-wider text-[var(--accent-primary)] mb-2 uppercase">
                     <span>{activeEvent.coordinate}</span>
                     <span>•</span>
                     <span>{activeEvent.tagline}</span>
                   </div>
                   <motion.h2
                     layoutId={`title-${activeEvent.id}`}
-                    className="font-mono text-3xl sm:text-5xl font-black text-[var(--text-primary)] uppercase"
+                    className="font-montserrat text-3xl sm:text-5xl font-black text-[var(--text-primary)] uppercase"
                   >
                     {activeEvent.title}
                   </motion.h2>
-                  <p className="mt-4 text-sm text-[var(--text-secondary)] leading-relaxed max-w-3xl">
+                  <p className="mt-4 font-geist text-sm text-[var(--text-secondary)] leading-relaxed max-w-3xl">
                     {activeEvent.description}
                   </p>
                 </div>
@@ -405,7 +405,7 @@ export function SpatialEventsGrid() {
                 </div>
 
                 <div>
-                  <h4 className="font-mono text-xs tracking-[0.25em] text-[var(--accent-primary)] uppercase mb-3">
+                  <h4 className="font-bebas text-sm sm:text-base tracking-wider text-[var(--accent-primary)] uppercase mb-3">
                     RULES & GUIDELINES
                   </h4>
                   <ul className="space-y-2 font-mono text-xs text-[var(--text-secondary)]">
@@ -419,7 +419,7 @@ export function SpatialEventsGrid() {
                 </div>
 
                 <div>
-                  <h4 className="font-mono text-xs tracking-[0.25em] text-[var(--accent-primary)] uppercase mb-3">
+                  <h4 className="font-bebas text-sm sm:text-base tracking-wider text-[var(--accent-primary)] uppercase mb-3">
                     EVENT STAGES
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

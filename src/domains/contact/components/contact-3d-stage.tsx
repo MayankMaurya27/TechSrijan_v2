@@ -306,14 +306,14 @@ export function Contact3DStage({ theme, onToggleTheme }: Contact3DStageProps) {
           ============================================================ */}
       <div className="absolute top-8 left-8 sm:top-10 sm:left-10 z-20 flex flex-col gap-1">
         <div className="flex items-center gap-2.5">
-          <span className="font-editorial text-2xl sm:text-3xl tracking-wider text-white uppercase flex items-center gap-1.5 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
+          <span className="font-montserrat font-black text-2xl sm:text-3xl tracking-wider text-white uppercase flex items-center gap-1.5 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
             TECH<span className="text-[#e2a850] text-xl inline-block -translate-y-0.5">✳</span>SRIJAN
           </span>
-          <span className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-2.5 py-0.5 text-[9px] font-mono tracking-widest text-amber-200 uppercase">
+          <span className="rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-2.5 py-0.5 text-xs font-bebas tracking-wider text-amber-200 uppercase">
             &apos;27
           </span>
         </div>
-        <p className="text-[11px] font-mono tracking-[0.25em] text-zinc-300 uppercase">
+        <p className="text-xs font-bebas tracking-widest text-zinc-300 uppercase">
           IMPERIUM : REQUIEM
         </p>
       </div>

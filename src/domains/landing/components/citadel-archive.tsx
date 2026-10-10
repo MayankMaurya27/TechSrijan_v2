@@ -52,35 +52,35 @@ const ALLIANCE_NODES = [
 const TRANSMISSIONS = [
   {
     id: "01",
-    quote: "TECHSRIJAN FELT LESS LIKE AN EVENT AND MORE LIKE ENTERING ANOTHER WORLD.",
+    quote: "TechSrijan felt less like an event and more like entering another world.",
     author: "ARYAN VERMA",
     dept: "CSE · MMMUT",
     year: "PILGRIM '25",
   },
   {
     id: "02",
-    quote: "THE MONUMENTAL SCALE OF IMPERIUM AND TECHNICAL RIGOR OF THE ARENAS IS UNRIVALED.",
+    quote: "The monumental scale of Imperium and technical rigor of the arenas is unrivaled.",
     author: "SNEHA MISHRA",
     dept: "ECE · MMMUT",
     year: "CHAMPION '25",
   },
   {
     id: "03",
-    quote: "FROM HARDWARE HACKATHONS TO THE ROBOTIC DRIFTS, EVERY SECOND WAS PURE ADRENALINE.",
+    quote: "From hardware hackathons to the robotic drifts, every second was pure adrenaline.",
     author: "ROHAN SINGH",
     dept: "IT · MMMUT",
     year: "TEAM LEAD '26",
   },
   {
     id: "04",
-    quote: "A MASTERCLASS IN TECHNICAL EXECUTION, WORLD-BUILDING, AND ARCHITECTURAL SCALE.",
+    quote: "A masterclass in technical execution, world-building, and architectural scale.",
     author: "ANANYA TRIPATHI",
     dept: "EE · MMMUT",
     year: "FINALIST '25",
   },
   {
     id: "05",
-    quote: "AN UNFORGETTABLE PILGRIMAGE FOR EVERY ENGINEER DARING TO CONQUER THE FUTURE.",
+    quote: "An unforgettable pilgrimage for every engineer daring to conquer the future.",
     author: "ADITYA PANDEY",
     dept: "ME · MMMUT",
     year: "INNOVATOR '26",
@@ -310,7 +310,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                         04 DIRECTIVES
                       </span>
                     </div>
-                    <h3 className="text-[12px] sm:text-[13px] font-serif tracking-[0.14em] uppercase text-[#F0EAE1] mt-0.5 leading-none">
+                    <h3 className="text-[12px] sm:text-[13px] font-montserrat font-bold tracking-[0.14em] uppercase text-[#F0EAE1] mt-0.5 leading-none">
                       FEATURED DIRECTIVES
                     </h3>
                     <p className="text-[7.5px] sm:text-[8px] font-mono text-[#c4b79b] mt-0.5 leading-tight truncate">
@@ -331,7 +331,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                             {ev.id}
                           </span>
                           <div className="flex flex-col min-w-0">
-                            <span className="font-serif text-[9.5px] font-semibold tracking-wider text-[#F0EAE1] truncate">
+                            <span className="font-montserrat text-[9.5px] font-semibold tracking-wider text-[#F0EAE1] truncate">
                               {ev.title}
                             </span>
                             <span className="font-mono text-[6.5px] sm:text-[7px] text-[#a89b88] tracking-wider truncate">
@@ -371,7 +371,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                     <span className="text-[7.5px] font-mono tracking-[0.2em] text-[#d4a843] uppercase block">
                       CITADEL ARCHIVE
                     </span>
-                    <h3 className="text-[12px] sm:text-[13px] font-serif tracking-[0.14em] uppercase text-[#F0EAE1] mt-0.5 leading-none">
+                    <h3 className="text-[12px] sm:text-[13px] font-montserrat font-bold tracking-[0.14em] uppercase text-[#F0EAE1] mt-0.5 leading-none">
                       THE ALLIANCES
                     </h3>
                     <p className="text-[7.5px] sm:text-[8px] font-mono text-[#c4b79b] mt-0.5 leading-tight truncate">
@@ -412,7 +412,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                                 : "0 0 5px rgba(212, 168, 67, 0.3)",
                             }}
                           >
-                            <span className="text-[7.5px] font-serif font-bold">
+                            <span className="text-[9px] font-bebas font-bold">
                               {node.roman}
                             </span>
                           </div>
@@ -466,20 +466,20 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                         {TRANSMISSIONS[activeQuoteIndex].id} / 05
                       </span>
                     </div>
-                    <h3 className="text-[13px] sm:text-sm font-serif tracking-[0.14em] uppercase text-[#F0EAE1] mt-0.5 leading-none">
+                    <h3 className="text-[13px] sm:text-sm font-montserrat font-bold tracking-[0.14em] uppercase text-[#F0EAE1] mt-0.5 leading-none">
                       VOICES FROM WITHIN
                     </h3>
                   </div>
 
                   <div className="my-auto py-1 flex flex-col justify-center min-h-[46px]">
-                    <p className="text-[8.5px] sm:text-[9px] font-serif uppercase tracking-wider text-[#F0EAE1] leading-relaxed italic pl-2 border-l border-[#d4a843]/40 line-clamp-3">
+                    <p className="text-[11.5px] sm:text-[12.5px] font-geist tracking-normal text-[#FAF6EE] leading-relaxed italic pl-2.5 border-l-2 border-[#d4a843]/60 line-clamp-3">
                       “{TRANSMISSIONS[activeQuoteIndex].quote}”
                     </p>
-                    <div className="mt-1 pl-2 flex items-center gap-1 flex-wrap">
-                      <span className="text-[8px] font-mono font-bold text-[#d4a843] tracking-wider uppercase">
+                    <div className="mt-1.5 pl-2.5 flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[9px] font-bebas font-normal text-[#d4a843] tracking-wider uppercase">
                         — {TRANSMISSIONS[activeQuoteIndex].author}
                       </span>
-                      <span className="text-[7px] font-mono text-[#a89b88] tracking-widest uppercase truncate">
+                      <span className="text-[7.5px] font-geist text-[#a89b88] tracking-wider uppercase truncate">
                         · {TRANSMISSIONS[activeQuoteIndex].dept}
                       </span>
                     </div>
@@ -582,7 +582,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                     04 DIRECTIVES
                   </span>
                 </div>
-                <h3 className="text-base sm:text-lg lg:text-xl font-serif tracking-[0.16em] uppercase text-[#F0EAE1] mt-0.5 leading-tight text-shadow-gold">
+                <h3 className="text-base sm:text-lg lg:text-xl font-montserrat font-black tracking-[0.16em] uppercase text-[#F0EAE1] mt-0.5 leading-tight text-shadow-gold">
                   FEATURED DIRECTIVES
                 </h3>
                 <p className="text-[10px] sm:text-[11px] font-mono text-[#c4b79b] mt-0.5 tracking-wide">
@@ -613,7 +613,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                           {ev.id}
                         </span>
                         <div className="flex flex-col min-w-0">
-                          <span className="font-serif text-[11px] sm:text-xs font-semibold tracking-wider text-[#F0EAE1] group-hover:text-[#ffd685] transition-colors truncate">
+                          <span className="font-montserrat text-[11px] sm:text-xs font-semibold tracking-wider text-[#F0EAE1] group-hover:text-[#ffd685] transition-colors truncate">
                             {ev.title}
                           </span>
                           <span className="font-mono text-[8px] sm:text-[9px] text-[#a89b88] tracking-wider truncate">
@@ -691,7 +691,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                   <span className="text-[8px] font-mono tracking-[0.25em] text-[#d4a843] uppercase block">
                     CITADEL ARCHIVE
                   </span>
-                  <h3 className="text-sm sm:text-base font-serif tracking-[0.16em] uppercase text-[#F0EAE1] mt-0.5 leading-tight">
+                  <h3 className="text-sm sm:text-base font-montserrat font-bold tracking-[0.16em] uppercase text-[#F0EAE1] mt-0.5 leading-tight">
                     THE ALLIANCES
                   </h3>
                   <p className="text-[8px] sm:text-[9px] font-mono text-[#c4b79b] tracking-wide">
@@ -748,7 +748,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                               : "0 0 6px rgba(212, 168, 67, 0.3)",
                           }}
                         >
-                          <span className="text-[8px] sm:text-[9px] font-serif font-bold tracking-tight">
+                          <span className="text-[10px] sm:text-[11px] font-bebas font-bold tracking-tight">
                             {node.roman}
                           </span>
                         </div>
@@ -826,21 +826,21 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                       {TRANSMISSIONS[activeQuoteIndex].id} / 05
                     </span>
                   </div>
-                  <h3 className="text-sm sm:text-base font-serif tracking-[0.16em] uppercase text-[#F0EAE1] mt-0.5 leading-tight">
+                  <h3 className="text-sm sm:text-base font-montserrat font-bold tracking-[0.16em] uppercase text-[#F0EAE1] mt-0.5 leading-tight">
                     VOICES FROM WITHIN
                   </h3>
                 </div>
 
                 {/* Quote Body */}
                 <div className="my-auto py-0.5 flex flex-col justify-center min-h-[46px]">
-                  <p className="text-[9px] sm:text-[10px] font-serif uppercase tracking-wider text-[#F0EAE1] leading-tight italic pl-2 border-l border-[#d4a843]/40 line-clamp-3">
+                  <p className="text-[12.5px] sm:text-[13.5px] font-geist tracking-normal text-[#FAF6EE] leading-relaxed italic pl-2.5 border-l-2 border-[#d4a843]/60 line-clamp-3">
                     “{TRANSMISSIONS[activeQuoteIndex].quote}”
                   </p>
-                  <div className="mt-1 pl-2 flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[8px] sm:text-[9px] font-mono font-bold text-[#d4a843] tracking-wider uppercase">
+                  <div className="mt-1.5 pl-2.5 flex items-center gap-2 flex-wrap">
+                    <span className="text-[10px] sm:text-[11px] font-bebas font-normal text-[#d4a843] tracking-wider uppercase">
                       — {TRANSMISSIONS[activeQuoteIndex].author}
                     </span>
-                    <span className="text-[7px] sm:text-[8px] font-mono text-[#a89b88] tracking-widest uppercase truncate">
+                    <span className="text-[8px] sm:text-[9px] font-geist text-[#a89b88] tracking-wider uppercase truncate">
                       · {TRANSMISSIONS[activeQuoteIndex].dept}
                     </span>
                   </div>

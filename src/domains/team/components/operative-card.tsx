@@ -128,22 +128,22 @@ export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) 
       </div>
 
       {/* ============================================================
-          DESIGNER MEMBER TYPOGRAPHY (Artistic, High-End Styling)
+          DESIGNER MEMBER TYPOGRAPHY (Montserrat, Geist, Bebas)
           ============================================================ */}
       <div className="mt-5 max-w-[260px] flex flex-col items-center">
-        {/* Designer Name with Metallic Shimmer */}
-        <h3 className="text-lg sm:text-xl font-bold tracking-[-0.015em] text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F5EADB] to-[#E3D1B8] transition-all duration-300 group-hover:from-[#FFFFFF] group-hover:via-[#F5E6C8] group-hover:to-[#D4A843] group-hover:drop-shadow-[0_0_16px_rgba(212,168,67,0.35)]">
+        {/* Designer Name with Metallic Shimmer (Montserrat) */}
+        <h3 className="font-montserrat text-lg sm:text-xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F5EADB] to-[#E3D1B8] transition-all duration-300 group-hover:from-[#FFFFFF] group-hover:via-[#F5E6C8] group-hover:to-[#D4A843] group-hover:drop-shadow-[0_0_16px_rgba(212,168,67,0.35)]">
           {operative.name}
         </h3>
 
-        {/* Professional Role Title */}
-        <p className="mt-1 text-xs sm:text-[13px] text-zinc-400 font-normal leading-snug transition-colors duration-200 group-hover:text-zinc-200">
+        {/* Professional Role Title (Geist) */}
+        <p className="font-geist mt-1 text-xs sm:text-[13px] text-zinc-400 font-normal leading-snug transition-colors duration-200 group-hover:text-zinc-200">
           {operative.role}
         </p>
 
-        {/* Elevated Society/Affiliation Capsule */}
+        {/* Elevated Society/Affiliation Capsule (Bebas) */}
         <div className="mt-2.5 flex items-center justify-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#11131C]/90 border border-white/[0.08] px-3 py-0.5 text-[10px] font-mono tracking-[0.18em] text-zinc-400 uppercase transition-all duration-300 group-hover:border-[var(--accent-primary)]/50 group-hover:text-zinc-300 shadow-sm">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#11131C]/90 border border-white/[0.08] px-3 py-0.5 text-xs font-bebas tracking-wider text-zinc-300 uppercase transition-all duration-300 group-hover:border-[var(--accent-primary)]/50 group-hover:text-white shadow-sm">
             <span
               className="h-1.5 w-1.5 rounded-full"
               style={{

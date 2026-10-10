@@ -35,13 +35,13 @@ export default function SignUpPage() {
 
       {/* Atmospheric Left Editorial Typography (Faint in background like screenshot) */}
       <div className="absolute left-6 sm:left-12 lg:left-20 top-1/2 -translate-y-1/2 z-[1] pointer-events-none opacity-20 hidden md:block select-none">
-        <span className="font-mono text-xs sm:text-sm tracking-[0.35em] text-[#caa462] uppercase block mb-2">
+        <span className="font-bebas text-sm sm:text-base tracking-[0.35em] text-[#caa462] uppercase block mb-1">
           GORAKHPUR
         </span>
-        <h1 className="font-editorial text-7xl lg:text-9xl font-bold tracking-tight text-white leading-none">
+        <h1 className="font-montserrat text-7xl lg:text-9xl font-black tracking-tight text-white leading-none">
           FESTIVAL
         </h1>
-        <p className="font-sans text-lg text-neutral-400 mt-3 tracking-widest uppercase">
+        <p className="font-chancery italic text-xl sm:text-2xl text-neutral-300 mt-2 tracking-wide">
           TechSrijan &apos;27
         </p>
       </div>

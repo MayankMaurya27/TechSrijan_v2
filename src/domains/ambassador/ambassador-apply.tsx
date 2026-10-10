@@ -131,7 +131,7 @@ export function AmbassadorApply() {
               </div>
 
               {/* Massive Industrial Headline */}
-              <h2 className="font-impact text-6xl sm:text-7xl lg:text-[5.5rem] xl:text-[6.8rem] leading-[0.88] tracking-tight uppercase">
+              <h2 className="font-bebas text-6xl sm:text-7xl lg:text-[5.5rem] xl:text-[6.8rem] leading-[0.88] tracking-wider uppercase">
                 <span className="block text-[#FAF6EE] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
                   TAKE YOUR
                 </span>
@@ -288,7 +288,7 @@ export function AmbassadorApply() {
             />
 
             {/* Headline */}
-            <h2 className="font-impact text-5xl sm:text-6xl lg:text-[4.5rem] leading-[0.9] text-white tracking-wide uppercase mb-10 sm:mb-12">
+            <h2 className="font-bebas text-5xl sm:text-6xl lg:text-[4.5rem] leading-[0.9] text-white tracking-wider uppercase mb-10 sm:mb-12">
               HOW TO JOIN
             </h2>
 
@@ -320,7 +320,7 @@ export function AmbassadorApply() {
                   {/* Step Item Content */}
                   <div className="flex items-center gap-4 sm:gap-6 ml-12 sm:ml-14">
                     <span
-                      className={`font-impact text-4xl sm:text-5xl ${t.applyStepActiveNumber} tracking-wider shrink-0 transition-colors duration-300`}
+                      className={`font-bebas text-4xl sm:text-5xl ${t.applyStepActiveNumber} tracking-wider shrink-0 transition-colors duration-300`}
                     >
                       01
                     </span>
@@ -329,10 +329,10 @@ export function AmbassadorApply() {
                     <span className="h-8 sm:h-10 w-[1.5px] bg-neutral-700/80 shrink-0" />
 
                     <div>
-                      <h3 className="font-impact text-2xl sm:text-3xl text-white tracking-wide uppercase leading-none">
+                      <h3 className="font-bebas text-2xl sm:text-3xl text-white tracking-wider uppercase leading-none">
                         APPLY
                       </h3>
-                      <p className="text-neutral-400 text-xs sm:text-sm font-sans mt-1 leading-snug">
+                      <p className="text-neutral-400 text-xs sm:text-sm font-geist mt-1 leading-snug">
                         Complete the online ambassador form.
                       </p>
                     </div>
@@ -348,7 +348,7 @@ export function AmbassadorApply() {
 
                   {/* Step Item Content */}
                   <div className="flex items-center gap-4 sm:gap-6 ml-12 sm:ml-14">
-                    <span className="font-impact text-4xl sm:text-5xl text-[#FAF6EE] tracking-wider shrink-0">
+                    <span className="font-bebas text-4xl sm:text-5xl text-[#FAF6EE] tracking-wider shrink-0">
                       02
                     </span>
 
@@ -356,10 +356,10 @@ export function AmbassadorApply() {
                     <span className="h-8 sm:h-10 w-[1.5px] bg-neutral-700/80 shrink-0" />
 
                     <div>
-                      <h3 className="font-impact text-2xl sm:text-3xl text-white tracking-wide uppercase leading-none">
+                      <h3 className="font-bebas text-2xl sm:text-3xl text-white tracking-wider uppercase leading-none">
                         GET VERIFIED
                       </h3>
-                      <p className="text-neutral-400 text-xs sm:text-sm font-sans mt-1 leading-snug">
+                      <p className="text-neutral-400 text-xs sm:text-sm font-geist mt-1 leading-snug">
                         The Techsrijan team reviews your application within 48 hours.
                       </p>
                     </div>
@@ -375,7 +375,7 @@ export function AmbassadorApply() {
 
                   {/* Step Item Content */}
                   <div className="flex items-center gap-4 sm:gap-6 ml-12 sm:ml-14">
-                    <span className="font-impact text-4xl sm:text-5xl text-[#FAF6EE] tracking-wider shrink-0">
+                    <span className="font-bebas text-4xl sm:text-5xl text-[#FAF6EE] tracking-wider shrink-0">
                       03
                     </span>
 
@@ -383,10 +383,10 @@ export function AmbassadorApply() {
                     <span className="h-8 sm:h-10 w-[1.5px] bg-neutral-700/80 shrink-0" />
 
                     <div>
-                      <h3 className="font-impact text-2xl sm:text-3xl text-white tracking-wide uppercase leading-none">
+                      <h3 className="font-bebas text-2xl sm:text-3xl text-white tracking-wider uppercase leading-none">
                         REPRESENT
                       </h3>
-                      <p className="text-neutral-400 text-xs sm:text-sm font-sans mt-1 leading-snug">
+                      <p className="text-neutral-400 text-xs sm:text-sm font-geist mt-1 leading-snug">
                         Bring Techsrijan to your campus.
                       </p>
                     </div>

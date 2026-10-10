@@ -263,13 +263,13 @@ export function OnboardingView() {
             </div>
           </div>
 
-          {/* Main Title */}
-          <h1 className="font-editorial text-[32px] sm:text-[40px] md:text-[44px] font-normal text-[#f7f2ea] tracking-tight text-center leading-[1.08] mb-1.5 drop-shadow-[0_2px_15px_rgba(0,0,0,0.85)]">
+          {/* Main Title (Montserrat Heading) */}
+          <h1 className="font-montserrat text-[26px] sm:text-[34px] md:text-[38px] font-black text-[#f7f2ea] tracking-tight text-center leading-[1.08] mb-1.5 drop-shadow-[0_2px_15px_rgba(0,0,0,0.85)]">
             {step === 1 ? "Complete your profile" : "Profile Confirmed"}
           </h1>
 
-          {/* Subtext */}
-          <p className="font-sans text-xs sm:text-[13.5px] text-[#9e9282] text-center max-w-md">
+          {/* Subtext (Geist) */}
+          <p className="font-geist text-xs sm:text-[13px] text-[#9e9282] text-center max-w-md">
             {step === 1
               ? "A few details help us set up your event account."
               : "Your registration has been logged for TechSrijan '27 competitions."}
@@ -590,10 +590,10 @@ export function OnboardingView() {
                   </svg>
                 </div>
 
-                <h3 className="font-editorial text-2xl sm:text-3xl text-white font-medium mb-1">
+                <h3 className="font-montserrat text-2xl sm:text-3xl text-white font-black mb-1">
                   Access Key Activated
                 </h3>
-                <p className="font-sans text-xs sm:text-sm text-[#9e9282] max-w-sm mb-6 leading-relaxed">
+                <p className="font-geist text-xs sm:text-sm text-[#9e9282] max-w-sm mb-6 leading-relaxed">
                   Welcome aboard, <span className="text-[#f7f2ea] font-medium">{formData.fullName}</span>! Your profile is linked with <span className="text-[#caa462]">{formData.email}</span>.
                 </p>
 

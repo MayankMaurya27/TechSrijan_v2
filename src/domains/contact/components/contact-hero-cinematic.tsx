@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Sparkles, ArrowUpRight, Compass, Shield, Eye, Layers } from "lucide-react";
+import { ArrowUpRight, Compass, Shield, Eye, Layers } from "lucide-react";
 import dynamic from "next/dynamic";
 
 

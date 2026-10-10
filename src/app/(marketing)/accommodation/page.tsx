@@ -17,7 +17,6 @@ import {
   Phone,
   MapPin,
   Calendar,
-  Sparkles,
 } from "lucide-react";
 import { useTheme } from "@/core";
 import { api } from "@/lib/api";

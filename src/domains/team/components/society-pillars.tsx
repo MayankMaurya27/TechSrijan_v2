@@ -1,7 +1,7 @@
 "use client";
 
 import { SOCIETY_PILLARS } from "../data/team-roster";
-import { Shield, ChevronRight, Users, Sparkles } from "lucide-react";
+import { Shield, ChevronRight, Users } from "lucide-react";
 
 interface SocietyPillarsProps {
   activeHouse: string | null;

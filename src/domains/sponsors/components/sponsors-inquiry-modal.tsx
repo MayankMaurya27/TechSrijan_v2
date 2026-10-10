@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, CheckCircle2, Shield, Phone, Mail, Sparkles } from "lucide-react";
+import { X, Send, CheckCircle2, Shield, Phone, Mail } from "lucide-react";
 import { useTheme, type CanonicalTheme } from "@/core";
 
 const MODAL_THEME = {
@@ -21,7 +21,7 @@ const MODAL_THEME = {
     selectLabel: "text-[#D4AF37]",
     selectFocus: "focus:border-[#D4AF37] focus:bg-[#D4AF37]/5",
     submitBtn: "bg-[#E61E25] hover:bg-[#ff2b33] text-white shadow-[0_0_20px_rgba(230,30,37,0.4)]",
-    sparkleIcon: "text-[#D4AF37]",
+    shieldIcon: "text-[#D4AF37]",
     phoneText: "text-[#D4AF37]",
     mailText: "text-[#E61E25]",
   },
@@ -40,7 +40,7 @@ const MODAL_THEME = {
     selectLabel: "text-[#FBBF24]",
     selectFocus: "focus:border-[#FBBF24] focus:bg-[#FBBF24]/5",
     submitBtn: "bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-extrabold shadow-[0_0_20px_rgba(245,158,11,0.4)]",
-    sparkleIcon: "text-[#FBBF24]",
+    shieldIcon: "text-[#FBBF24]",
     phoneText: "text-[#FBBF24]",
     mailText: "text-[#F59E0B]",
   },
@@ -59,7 +59,7 @@ const MODAL_THEME = {
     selectLabel: "text-[#CBD5E1]",
     selectFocus: "focus:border-[#CBD5E1] focus:bg-[#CBD5E1]/5",
     submitBtn: "bg-[#D7DBE2] hover:bg-[#FFFFFF] text-black font-extrabold shadow-[0_0_20px_rgba(215,219,226,0.4)]",
-    sparkleIcon: "text-[#94A3B8]",
+    shieldIcon: "text-[#94A3B8]",
     phoneText: "text-[#D7DBE2]",
     mailText: "text-[#CBD5E1]",
   },
@@ -346,7 +346,7 @@ export function SponsorsInquiryModal({
 
                   <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/10">
                     <div className="flex items-center gap-2 text-[10px] text-neutral-500 font-mono">
-                      <Sparkles className={`w-3 h-3 ${mt.sparkleIcon}`} />
+                      <Shield className={`w-3 h-3 ${mt.shieldIcon}`} />
                       <span>Confidential institutional inquiry • 24h SLA response</span>
                     </div>
 

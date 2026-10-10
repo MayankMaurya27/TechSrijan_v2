@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Clock, MapPin, Users, X, Check, Sparkles, ShieldAlert, Cpu, Terminal, Trophy } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, X, Check, Zap, ShieldAlert, Cpu, Terminal, Trophy } from "lucide-react";
 
 export interface ArenaSpot {
   id: string;
@@ -17,7 +17,7 @@ export interface ArenaSpot {
   location: string;
   capacity: string;
   eligibility: string;
-  icon: "cpu" | "shield" | "sparkles" | "terminal";
+  icon: "cpu" | "shield" | "zap" | "terminal";
   rules: string[];
 }
 
@@ -77,7 +77,7 @@ export const ARENA_SPOTS: ArenaSpot[] = [
     location: "HARDWARE CORE LAB",
     capacity: "60 TEAMS",
     eligibility: "ENGINEERING CADRES",
-    icon: "sparkles",
+    icon: "zap",
     rules: [
       "Pre-packaged dev kits provided at launch; bring your logic analyzers & soldering stations.",
       "Rapid prototype milestone checkpoints evaluated every 6 hours.",
@@ -115,7 +115,7 @@ interface ArenaSpatialCardsProps {
 function SlotIcon({ icon }: { icon: ArenaSpot["icon"] }) {
   const cls = "w-4 h-4 sm:w-5 sm:h-5 text-white/80 group-hover:text-white transition-colors";
   switch (icon) {
-    case "sparkles": return <Sparkles className={cls} />;
+    case "zap": return <Zap className={cls} />;
     case "shield": return <ShieldAlert className={cls} />;
     case "terminal": return <Terminal className={cls} />;
     default: return <Cpu className={cls} />;

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import * as THREE from "three";
-import { Sparkles, Compass, Shield, Wind, Radio } from "lucide-react";
+import { Compass, Shield, Wind, Radio } from "lucide-react";
 
 interface Contact3DStageProps {
   theme: "dune" | "geass";
@@ -339,7 +339,7 @@ export function Contact3DStage({ theme, onToggleTheme }: Contact3DStageProps) {
           onClick={onToggleTheme}
           className="group relative inline-flex items-center gap-2 rounded-full bg-black/60 hover:bg-black/90 border border-white/25 px-4 py-2 backdrop-blur-xl transition-all duration-300 hover:border-amber-400/70 hover:scale-105 shadow-[0_10px_30px_rgba(0,0,0,0.7)] cursor-pointer"
         >
-          <Sparkles className="h-3.5 w-3.5 text-amber-400 group-hover:rotate-45 transition-transform duration-300" />
+          <Compass className="h-3.5 w-3.5 text-amber-400 group-hover:rotate-45 transition-transform duration-300" />
           <span className="text-[11px] font-mono tracking-wider text-white font-semibold uppercase">
             {isDune ? "DUNE ARRAKIS" : "CODE GEASS"}
           </span>

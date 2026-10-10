@@ -17,7 +17,6 @@ import {
   Edit3,
   Building2,
   Trophy,
-  Sparkles,
   Shield,
   ArrowRight,
   X,
@@ -129,7 +128,7 @@ export function ProfileView() {
     .toUpperCase() || "TS";
 
   return (
-    <div className="relative min-h-screen w-full bg-[#050303] text-[#f8eed9] overflow-x-hidden pt-16 sm:pt-18 md:pt-20 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-12 select-none">
+    <div className="relative min-h-screen w-full bg-[#050303] text-[#f8eed9] overflow-x-hidden pt-20 sm:pt-24 md:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-12 select-none">
       {/* ========================================================
           BACKGROUND LAYER: Imperial Landscape with Red Moon (profileland.png)
           ======================================================== */}
@@ -192,7 +191,7 @@ export function ProfileView() {
           MAIN CONTENT CONTAINER
           - Lifted slightly higher to ensure Row 2 is immediately visible
           ======================================================== */}
-      <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-start w-full -mt-2 sm:-mt-4 md:-mt-5">
+      <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-start w-full mt-1 sm:mt-2 md:mt-2.5">
         {/* ========================================================
             HEADER: "Welcome, Aarav" + Creative Top Points HUD Widget
             ======================================================== */}
@@ -223,9 +222,6 @@ export function ProfileView() {
             {/* CREATIVE TOP POINTS BADGE / TACTICAL MERIT HUD */}
             <div className="flex items-center gap-2 self-start sm:self-auto">
               <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#241508]/90 via-[#190d10]/90 to-[#100709]/90 border border-[#caa462]/65 shadow-[0_0_18px_rgba(202,164,98,0.25)] backdrop-blur-md group hover:border-[#caa462] transition-all">
-                <div className="w-5 h-5 rounded-full bg-[#caa462]/20 border border-[#caa462]/60 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-3 h-3 text-[#caa462] animate-pulse" />
-                </div>
                 <div className="flex items-baseline gap-1 font-mono">
                   <span className="text-[9.5px] text-[#9e9282] uppercase tracking-wider font-semibold">ARENA POINTS</span>
                   <span className="text-sm sm:text-base font-bold text-[#f8eed9] tracking-widest drop-shadow-[0_0_8px_rgba(202,164,98,0.6)]">
@@ -680,7 +676,7 @@ export function ProfileView() {
                 </div>
 
                 <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#2b1b0e] border border-[#caa462]/60 text-[#caa462] font-mono text-[10px] tracking-wider uppercase font-bold">
-                  <Sparkles className="w-3 h-3 text-[#caa462]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#caa462] animate-pulse" />
                   ACTIVE RANK
                 </div>
               </div>

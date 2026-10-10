@@ -18,7 +18,6 @@ import {
   ExternalLink,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
   Shield,
   Layers,
   PhoneCall,

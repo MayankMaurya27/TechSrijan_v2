@@ -14,6 +14,7 @@ import {
   AlertCircle,
   Loader2,
 } from "lucide-react";
+import { usePageTheme, type PageThemeConfig } from "@/core";
 
 /* Social Icon SVGs */
 function IconInstagram({ className }: { className?: string }) {
@@ -53,10 +54,10 @@ function IconYoutube({ className }: { className?: string }) {
 }
 
 /**
- * Full-Frame Atmospheric Canvas Animation (Golden Embers & Warm Ambient Light Blooms)
- * Covers the entire browser viewport (100vw, 100vh).
+ * Full-Frame Atmospheric Canvas Animation (Dynamic Moon Embers & Ambient Light Blooms)
+ * Automatically reacts to the active moon theme color (Gold, Crimson, Cyan).
  */
-function ContactFullFrameAtmosphere() {
+function ContactFullFrameAtmosphere({ theme }: { theme: PageThemeConfig }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -84,7 +85,7 @@ function ContactFullFrameAtmosphere() {
       speedY: Math.random() * 0.45 + 0.2,
       speedX: (Math.random() - 0.5) * 0.25,
       opacity: Math.random() * 0.65 + 0.25,
-      color: Math.random() > 0.4 ? "212, 168, 67" : "226, 75, 75",
+      color: Math.random() > 0.4 ? theme.particlePrimary : theme.particleSecondary,
     }));
 
     let mouseX = width * 0.5;
@@ -102,8 +103,8 @@ function ContactFullFrameAtmosphere() {
 
       // Ambient radial warm glow following cursor across full screen
       const grad = ctx.createRadialGradient(mouseX, mouseY, 30, mouseX, mouseY, width * 0.45);
-      grad.addColorStop(0, "rgba(212, 168, 67, 0.06)");
-      grad.addColorStop(0.5, "rgba(226, 75, 75, 0.02)");
+      grad.addColorStop(0, `rgba(${theme.particlePrimary}, 0.07)`);
+      grad.addColorStop(0.5, `rgba(${theme.particleSecondary}, 0.02)`);
       grad.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, width, height);
@@ -135,7 +136,7 @@ function ContactFullFrameAtmosphere() {
       window.removeEventListener("mousemove", onMouseMove);
       cancelAnimationFrame(animId);
     };
-  }, []);
+  }, [theme.particlePrimary, theme.particleSecondary]);
 
   return (
     <canvas
@@ -149,6 +150,7 @@ function ContactFullFrameAtmosphere() {
 type FormStatus = "idle" | "sending" | "sent" | "error";
 
 export function ContactView() {
+  const pageTheme = usePageTheme();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -191,9 +193,9 @@ export function ContactView() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#07060a] text-white selection:bg-[#d4a843] selection:text-black font-sans overflow-x-hidden">
+    <div className="relative min-h-screen w-full bg-[#07060a] text-white selection:bg-[#79C7E3]/30 selection:text-white font-sans overflow-x-hidden">
       {/* Full-Frame Ambient Embers & Lighting Animation */}
-      <ContactFullFrameAtmosphere />
+      <ContactFullFrameAtmosphere theme={pageTheme} />
 
       {/* Floating Status Notification Toast */}
       {formStatus === "sent" && (
@@ -230,7 +232,7 @@ export function ContactView() {
 
       {/* ============================================================
           SECTION 1: FULL-FRAME TOP HERO (GET IN TOUCH)
-          Clean 1080p Artwork Background + Crisp Vector Typography
+          Clean 1080p Artwork Background + Dynamic Theme Vector Typography
           ============================================================ */}
       <section className="relative w-full min-h-[85vh] lg:min-h-[92vh] flex items-center overflow-hidden bg-[#07060a]">
         {/* Full-Frame Background Artwork */}
@@ -241,7 +243,7 @@ export function ContactView() {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center w-full h-full filter contrast-[1.05] brightness-95"
+            className="object-cover object-center w-full h-full filter contrast-[1.05] brightness-90"
           />
 
           {/* Deep dark gradient on left for crystal-clear typography readability */}
@@ -254,34 +256,57 @@ export function ContactView() {
           <div className="max-w-2xl space-y-6 sm:space-y-8">
             {/* Eyebrow Label with Compass Star & Trailing Line */}
             <div className="flex items-center gap-3">
-              <span className="text-[#d4a843] text-base leading-none">✦</span>
-              <span className="text-xs sm:text-sm tracking-[0.3em] text-[#d4a843] uppercase font-semibold">
+              <span style={{ color: pageTheme.accent }} className="text-base leading-none transition-colors duration-300">✦</span>
+              <span
+                style={{ color: pageTheme.accent }}
+                className="font-bebas text-base sm:text-lg tracking-[0.25em] uppercase transition-colors duration-300"
+              >
                 CONTACT US
               </span>
-              <div className="h-px w-28 bg-gradient-to-r from-[#d4a843]/80 to-transparent" />
+              <div
+                className="h-px w-28 transition-all duration-300"
+                style={{
+                  background: `linear-gradient(to right, ${pageTheme.accent}, transparent)`,
+                }}
+              />
             </div>
 
-            {/* Grand Headline: GET IN TOUCH */}
-            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black tracking-tight text-white leading-[0.92]">
-              <span className="block text-transparent bg-clip-text bg-gradient-to-br from-white via-[#f7e7c4] to-[#d4a843] drop-shadow-[0_4px_35px_rgba(212,168,67,0.4)]">
+            {/* Grand Headline: GET IN TOUCH (Montserrat with Moon Theme Dynamic Gradient) */}
+            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-montserrat font-black tracking-tight text-white leading-[0.92]">
+              <span
+                className="block text-transparent bg-clip-text transition-all duration-300"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, #FFFFFF 0%, ${pageTheme.headingVia} 45%, ${pageTheme.headingTo} 100%)`,
+                  filter: `drop-shadow(0 4px 35px ${pageTheme.accentGlow})`,
+                }}
+              >
                 GET IN
               </span>
-              <span className="block text-transparent bg-clip-text bg-gradient-to-br from-white via-[#f7e7c4] to-[#c59b27] drop-shadow-[0_4px_35px_rgba(212,168,67,0.45)]">
+              <span
+                className="block text-transparent bg-clip-text transition-all duration-300"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, #FFFFFF 0%, ${pageTheme.headingVia} 45%, ${pageTheme.headingTo} 100%)`,
+                  filter: `drop-shadow(0 4px 35px ${pageTheme.accentGlow})`,
+                }}
+              >
                 TOUCH
               </span>
             </h1>
 
-            {/* Editorial Subtitle */}
-            <p className="text-zinc-200 text-base sm:text-lg md:text-xl font-sans leading-relaxed max-w-xl">
+            {/* Editorial Subtitle (Chancery Italic) */}
+            <p className="text-zinc-200 text-lg sm:text-xl md:text-2xl font-chancery leading-relaxed max-w-xl">
               Have a question, collaboration idea or just want to say hi? We would love to hear from you.
             </p>
 
-            {/* Thematic Directives */}
-            <div className="flex items-center gap-3 pt-4 text-xs sm:text-sm tracking-[0.35em] text-[#d4a843]/90 uppercase font-medium">
+            {/* Thematic Directives (Bebas Neue) */}
+            <div
+              className="flex items-center gap-3 pt-4 font-bebas text-sm sm:text-base tracking-[0.35em] uppercase transition-colors duration-300"
+              style={{ color: pageTheme.accent }}
+            >
               <span>PEOPLE</span>
-              <span className="text-[#d4a843]">•</span>
+              <span>•</span>
               <span>IDEAS</span>
-              <span className="text-[#d4a843]">•</span>
+              <span>•</span>
               <span>IMPACT</span>
             </div>
           </div>
@@ -319,38 +344,73 @@ export function ContactView() {
               {/* Form Section Eyebrow */}
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-[#d4a843] text-base leading-none">✦</span>
-                  <span className="text-xs sm:text-sm tracking-[0.3em] text-[#d4a843] uppercase font-semibold">
+                  <span style={{ color: pageTheme.accent }} className="text-base leading-none transition-colors duration-300">✦</span>
+                  <span
+                    style={{ color: pageTheme.accent }}
+                    className="font-bebas text-base sm:text-lg tracking-[0.25em] uppercase transition-colors duration-300"
+                  >
                     CONTACT US
                   </span>
-                  <div className="h-px w-28 bg-gradient-to-r from-[#d4a843]/80 to-transparent" />
+                  <div
+                    className="h-px w-28 transition-all duration-300"
+                    style={{
+                      background: `linear-gradient(to right, ${pageTheme.accent}, transparent)`,
+                    }}
+                  />
                 </div>
 
-                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-black tracking-tight text-white leading-tight">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-br from-white via-[#f7e7c4] to-[#d4a843]">
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-montserrat font-black tracking-tight text-white leading-tight">
+                  <span
+                    className="text-transparent bg-clip-text transition-all duration-300"
+                    style={{
+                      backgroundImage: `linear-gradient(135deg, #FFFFFF 0%, ${pageTheme.headingVia} 45%, ${pageTheme.headingTo} 100%)`,
+                      filter: `drop-shadow(0 4px 30px ${pageTheme.accentGlow})`,
+                    }}
+                  >
                     SEND US A MESSAGE
                   </span>
                 </h2>
 
-                <p className="text-zinc-300 text-sm sm:text-base font-sans max-w-lg">
+                <p className="text-zinc-300 text-base sm:text-lg font-chancery max-w-lg">
                   Fill out the form below and we&apos;ll get back to you as soon as possible.
                 </p>
               </div>
 
-              {/* HUD Form Box */}
-              <div className="relative rounded-2xl border border-[#d4a843]/30 bg-black/60 backdrop-blur-2xl p-6 sm:p-8 lg:p-10 shadow-[0_20px_70px_rgba(0,0,0,0.85)] max-w-2xl">
+              {/* HUD Form Box with Dynamic Moon Border & Glowing Accents */}
+              <div
+                className="relative rounded-2xl bg-black/60 backdrop-blur-2xl p-6 sm:p-8 lg:p-10 shadow-[0_20px_70px_rgba(0,0,0,0.85)] max-w-2xl transition-all duration-500"
+                style={{
+                  border: `1px solid ${pageTheme.border}`,
+                  boxShadow: `0 20px 70px rgba(0,0,0,0.85), 0 0 30px ${pageTheme.accentMuted}`,
+                }}
+              >
                 {/* Subtle corner notches */}
-                <div className="pointer-events-none absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 border-[#d4a843] rounded-tl-xl" />
-                <div className="pointer-events-none absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2 border-[#d4a843] rounded-tr-xl" />
-                <div className="pointer-events-none absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2 border-[#d4a843] rounded-bl-xl" />
-                <div className="pointer-events-none absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 border-[#d4a843] rounded-br-xl" />
+                <div
+                  className="pointer-events-none absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 rounded-tl-xl transition-colors duration-500"
+                  style={{ borderColor: pageTheme.accent }}
+                />
+                <div
+                  className="pointer-events-none absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2 rounded-tr-xl transition-colors duration-500"
+                  style={{ borderColor: pageTheme.accent }}
+                />
+                <div
+                  className="pointer-events-none absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2 rounded-bl-xl transition-colors duration-500"
+                  style={{ borderColor: pageTheme.accent }}
+                />
+                <div
+                  className="pointer-events-none absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 rounded-br-xl transition-colors duration-500"
+                  style={{ borderColor: pageTheme.accent }}
+                />
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {/* Row 1: Name and Email */}
                   <div className="grid sm:grid-cols-2 gap-4">
                     {/* Name */}
                     <div className="space-y-1.5">
-                      <label className="block text-[11px] font-sans font-semibold tracking-[0.2em] text-[#d4a843] uppercase">
+                      <label
+                        className="block font-bebas text-xs sm:text-sm tracking-wider uppercase transition-colors duration-300"
+                        style={{ color: pageTheme.accent }}
+                      >
                         YOUR NAME
                       </label>
                       <div className="relative">
@@ -362,14 +422,20 @@ export function ContactView() {
                           value={formData.name}
                           onChange={handleChange}
                           placeholder="Enter your full name"
-                          className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-3.5 py-3 text-sm text-white placeholder:text-zinc-500 focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors"
+                          className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-3.5 py-3 text-sm font-geist text-white placeholder:text-zinc-500 focus:outline-none transition-colors"
+                          style={{
+                            outlineColor: pageTheme.accent,
+                          }}
                         />
                       </div>
                     </div>
 
                     {/* Email */}
                     <div className="space-y-1.5">
-                      <label className="block text-[11px] font-sans font-semibold tracking-[0.2em] text-[#d4a843] uppercase">
+                      <label
+                        className="block font-bebas text-xs sm:text-sm tracking-wider uppercase transition-colors duration-300"
+                        style={{ color: pageTheme.accent }}
+                      >
                         YOUR EMAIL
                       </label>
                       <div className="relative">
@@ -381,7 +447,10 @@ export function ContactView() {
                           value={formData.email}
                           onChange={handleChange}
                           placeholder="you@domain.com"
-                          className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-3.5 py-3 text-sm text-white placeholder:text-zinc-500 focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors"
+                          className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-3.5 py-3 text-sm font-geist text-white placeholder:text-zinc-500 focus:outline-none transition-colors"
+                          style={{
+                            outlineColor: pageTheme.accent,
+                          }}
                         />
                       </div>
                     </div>
@@ -389,7 +458,10 @@ export function ContactView() {
 
                   {/* Row 2: Subject */}
                   <div className="space-y-1.5">
-                    <label className="block text-[11px] font-sans font-semibold tracking-[0.2em] text-[#d4a843] uppercase">
+                    <label
+                      className="block font-bebas text-xs sm:text-sm tracking-wider uppercase transition-colors duration-300"
+                      style={{ color: pageTheme.accent }}
+                    >
                       SUBJECT
                     </label>
                     <div className="relative">
@@ -398,7 +470,10 @@ export function ContactView() {
                         name="subject"
                         value={formData.subject}
                         onChange={handleChange}
-                        className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-4 py-3 text-sm text-white focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors cursor-pointer [&>option]:bg-[#120f17] [&>option]:text-white"
+                        className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-4 py-3 text-sm font-geist text-white focus:outline-none transition-colors cursor-pointer [&>option]:bg-[#120f17] [&>option]:text-white"
+                        style={{
+                          outlineColor: pageTheme.accent,
+                        }}
                       >
                         <option value="General Inquiry">What is this about? (General Inquiry)</option>
                         <option value="Events & Battle Arenas">Events & Arena Competitions</option>
@@ -412,7 +487,10 @@ export function ContactView() {
                   {/* Row 3: Message */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label className="block text-[11px] font-sans font-semibold tracking-[0.2em] text-[#d4a843] uppercase">
+                      <label
+                        className="block font-bebas text-xs sm:text-sm tracking-wider uppercase transition-colors duration-300"
+                        style={{ color: pageTheme.accent }}
+                      >
                         MESSAGE
                       </label>
                       <span className="text-[10px] font-mono text-zinc-400">
@@ -429,17 +507,24 @@ export function ContactView() {
                         value={formData.message}
                         onChange={handleChange}
                         placeholder="Write your message here..."
-                        className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors resize-none"
+                        className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-4 py-3 text-sm font-geist text-white placeholder:text-zinc-500 focus:outline-none transition-colors resize-none"
+                        style={{
+                          outlineColor: pageTheme.accent,
+                        }}
                       />
                     </div>
                   </div>
 
-                  {/* Row 4: Submit Button with Trailing Gold Line */}
+                  {/* Row 4: Submit Button with Trailing Dynamic Moon Line */}
                   <div className="flex items-center pt-2">
                     <button
                       type="submit"
                       disabled={formStatus === "sending"}
-                      className="inline-flex items-center gap-2.5 rounded-lg bg-gradient-to-r from-[#d4a843] via-[#e2b755] to-[#c59b27] px-8 py-3.5 text-xs font-sans font-bold uppercase tracking-wider text-black shadow-[0_0_30px_rgba(212,168,67,0.45)] hover:shadow-[0_0_45px_rgba(212,168,67,0.7)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-60"
+                      className={`inline-flex items-center gap-2.5 rounded-lg px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider ${pageTheme.btnText} hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-60`}
+                      style={{
+                        backgroundImage: `linear-gradient(to right, ${pageTheme.headingTo}, ${pageTheme.accentBright}, ${pageTheme.headingTo})`,
+                        boxShadow: `0 0 30px ${pageTheme.accentGlow}`,
+                      }}
                     >
                       {formStatus === "sending" ? (
                         <>
@@ -455,11 +540,21 @@ export function ContactView() {
                       )}
                     </button>
 
-                    {/* Trailing Gold Line with Diamond Accent */}
+                    {/* Trailing Dynamic Line with Diamond Accent */}
                     <div className="hidden sm:flex items-center flex-1 ml-6">
-                      <div className="h-px flex-1 bg-gradient-to-r from-[#d4a843]/70 to-[#d4a843]/20" />
-                      <span className="text-[#d4a843] text-sm px-3">◇</span>
-                      <div className="h-px w-12 bg-[#d4a843]/20" />
+                      <div
+                        className="h-px flex-1 transition-all duration-300"
+                        style={{
+                          background: `linear-gradient(to right, ${pageTheme.accent}, transparent)`,
+                        }}
+                      />
+                      <span style={{ color: pageTheme.accent }} className="text-sm px-3 transition-colors duration-300">◇</span>
+                      <div
+                        className="h-px w-12 transition-all duration-300"
+                        style={{
+                          backgroundColor: pageTheme.border,
+                        }}
+                      />
                     </div>
                   </div>
                 </form>
@@ -468,14 +563,17 @@ export function ContactView() {
 
             {/* Right Column: Floating Slogan in Front of the Citadel Art */}
             <div className="lg:col-span-5 flex flex-col justify-end items-end text-right space-y-4 pt-10 lg:pt-0">
-              <div className="space-y-1.5 text-xs sm:text-sm font-sans font-bold tracking-[0.3em] text-[#d4a843] uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+              <div
+                className="space-y-1.5 font-bebas text-lg sm:text-2xl tracking-[0.25em] uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] transition-colors duration-300"
+                style={{ color: pageTheme.accent }}
+              >
                 <div>IDEAS</div>
                 <div>PEOPLE</div>
                 <div>IMPACT</div>
                 <div className="text-white pt-2">LET&apos;S BUILD</div>
                 <div className="text-white">TOGETHER.</div>
               </div>
-              <div className="text-red-500 text-lg">✦</div>
+              <div style={{ color: pageTheme.accent }} className="text-lg transition-colors duration-300">✦</div>
             </div>
           </div>
         </div>
@@ -505,22 +603,27 @@ export function ContactView() {
         {/* Foreground Content */}
         <div className="relative z-10 w-full max-w-[1720px] mx-auto px-6 sm:px-12 lg:px-20 pt-20 sm:pt-28 pb-10">
           {/* Main 4-Column Navigation Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-16 border-b border-[#d4a843]/20">
-            
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-16 border-b transition-colors duration-300"
+            style={{ borderColor: pageTheme.border }}
+          >
             {/* Col 1: Brand & Socials (4.5 cols) */}
             <div className="lg:col-span-5 space-y-6">
               <div>
                 <Link href="/" className="inline-flex items-center gap-2 group">
-                  <span className="font-editorial text-2xl sm:text-3xl tracking-wider text-white uppercase">
-                    TECH<span className="text-[#d4a843] text-xl inline-block -translate-y-0.5">✳</span>SRIJAN
+                  <span className="font-montserrat font-black text-2xl sm:text-3xl tracking-wider text-white uppercase">
+                    TECH<span style={{ color: pageTheme.accent }} className="text-xl inline-block -translate-y-0.5 transition-colors duration-300">✳</span>SRIJAN
                   </span>
                 </Link>
-                <div className="text-xs font-mono tracking-[0.25em] text-[#d4a843] uppercase font-semibold mt-1">
+                <div
+                  className="font-bebas text-sm tracking-[0.25em] uppercase mt-1 transition-colors duration-300"
+                  style={{ color: pageTheme.accent }}
+                >
                   IMPERIUM : REQUIEM
                 </div>
               </div>
 
-              <p className="text-sm text-zinc-300 font-sans leading-relaxed max-w-sm">
+              <p className="text-base text-zinc-300 font-chancery leading-relaxed max-w-sm">
                 A confluence of ideas, innovation and impact. Building a tomorrow that dares to be different.
               </p>
 
@@ -555,13 +658,16 @@ export function ContactView() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={social.label}
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-black/60 border border-white/15 text-zinc-300 hover:text-[#d4a843] hover:border-[#d4a843]/70 hover:bg-[#d4a843]/15 transition-all hover:scale-105"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-black/60 border border-white/15 text-zinc-300 hover:scale-105 transition-all"
+                      style={{
+                        borderColor: "rgba(255,255,255,0.15)",
+                      }}
                     >
                       <social.icon className="h-4 w-4" />
                     </a>
                   ))}
                 </div>
-                <div className="text-[11px] font-sans font-semibold tracking-[0.25em] text-zinc-400 uppercase">
+                <div className="font-bebas text-xs tracking-[0.25em] text-zinc-400 uppercase">
                   FOLLOW OUR JOURNEY
                 </div>
               </div>
@@ -569,62 +675,72 @@ export function ContactView() {
 
             {/* Col 2: Quick Links (2.5 cols) */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-sans font-bold tracking-[0.25em] text-[#d4a843] uppercase">
-                <span className="text-red-500">✦</span>
+              <div
+                className="flex items-center gap-2 font-bebas text-base tracking-[0.2em] uppercase transition-colors duration-300"
+                style={{ color: pageTheme.accent }}
+              >
+                <span>✦</span>
                 <span>QUICK LINKS</span>
               </div>
-              <ul className="space-y-2.5 text-sm font-sans text-zinc-300">
+              <ul className="space-y-2.5 text-sm font-geist text-zinc-300">
                 <li>
-                  <Link href="/" className="hover:text-[#d4a843] transition-colors">Home</Link>
+                  <Link href="/" className="hover:text-white transition-colors">Home</Link>
                 </li>
                 <li>
-                  <Link href="/events" className="hover:text-[#d4a843] transition-colors">Events</Link>
+                  <Link href="/events" className="hover:text-white transition-colors">Events</Link>
                 </li>
                 <li>
-                  <Link href="/sponsors" className="hover:text-[#d4a843] transition-colors">Sponsors</Link>
+                  <Link href="/sponsors" className="hover:text-white transition-colors">Sponsors</Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:text-[#d4a843] transition-colors text-white font-medium">Contact Us</Link>
+                  <Link href="/contact" className="hover:text-white transition-colors text-white font-medium">Contact Us</Link>
                 </li>
               </ul>
             </div>
 
             {/* Col 3: Useful Links (2.5 cols) */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-sans font-bold tracking-[0.25em] text-[#d4a843] uppercase">
-                <span className="text-red-500">✦</span>
+              <div
+                className="flex items-center gap-2 font-bebas text-base tracking-[0.2em] uppercase transition-colors duration-300"
+                style={{ color: pageTheme.accent }}
+              >
+                <span>✦</span>
                 <span>USEFUL LINKS</span>
               </div>
-              <ul className="space-y-2.5 text-sm font-sans text-zinc-300">
+              <ul className="space-y-2.5 text-sm font-geist text-zinc-300">
                 <li>
-                  <Link href="/about" className="hover:text-[#d4a843] transition-colors">About TechSrijan</Link>
+                  <Link href="/about" className="hover:text-white transition-colors">About TechSrijan</Link>
                 </li>
                 <li>
-                  <Link href="/rules" className="hover:text-[#d4a843] transition-colors">Code of Conduct</Link>
+                  <Link href="/rules" className="hover:text-white transition-colors">Code of Conduct</Link>
                 </li>
                 <li>
-                  <Link href="/privacy" className="hover:text-[#d4a843] transition-colors">Privacy Policy</Link>
+                  <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
                 </li>
                 <li>
-                  <Link href="/team" className="hover:text-[#d4a843] transition-colors">Core Team Roster</Link>
+                  <Link href="/team" className="hover:text-white transition-colors">Core Team Roster</Link>
                 </li>
               </ul>
             </div>
 
             {/* Col 4: Get In Touch (2.5 cols) */}
             <div className="lg:col-span-3 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-sans font-bold tracking-[0.25em] text-[#d4a843] uppercase">
-                <span className="text-red-500">✦</span>
+              <div
+                className="flex items-center gap-2 font-bebas text-base tracking-[0.2em] uppercase transition-colors duration-300"
+                style={{ color: pageTheme.accent }}
+              >
+                <span>✦</span>
                 <span>GET IN TOUCH</span>
               </div>
               
-              <div className="space-y-2 text-sm font-sans text-zinc-300">
+              <div className="space-y-2 text-sm font-geist text-zinc-300">
                 <a
                   href="mailto:techsrijan@mmmut.ac.in"
-                  className="flex items-center gap-2.5 text-[#d4a843] hover:text-white transition-colors group"
+                  className="flex items-center gap-2.5 hover:text-white transition-colors group"
+                  style={{ color: pageTheme.accent }}
                 >
                   <Mail className="h-4 w-4 shrink-0" />
-                  <span className="font-medium underline underline-offset-4 decoration-[#d4a843]/40 group-hover:decoration-[#d4a843]">
+                  <span className="font-medium underline underline-offset-4 group-hover:decoration-white">
                     techsrijan@mmmut.ac.in
                   </span>
                 </a>
@@ -645,15 +761,25 @@ export function ContactView() {
             </div>
 
             {/* Central Imperial Winged Crest Marker */}
-            <div className="hidden md:flex items-center gap-4 text-[#d4a843]">
-              <div className="h-px w-20 bg-gradient-to-r from-transparent to-[#d4a843]/60" />
+            <div className="hidden md:flex items-center gap-4 transition-colors duration-300" style={{ color: pageTheme.accent }}>
+              <div
+                className="h-px w-20"
+                style={{
+                  background: `linear-gradient(to right, transparent, ${pageTheme.accent})`,
+                }}
+              />
               <span className="text-sm font-serif">❖</span>
-              <div className="h-px w-20 bg-gradient-to-l from-transparent to-[#d4a843]/60" />
+              <div
+                className="h-px w-20"
+                style={{
+                  background: `linear-gradient(to left, transparent, ${pageTheme.accent})`,
+                }}
+              />
             </div>
 
             <div className="flex items-center gap-1.5 text-zinc-300 font-medium">
               <span>MADE WITH PASSION AT MMMUT</span>
-              <span className="text-red-500">✦</span>
+              <span style={{ color: pageTheme.accent }}>✦</span>
             </div>
           </div>
         </div>

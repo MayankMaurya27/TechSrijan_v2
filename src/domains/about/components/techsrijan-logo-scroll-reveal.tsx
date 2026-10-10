@@ -125,11 +125,11 @@ export function TechSrijanLogoScrollReveal() {
 
             {/* Clean Feature Divider Strip (No Box, Pure Text) */}
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-1 text-sm font-sans text-zinc-300">
-              <span className="text-[#79C7E3] font-medium tracking-wide">30+ Arena Contests</span>
+              <span className="text-[#79C7E3] font-medium tracking-wide">25+ Flagship Experiences</span>
               <span className="text-zinc-600">•</span>
-              <span className="text-[#D4A843] font-medium tracking-wide">₹10L+ Prize Purse</span>
+              <span className="text-[#D4A843] font-medium tracking-wide">₹2.5L+ Prize Pool</span>
               <span className="text-zinc-600">•</span>
-              <span className="text-[#CAA4CF] font-medium tracking-wide">60+ Top Institutes</span>
+              <span className="text-[#CAA4CF] font-medium tracking-wide">25K+ Expected Footfall</span>
             </div>
 
             {/* Action CTAs */}

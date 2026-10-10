@@ -60,58 +60,58 @@ export interface FaqItem {
 }
 
 /* =====================================================================
-   FESTIVAL CORE METRICS
+   FESTIVAL CORE METRICS (Per Official TechSrijan '27 Brochure)
    ===================================================================== */
 export const ABOUT_STATS: StatItem[] = [
   {
     id: "events",
-    value: "30+",
-    number: 30,
+    value: "25+",
+    number: 25,
     suffix: "+",
-    label: "ARENA COMPETITIONS",
-    subtext: "Robotics, Coding, Automotive & Tech-Expos",
+    label: "FLAGSHIP EXPERIENCES",
+    subtext: "Robotics, Coding, Gaming & Innovation",
   },
   {
     id: "prize",
-    value: "₹10L+",
-    number: 10,
+    value: "₹2.5L+",
+    number: 2.5,
     suffix: "L+",
-    label: "GRAND PRIZE PURSE",
+    label: "PRIZE POOL",
     subtext: "Cash awards, certificates & seed grants",
   },
   {
     id: "footfall",
-    value: "5,000+",
-    number: 5000,
+    value: "25K+",
+    number: 25000,
     suffix: "+",
-    label: "ANNUAL PARTICIPATION",
-    subtext: "Engineers, coders & designers nationwide",
+    label: "EXPECTED FOOTFALL",
+    subtext: "Engineers, coders & innovators nationwide",
   },
   {
-    id: "colleges",
-    value: "60+",
-    number: 60,
+    id: "legacy",
+    value: "17+",
+    number: 17,
     suffix: "+",
-    label: "INSTITUTIONS REPRESENTED",
-    subtext: "IITs, NITs, IIITs and leading technical universities",
+    label: "YEARS OF LEGACY",
+    subtext: "Flagship techno-management festival of MMMUT",
   },
 ];
 
 /* =====================================================================
-   PATRONAGE & CITADEL DIRECTORATE
+   PATRONAGE & CITADEL DIRECTORATE (OUR MENTORS)
    ===================================================================== */
 export const PATRON_DIRECTORATE: PatronItem[] = [
   {
     id: "patron-1",
     name: "Prof. Anupama Kaushik Sharma",
-    title: "Chief Patron",
-    role: "Hon'ble Vice-Chancellor",
+    title: "Hon'ble Vice Chancellor",
+    role: "Hon'ble Vice Chancellor, MMMUT Gorakhpur",
     department: "Madan Mohan Malaviya University of Technology, Gorakhpur",
-    bio: "The fifth Vice-Chancellor and the first woman Vice-Chancellor in the 64-year history of MMMUT. Championing academic rigor, state-of-the-art technical laboratories, and empowering student engineers to establish MMMUT at the vanguard of national innovation.",
-    badge: "CHIEF PATRON • VC MMMUT",
+    bio: "Hon'ble Vice Chancellor of MMMUT. Championing academic rigor, state-of-the-art technical laboratories, and empowering student engineers to establish MMMUT at the vanguard of national innovation, research, and technical excellence.",
+    badge: "HON'BLE VICE CHANCELLOR • MMMUT",
     accent: "#D4A843",
     image: "/images/about/patron-anupama.jpg",
-    kicker: "LEADERSHIP 01 • UNIVERSITY CHANCELLERY",
+    kicker: "CHIEF PATRON • UNIVERSITY CHANCELLERY",
     initiatives: [
       "Institutional patronage and strategic vision for TechSrijan '27",
       "Fostering cross-disciplinary engineering innovation across northern India",
@@ -121,39 +121,71 @@ export const PATRON_DIRECTORATE: PatronItem[] = [
   },
   {
     id: "patron-2",
-    name: "Prof. B. K. Pandey",
-    title: "Patron & Chairman",
-    role: "Chairman, Council of Student Activities (CSA)",
-    department: "Professor, Department of Physics and Material Science",
-    bio: "Heading the apex Council of Student Activities (CSA). Providing visionary mentorship across all co-curricular student societies, university delegations, and ensuring world-class execution for Eastern India's largest technical festival.",
-    badge: "CHAIRMAN • CSA MMMUT",
+    name: "Dr. Rajan Mishra",
+    title: "Chairman & Vice Chairman",
+    role: "Chairman, Council of Student Activities (CSA) & Vice Chairman, Technical and Sports Sub Council",
+    department: "Department of Electronics and Communication Engineering, MMMUT",
+    bio: "Holding apex leadership as Chairman of the Council of Student Activities (CSA) and Vice Chairman of the Technical and Sports Sub Council. Providing visionary mentorship across all student technical bodies, university delegations, and steering Eastern India's largest technical festival.",
+    badge: "CHAIRMAN • CSA & VICE CHAIRMAN • TSC",
     accent: "#79C7E3",
-    image: "/images/about/patron-bkpandey.jpg",
-    kicker: "LEADERSHIP 02 • COUNCIL OF STUDENT ACTIVITIES",
+    image: "/images/about/rajan_mishra_tight.png",
+    kicker: "APEX MENTOR • CSA & SUB-COUNCILS",
     initiatives: [
-      "Comprehensive administrative sanctions and inter-council synergy",
-      "Dean of Extension, Field Outreach & Alumni Relations governance",
-      "Facilitating hospitality and infrastructure for 5,000+ national delegates",
-      "Mentoring student conveners in operational excellence and safety protocols",
+      "Apex governance across Council of Student Activities (CSA) and Technical Sub-Council",
+      "Administrative sanctions, strategic roadmap, and inter-council synergy",
+      "Facilitating hospitality, safety, and infrastructure for 25,000+ national delegates",
+      "Mentoring student conveners across IEEE, SAE, Robotics Club, and RESO",
     ],
   },
   {
     id: "patron-3",
-    name: "Dr. Anupam Sahu",
-    title: "Faculty In-Charge",
-    role: "Faculty In-Charge, Technical Sub-Council (TSC)",
-    department: "Department of Electronics and Communication Engineering",
-    bio: "Directing the tactical arena operations and technical charters of the Technical Sub-Council (TSC). Coordinating IEEE, SAE, Robotics Club, and RESO to stage 30+ cutting-edge robotics combat, coding marathons, and automotive trials.",
-    badge: "FACULTY IN-CHARGE • TSC",
+    name: "Dr. Pallav Gupta",
+    title: "Faculty Advisor",
+    role: "Faculty Advisor, Technical Sub Council",
+    department: "Technical Sub Council, MMMUT Gorakhpur",
+    bio: "Guiding the tactical arena operations and charter mandates of the Technical Sub-Council (TSC). Coordinating IEEE, SAE, Robotics Club, and RESO to stage 25+ cutting-edge robotics combat, coding marathons, gaming arenas, and innovation challenges.",
+    badge: "FACULTY ADVISOR • TECHNICAL SUB COUNCIL",
     accent: "#E8D4FF",
-    image: "/images/about/patron-anupam-sahu.jpg",
-    kicker: "LEADERSHIP 03 • TECHNICAL SUB-COUNCIL",
+    image: "/images/about/pallav_gupta.png",
+    kicker: "FACULTY ADVISOR • TECHNICAL SUB COUNCIL",
     initiatives: [
       "Technical rulebook validation and combat arena safety architectures",
-      "Coordination of IEEE hackathons, robo-cages, and all-terrain baja events",
-      "Mentoring the student central executive command council",
-      "Facilitating national industry sponsorships and jury panels",
+      "Coordination across SAE, IEEE, Robotics Club, and RESO flagship arenas",
+      "Mentoring central executive student organizing committees and technical conveners",
+      "Facilitating national industry sponsorships, workshops, and expert juries",
     ],
+  },
+];
+
+export interface FacultyInchargeItem {
+  id: string;
+  name: string;
+  role: string;
+  designation: string;
+  image: string;
+}
+
+export const FACULTY_INCHARGES: FacultyInchargeItem[] = [
+  {
+    id: "ajeet-kumar",
+    name: "Dr. Ajeet Kumar",
+    role: "Faculty Incharge",
+    designation: "Faculty Incharge, TechSrijan",
+    image: "/images/about/ajeet_kumar.png",
+  },
+  {
+    id: "anil-pal",
+    name: "Dr. Anil Kumar Pal",
+    role: "Faculty Incharge",
+    designation: "Faculty Incharge, TechSrijan",
+    image: "/images/about/anil_pal.png",
+  },
+  {
+    id: "alok-shukla",
+    name: "Dr. Alok Kumar Shukla",
+    role: "Faculty Incharge",
+    designation: "Faculty Incharge, TechSrijan",
+    image: "/images/about/alok_shukla.png",
   },
 ];
 
@@ -305,8 +337,8 @@ export const ABOUT_TIMELINE: TimelineMilestone[] = [
     title: "Imperium: Requiem",
     tagline: "The Zenith of Campus Engineering",
     description:
-      "Marking over 25 years of TechSrijan and 64 years of university heritage, TechSrijan '27 emerges as 'Imperium: Requiem'. A 3-day spectacle featuring 30+ arenas, a ₹10 Lakh+ prize pool, cutting-edge AI and robotic battle cages, and over 5,000 participants from across the nation.",
-    highlights: ["₹10,00,000+ national prize pool", "State-of-the-art combat cages & AI hackathons", "5,000+ engineers gathered at MMMUT Gorakhpur"],
+      "Marking 17+ years of TechSrijan legacy and the historic heritage of MMMUT, TechSrijan '27 emerges as 'Imperium: Requiem'. A 3-day spectacle featuring 25+ experiences across robotics, coding, gaming, and innovation, a ₹2.5L+ prize pool, cutting-edge tech talks, and over 25,000+ expected footfall.",
+    highlights: ["₹2.5L+ official prize pool", "25+ flagship experiences, battle cages & EDM Night", "25K+ expected footfall at MMMUT Gorakhpur"],
   },
 ];
 

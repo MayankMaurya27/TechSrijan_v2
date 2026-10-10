@@ -21,6 +21,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+dev-server.log
 
 # local env files
 .env*.local
@@ -35,3 +36,7 @@ next-env.d.ts
 
 # media backups
 /public/_originals_backup/
+
+# local folders
+.freebuff/
+hackathon Techsrijan/

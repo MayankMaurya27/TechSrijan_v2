@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/core";
 import { useAuthModal } from "@/domains/auth";
-import { Menu, X, Home, Calendar, Users, Hotel, Layers } from "lucide-react";
+import { Menu, X, Home, Calendar, Code2, Hotel, Layers } from "lucide-react";
 
 const THEME_CYCLE = [
   "arrakis-day",
@@ -60,11 +60,10 @@ const NAV_LINKS = [
   { href: "/about", label: "About" },
   { href: "/events", label: "Events" },
   { href: "/guests", label: "Guests" },
-  { href: "/team", label: "Team" },
+  { href: "/developers", label: "Developers" },
   { href: "/sponsors", label: "Sponsors" },
   { href: "/ambassador", label: "Ambassador" },
   { href: "/accommodation", label: "Stay" },
-  { href: "/developers", label: "Developers" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -271,7 +270,7 @@ export function Navbar() {
 
           {/* Desktop Center: Exactly Centered in Overall Screen Width with Proportional Width */}
           <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 pointer-events-auto z-0">
-            <div className="group/navbar relative w-[880px] lg:w-[940px] xl:w-[1020px] 2xl:w-[1080px]">
+            <div className="group/navbar relative w-[840px] lg:w-[900px] xl:w-[960px] 2xl:w-[1020px]">
               <svg
                 className="absolute inset-0 w-full h-[48px] xl:h-[52px] pointer-events-none -z-10 transition-all duration-500 group-hover/navbar:brightness-115 overflow-visible"
                 style={{ filter: currentThemeConfig.ambientChassisGlow, overflow: "visible" }}
@@ -375,19 +374,19 @@ export function Navbar() {
 
               {/* Links and Theme Changer inside the Smooth Pill Navbar */}
               <div className="relative flex h-[48px] xl:h-[52px] items-center justify-center px-6 xl:px-8">
-                <nav className="flex items-center gap-1.5 xl:gap-2.5 font-sans text-[10px] lg:text-[10.5px] xl:text-[11px] 2xl:text-[11.5px] tracking-[0.11em] xl:tracking-[0.13em] text-[#d6c7b2]">
+                <nav className="flex items-center gap-2 xl:gap-3 font-sans text-[11px] lg:text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] tracking-[0.13em] xl:tracking-[0.15em] text-[#d6c7b2]">
                   {NAV_LINKS.map((item, index) => {
                     const isActive = pathname === item.href;
                     return (
                       <div key={item.href} className="flex items-center">
                         {index > 0 && (
-                          <span className="text-[rgba(212,168,67,0.25)] select-none text-[8.5px] xl:text-[9.5px] mx-0.5 xl:mx-1">
+                          <span className="text-[rgba(212,168,67,0.25)] select-none text-[9.5px] xl:text-[10.5px] mx-1 xl:mx-1.5">
                             |
                           </span>
                         )}
                         <Link
                           href={item.href}
-                          className={`px-1.5 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-300 relative group whitespace-nowrap ${
+                          className={`px-2 xl:px-2.5 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-300 relative group whitespace-nowrap ${
                             isActive ? "text-[var(--accent-primary,#d4a843)] font-semibold" : ""
                           }`}
                         >
@@ -403,7 +402,7 @@ export function Navbar() {
                   })}
 
                   {/* Separator before Theme Toggle */}
-                  <span className="text-[rgba(212,168,67,0.25)] select-none text-[8.5px] xl:text-[9.5px] mx-1 xl:mx-1.5">
+                  <span className="text-[rgba(212,168,67,0.25)] select-none text-[9.5px] xl:text-[10.5px] mx-1 xl:mx-1.5">
                     |
                   </span>
 
@@ -480,13 +479,13 @@ export function Navbar() {
             <span className="font-mono text-[8px] tracking-[0.08em] uppercase font-medium">Events</span>
           </Link>
           <Link
-            href="/team"
+            href="/developers"
             className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${
-              pathname === "/team" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+              pathname === "/developers" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
             }`}
           >
-            <Users className="h-4 w-4" />
-            <span className="font-mono text-[8px] tracking-[0.08em] uppercase font-medium">Team</span>
+            <Code2 className="h-4 w-4" />
+            <span className="font-mono text-[8px] tracking-[0.08em] uppercase font-medium">Developers</span>
           </Link>
           <Link
             href="/accommodation"

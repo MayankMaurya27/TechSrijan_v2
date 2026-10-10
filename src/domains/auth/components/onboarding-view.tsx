@@ -33,7 +33,25 @@ export function OnboardingView() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Smooth transition to Step 2 instead of old student dashboard
+    // Persist profile data so /profile immediately displays submitted details
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(
+          "ts27_user_profile",
+          JSON.stringify({
+            fullName: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            college: formData.college,
+            course: formData.course,
+            year: formData.year,
+            city: formData.city,
+          })
+        );
+      } catch {
+        // ignore
+      }
+    }
     setTimeout(() => {
       setIsSubmitting(false);
       setStep(2);
@@ -608,10 +626,10 @@ export function OnboardingView() {
                   </div>
                 </div>
 
-                {/* Primary CTA: Explore Events */}
+                {/* Primary CTA: View Profile Dashboard */}
                 <Link
-                  href="/events"
-                  className="relative w-full max-w-md py-3.5 px-6 font-mono text-xs sm:text-[13px] font-bold tracking-[0.24em] uppercase text-[#f7f2ea] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center gap-2 group"
+                  href="/profile"
+                  className="relative w-full max-w-md py-3.5 px-6 font-mono text-xs sm:text-[13px] font-bold tracking-[0.24em] uppercase text-[#f7f2ea] transition-all duration-300 active:scale-98 cursor-pointer flex items-center justify-center gap-2 group mb-3"
                   style={{
                     clipPath:
                       "polygon(14px 0%, calc(100% - 14px) 0%, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0% 50%)",
@@ -623,11 +641,20 @@ export function OnboardingView() {
                   }}
                 >
                   <span className="relative z-10 group-hover:tracking-[0.26em] transition-all">
-                    EXPLORE EVENTS & ARENAS
+                    PROCEED TO PROFILE DASHBOARD
                   </span>
                   <span className="relative z-10 text-sm group-hover:translate-x-1 transition-transform">
                     →
                   </span>
+                </Link>
+
+                {/* Secondary CTA: Explore Events */}
+                <Link
+                  href="/events"
+                  className="w-full max-w-md py-2.5 px-6 font-mono text-xs tracking-[0.18em] uppercase text-[#caa462] hover:text-[#f8eed9] transition-colors border border-[#caa462]/30 hover:border-[#caa462]/60 rounded bg-[#140d0f]/60 flex items-center justify-center gap-1.5"
+                >
+                  <span>Explore Events &amp; Arenas</span>
+                  <span className="text-xs">→</span>
                 </Link>
 
                 <button

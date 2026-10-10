@@ -45,8 +45,8 @@ export function SignInRouteModal({
 
   const handleMmmutSignIn = () => {
     // In production, this can route to MMMUT SSO or portal URL
-    // For now, redirect to dashboard/student or open prompt
-    window.location.href = "/student";
+    // Redirect directly to the new participant profile
+    window.location.href = "/profile";
   };
 
   const handleGoogleSignIn = () => {

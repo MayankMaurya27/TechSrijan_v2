@@ -72,12 +72,16 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [hasProfile, setHasProfile] = useState(false);
   const { theme, setTheme } = useTheme();
   const { openAuthModal } = useAuthModal();
 
   useEffect(() => {
     setIsVisible(true);
     setMobileMenuOpen(false);
+    if (typeof window !== "undefined") {
+      setHasProfile(!!(localStorage.getItem("ts27_token") || localStorage.getItem("ts27_user_profile")));
+    }
   }, [pathname]);
 
   if (pathname === "/signup" || pathname === "/signin") {
@@ -155,14 +159,24 @@ export function Navbar() {
               />
             </button>
 
-            <button
-              type="button"
-              onClick={openAuthModal}
-              className="clip-mecha-btn relative px-3 py-1.5 font-mono font-bold text-[9.5px] tracking-[0.16em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.25)] via-[rgba(212,168,67,0.12)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_12px_rgba(212,168,67,0.25)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_20px_var(--accent-primary,#d4a843)] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1 cursor-pointer"
-            >
-              <span className="relative z-10">SIGN IN</span>
-              <span className="relative z-10 opacity-70 text-[9px]">↗</span>
-            </button>
+            {hasProfile || pathname === "/profile" ? (
+              <Link
+                href="/profile"
+                className="clip-mecha-btn relative px-3 py-1.5 font-mono font-bold text-[9.5px] tracking-[0.16em] uppercase text-[#f8eed9] bg-[rgba(212,168,67,0.25)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_12px_rgba(212,168,67,0.25)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1 cursor-pointer"
+              >
+                <span className="relative z-10">PROFILE</span>
+                <span className="relative z-10 opacity-70 text-[9px]">→</span>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={openAuthModal}
+                className="clip-mecha-btn relative px-3 py-1.5 font-mono font-bold text-[9.5px] tracking-[0.16em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.25)] via-[rgba(212,168,67,0.12)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_12px_rgba(212,168,67,0.25)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_20px_var(--accent-primary,#d4a843)] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1 cursor-pointer"
+              >
+                <span className="relative z-10">SIGN IN</span>
+                <span className="relative z-10 opacity-70 text-[9px]">↗</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -410,18 +424,34 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Desktop Right Corner: SIGN IN Button */}
+          {/* Desktop Right Corner: SIGN IN / PROFILE Button */}
           <div className="flex items-center flex-shrink-0 pointer-events-auto z-10">
-            <button
-              type="button"
-              onClick={openAuthModal}
-              className="clip-mecha-btn relative px-3.5 xl:px-4 py-1.5 xl:py-2 font-mono font-bold text-[9.5px] xl:text-[10.5px] tracking-[0.2em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.22)] via-[rgba(212,168,67,0.1)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_25px_var(--accent-primary,#d4a843)] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1.5 group cursor-pointer"
-            >
-              <span className="relative z-10">SIGN IN</span>
-              <span className="relative z-10 opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300 text-[9px]">
-                ↗
-              </span>
-            </button>
+            {hasProfile || pathname === "/profile" ? (
+              <Link
+                href="/profile"
+                className={`clip-mecha-btn relative px-3.5 xl:px-4 py-1.5 xl:py-2 font-mono font-bold text-[9.5px] xl:text-[10.5px] tracking-[0.2em] uppercase text-[#f8eed9] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1.5 group cursor-pointer ${
+                  pathname === "/profile"
+                    ? "bg-[var(--accent-primary,#d4a843)] text-black shadow-[0_0_20px_var(--accent-primary,#d4a843)] border border-[var(--accent-primary,#d4a843)]"
+                    : "bg-gradient-to-r from-[rgba(212,168,67,0.22)] via-[rgba(212,168,67,0.1)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_25px_var(--accent-primary,#d4a843)]"
+                }`}
+              >
+                <span className="relative z-10">PROFILE</span>
+                <span className="relative z-10 opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 transition-transform duration-300 text-[9px]">
+                  →
+                </span>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={openAuthModal}
+                className="clip-mecha-btn relative px-3.5 xl:px-4 py-1.5 xl:py-2 font-mono font-bold text-[9.5px] xl:text-[10.5px] tracking-[0.2em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.22)] via-[rgba(212,168,67,0.1)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_25px_var(--accent-primary,#d4a843)] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1.5 group cursor-pointer"
+              >
+                <span className="relative z-10">SIGN IN</span>
+                <span className="relative z-10 opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300 text-[9px]">
+                  ↗
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </header>

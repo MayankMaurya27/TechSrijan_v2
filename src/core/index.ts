@@ -10,3 +10,4 @@ export { LenisProvider } from "./providers/lenis-provider";
 export { cn } from "./utils/cn";
 export { useDeviceTier, isMobileDevice, type DeviceTier } from "./utils/device-tier";
 export { sanitizeCsvField, generateSafeCsv, downloadCsv } from "./utils/csv";
+export { PAGE_THEMES, usePageTheme, type PageThemeConfig } from "./theme-palettes";

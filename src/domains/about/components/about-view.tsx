@@ -17,10 +17,12 @@ import {
   ABOUT_TIMELINE,
   ABOUT_TENETS,
   PATRON_DIRECTORATE,
+  FACULTY_INCHARGES,
   type HouseItem,
 } from "../data/about-data";
 import { About3DScene } from "./about-3d-scene";
 import { TechSrijanLogoScrollReveal } from "./techsrijan-logo-scroll-reveal";
+import { usePageTheme } from "@/core";
 
 /* Social Icon SVGs */
 function IconInstagram({ className }: { className?: string }) {
@@ -95,6 +97,7 @@ function StatCounter({ target, suffix }: { target: number; suffix: string }) {
 }
 
 export function AboutView() {
+  const pageTheme = usePageTheme();
   const [activeHouseId, setActiveHouseId] = useState<string>("tsc");
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -113,7 +116,7 @@ export function AboutView() {
     ABOUT_HOUSES.find((h) => h.id === activeHouseId) || ABOUT_HOUSES[0];
 
   return (
-    <div className="relative min-h-screen bg-[#070712] text-white selection:bg-[#79C7E3] selection:text-black font-sans overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#070712] text-white selection:bg-[#79C7E3]/30 selection:text-white font-sans overflow-x-hidden">
       {/* ============================================================
           CLEAN AMBIENT GRADIENT MESH BACKGROUND (Zero Text, Pure Atmosphere)
           ============================================================ */}
@@ -133,8 +136,12 @@ export function AboutView() {
       {/* Scroll Progress Indicator */}
       <div className="fixed top-0 left-0 right-0 z-50 h-[2px] bg-white/[0.08]">
         <div
-          className="h-full bg-gradient-to-r from-[#79C7E3] via-[#E8D4FF] to-[#D4A843] transition-all duration-150 shadow-[0_0_12px_rgba(121,199,227,0.8)]"
-          style={{ width: `${scrollProgress}%` }}
+          className="h-full transition-all duration-150"
+          style={{
+            width: `${scrollProgress}%`,
+            backgroundImage: `linear-gradient(to right, ${pageTheme.accent}, ${pageTheme.accentBright}, ${pageTheme.accent})`,
+            boxShadow: `0 0 12px ${pageTheme.accentGlow}`,
+          }}
         />
       </div>
 
@@ -156,7 +163,13 @@ export function AboutView() {
               </h1>
               <div className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-montserrat font-black tracking-tight uppercase leading-[0.95]">
                 <span className="text-white">WE ARE </span>
-                <span className="font-chancery font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#A5E5FF] via-[#E8D4FF] to-[#D4A843]">
+                <span
+                  className="font-chancery font-normal text-transparent bg-clip-text transition-all duration-300"
+                  style={{
+                    backgroundImage: `linear-gradient(to right, #FFFFFF, ${pageTheme.headingVia}, ${pageTheme.headingTo})`,
+                    filter: `drop-shadow(0 2px 25px ${pageTheme.accentGlow})`,
+                  }}
+                >
                   techsrijan &apos;27
                 </span>
               </div>
@@ -167,7 +180,10 @@ export function AboutView() {
               <div className="font-bebas text-2xl sm:text-3xl lg:text-4xl tracking-wider text-zinc-300 uppercase">
                 EASTERN INDIA&apos;S APEX
               </div>
-              <div className="font-chancery text-2xl sm:text-3xl lg:text-4xl text-[#E8D4FF]">
+              <div
+                className="font-chancery text-2xl sm:text-3xl lg:text-4xl transition-colors duration-300"
+                style={{ color: pageTheme.accentBright }}
+              >
                 Crucible of Engineers, Inventors & Disruptors
               </div>
             </div>
@@ -210,18 +226,22 @@ export function AboutView() {
             {/* Narrative & Action Row */}
             <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-16 items-end pt-2">
               <p className="text-base sm:text-lg text-zinc-300 font-geist leading-relaxed">
-                TechSrijan is the flagship annual techno-management symposium of{" "}
+                TechSrijan is the flagship annual techno-management festival of{" "}
                 <span className="text-white font-semibold">Madan Mohan Malaviya University of Technology (MMMUT) Gorakhpur</span>,
-                uniting over 5,000 student engineers, researchers, and creators from 60+ top institutions nationwide.
-                Governed by the Technical Sub-Council (TSC) under the Council of Student Activities (CSA).
+                bringing together technology, innovation, coding, robotics, and creative competition with 25K+ expected footfall nationwide.
+                Governed by the Technical Sub-Council under the apex Council of Student Activities (CSA).
               </p>
 
               <div className="flex flex-wrap items-center gap-4 lg:justify-end">
                 <Link
                   href="/events"
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#79C7E3] via-[#E8D4FF] to-[#D4A843] px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider text-black shadow-[0_0_30px_rgba(121,199,227,0.4)] transition-transform duration-300 hover:scale-105"
+                  className={`inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider ${pageTheme.btnText} transition-transform duration-300 hover:scale-105`}
+                  style={{
+                    backgroundImage: `linear-gradient(to right, ${pageTheme.headingTo}, ${pageTheme.accentBright}, ${pageTheme.headingTo})`,
+                    boxShadow: `0 0 30px ${pageTheme.accentGlow}`,
+                  }}
                 >
-                  <span>Explore 30+ Arenas</span>
+                  <span>Explore 25+ Experiences</span>
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
                 <Link
@@ -247,7 +267,12 @@ export function AboutView() {
                   idx > 0 ? "lg:border-l lg:border-white/[0.08] lg:pl-10" : ""
                 }`}
               >
-                <div className="text-4xl sm:text-5xl lg:text-6xl font-montserrat font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#A5E5FF] via-[#E8D4FF] to-[#D4A843]">
+                <div
+                  className="text-4xl sm:text-5xl lg:text-6xl font-montserrat font-black tracking-tight text-transparent bg-clip-text transition-all duration-300"
+                  style={{
+                    backgroundImage: `linear-gradient(135deg, #FFFFFF 0%, ${pageTheme.headingVia} 50%, ${pageTheme.headingTo} 100%)`,
+                  }}
+                >
                   <StatCounter target={stat.number} suffix={stat.suffix} />
                 </div>
                 <div className="text-base font-bebas tracking-wider text-white uppercase">
@@ -272,7 +297,10 @@ export function AboutView() {
         <section className="mb-36 pt-4">
           {/* Section Title */}
           <div className="mb-20 sm:mb-28 max-w-4xl">
-            <div className="font-bebas text-sm sm:text-base tracking-[0.25em] text-[#D4A843] uppercase mb-2">
+            <div
+              className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase mb-2 transition-colors duration-300"
+              style={{ color: pageTheme.accent }}
+            >
               APEX UNIVERSITY LEADERSHIP
             </div>
             <h2 className="text-4xl sm:text-6xl lg:text-7xl font-montserrat font-black tracking-tight text-white leading-tight">
@@ -380,6 +408,55 @@ export function AboutView() {
               );
             })}
           </div>
+
+          {/* Faculty Incharges Grid (From Official Brochure) */}
+          <div className="mt-20 pt-16 border-t border-white/[0.08]">
+            <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+              <div
+                className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase transition-colors duration-300"
+                style={{ color: pageTheme.accent }}
+              >
+                MENTORSHIP COUNCIL
+              </div>
+              <h3 className="text-2xl sm:text-4xl font-montserrat font-black tracking-tight text-white uppercase">
+                Faculty Incharges <span className="font-chancery font-normal text-[#E8D4FF] lowercase text-3xl sm:text-4xl">TechSrijan</span>
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {FACULTY_INCHARGES.map((mentor) => (
+                <div
+                  key={mentor.id}
+                  className="group relative rounded-3xl p-6 bg-gradient-to-b from-white/[0.04] to-transparent border border-white/[0.08] hover:border-white/[0.2] transition-all duration-300 text-center flex flex-col items-center"
+                >
+                  <div
+                    className="relative w-36 h-36 rounded-full overflow-hidden mb-5 border-2 transition-transform duration-500 group-hover:scale-105"
+                    style={{
+                      borderColor: pageTheme.accent,
+                      boxShadow: `0 0 25px ${pageTheme.accentGlow}`,
+                    }}
+                  >
+                    <Image
+                      src={mentor.image}
+                      alt={mentor.name}
+                      fill
+                      sizes="144px"
+                      className="object-cover object-top filter contrast-[1.05]"
+                    />
+                  </div>
+                  <h4 className="text-lg sm:text-xl font-montserrat font-bold text-white group-hover:text-[#79C7E3] transition-colors">
+                    {mentor.name}
+                  </h4>
+                  <div className="font-bebas text-sm tracking-wider uppercase mt-1" style={{ color: pageTheme.accent }}>
+                    {mentor.role}
+                  </div>
+                  <div className="text-xs font-geist text-zinc-400 mt-0.5">
+                    {mentor.designation}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* ============================================================
@@ -388,7 +465,10 @@ export function AboutView() {
         <section className="mb-36 py-12 border-t border-white/[0.08]">
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-20 items-start">
             <div className="space-y-6">
-              <div className="font-bebas text-sm sm:text-base tracking-[0.25em] text-[#79C7E3] uppercase">
+              <div
+                className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase transition-colors duration-300"
+                style={{ color: pageTheme.accent }}
+              >
                 THE 354-ACRE PROVING GROUND
               </div>
               <h2 className="text-3xl sm:text-5xl lg:text-6xl font-montserrat font-black tracking-tight text-white leading-tight">
@@ -415,7 +495,7 @@ export function AboutView() {
                   and stress-test structural bridges.
                 </p>
                 <p>
-                  With over <span className="text-[#79C7E3] font-semibold">5,000+ delegates</span> hailing from prestigious institutions
+                  With over <span style={{ color: pageTheme.accent }} className="font-semibold transition-colors duration-300">25,000+ expected footfall</span> hailing from prestigious institutions
                   including IITs, NITs, and premier universities, TechSrijan provides a proving ground where
                   merit is sovereign and lifelong collaborations are forged.
                 </p>
@@ -424,12 +504,18 @@ export function AboutView() {
 
             {/* Right: Blockquote & Campus Overview */}
             <div className="space-y-8 pt-4">
-              <div className="border-l-2 border-[#79C7E3] pl-8 space-y-4">
+              <div
+                className="border-l-2 pl-8 space-y-4 transition-colors duration-300"
+                style={{ borderColor: pageTheme.accent }}
+              >
                 <p className="font-chancery text-xl sm:text-2xl lg:text-3xl text-zinc-100 leading-relaxed">
                   “The arena does not reward passive credentials. It honors the machine that runs under stress,
                   the algorithm that executes without failure, and the resolve of students who refuse to yield.”
                 </p>
-                <div className="text-sm font-bebas tracking-widest text-[#79C7E3] uppercase">
+                <div
+                  className="text-sm font-bebas tracking-widest uppercase transition-colors duration-300"
+                  style={{ color: pageTheme.accent }}
+                >
                   — TechSrijan &apos;27 Convocation
                 </div>
               </div>
@@ -437,7 +523,7 @@ export function AboutView() {
               {/* Campus Facility Details */}
               <div className="space-y-3 pt-6 border-t border-white/[0.08]">
                 <div className="flex items-center gap-2 text-base font-bebas tracking-wider uppercase text-white">
-                  <Building2 className="h-5 w-5 text-[#79C7E3]" />
+                  <Building2 className="h-5 w-5" style={{ color: pageTheme.accent }} />
                   <span>Campus Facilities & Arenas</span>
                 </div>
                 <p className="text-sm text-zinc-300 font-geist leading-relaxed">
@@ -454,7 +540,10 @@ export function AboutView() {
             ============================================================ */}
         <section className="mb-36 py-12 border-t border-white/[0.08]">
           <div className="mb-12 max-w-3xl">
-            <div className="font-bebas text-sm sm:text-base tracking-[0.25em] text-[#D4A843] uppercase mb-2">
+            <div
+              className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase mb-2 transition-colors duration-300"
+              style={{ color: pageTheme.accent }}
+            >
               PILLARS OF EXECUTION
             </div>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-montserrat font-black tracking-tight text-white leading-tight">
@@ -569,7 +658,10 @@ export function AboutView() {
             ============================================================ */}
         <section className="mb-36 py-12 border-t border-white/[0.08]">
           <div className="mb-14 max-w-3xl">
-            <div className="font-bebas text-sm sm:text-base tracking-[0.25em] text-[#79C7E3] uppercase mb-2">
+            <div
+              className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase mb-2 transition-colors duration-300"
+              style={{ color: pageTheme.accent }}
+            >
               CHRONICLES OF GLORY
             </div>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-montserrat font-black tracking-tight text-white leading-tight">
@@ -589,10 +681,18 @@ export function AboutView() {
             {ABOUT_TIMELINE.map((item) => (
               <div key={item.year} className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-4xl sm:text-5xl font-montserrat font-black text-transparent bg-clip-text bg-gradient-to-r from-[#A5E5FF] to-[#D4A843]">
+                  <span
+                    className="text-4xl sm:text-5xl font-montserrat font-black text-transparent bg-clip-text transition-all duration-300"
+                    style={{
+                      backgroundImage: `linear-gradient(to right, #FFFFFF, ${pageTheme.headingTo})`,
+                    }}
+                  >
                     {item.year}
                   </span>
-                  <span className="font-bebas text-sm tracking-wider uppercase text-[#79C7E3]">
+                  <span
+                    className="font-bebas text-sm tracking-wider uppercase transition-colors duration-300"
+                    style={{ color: pageTheme.accent }}
+                  >
                     {item.era}
                   </span>
                 </div>
@@ -610,7 +710,10 @@ export function AboutView() {
                 <div className="pt-2 space-y-1.5">
                   {item.highlights.map((hl, hIdx) => (
                     <div key={hIdx} className="text-xs text-zinc-300 font-geist flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#79C7E3]" />
+                      <span
+                        className="h-1.5 w-1.5 rounded-full transition-colors duration-300"
+                        style={{ backgroundColor: pageTheme.accent }}
+                      />
                       <span>{hl}</span>
                     </div>
                   ))}
@@ -625,7 +728,10 @@ export function AboutView() {
             ============================================================ */}
         <section className="mb-36 py-12 border-t border-b border-white/[0.08]">
           <div className="mb-14 max-w-3xl">
-            <div className="font-bebas text-sm sm:text-base tracking-[0.25em] text-[#D4A843] uppercase mb-2">
+            <div
+              className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase mb-2 transition-colors duration-300"
+              style={{ color: pageTheme.accent }}
+            >
               FOUNDATIONAL PILLARS
             </div>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-montserrat font-black tracking-tight text-white leading-tight">
@@ -642,7 +748,10 @@ export function AboutView() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             {ABOUT_TENETS.map((tenet) => (
               <div key={tenet.number} className="space-y-2">
-                <div className="text-4xl font-montserrat font-black text-[#79C7E3]/60 mb-2">
+                <div
+                  className="text-4xl font-montserrat font-black mb-2 transition-colors duration-300 opacity-60"
+                  style={{ color: pageTheme.accent }}
+                >
                   {tenet.number}
                 </div>
                 <h3 className="font-bebas text-xl tracking-wider text-white uppercase">
@@ -665,7 +774,10 @@ export function AboutView() {
         <section className="mb-36 py-12">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
             <div className="lg:col-span-7 space-y-6">
-              <div className="font-bebas text-sm sm:text-base tracking-[0.25em] text-[#79C7E3] uppercase">
+              <div
+                className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase transition-colors duration-300"
+                style={{ color: pageTheme.accent }}
+              >
                 CAMPUS NAVIGATION
               </div>
               <h2 className="text-3xl sm:text-5xl font-montserrat font-black tracking-tight text-white leading-tight">
@@ -681,7 +793,7 @@ export function AboutView() {
 
               <div className="space-y-5 pt-4 border-t border-white/[0.08]">
                 <div className="flex items-start gap-4">
-                  <Train className="h-5 w-5 text-[#79C7E3] shrink-0 mt-0.5" />
+                  <Train className="h-5 w-5 shrink-0 mt-0.5" style={{ color: pageTheme.accent }} />
                   <div>
                     <span className="font-bebas text-base tracking-wider uppercase text-white block">By Railway (Gorakhpur Junction - 9.2 KM):</span>
                     <p className="text-sm text-zinc-300 font-geist mt-0.5">
@@ -691,7 +803,7 @@ export function AboutView() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <Plane className="h-5 w-5 text-[#E8D4FF] shrink-0 mt-0.5" />
+                  <Plane className="h-5 w-5 shrink-0 mt-0.5" style={{ color: pageTheme.accent }} />
                   <div>
                     <span className="font-bebas text-base tracking-wider uppercase text-white block">By Air (Gorakhpur Airport - 5.4 KM):</span>
                     <p className="text-sm text-zinc-300 font-geist mt-0.5">
@@ -701,7 +813,7 @@ export function AboutView() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <Shield className="h-5 w-5 text-[#D4A843] shrink-0 mt-0.5" />
+                  <Shield className="h-5 w-5 shrink-0 mt-0.5" style={{ color: pageTheme.accent }} />
                   <div>
                     <span className="font-bebas text-base tracking-wider uppercase text-white block">On-Campus Hospitality & Security:</span>
                     <p className="text-sm text-zinc-300 font-geist mt-0.5">
@@ -733,7 +845,7 @@ export function AboutView() {
                 </div>
                 <div className="flex justify-between py-2 border-b border-white/[0.08]">
                   <span className="text-zinc-400">Festival Dates</span>
-                  <span className="text-[#79C7E3] font-bold">25 – 27 Dec 2026</span>
+                  <span className="font-bold" style={{ color: pageTheme.accent }}>25 – 27 Dec 2026</span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span className="text-zinc-400">Official Portal</span>
@@ -744,7 +856,8 @@ export function AboutView() {
               <div className="pt-2">
                 <Link
                   href="/accommodation"
-                  className="inline-flex items-center gap-2 text-sm font-montserrat font-semibold text-[#79C7E3] hover:text-white transition-colors"
+                  className="inline-flex items-center gap-2 text-sm font-montserrat font-semibold hover:text-white transition-colors"
+                  style={{ color: pageTheme.accent }}
                 >
                   <span>View Accommodation Guidelines</span>
                   <ArrowUpRight className="h-4 w-4" />
@@ -759,25 +872,38 @@ export function AboutView() {
             ============================================================ */}
         <section className="py-20 border-t border-white/[0.1] text-center">
           <div className="max-w-4xl mx-auto space-y-6">
-            <div className="font-bebas text-sm sm:text-base tracking-[0.25em] text-[#D4A843] uppercase">
+            <div
+              className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase transition-colors duration-300"
+              style={{ color: pageTheme.accent }}
+            >
               IMPERIUM : REQUIEM CONCLAVE
             </div>
             <h2 className="text-4xl sm:text-6xl lg:text-7xl font-montserrat font-black tracking-tight text-white leading-tight">
               Claim Your Proving Ground at{" "}
-              <span className="font-chancery font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#A5E5FF] via-[#E8D4FF] to-[#D4A843]">
+              <span
+                className="font-chancery font-normal text-transparent bg-clip-text transition-all duration-300"
+                style={{
+                  backgroundImage: `linear-gradient(to right, #FFFFFF, ${pageTheme.headingVia}, ${pageTheme.headingTo})`,
+                  filter: `drop-shadow(0 2px 25px ${pageTheme.accentGlow})`,
+                }}
+              >
                 TechSrijan &apos;27
               </span>
             </h2>
 
             <p className="text-base sm:text-lg text-zinc-300 font-geist leading-relaxed max-w-2xl mx-auto">
               Registrations for national competitions, hackathons, and robo-cages are now active.
-              Assemble your crew, calibrate your machines, and join over 5,000 engineers at MMMUT Gorakhpur.
+              Assemble your crew, calibrate your machines, and join over 25,000+ innovators at MMMUT Gorakhpur.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
               <Link
                 href="/events"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#79C7E3] via-[#E8D4FF] to-[#D4A843] px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider text-black shadow-[0_0_35px_rgba(121,199,227,0.45)] transition-transform duration-300 hover:scale-105"
+                className={`inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider ${pageTheme.btnText} transition-transform duration-300 hover:scale-105`}
+                style={{
+                  backgroundImage: `linear-gradient(to right, ${pageTheme.headingTo}, ${pageTheme.accentBright}, ${pageTheme.headingTo})`,
+                  boxShadow: `0 0 35px ${pageTheme.accentGlow}`,
+                }}
               >
                 <span>Register for Competitions</span>
                 <ArrowUpRight className="h-4 w-4" />

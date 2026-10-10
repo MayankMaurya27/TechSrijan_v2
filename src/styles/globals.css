@@ -39,6 +39,50 @@
   font-family: "Apple Chancery", "URW Chancery L", "ITC Zapf Chancery", "Lucida Calligraphy", "Chancery", cursive, var(--font-editorial), serif;
 }
 
+/* ==========================================================================
+   DYNAMIC MOON THEME GRADIENTS & ACCENTS
+   Automatically reacts whenever theme switches between Arrakis / Krelln / Geass
+   ========================================================================== */
+.theme-heading-gradient {
+  background-image: linear-gradient(135deg, #FFFFFF 0%, var(--theme-heading-via) 45%, var(--theme-heading-to) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.theme-italic-gradient {
+  background-image: linear-gradient(to right, var(--theme-accent-bright) 0%, #E8D4FF 50%, var(--theme-accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.theme-btn-gradient {
+  background-image: linear-gradient(to right, var(--theme-btn-from), var(--theme-btn-via), var(--theme-btn-to));
+  box-shadow: 0 0 30px var(--theme-btn-shadow);
+  color: #000000;
+  transition: all 0.3s ease;
+}
+html[data-theme="geass-moon"] .theme-btn-gradient,
+html[data-theme="giedi-prime"] .theme-btn-gradient {
+  color: #FFFFFF;
+}
+
+.theme-accent-text {
+  color: var(--theme-accent);
+  transition: color 0.3s ease;
+}
+
+.theme-accent-border {
+  border-color: var(--theme-border);
+  transition: border-color 0.3s ease;
+}
+
+.theme-accent-glow {
+  box-shadow: 0 0 30px var(--theme-accent-glow);
+  transition: box-shadow 0.3s ease;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @layer base {
@@ -64,6 +108,18 @@
 
     --accent: var(--accent-primary);
     --text-main: var(--text-primary);
+
+    /* Theme Dynamic Heading & Artifact Variables */
+    --theme-accent: #D4A843;
+    --theme-accent-bright: #FFF5D6;
+    --theme-accent-glow: rgba(212, 168, 67, 0.45);
+    --theme-border: rgba(212, 168, 67, 0.35);
+    --theme-heading-via: #FFF5D6;
+    --theme-heading-to: #D4A843;
+    --theme-btn-from: #D4A843;
+    --theme-btn-via: #E2B755;
+    --theme-btn-to: #C59B27;
+    --theme-btn-shadow: rgba(212, 168, 67, 0.45);
   }
 
 html[data-theme="krelln-night"], html[data-theme="kelln-night"] {
@@ -86,6 +142,18 @@ html[data-theme="krelln-night"], html[data-theme="kelln-night"] {
     --ray-color: rgba(215, 219, 226, 0.10);
     --accent: var(--accent-primary);
     --text-main: var(--text-primary);
+
+    /* Theme Dynamic Heading & Artifact Variables */
+    --theme-accent: #79C7E3;
+    --theme-accent-bright: #E0F7FF;
+    --theme-accent-glow: rgba(121, 199, 227, 0.45);
+    --theme-border: rgba(121, 199, 227, 0.35);
+    --theme-heading-via: #E0F7FF;
+    --theme-heading-to: #79C7E3;
+    --theme-btn-from: #79C7E3;
+    --theme-btn-via: #9DE2FB;
+    --theme-btn-to: #5BAECD;
+    --theme-btn-shadow: rgba(121, 199, 227, 0.45);
   }
 
 
@@ -110,6 +178,18 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
     --ray-color: rgba(255, 30, 39, 0.14);
     --accent: var(--accent-primary);
     --text-main: var(--text-primary);
+
+    /* Theme Dynamic Heading & Artifact Variables */
+    --theme-accent: #FF1E27;
+    --theme-accent-bright: #FFD6D8;
+    --theme-accent-glow: rgba(255, 30, 39, 0.52);
+    --theme-border: rgba(255, 30, 39, 0.38);
+    --theme-heading-via: #FFCCD0;
+    --theme-heading-to: #FF1E27;
+    --theme-btn-from: #FF1E27;
+    --theme-btn-via: #E61924;
+    --theme-btn-to: #C4000A;
+    --theme-btn-shadow: rgba(255, 30, 39, 0.5);
   }
 
 @supports (color: oklch(0% 0 0)) {

@@ -66,7 +66,7 @@ export const GUESTS_LIST: GuestData[] = [
       "A monumental titan in the history of Indian public service, Dr. Kiran Bedi etched her name into national history in 1972 by breaking formidable gender barriers to become the first woman officer in the elite Indian Police Service (IPS). Across a stellar career spanning more than three and a half decades, she redefined law enforcement, administrative integrity, and systemic institutional accountability.",
       "Dr. Bedi earned international renown as the Inspector General of Prisons at Tihar Jail, Delhi—one of the largest prison complexes in the world. Confronted by systemic overcrowding and inhumanity, she transformed the penitentiary into an oasis of human rehabilitation through literacy programs, spiritual meditation, vocational industries, and restorative justice. Her radical humanitarian leadership was crowned with Asia's highest honor, the Ramon Magsaysay Award for Government Service in 1994.",
       "As the 24th Lieutenant Governor of Puducherry (2016–2021), Dr. Bedi championed 'Fearless Governance', pioneering direct public open-house hearings, zero-tolerance anti-corruption protocols, transparent financial administration, and water conservation missions. Holding a Ph.D. from IIT Delhi, she embodies the supreme synthesis of academic rigor, fearless ethics, and indefatigable commitment to the welfare of the Indian republic.",
-      "At TechSrijan '27, Dr. Kiran Bedi addresses over 5,000 future technocrats, roboticists, and software architects gathered at MMMUT Gorakhpur, challenging the nation's youth to engineer systems anchored in moral courage, radical transparency, and purposeful nation-building.",
+      "At TechSrijan '27, Dr. Kiran Bedi addresses over 25,000+ expected technocrats, roboticists, and software architects gathered at MMMUT Gorakhpur, challenging the nation's youth to engineer systems anchored in moral courage, radical transparency, and purposeful nation-building.",
     ],
     quote:
       "Leadership is neither about the luxury of rank nor the vanity of title; it is the moral courage to take responsibility where others retreat in fear. When India's young engineers unite uncompromising integrity with technological intellect, no fortress of complacency can resist their resolve.",
@@ -127,7 +127,7 @@ export const GUESTS_LIST: GuestData[] = [
       {
         year: "2027",
         title: "Chief Guest of Honour · TechSrijan '27",
-        detail: "Delivering the Apex Keynote address to 5,000+ national student delegates at MMMUT Gorakhpur.",
+        detail: "Delivering the Apex Keynote address to 25,000+ expected national student delegates at MMMUT Gorakhpur.",
       },
     ],
     primaryImage: "/images/guests/kiran-bedi-real.jpg",
@@ -148,8 +148,8 @@ export const GUESTS_LIST: GuestData[] = [
     id: "prof-hc-verma",
     name: "Prof. Harish Chandra Verma",
     hindiName: "प्रो. हरीश चंद्र वर्मा",
-    edition: "PREVIOUS EDITION",
-    editionBadge: "PREVIOUS EDITION LUMINARY KEYNOTE GUEST",
+    edition: "2025 KEYNOTE SPEAKER",
+    editionBadge: "2025 KEYNOTE SPEAKER & EXPERT TALK LUMINARY",
     designation: "Padma Shri Awardee (Science & Engineering) · Renowned Experimental Physicist · Author of Concepts of Physics",
     honorificTitle: "LEGACY SCIENTIFIC LUMINARY",
     primaryRole: "Author of the Legendary 'Concepts of Physics' (Vol. 1 & 2)",
@@ -170,11 +170,11 @@ export const GUESTS_LIST: GuestData[] = [
       "A revered living legend whose name is etched into the intellectual DNA of every Indian engineer, Prof. Harish Chandra Verma has transformed how physics is perceived, experienced, and loved across the subcontinent. For over three decades, his seminal two-volume masterpiece, 'Concepts of Physics', has been the undisputed gateway for millions of young minds navigating the rigorous labyrinths of JEE, Olympiads, and scientific research.",
       "Prof. Verma's genius lies in stripping away arcane, frightening mathematical jargon and replacing it with pure, intuitive Wonder. By rooting complex concepts—from rotational dynamics and electromagnetic fields to quantum mechanics—into the relatable mechanics of Indian daily life, bicycles, kites, and river currents, he turned abstract theory into living physical intuition.",
       "A distinguished experimental nuclear physicist at IIT Kanpur, Prof. Verma published over 139 research papers in mossbauer spectroscopy, nanomaterials, and nuclear solid-state physics. Yet his heart remained steadfastly devoted to grassroots pedagogy. He established the National Anveshika Network of Indian Association of Physics Teachers (NANI), founding over 25 Anveshika laboratories across India where students and teachers fabricate low-cost experimental apparatus using everyday household materials.",
-      "In 2020, the President of India conferred upon Prof. H. C. Verma the prestigious Padma Shri in recognition of his monumental lifetime contributions to science education and national self-reliance. His landmark keynote address at TechSrijan ignited the packed amphitheater of MMMUT Gorakhpur, leaving an indelible imprint on thousands of aspiring engineers.",
+      "In 2020, the President of India conferred upon Prof. H. C. Verma the prestigious Padma Shri in recognition of his monumental lifetime contributions to science education and national self-reliance. His landmark keynote address and expert talk at TechSrijan 2025 ignited the packed amphitheater of MMMUT Gorakhpur, remaining one of the most celebrated expert lectures associated with the festival.",
     ],
     quote:
       "Science does not reside inside examination papers or algebraic symbols on a blackboard; science breathes in the flight of a sparrow, the spin of a bicycle wheel, and the relentless spark of a young student who dares to ask 'why' until the universe surrenders its secrets. Build your machines with wonder, not with fear.",
-    quoteContext: "Landmark Keynote Citation · TechSrijan Previous Edition Conclave",
+    quoteContext: "Notable 2025 Keynote Citation · TechSrijan Expert Talk",
     pillars: [
       {
         title: "Physics as an Instinct: Wonder over Memorization",
@@ -229,9 +229,9 @@ export const GUESTS_LIST: GuestData[] = [
         detail: "Awarded India's fourth-highest civilian award for extraordinary contributions to science and engineering education.",
       },
       {
-        year: "Legacy",
-        title: "Luminary Keynote Speaker · TechSrijan",
-        detail: "Stood as the apex intellectual guiding beacon at TechSrijan, inspiring thousands of young engineers at MMMUT.",
+        year: "2025",
+        title: "Notable Keynote Speaker · TechSrijan 2025",
+        detail: "Delivered landmark expert lecture and experimental physics demonstrations at MMMUT Gorakhpur as the apex scientific speaker.",
       },
     ],
     primaryImage: "/images/guests/hc-verma-padmashri.jpg",

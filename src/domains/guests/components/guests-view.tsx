@@ -5,8 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { GUESTS_LIST } from "../data/guests-data";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
+import { usePageTheme } from "@/core";
 
 export function GuestsView() {
+  const pageTheme = usePageTheme();
   const [activeGuestId, setActiveGuestId] = useState<string>(GUESTS_LIST[0].id);
   const [selectedHcPhoto, setSelectedHcPhoto] = useState<number>(0);
 
@@ -39,10 +41,16 @@ export function GuestsView() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#05050A] text-white overflow-hidden selection:bg-[#D4A843]/30 selection:text-white">
-      {/* Ambient background glow points */}
-      <div className="fixed top-1/4 -left-48 w-96 h-96 bg-[#D4A843]/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="fixed bottom-1/3 -right-48 w-96 h-96 bg-[#79C7E3]/10 rounded-full blur-[140px] pointer-events-none" />
+    <div className="relative min-h-screen bg-[#05050A] text-white overflow-hidden selection:bg-[#79C7E3]/30 selection:text-white">
+      {/* Ambient background glow points reacting to moon theme */}
+      <div
+        className="fixed top-1/4 -left-48 w-96 h-96 rounded-full blur-[140px] pointer-events-none transition-colors duration-700"
+        style={{ backgroundColor: pageTheme.accentGlow }}
+      />
+      <div
+        className="fixed bottom-1/3 -right-48 w-96 h-96 rounded-full blur-[140px] pointer-events-none transition-colors duration-700 opacity-60"
+        style={{ backgroundColor: pageTheme.accentGlow }}
+      />
 
       {/* ============================================================
           PAGE HERO / MAJESTIC DIGNITARY HEADLINE
@@ -54,7 +62,13 @@ export function GuestsView() {
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-montserrat font-black tracking-tight text-white uppercase leading-[0.92]">
               CHIEF GUESTS
             </h1>
-            <div className="font-chancery text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D6] via-[#D4A843] to-[#E8D4FF] leading-tight">
+            <div
+              className="font-chancery text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-transparent bg-clip-text leading-tight transition-all duration-300"
+              style={{
+                backgroundImage: `linear-gradient(to right, ${pageTheme.accentBright}, ${pageTheme.accent}, #E8D4FF)`,
+                filter: `drop-shadow(0 2px 25px ${pageTheme.accentGlow})`,
+              }}
+            >
               Voices of Honor, Valor &amp; Science
             </div>
           </div>
@@ -67,13 +81,19 @@ export function GuestsView() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-6">
             <button
               onClick={() => scrollToSection("dr-kiran-bedi")}
-              className={`group relative flex items-center gap-4 px-6 sm:px-8 py-4 rounded-2xl bg-gradient-to-r from-[#D4A843]/15 via-black/80 to-black/90 border transition-all duration-300 cursor-pointer hover:scale-[1.02] text-left ${
-                activeGuestId === "dr-kiran-bedi"
-                  ? "border-[#D4A843] shadow-[0_0_35px_rgba(212,168,67,0.35)]"
-                  : "border-[#D4A843]/30 hover:border-[#D4A843] shadow-[0_0_20px_rgba(212,168,67,0.15)]"
-              }`}
+              className="group relative flex items-center gap-4 px-6 sm:px-8 py-4 rounded-2xl bg-gradient-to-r from-black/80 via-black/90 to-black/95 border transition-all duration-300 cursor-pointer hover:scale-[1.02] text-left"
+              style={{
+                borderColor: activeGuestId === "dr-kiran-bedi" ? pageTheme.accent : pageTheme.border,
+                boxShadow: activeGuestId === "dr-kiran-bedi" ? `0 0 35px ${pageTheme.accentGlow}` : `0 0 20px ${pageTheme.accentMuted}`,
+              }}
             >
-              <div className="relative h-12 w-12 rounded-full overflow-hidden border-2 border-[#D4A843] shadow-[0_0_15px_rgba(212,168,67,0.5)] shrink-0">
+              <div
+                className="relative h-12 w-12 rounded-full overflow-hidden border-2 shrink-0 transition-colors duration-300"
+                style={{
+                  borderColor: pageTheme.accent,
+                  boxShadow: `0 0 15px ${pageTheme.accentGlow}`,
+                }}
+              >
                 <Image
                   src="/images/guests/kiran-bedi-real.jpg"
                   alt="Dr. Kiran Bedi"
@@ -82,17 +102,23 @@ export function GuestsView() {
                 />
               </div>
               <div>
-                <div className="font-bebas text-xs sm:text-sm tracking-wider text-[#D4A843] uppercase">
+                <div
+                  className="font-bebas text-xs sm:text-sm tracking-wider uppercase transition-colors duration-300"
+                  style={{ color: pageTheme.accent }}
+                >
                   THIS YEAR&apos;S CHIEF GUEST · 2026–27
                 </div>
-                <div className="font-montserrat font-black text-white text-base sm:text-lg group-hover:text-[#FFF5D6] transition-colors leading-tight">
+                <div className="font-montserrat font-black text-white text-base sm:text-lg group-hover:text-zinc-200 transition-colors leading-tight">
                   Dr. Kiran Bedi
                 </div>
                 <div className="font-chancery text-xs sm:text-sm text-zinc-300">
                   First Woman IPS Officer of India
                 </div>
               </div>
-              <ChevronDown className="h-4 w-4 text-[#D4A843] ml-2 group-hover:translate-y-1 transition-transform" />
+              <ChevronDown
+                className="h-4 w-4 ml-2 group-hover:translate-y-1 transition-all"
+                style={{ color: pageTheme.accent }}
+              />
             </button>
 
             <button
@@ -113,7 +139,7 @@ export function GuestsView() {
               </div>
               <div>
                 <div className="font-bebas text-xs sm:text-sm tracking-wider text-[#79C7E3] uppercase">
-                  PREVIOUS YEAR CHIEF GUEST
+                  2025 KEYNOTE SPEAKER · EXPERT TALK
                 </div>
                 <div className="font-montserrat font-black text-white text-base sm:text-lg group-hover:text-[#E0F7FF] transition-colors leading-tight">
                   Prof. H. C. Verma
@@ -155,7 +181,13 @@ export function GuestsView() {
           
           {/* PROMINENT CENTERED HEADLINE FOR THIS YEAR'S GUEST */}
           <div className="text-center max-w-4xl mx-auto mb-12 sm:mb-16 space-y-3">
-            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-montserrat font-black tracking-tight uppercase leading-[0.95] text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D6] via-[#D4A843] to-[#ECC468]">
+            <h2
+              className="text-4xl sm:text-6xl lg:text-7xl font-montserrat font-black tracking-tight uppercase leading-[0.95] text-transparent bg-clip-text transition-all duration-300"
+              style={{
+                backgroundImage: `linear-gradient(135deg, #FFFFFF 0%, ${pageTheme.headingVia} 45%, ${pageTheme.headingTo} 100%)`,
+                filter: `drop-shadow(0 4px 35px ${pageTheme.accentGlow})`,
+              }}
+            >
               THIS YEAR&apos;S CHIEF GUEST OF HONOUR
             </h2>
             
@@ -171,10 +203,20 @@ export function GuestsView() {
             <div className="lg:col-span-5 space-y-6">
               <div className="relative group max-w-lg mx-auto lg:max-w-none">
                 {/* Ambient Golden Bloom */}
-                <div className="absolute -inset-6 rounded-3xl blur-3xl bg-[#D4A843]/20 group-hover:bg-[#D4A843]/35 transition-all duration-700 pointer-events-none" />
+                <div
+                  className="absolute -inset-6 rounded-3xl blur-3xl transition-all duration-700 pointer-events-none"
+                  style={{
+                    backgroundColor: pageTheme.accentGlow,
+                  }}
+                />
 
                 {/* Portrait Frame with Clean Real Photograph */}
-                <div className="relative aspect-[3/4] sm:aspect-[4/5] rounded-3xl overflow-hidden border-2 border-[#D4A843]/40 bg-black shadow-[0_25px_80px_rgba(0,0,0,0.85)]">
+                <div
+                  className="relative aspect-[3/4] sm:aspect-[4/5] rounded-3xl overflow-hidden border-2 bg-black shadow-[0_25px_80px_rgba(0,0,0,0.85)] transition-colors duration-300"
+                  style={{
+                    borderColor: pageTheme.border,
+                  }}
+                >
                   <Image
                     src="/images/guests/kiran-bedi-real.jpg"
                     alt="Dr. Kiran Bedi"
@@ -193,7 +235,10 @@ export function GuestsView() {
                     <div className="text-xs sm:text-sm font-geist text-zinc-300">
                       First Woman Officer in the Indian Police Service (1972)
                     </div>
-                    <div className="text-xs font-geist font-semibold text-[#D4A843]">
+                    <div
+                      className="text-xs font-geist font-semibold transition-colors duration-300"
+                      style={{ color: pageTheme.accent }}
+                    >
                       Ramon Magsaysay Laureate &middot; 24th Lt. Governor of Puducherry
                     </div>
                   </div>
@@ -202,7 +247,10 @@ export function GuestsView() {
 
               {/* Career Highlights */}
               <div className="p-6 rounded-2xl bg-black/75 backdrop-blur-xl border border-white/[0.12] space-y-4">
-                <div className="font-bebas text-base sm:text-lg tracking-wider text-[#D4A843] uppercase">
+                <div
+                  className="font-bebas text-base sm:text-lg tracking-wider uppercase transition-colors duration-300"
+                  style={{ color: pageTheme.accent }}
+                >
                   CAREER MILESTONES
                 </div>
                 <div className="grid grid-cols-2 gap-3.5 text-xs">
@@ -260,8 +308,17 @@ export function GuestsView() {
               </div>
 
               {/* Keynote Address Card */}
-              <div className="p-6 sm:p-8 rounded-2xl border-2 border-[#D4A843]/40 bg-gradient-to-br from-[#D4A843]/15 via-black/75 to-black/90 backdrop-blur-xl space-y-3 shadow-[0_10px_40px_rgba(212,168,67,0.12)]">
-                <div className="font-bebas text-base sm:text-lg tracking-wider text-[#D4A843] uppercase">
+              <div
+                className="p-6 sm:p-8 rounded-2xl border-2 bg-gradient-to-br from-black/80 via-black/85 to-black/95 backdrop-blur-xl space-y-3 transition-all duration-300"
+                style={{
+                  borderColor: pageTheme.border,
+                  boxShadow: `0 10px 40px ${pageTheme.accentMuted}`,
+                }}
+              >
+                <div
+                  className="font-bebas text-base sm:text-lg tracking-wider uppercase transition-colors duration-300"
+                  style={{ color: pageTheme.accent }}
+                >
                   KEYNOTE ADDRESS · TECHSRIJAN &apos;27
                 </div>
                 <div className="text-2xl sm:text-3xl lg:text-4xl font-montserrat font-bold text-white leading-snug">
@@ -275,17 +332,26 @@ export function GuestsView() {
               {/* Concise Authentic Biography */}
               <div className="space-y-4 text-base sm:text-lg text-zinc-200 font-geist leading-relaxed">
                 <p>
-                  A monumental titan of Indian public administration, <strong className="text-white font-montserrat">Dr. Kiran Bedi</strong> broke historic barriers in 1972 to become India&apos;s first woman in the Indian Police Service. Internationally celebrated for transforming Delhi&apos;s Tihar Jail into a humane reformatory—earning the prestigious <strong className="text-[#D4A843]">Ramon Magsaysay Award</strong>—and her impactful tenure as Lieutenant Governor of Puducherry, she embodies uncompromising ethics and public duty.
+                  A monumental titan of Indian public administration, <strong className="text-white font-montserrat">Dr. Kiran Bedi</strong> broke historic barriers in 1972 to become India&apos;s first woman in the Indian Police Service. Internationally celebrated for transforming Delhi&apos;s Tihar Jail into a humane reformatory—earning the prestigious <strong style={{ color: pageTheme.accent }} className="transition-colors duration-300">Ramon Magsaysay Award</strong>—and her impactful tenure as Lieutenant Governor of Puducherry, she embodies uncompromising ethics and public duty.
                 </p>
                 <p>
-                  Holding a doctorate from IIT Delhi, Dr. Bedi champions the philosophy of &ldquo;Fearless Governance&rdquo;. At TechSrijan &apos;27, she addresses over 5,000 engineering delegates at MMMUT Gorakhpur, challenging the nation&apos;s youth to build technological systems anchored in radical accountability, discipline, and compassionate nation-building.
+                  Holding a doctorate from IIT Delhi, Dr. Bedi champions the philosophy of &ldquo;Fearless Governance&rdquo;. At TechSrijan &apos;27, she addresses over 25,000+ expected delegates at MMMUT Gorakhpur, challenging the nation&apos;s youth to build technological systems anchored in radical accountability, discipline, and compassionate nation-building.
                 </p>
               </div>
 
               {/* Grand Memorable Pull Quote (Chancery font) */}
-              <blockquote className="border-l-4 border-[#D4A843] pl-6 py-4 font-chancery text-2xl sm:text-3xl text-zinc-100 leading-relaxed bg-[#D4A843]/10 rounded-r-2xl pr-6">
+              <blockquote
+                className="border-l-4 pl-6 py-4 font-chancery text-2xl sm:text-3xl text-zinc-100 leading-relaxed rounded-r-2xl pr-6 transition-all duration-300"
+                style={{
+                  borderColor: pageTheme.accent,
+                  backgroundColor: `${pageTheme.accent}14`,
+                }}
+              >
                 &ldquo;Leadership is not about commanding power; it is about taking responsibility where others falter. When youth unite technical competence with fearless character, no fortress of inertia can withstand their resolve.&rdquo;
-                <footer className="font-bebas text-sm sm:text-base not-italic tracking-wider text-[#D4A843] uppercase mt-3">
+                <footer
+                  className="font-bebas text-sm sm:text-base not-italic tracking-wider uppercase mt-3 transition-colors duration-300"
+                  style={{ color: pageTheme.accent }}
+                >
                   — Dr. Kiran Bedi · TechSrijan &apos;27
                 </footer>
               </blockquote>
@@ -299,7 +365,10 @@ export function GuestsView() {
           ============================================================ */}
       <section className="relative py-16 px-4 sm:px-8 border-b border-white/[0.08] bg-gradient-to-r from-black via-[#0D0B18] to-black">
         <div className="max-w-[1720px] mx-auto text-center space-y-4">
-          <div className="font-bebas text-base sm:text-lg tracking-wider text-[#79C7E3] uppercase">
+          <div
+            className="font-bebas text-base sm:text-lg tracking-wider uppercase transition-colors duration-300"
+            style={{ color: pageTheme.accent }}
+          >
             CONTINUUM OF INSPIRATION
           </div>
           <h3 className="text-3xl sm:text-5xl font-montserrat font-black text-white">
@@ -505,7 +574,7 @@ export function GuestsView() {
       <section className="py-20 px-4 sm:px-8 max-w-[1720px] mx-auto text-center space-y-8">
         <div className="max-w-3xl mx-auto space-y-4">
           <h2 className="text-3xl sm:text-5xl font-montserrat font-black text-white">
-            Join 5,000+ Innovators in the Arena
+            Join 25,000+ Innovators in the Arena
           </h2>
           <p className="text-base sm:text-lg text-zinc-300 font-geist leading-relaxed">
             From the keynote dais to the high-stakes battle cages of RoboWars and 24-hour coding marathons, TechSrijan &apos;27 is where legendary leadership meets cutting-edge engineering.
@@ -515,7 +584,11 @@ export function GuestsView() {
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/events"
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#79C7E3] via-[#E8D4FF] to-[#D4A843] px-8 py-3.5 font-montserrat text-xs font-bold text-black shadow-[0_0_30px_rgba(212,168,67,0.35)] transition-transform duration-300 hover:scale-105"
+            className={`inline-flex items-center gap-2 rounded-full px-8 py-3.5 font-montserrat text-xs font-bold ${pageTheme.btnText} transition-all duration-300 hover:scale-105`}
+            style={{
+              backgroundImage: `linear-gradient(to right, ${pageTheme.headingTo}, ${pageTheme.accentBright}, ${pageTheme.headingTo})`,
+              boxShadow: `0 0 30px ${pageTheme.accentGlow}`,
+            }}
           >
             <span>Explore 30+ Arena Events</span>
             <ArrowUpRight className="h-4 w-4" />

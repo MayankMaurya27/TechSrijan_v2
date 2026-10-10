@@ -44,88 +44,85 @@ export function GuestsView() {
       <div className="fixed top-1/4 -left-48 w-96 h-96 bg-[#D4A843]/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="fixed bottom-1/3 -right-48 w-96 h-96 bg-[#79C7E3]/10 rounded-full blur-[140px] pointer-events-none" />
 
-      {/* Floating Edition Selector Bar (Sticky Top) */}
-      <aside aria-label="Keynote navigation" className="sticky top-20 z-40 w-full px-4 sm:px-8 py-3 bg-black/80 backdrop-blur-2xl border-b border-white/[0.08] transition-all duration-300">
-        <div className="max-w-[1720px] mx-auto flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4A843] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4A843]" />
-            </span>
-            <span className="font-bebas text-sm sm:text-base tracking-[0.2em] uppercase text-zinc-300">
-              KEYNOTE GUESTS OF HONOUR
-            </span>
-            <span className="text-zinc-600 hidden sm:inline">|</span>
-            <span className="font-geist text-xs text-zinc-400 hidden sm:inline">
-              TECHSRIJAN · MMMUT GORAKHPUR
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            {GUESTS_LIST.map((guest) => {
-              const isActive = activeGuestId === guest.id;
-              return (
-                <button
-                  key={guest.id}
-                  onClick={() => scrollToSection(guest.id)}
-                  className={`flex items-center gap-2 px-4 sm:px-6 py-2 rounded-full font-montserrat text-xs font-semibold tracking-wider transition-all duration-300 cursor-pointer ${
-                    isActive
-                      ? "bg-white/15 text-white border border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-105"
-                      : "bg-white/[0.04] text-zinc-400 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]"
-                  }`}
-                  style={{
-                    borderColor: isActive ? guest.accentColor : undefined,
-                  }}
-                >
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{ backgroundColor: guest.accentColor }}
-                  />
-                  <span>{guest.name}</span>
-                  <span className="font-geist text-[10px] opacity-75 hidden md:inline">
-                    ({guest.isCurrentEdition ? "This Year Guest" : "Previous Year Guest"})
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </aside>
-
       {/* ============================================================
-          PAGE HERO / HEADER
+          PAGE HERO / MAJESTIC DIGNITARY HEADLINE
           ============================================================ */}
-      <section className="relative z-10 pt-16 sm:pt-24 pb-14 px-4 sm:px-8 lg:px-16 max-w-[1720px] mx-auto text-center border-b border-white/[0.08]">
-        <div className="max-w-4xl mx-auto space-y-5">
-          <div className="font-bebas text-base sm:text-lg tracking-[0.25em] uppercase text-[#D4A843]">
-            TECHSRIJAN CONCLAVE
+      <section className="relative z-10 pt-12 sm:pt-20 pb-16 px-4 sm:px-8 lg:px-16 max-w-[1720px] mx-auto text-center border-b border-white/[0.08]">
+        <div className="max-w-5xl mx-auto space-y-6">
+          {/* Majestic Grand Headline combining Montserrat & Chancery */}
+          <div className="space-y-2">
+            <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-montserrat font-black tracking-tight text-white uppercase leading-[0.92]">
+              CHIEF GUESTS
+            </h1>
+            <div className="font-chancery text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D6] via-[#D4A843] to-[#E8D4FF] leading-tight">
+              Voices of Honor, Valor &amp; Science
+            </div>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-montserrat font-black tracking-tight text-white uppercase leading-[0.95]">
-            VOICES OF{" "}
-            <span className="block font-chancery text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D6] via-[#E8D4FF] to-[#79C7E3]">
-              Honor, Valor & Science
-            </span>
-          </h1>
-
-          <p className="text-base sm:text-xl text-zinc-300 font-geist leading-relaxed max-w-2xl mx-auto">
-            Honoring the distinguished icons who headline Eastern India&apos;s apex techno-management festival at Madan Mohan Malaviya University of Technology.
+          <p className="text-base sm:text-xl text-zinc-300 font-geist leading-relaxed max-w-3xl mx-auto pt-2">
+            Honoring the legendary icons who headline Eastern India&apos;s apex techno-management conclave at Madan Mohan Malaviya University of Technology, Gorakhpur.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
+          {/* Luxury Floating Dignitary Showcase Gateway Cards */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-6">
             <button
               onClick={() => scrollToSection("dr-kiran-bedi")}
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-montserrat text-xs font-bold uppercase tracking-wider text-black bg-[#D4A843] hover:bg-[#e6bb56] shadow-[0_0_25px_rgba(212,168,67,0.3)] transition-all cursor-pointer"
+              className={`group relative flex items-center gap-4 px-6 sm:px-8 py-4 rounded-2xl bg-gradient-to-r from-[#D4A843]/15 via-black/80 to-black/90 border transition-all duration-300 cursor-pointer hover:scale-[1.02] text-left ${
+                activeGuestId === "dr-kiran-bedi"
+                  ? "border-[#D4A843] shadow-[0_0_35px_rgba(212,168,67,0.35)]"
+                  : "border-[#D4A843]/30 hover:border-[#D4A843] shadow-[0_0_20px_rgba(212,168,67,0.15)]"
+              }`}
             >
-              <span>This Year: Dr. Kiran Bedi</span>
-              <ChevronDown className="h-4 w-4" />
+              <div className="relative h-12 w-12 rounded-full overflow-hidden border-2 border-[#D4A843] shadow-[0_0_15px_rgba(212,168,67,0.5)] shrink-0">
+                <Image
+                  src="/images/guests/kiran-bedi-real.jpg"
+                  alt="Dr. Kiran Bedi"
+                  fill
+                  className="object-cover object-top group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+              <div>
+                <div className="font-bebas text-xs sm:text-sm tracking-wider text-[#D4A843] uppercase">
+                  THIS YEAR&apos;S CHIEF GUEST · 2026–27
+                </div>
+                <div className="font-montserrat font-black text-white text-base sm:text-lg group-hover:text-[#FFF5D6] transition-colors leading-tight">
+                  Dr. Kiran Bedi
+                </div>
+                <div className="font-chancery text-xs sm:text-sm text-zinc-300">
+                  First Woman IPS Officer of India
+                </div>
+              </div>
+              <ChevronDown className="h-4 w-4 text-[#D4A843] ml-2 group-hover:translate-y-1 transition-transform" />
             </button>
+
             <button
               onClick={() => scrollToSection("prof-hc-verma")}
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-montserrat text-xs font-bold uppercase tracking-wider text-white bg-white/[0.08] hover:bg-white/[0.14] border border-white/20 transition-all cursor-pointer"
+              className={`group relative flex items-center gap-4 px-6 sm:px-8 py-4 rounded-2xl bg-gradient-to-r from-[#79C7E3]/15 via-black/80 to-black/90 border transition-all duration-300 cursor-pointer hover:scale-[1.02] text-left ${
+                activeGuestId === "prof-hc-verma"
+                  ? "border-[#79C7E3] shadow-[0_0_35px_rgba(121,199,227,0.35)]"
+                  : "border-[#79C7E3]/30 hover:border-[#79C7E3] shadow-[0_0_20px_rgba(121,199,227,0.15)]"
+              }`}
             >
-              <span>Previous Year: Prof. H. C. Verma</span>
-              <ChevronDown className="h-4 w-4" />
+              <div className="relative h-12 w-12 rounded-full overflow-hidden border-2 border-[#79C7E3] shadow-[0_0_15px_rgba(121,199,227,0.5)] shrink-0">
+                <Image
+                  src="/images/guests/hc-verma-padmashri.jpg"
+                  alt="Prof. H. C. Verma"
+                  fill
+                  className="object-cover object-top group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+              <div>
+                <div className="font-bebas text-xs sm:text-sm tracking-wider text-[#79C7E3] uppercase">
+                  PREVIOUS YEAR CHIEF GUEST
+                </div>
+                <div className="font-montserrat font-black text-white text-base sm:text-lg group-hover:text-[#E0F7FF] transition-colors leading-tight">
+                  Prof. H. C. Verma
+                </div>
+                <div className="font-chancery text-xs sm:text-sm text-zinc-300">
+                  Padma Shri Awardee &middot; Concepts of Physics
+                </div>
+              </div>
+              <ChevronDown className="h-4 w-4 text-[#79C7E3] ml-2 group-hover:translate-y-1 transition-transform" />
             </button>
           </div>
         </div>
@@ -158,10 +155,6 @@ export function GuestsView() {
           
           {/* PROMINENT CENTERED HEADLINE FOR THIS YEAR'S GUEST */}
           <div className="text-center max-w-4xl mx-auto mb-12 sm:mb-16 space-y-3">
-            <div className="font-bebas text-base sm:text-xl tracking-[0.25em] uppercase text-[#D4A843]">
-              TECHSRIJAN &apos;27 APEX KEYNOTE
-            </div>
-            
             <h2 className="text-4xl sm:text-6xl lg:text-7xl font-montserrat font-black tracking-tight uppercase leading-[0.95] text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5D6] via-[#D4A843] to-[#ECC468]">
               THIS YEAR&apos;S CHIEF GUEST OF HONOUR
             </h2>
@@ -344,10 +337,6 @@ export function GuestsView() {
           
           {/* PROMINENT CENTERED HEADLINE FOR PREVIOUS YEAR'S GUEST */}
           <div className="text-center max-w-4xl mx-auto mb-12 sm:mb-16 space-y-3">
-            <div className="font-bebas text-base sm:text-xl tracking-[0.25em] uppercase text-[#79C7E3]">
-              THE LEGACY LUMINARY CONCLAVE
-            </div>
-            
             <h2 className="text-4xl sm:text-6xl lg:text-7xl font-montserrat font-black tracking-tight uppercase leading-[0.95] text-transparent bg-clip-text bg-gradient-to-r from-[#E0F7FF] via-[#79C7E3] to-[#9DE2FB]">
               PREVIOUS YEAR CHIEF GUEST OF HONOUR
             </h2>
@@ -515,9 +504,6 @@ export function GuestsView() {
           ============================================================ */}
       <section className="py-20 px-4 sm:px-8 max-w-[1720px] mx-auto text-center space-y-8">
         <div className="max-w-3xl mx-auto space-y-4">
-          <div className="font-bebas text-base sm:text-lg tracking-wider text-[#D4A843] uppercase">
-            WITNESS HISTORY AT TECHSRIJAN &apos;27
-          </div>
           <h2 className="text-3xl sm:text-5xl font-montserrat font-black text-white">
             Join 5,000+ Innovators in the Arena
           </h2>

@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useAboutTheme } from "../data/about-theme";
 
 /**
  * Clean, soft volumetric atmospheric lighting without ANY noisy dots or particle points.
- * Fluidly reacts to mouse movement and scroll position to enhance the background gradient.
+ * Fluidly reacts to mouse movement, scroll position, and active theme colors.
  */
 export function About3DScene() {
+  const theme = useAboutTheme();
+  const themeRef = useRef(theme);
+  themeRef.current = theme;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -54,25 +59,26 @@ export function About3DScene() {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Smooth soft atmospheric light blooms (No dots, no harsh points)
-      // 1. Warm Golden/Amber Core Light
-      const goldX = width * 0.65 + (mouseX - width * 0.5) * 0.08 + Math.sin(time * 0.6) * 30;
-      const goldY = height * 0.3 + (mouseY - height * 0.5) * 0.08 + Math.cos(time * 0.5) * 20 - (scrollY * 0.15) % height;
+      const currentTheme = themeRef.current;
 
-      const grad1 = ctx.createRadialGradient(goldX, goldY, 20, goldX, goldY, width * 0.45);
-      grad1.addColorStop(0, "rgba(212, 168, 67, 0.12)");
-      grad1.addColorStop(0.5, "rgba(202, 164, 207, 0.06)");
+      // 1. Primary Volumetric Atmospheric Bloom
+      const bloom1X = width * 0.65 + (mouseX - width * 0.5) * 0.08 + Math.sin(time * 0.6) * 30;
+      const bloom1Y = height * 0.3 + (mouseY - height * 0.5) * 0.08 + Math.cos(time * 0.5) * 20 - (scrollY * 0.15) % height;
+
+      const grad1 = ctx.createRadialGradient(bloom1X, bloom1Y, 20, bloom1X, bloom1Y, width * 0.45);
+      grad1.addColorStop(0, `rgba(${currentTheme.particlePrimary}, 0.14)`);
+      grad1.addColorStop(0.5, `rgba(${currentTheme.particleSecondary}, 0.06)`);
       grad1.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = grad1;
       ctx.fillRect(0, 0, width, height);
 
-      // 2. Celestial Cyan Light Bloom
-      const cyanX = width * 0.2 + (mouseX - width * 0.5) * 0.06 + Math.cos(time * 0.7) * 25;
-      const cyanY = height * 0.7 + (mouseY - height * 0.5) * 0.06 + Math.sin(time * 0.6) * 20 - (scrollY * 0.2) % height;
+      // 2. Secondary Harmonic Light Bloom
+      const bloom2X = width * 0.2 + (mouseX - width * 0.5) * 0.06 + Math.cos(time * 0.7) * 25;
+      const bloom2Y = height * 0.7 + (mouseY - height * 0.5) * 0.06 + Math.sin(time * 0.6) * 20 - (scrollY * 0.2) % height;
 
-      const grad2 = ctx.createRadialGradient(cyanX, cyanY, 20, cyanX, cyanY, width * 0.4);
-      grad2.addColorStop(0, "rgba(121, 199, 227, 0.10)");
-      grad2.addColorStop(0.6, "rgba(100, 160, 220, 0.04)");
+      const grad2 = ctx.createRadialGradient(bloom2X, bloom2Y, 20, bloom2X, bloom2Y, width * 0.4);
+      grad2.addColorStop(0, `rgba(${currentTheme.particleSecondary}, 0.10)`);
+      grad2.addColorStop(0.6, `rgba(${currentTheme.particlePrimary}, 0.03)`);
       grad2.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = grad2;
       ctx.fillRect(0, 0, width, height);

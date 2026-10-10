@@ -110,7 +110,7 @@ export const PATRON_DIRECTORATE: PatronItem[] = [
     bio: "Hon'ble Vice Chancellor of MMMUT. Championing academic rigor, state-of-the-art technical laboratories, and empowering student engineers to establish MMMUT at the vanguard of national innovation, research, and technical excellence.",
     badge: "HON'BLE VICE CHANCELLOR • MMMUT",
     accent: "#D4A843",
-    image: "/images/about/patron-anupama.jpg",
+    image: "/images/about/patron_anupama_clean.png",
     kicker: "CHIEF PATRON • UNIVERSITY CHANCELLERY",
     initiatives: [
       "Institutional patronage and strategic vision for TechSrijan '27",
@@ -127,8 +127,8 @@ export const PATRON_DIRECTORATE: PatronItem[] = [
     department: "Department of Electronics and Communication Engineering, MMMUT",
     bio: "Holding apex leadership as Chairman of the Council of Student Activities (CSA) and Vice Chairman of the Technical and Sports Sub Council. Providing visionary mentorship across all student technical bodies, university delegations, and steering Eastern India's largest technical festival.",
     badge: "CHAIRMAN • CSA & VICE CHAIRMAN • TSC",
-    accent: "#79C7E3",
-    image: "/images/about/rajan_mishra_tight.png",
+    accent: "#FF1E27",
+    image: "/images/about/rajan_mishra_tight_clean.png",
     kicker: "APEX MENTOR • CSA & SUB-COUNCILS",
     initiatives: [
       "Apex governance across Council of Student Activities (CSA) and Technical Sub-Council",
@@ -145,8 +145,8 @@ export const PATRON_DIRECTORATE: PatronItem[] = [
     department: "Technical Sub Council, MMMUT Gorakhpur",
     bio: "Guiding the tactical arena operations and charter mandates of the Technical Sub-Council (TSC). Coordinating IEEE, SAE, Robotics Club, and RESO to stage 25+ cutting-edge robotics combat, coding marathons, gaming arenas, and innovation challenges.",
     badge: "FACULTY ADVISOR • TECHNICAL SUB COUNCIL",
-    accent: "#E8D4FF",
-    image: "/images/about/pallav_gupta.png",
+    accent: "#D4A843",
+    image: "/images/about/pallav_gupta_clean.png",
     kicker: "FACULTY ADVISOR • TECHNICAL SUB COUNCIL",
     initiatives: [
       "Technical rulebook validation and combat arena safety architectures",
@@ -171,21 +171,21 @@ export const FACULTY_INCHARGES: FacultyInchargeItem[] = [
     name: "Dr. Ajeet Kumar",
     role: "Faculty Incharge",
     designation: "Faculty Incharge, TechSrijan",
-    image: "/images/about/ajeet_kumar.png",
+    image: "/images/about/ajeet_kumar_clean.png",
   },
   {
     id: "anil-pal",
     name: "Dr. Anil Kumar Pal",
     role: "Faculty Incharge",
     designation: "Faculty Incharge, TechSrijan",
-    image: "/images/about/anil_pal.png",
+    image: "/images/about/anil_pal_clean.png",
   },
   {
     id: "alok-shukla",
     name: "Dr. Alok Kumar Shukla",
     role: "Faculty Incharge",
     designation: "Faculty Incharge, TechSrijan",
-    image: "/images/about/alok_shukla.png",
+    image: "/images/about/alok_shukla_clean.png",
   },
 ];
 

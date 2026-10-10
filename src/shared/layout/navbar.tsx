@@ -313,7 +313,7 @@ export function Navbar() {
                   fill="url(#hud-bg-fill)"
                 />
 
-                {/* Continuous Base Glowing Chassis Border */}
+                {/* Continuous Base Chassis Border (Crisp, Dark & Subtle like Image 2) */}
                 <path
                   d={PILL_PATH}
                   fill="none"

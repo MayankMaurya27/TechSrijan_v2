@@ -146,17 +146,17 @@ html[data-theme="krelln-night"], html[data-theme="kelln-night"] {
     --accent: var(--accent-primary);
     --text-main: var(--text-primary);
 
-    /* Theme Dynamic Heading & Artifact Variables */
-    --theme-accent: #79C7E3;
-    --theme-accent-bright: #E0F7FF;
-    --theme-accent-glow: rgba(121, 199, 227, 0.45);
-    --theme-border: rgba(121, 199, 227, 0.35);
-    --theme-heading-via: #E0F7FF;
-    --theme-heading-to: #79C7E3;
-    --theme-btn-from: #79C7E3;
-    --theme-btn-via: #9DE2FB;
-    --theme-btn-to: #5BAECD;
-    --theme-btn-shadow: rgba(121, 199, 227, 0.45);
+    /* Theme Dynamic Heading & Artifact Variables (Silver / Slate Grey) */
+    --theme-accent: #CBD5E1;
+    --theme-accent-bright: #FFFFFF;
+    --theme-accent-glow: rgba(203, 213, 225, 0.45);
+    --theme-border: rgba(203, 213, 225, 0.35);
+    --theme-heading-via: #E2E8F0;
+    --theme-heading-to: #94A3B8;
+    --theme-btn-from: #475569;
+    --theme-btn-via: #64748B;
+    --theme-btn-to: #334155;
+    --theme-btn-shadow: rgba(203, 213, 225, 0.35);
   }
 
 
@@ -700,7 +700,7 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
 }
 
 .animate-neon-border {
-  stroke-dasharray: 380 663.4 380 663.4;
+  stroke-dasharray: 420 623.4 420 623.4;
   animation: neonBorderTravel 6s linear infinite;
 }
 
@@ -710,7 +710,7 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
 }
 
 .animate-neon-border-fast {
-  stroke-dasharray: 380 663.4 380 663.4;
+  stroke-dasharray: 420 623.4 420 623.4;
   animation: neonBorderTravel 4s linear infinite;
 }
 

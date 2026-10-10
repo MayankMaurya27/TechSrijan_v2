@@ -7,7 +7,15 @@ import { OperativeCard } from "./operative-card";
 import { OperativeDossierModal } from "./operative-dossier-modal";
 import { Team3DBackground } from "./team-3d-background";
 
-export function TeamView() {
+interface TeamViewProps {
+  titleWord?: string;
+  subtitle?: string;
+}
+
+export function TeamView({
+  titleWord = "Developers",
+  subtitle = "The students, guild leads, and faculty commanders forging the directives of TechSrijan '27.",
+}: TeamViewProps = {}) {
   const [selectedOperative, setSelectedOperative] = useState<Operative | null>(null);
   const [audioActive, setAudioActive] = useState(false);
 
@@ -28,7 +36,7 @@ export function TeamView() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 pt-12 pb-32 sm:px-8 lg:px-12">
         {/* ============================================================
-            HEADER: "Meet Our Team" Master Designer Title
+            HEADER: "Meet Our Developers" Master Designer Title
             ============================================================ */}
         <div className="pt-6 sm:pt-10 mb-14 sm:mb-20">
           {/* Master Designer Title */}
@@ -40,12 +48,12 @@ export function TeamView() {
               Our
             </span>
             <span className="font-serif font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5E6] via-[#E8CF9A] to-[#C49B4D] drop-shadow-[0_0_30px_rgba(212,168,67,0.35)]">
-              Team
+              {titleWord}
             </span>
           </h1>
 
           <p className="mt-3 text-xs sm:text-sm text-zinc-400 font-sans max-w-xl leading-relaxed">
-            The students, guild leads, and faculty commanders forging the directives of TechSrijan &apos;27.
+            {subtitle}
           </p>
         </div>
 

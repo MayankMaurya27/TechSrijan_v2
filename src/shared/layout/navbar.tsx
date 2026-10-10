@@ -270,7 +270,7 @@ export function Navbar() {
 
           {/* Desktop Center: Exactly Centered in Overall Screen Width with Proportional Width */}
           <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 pointer-events-auto z-0">
-            <div className="group/navbar relative w-[840px] lg:w-[900px] xl:w-[960px] 2xl:w-[1020px]">
+            <div className="group/navbar relative w-[940px] lg:w-[1000px] xl:w-[1080px] 2xl:w-[1140px]">
               <svg
                 className="absolute inset-0 w-full h-[48px] xl:h-[52px] pointer-events-none -z-10 transition-all duration-500 group-hover/navbar:brightness-115 overflow-visible"
                 style={{ filter: currentThemeConfig.ambientChassisGlow, overflow: "visible" }}
@@ -373,8 +373,8 @@ export function Navbar() {
               </svg>
 
               {/* Links and Theme Changer inside the Smooth Pill Navbar */}
-              <div className="relative flex h-[48px] xl:h-[52px] items-center justify-center px-6 xl:px-8">
-                <nav className="flex items-center gap-2 xl:gap-3 font-sans text-[11px] lg:text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] tracking-[0.13em] xl:tracking-[0.15em] text-[#d6c7b2]">
+              <div className="relative flex h-[48px] xl:h-[52px] items-center justify-center px-8 lg:px-9 xl:px-10">
+                <nav className="flex items-center gap-1.5 lg:gap-2 xl:gap-2.5 font-sans text-[11px] lg:text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] tracking-[0.13em] xl:tracking-[0.15em] text-[#d6c7b2]">
                   {NAV_LINKS.map((item, index) => {
                     const isActive = pathname === item.href;
                     return (
@@ -386,7 +386,7 @@ export function Navbar() {
                         )}
                         <Link
                           href={item.href}
-                          className={`px-2 xl:px-2.5 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-300 relative group whitespace-nowrap ${
+                          className={`px-1.5 lg:px-2 xl:px-2.5 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-300 relative group whitespace-nowrap ${
                             isActive ? "text-[var(--accent-primary,#d4a843)] font-semibold" : ""
                           }`}
                         >
@@ -410,7 +410,7 @@ export function Navbar() {
                   <button
                     type="button"
                     onClick={toggleTheme}
-                    className="flex items-center justify-center h-6 w-6 xl:h-6.5 xl:w-6.5 rounded-full border border-[rgba(212,168,67,0.45)] bg-black/75 shadow-[0_0_12px_rgba(212,168,67,0.25)] hover:border-[var(--accent-primary,#d4a843)] hover:scale-110 transition-all duration-300 active:scale-95 cursor-pointer flex-shrink-0 ml-0.5"
+                    className="flex items-center justify-center h-6 w-6 xl:h-6.5 xl:w-6.5 rounded-full border border-[rgba(212,168,67,0.45)] bg-black/75 shadow-[0_0_12px_rgba(212,168,67,0.25)] hover:border-[var(--accent-primary,#d4a843)] hover:scale-110 transition-all duration-300 active:scale-95 cursor-pointer flex-shrink-0 ml-1"
                     title={`Active Theme: ${currentThemeConfig.title} (Click to cycle)`}
                     aria-label={`Cycle Theme: Currently ${currentThemeConfig.label}`}
                   >

@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue, Geist } from "next/font/google";
+import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue, Geist, Montserrat } from "next/font/google";
 import { ThemeProvider, LenisProvider, cn } from "@/core";
 import { AmbientParticles, TwinSunsRays, Navbar, SwordCursor } from "@/shared";
 import "@/styles/globals.css";
-
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -11,7 +10,18 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist",
+  display: "swap",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
 
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -29,7 +39,7 @@ const playfairDisplay = Playfair_Display({
 
 const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
-  variable: "--font-impact",
+  variable: "--font-bebas",
   weight: "400",
   display: "swap",
 });
@@ -134,7 +144,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="arrakis-day" suppressHydrationWarning className={cn(jetbrainsMono.variable, cinzel.variable, playfairDisplay.variable, bebasNeue.variable, "font-sans", geist.variable)}>
+    <html lang="en" data-theme="arrakis-day" suppressHydrationWarning className={cn(jetbrainsMono.variable, cinzel.variable, playfairDisplay.variable, bebasNeue.variable, montserrat.variable, geist.variable, "font-sans")}>
       <head>
         <link rel="preload" href="/hero-logo-arrakis-day.webp" as="image" type="image/webp" />
         <link rel="preload" href="/images/citadel-frame.webp" as="image" type="image/webp" />

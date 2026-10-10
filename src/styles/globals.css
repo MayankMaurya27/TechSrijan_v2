@@ -1,6 +1,44 @@
 @import "tailwindcss";
 @import "./tw-animate.css";
 
+@theme {
+  --font-montserrat: var(--font-montserrat), sans-serif;
+  --font-heading: var(--font-montserrat), sans-serif;
+  --font-geist: var(--font-geist), sans-serif;
+  --font-bebas: var(--font-bebas), sans-serif;
+  --font-subheading: var(--font-bebas), sans-serif;
+  --font-chancery: "Apple Chancery", "URW Chancery L", "ITC Zapf Chancery", "Lucida Calligraphy", "Chancery", cursive, serif;
+}
+
+/* Custom Typography System:
+   - Heading: Montserrat (Alternative: Geist)
+   - Italic: Chancery
+   - Subheading: Bebas Neue
+*/
+.font-montserrat,
+.font-heading {
+  font-family: var(--font-montserrat), sans-serif;
+}
+
+.font-geist {
+  font-family: var(--font-geist), sans-serif;
+}
+
+.font-bebas,
+.font-subheading {
+  font-family: var(--font-bebas), sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.font-chancery {
+  font-family: "Apple Chancery", "URW Chancery L", "ITC Zapf Chancery", "Lucida Calligraphy", "Chancery", cursive, var(--font-editorial), serif;
+  font-style: italic;
+}
+
+.font-editorial {
+  font-family: "Apple Chancery", "URW Chancery L", "ITC Zapf Chancery", "Lucida Calligraphy", "Chancery", cursive, var(--font-editorial), serif;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @layer base {

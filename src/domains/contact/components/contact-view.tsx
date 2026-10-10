@@ -255,14 +255,14 @@ export function ContactView() {
             {/* Eyebrow Label with Compass Star & Trailing Line */}
             <div className="flex items-center gap-3">
               <span className="text-[#d4a843] text-base leading-none">✦</span>
-              <span className="text-xs sm:text-sm tracking-[0.3em] text-[#d4a843] uppercase font-semibold">
+              <span className="font-bebas text-base sm:text-lg tracking-[0.25em] text-[#d4a843] uppercase">
                 CONTACT US
               </span>
               <div className="h-px w-28 bg-gradient-to-r from-[#d4a843]/80 to-transparent" />
             </div>
 
-            {/* Grand Headline: GET IN TOUCH */}
-            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-black tracking-tight text-white leading-[0.92]">
+            {/* Grand Headline: GET IN TOUCH (Montserrat) */}
+            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-montserrat font-black tracking-tight text-white leading-[0.92]">
               <span className="block text-transparent bg-clip-text bg-gradient-to-br from-white via-[#f7e7c4] to-[#d4a843] drop-shadow-[0_4px_35px_rgba(212,168,67,0.4)]">
                 GET IN
               </span>
@@ -271,13 +271,13 @@ export function ContactView() {
               </span>
             </h1>
 
-            {/* Editorial Subtitle */}
-            <p className="text-zinc-200 text-base sm:text-lg md:text-xl font-sans leading-relaxed max-w-xl">
+            {/* Editorial Subtitle (Chancery Italic) */}
+            <p className="text-zinc-200 text-lg sm:text-xl md:text-2xl font-chancery leading-relaxed max-w-xl">
               Have a question, collaboration idea or just want to say hi? We would love to hear from you.
             </p>
 
-            {/* Thematic Directives */}
-            <div className="flex items-center gap-3 pt-4 text-xs sm:text-sm tracking-[0.35em] text-[#d4a843]/90 uppercase font-medium">
+            {/* Thematic Directives (Bebas Neue) */}
+            <div className="flex items-center gap-3 pt-4 font-bebas text-sm sm:text-base tracking-[0.35em] text-[#d4a843]/90 uppercase">
               <span>PEOPLE</span>
               <span className="text-[#d4a843]">•</span>
               <span>IDEAS</span>
@@ -320,19 +320,19 @@ export function ContactView() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <span className="text-[#d4a843] text-base leading-none">✦</span>
-                  <span className="text-xs sm:text-sm tracking-[0.3em] text-[#d4a843] uppercase font-semibold">
+                  <span className="font-bebas text-base sm:text-lg tracking-[0.25em] text-[#d4a843] uppercase">
                     CONTACT US
                   </span>
                   <div className="h-px w-28 bg-gradient-to-r from-[#d4a843]/80 to-transparent" />
                 </div>
 
-                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-black tracking-tight text-white leading-tight">
+                <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-montserrat font-black tracking-tight text-white leading-tight">
                   <span className="text-transparent bg-clip-text bg-gradient-to-br from-white via-[#f7e7c4] to-[#d4a843]">
                     SEND US A MESSAGE
                   </span>
                 </h2>
 
-                <p className="text-zinc-300 text-sm sm:text-base font-sans max-w-lg">
+                <p className="text-zinc-300 text-base sm:text-lg font-chancery max-w-lg">
                   Fill out the form below and we&apos;ll get back to you as soon as possible.
                 </p>
               </div>
@@ -350,7 +350,7 @@ export function ContactView() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     {/* Name */}
                     <div className="space-y-1.5">
-                      <label className="block text-[11px] font-sans font-semibold tracking-[0.2em] text-[#d4a843] uppercase">
+                      <label className="block font-bebas text-xs sm:text-sm tracking-wider text-[#d4a843] uppercase">
                         YOUR NAME
                       </label>
                       <div className="relative">
@@ -362,14 +362,14 @@ export function ContactView() {
                           value={formData.name}
                           onChange={handleChange}
                           placeholder="Enter your full name"
-                          className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-3.5 py-3 text-sm text-white placeholder:text-zinc-500 focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors"
+                          className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-3.5 py-3 text-sm font-geist text-white placeholder:text-zinc-500 focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors"
                         />
                       </div>
                     </div>
 
                     {/* Email */}
                     <div className="space-y-1.5">
-                      <label className="block text-[11px] font-sans font-semibold tracking-[0.2em] text-[#d4a843] uppercase">
+                      <label className="block font-bebas text-xs sm:text-sm tracking-wider text-[#d4a843] uppercase">
                         YOUR EMAIL
                       </label>
                       <div className="relative">
@@ -381,7 +381,7 @@ export function ContactView() {
                           value={formData.email}
                           onChange={handleChange}
                           placeholder="you@domain.com"
-                          className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-3.5 py-3 text-sm text-white placeholder:text-zinc-500 focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors"
+                          className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-3.5 py-3 text-sm font-geist text-white placeholder:text-zinc-500 focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors"
                         />
                       </div>
                     </div>
@@ -389,7 +389,7 @@ export function ContactView() {
 
                   {/* Row 2: Subject */}
                   <div className="space-y-1.5">
-                    <label className="block text-[11px] font-sans font-semibold tracking-[0.2em] text-[#d4a843] uppercase">
+                    <label className="block font-bebas text-xs sm:text-sm tracking-wider text-[#d4a843] uppercase">
                       SUBJECT
                     </label>
                     <div className="relative">
@@ -398,7 +398,7 @@ export function ContactView() {
                         name="subject"
                         value={formData.subject}
                         onChange={handleChange}
-                        className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-4 py-3 text-sm text-white focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors cursor-pointer [&>option]:bg-[#120f17] [&>option]:text-white"
+                        className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-4 py-3 text-sm font-geist text-white focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors cursor-pointer [&>option]:bg-[#120f17] [&>option]:text-white"
                       >
                         <option value="General Inquiry">What is this about? (General Inquiry)</option>
                         <option value="Events & Battle Arenas">Events & Arena Competitions</option>
@@ -412,7 +412,7 @@ export function ContactView() {
                   {/* Row 3: Message */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label className="block text-[11px] font-sans font-semibold tracking-[0.2em] text-[#d4a843] uppercase">
+                      <label className="block font-bebas text-xs sm:text-sm tracking-wider text-[#d4a843] uppercase">
                         MESSAGE
                       </label>
                       <span className="text-[10px] font-mono text-zinc-400">
@@ -429,7 +429,7 @@ export function ContactView() {
                         value={formData.message}
                         onChange={handleChange}
                         placeholder="Write your message here..."
-                        className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors resize-none"
+                        className="w-full rounded-lg border border-white/10 bg-black/70 pl-10 pr-4 py-3 text-sm font-geist text-white placeholder:text-zinc-500 focus:border-[#d4a843] focus:outline-none focus:ring-1 focus:ring-[#d4a843]/50 transition-colors resize-none"
                       />
                     </div>
                   </div>
@@ -439,7 +439,7 @@ export function ContactView() {
                     <button
                       type="submit"
                       disabled={formStatus === "sending"}
-                      className="inline-flex items-center gap-2.5 rounded-lg bg-gradient-to-r from-[#d4a843] via-[#e2b755] to-[#c59b27] px-8 py-3.5 text-xs font-sans font-bold uppercase tracking-wider text-black shadow-[0_0_30px_rgba(212,168,67,0.45)] hover:shadow-[0_0_45px_rgba(212,168,67,0.7)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-60"
+                      className="inline-flex items-center gap-2.5 rounded-lg bg-gradient-to-r from-[#d4a843] via-[#e2b755] to-[#c59b27] px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider text-black shadow-[0_0_30px_rgba(212,168,67,0.45)] hover:shadow-[0_0_45px_rgba(212,168,67,0.7)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-60"
                     >
                       {formStatus === "sending" ? (
                         <>
@@ -468,7 +468,7 @@ export function ContactView() {
 
             {/* Right Column: Floating Slogan in Front of the Citadel Art */}
             <div className="lg:col-span-5 flex flex-col justify-end items-end text-right space-y-4 pt-10 lg:pt-0">
-              <div className="space-y-1.5 text-xs sm:text-sm font-sans font-bold tracking-[0.3em] text-[#d4a843] uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+              <div className="space-y-1.5 font-bebas text-lg sm:text-2xl tracking-[0.25em] text-[#d4a843] uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
                 <div>IDEAS</div>
                 <div>PEOPLE</div>
                 <div>IMPACT</div>
@@ -511,16 +511,16 @@ export function ContactView() {
             <div className="lg:col-span-5 space-y-6">
               <div>
                 <Link href="/" className="inline-flex items-center gap-2 group">
-                  <span className="font-editorial text-2xl sm:text-3xl tracking-wider text-white uppercase">
+                  <span className="font-montserrat font-black text-2xl sm:text-3xl tracking-wider text-white uppercase">
                     TECH<span className="text-[#d4a843] text-xl inline-block -translate-y-0.5">✳</span>SRIJAN
                   </span>
                 </Link>
-                <div className="text-xs font-mono tracking-[0.25em] text-[#d4a843] uppercase font-semibold mt-1">
+                <div className="font-bebas text-sm tracking-[0.25em] text-[#d4a843] uppercase mt-1">
                   IMPERIUM : REQUIEM
                 </div>
               </div>
 
-              <p className="text-sm text-zinc-300 font-sans leading-relaxed max-w-sm">
+              <p className="text-base text-zinc-300 font-chancery leading-relaxed max-w-sm">
                 A confluence of ideas, innovation and impact. Building a tomorrow that dares to be different.
               </p>
 
@@ -561,7 +561,7 @@ export function ContactView() {
                     </a>
                   ))}
                 </div>
-                <div className="text-[11px] font-sans font-semibold tracking-[0.25em] text-zinc-400 uppercase">
+                <div className="font-bebas text-xs tracking-[0.25em] text-zinc-400 uppercase">
                   FOLLOW OUR JOURNEY
                 </div>
               </div>
@@ -569,11 +569,11 @@ export function ContactView() {
 
             {/* Col 2: Quick Links (2.5 cols) */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-sans font-bold tracking-[0.25em] text-[#d4a843] uppercase">
+              <div className="flex items-center gap-2 font-bebas text-base tracking-[0.2em] text-[#d4a843] uppercase">
                 <span className="text-red-500">✦</span>
                 <span>QUICK LINKS</span>
               </div>
-              <ul className="space-y-2.5 text-sm font-sans text-zinc-300">
+              <ul className="space-y-2.5 text-sm font-geist text-zinc-300">
                 <li>
                   <Link href="/" className="hover:text-[#d4a843] transition-colors">Home</Link>
                 </li>
@@ -591,11 +591,11 @@ export function ContactView() {
 
             {/* Col 3: Useful Links (2.5 cols) */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-sans font-bold tracking-[0.25em] text-[#d4a843] uppercase">
+              <div className="flex items-center gap-2 font-bebas text-base tracking-[0.2em] text-[#d4a843] uppercase">
                 <span className="text-red-500">✦</span>
                 <span>USEFUL LINKS</span>
               </div>
-              <ul className="space-y-2.5 text-sm font-sans text-zinc-300">
+              <ul className="space-y-2.5 text-sm font-geist text-zinc-300">
                 <li>
                   <Link href="/about" className="hover:text-[#d4a843] transition-colors">About TechSrijan</Link>
                 </li>
@@ -613,12 +613,12 @@ export function ContactView() {
 
             {/* Col 4: Get In Touch (2.5 cols) */}
             <div className="lg:col-span-3 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-sans font-bold tracking-[0.25em] text-[#d4a843] uppercase">
+              <div className="flex items-center gap-2 font-bebas text-base tracking-[0.2em] text-[#d4a843] uppercase">
                 <span className="text-red-500">✦</span>
                 <span>GET IN TOUCH</span>
               </div>
               
-              <div className="space-y-2 text-sm font-sans text-zinc-300">
+              <div className="space-y-2 text-sm font-geist text-zinc-300">
                 <a
                   href="mailto:techsrijan@mmmut.ac.in"
                   className="flex items-center gap-2.5 text-[#d4a843] hover:text-white transition-colors group"

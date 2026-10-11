@@ -210,21 +210,21 @@ export function EventsHeroScroll({
     };
   }, [primeMobileVideo]);
 
-  // ─── Smooth Hardware Video Scrubber (with fastSeek) ─────────────────────────
+  // ─── Smooth Hardware Video Scrubber (Frame-by-Frame Precision) ─────────────
   const attemptSeek = useCallback(() => {
     const video = videoRef.current;
     if (!video || !video.duration || isSeekingRef.current) return;
 
-    // Mobile hardware decoder throttle: guard against rapid finger scroll flooding
+    // Mobile hardware decoder throttle: 16ms (matches 60 FPS)
     if (isMobileRef.current) {
       const now = performance.now();
       const elapsed = now - lastSeekTimeRef.current;
-      if (elapsed < 35) {
+      if (elapsed < 16) {
         if (!throttledSeekTimerRef.current) {
           throttledSeekTimerRef.current = setTimeout(() => {
             throttledSeekTimerRef.current = null;
             attemptSeek();
-          }, 35 - elapsed);
+          }, 16 - elapsed);
         }
         return;
       }
@@ -232,26 +232,22 @@ export function EventsHeroScroll({
 
     const maxDuration = Math.max(0, video.duration - 0.05);
     const target = Math.max(0, Math.min(maxDuration, targetTimeRef.current));
-    const minDelta = isMobileRef.current ? 0.035 : 0.015;
+    const minDelta = 0.01;
 
     if (Math.abs(video.currentTime - target) > minDelta) {
       isSeekingRef.current = true;
       lastSeekTimeRef.current = performance.now();
 
-      // Use fastSeek on supported mobile browsers (direct hardware keyframe jump)
-      const v = video as HTMLVideoElement & { fastSeek?: (time: number) => void };
-      if (typeof v.fastSeek === "function") {
-        v.fastSeek(target);
-      } else {
-        video.currentTime = target;
-      }
+      // Direct currentTime seek on All-Intra media (zero latency, exact frame precision)
+      video.currentTime = target;
 
-      // Watchdog: If mobile browser drops seeked callback, unblock after 120ms
+      // Watchdog: If mobile browser drops seeked callback, unblock after 80ms
       if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
       seekWatchdogRef.current = setTimeout(() => {
         isSeekingRef.current = false;
         renderFrameToCanvas(true);
-      }, 120);
+        attemptSeek();
+      }, 80);
     }
   }, [renderFrameToCanvas]);
 
@@ -278,7 +274,7 @@ export function EventsHeroScroll({
     if (video && video.duration) {
       const maxDuration = Math.max(0, video.duration - 0.05);
       const target = Math.max(0, Math.min(maxDuration, targetTimeRef.current));
-      const minDelta = isMobileRef.current ? 0.035 : 0.015;
+      const minDelta = 0.01;
       if (Math.abs(video.currentTime - target) > minDelta) {
         attemptSeek();
       }

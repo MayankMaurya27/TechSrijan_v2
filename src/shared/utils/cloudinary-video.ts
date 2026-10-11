@@ -12,5 +12,7 @@ export function getMediaVideoUrl(localVideoPath: string): string {
 
   // e.g. "/event_video_desktop.mp4" -> "event_video_desktop"
   const filename = localVideoPath.replace(/^\//, "").replace(/\.mp4$/, "");
-  return `https://res.cloudinary.com/${cloudName}/video/upload/q_auto/techsrijan/videos/${filename}.mp4`;
+
+  // Deliver exact video bytes with intact keyframe intervals (avoiding q_auto re-encoding)
+  return `https://res.cloudinary.com/${cloudName}/video/upload/techsrijan/videos/${filename}.mp4`;
 }

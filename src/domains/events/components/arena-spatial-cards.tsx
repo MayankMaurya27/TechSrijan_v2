@@ -19,6 +19,9 @@ export interface Club {
   tagline: string;
   eventCount: number;
   color: string;
+  logo: string;
+  watermarkLogo?: string;
+  glowColor: string;
 }
 
 export const CLUBS: Club[] = [
@@ -30,6 +33,9 @@ export const CLUBS: Club[] = [
     tagline: "The cultural vanguard — cosplay, science exhibitions & flagship campus events.",
     eventCount: 4,
     color: "crimson",
+    logo: "/club-logos/techrijan-logo.png",
+    watermarkLogo: "/club-logos/techrijan-logo.png",
+    glowColor: "rgba(220, 38, 38, 0.5)",
   },
   {
     id: "mmmut-reso",
@@ -39,6 +45,9 @@ export const CLUBS: Club[] = [
     tagline: "Resonance — the premier coding arena powering Mantrastra & beyond.",
     eventCount: 1,
     color: "amber",
+    logo: "/club-logos/reso-logo.png",
+    watermarkLogo: "/club-logos/reso-logo.png",
+    glowColor: "rgba(56, 189, 248, 0.5)",
   },
   {
     id: "ieee-stb",
@@ -48,6 +57,9 @@ export const CLUBS: Club[] = [
     tagline: "Technical excellence across robotics, software, hardware & innovation.",
     eventCount: 8,
     color: "blue",
+    logo: "/club-logos/ieee-logo.png",
+    watermarkLogo: "/club-logos/ieee-logo.png",
+    glowColor: "rgba(59, 130, 246, 0.5)",
   },
   {
     id: "robotics",
@@ -57,6 +69,9 @@ export const CLUBS: Club[] = [
     tagline: "Battle-tested machines — RoboWar, Laser Strike, CTF & arena combat.",
     eventCount: 6,
     color: "emerald",
+    logo: "/club-logos/robotics-logo.png",
+    watermarkLogo: "/club-logos/robotics-logo.png",
+    glowColor: "rgba(234, 179, 8, 0.5)",
   },
   {
     id: "sae",
@@ -66,6 +81,9 @@ export const CLUBS: Club[] = [
     tagline: "Engineering design mastery — CAD, bridge-building & precision challenges.",
     eventCount: 4,
     color: "violet",
+    logo: "/club-logos/sae-logo-white.png",
+    watermarkLogo: "/club-logos/sae-logo-white.png",
+    glowColor: "rgba(168, 85, 247, 0.5)",
   },
 ];
 
@@ -97,38 +115,88 @@ function ClubCard({
     >
       <div className="relative w-full aspect-[2/3] max-h-[36vh] sm:max-h-[46vh] md:max-h-[64vh] flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-2">
         {/* Dark Glass Interior */}
-        <div className="absolute inset-[4%_4%] sm:inset-[4.5%_4.5%] rounded-[12px] sm:rounded-[22px] bg-black/85 backdrop-blur-md border border-white/10 pt-[8%] pb-[7%] sm:pt-[12%] sm:pb-[10%] px-[7%] sm:px-[10%] flex flex-col justify-between text-left z-10 transition-all duration-300 group-hover:bg-black/90 group-hover:border-white/25 shadow-[0_8px_40px_rgba(0,0,0,0.95)]">
-          {/* Slot Eyebrow */}
-          <div className="flex items-center justify-between gap-1">
-            <span className="font-mono text-[8px] sm:text-[10px] tracking-[0.2em] sm:tracking-[0.25em] text-neutral-400 uppercase">
-              CLUB // {club.slotNumber}
-            </span>
-            <div className="h-[1px] flex-1 max-w-[16px] sm:max-w-[28px] bg-gradient-to-r from-white/30 to-transparent" />
+        <div className="absolute inset-[4%_4%] sm:inset-[4.5%_4.5%] rounded-[12px] sm:rounded-[22px] bg-black/85 backdrop-blur-md border border-white/10 pt-[7%] pb-[6%] sm:pt-[10%] sm:pb-[8%] px-[6%] sm:px-[8%] flex flex-col justify-between text-left z-10 transition-all duration-300 group-hover:bg-black/90 group-hover:border-white/25 shadow-[0_8px_40px_rgba(0,0,0,0.95)] overflow-hidden">
+          {/* ── Background Hologram Watermark ── */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-[12px] sm:rounded-[22px] z-0">
+            <img
+              src={club.watermarkLogo || club.logo}
+              alt=""
+              aria-hidden="true"
+              className="w-[72%] h-[72%] object-contain opacity-15 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500 filter brightness-110"
+              style={{
+                maskImage: "radial-gradient(circle at center, black 32%, transparent 74%)",
+                WebkitMaskImage: "radial-gradient(circle at center, black 32%, transparent 74%)",
+              }}
+            />
+            {/* Subtle Thematic Radial Backlight */}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none"
+              style={{
+                background: `radial-gradient(circle at 50% 38%, ${club.glowColor} 0%, transparent 68%)`,
+              }}
+            />
           </div>
 
-          {/* Short name & full name */}
-          <div className="my-auto py-0.5 sm:py-1">
-            <p className="font-bebas text-[20px] sm:text-[28px] md:text-[34px] lg:text-[38px] tracking-widest text-white uppercase leading-none drop-shadow-[0_2px_12px_rgba(0,0,0,1)] group-hover:text-white transition-colors">
+          {/* ── Slot Eyebrow ── */}
+          <div className="flex items-center justify-between gap-1 relative z-10">
+            <span className="font-mono text-[7px] sm:text-[9.5px] tracking-[0.2em] sm:tracking-[0.25em] text-neutral-400 uppercase">
+              CLUB // {club.slotNumber}
+            </span>
+            <div className="h-[1px] flex-1 max-w-[14px] sm:max-w-[26px] bg-gradient-to-r from-white/30 to-transparent" />
+          </div>
+
+          {/* ── Club Medallion Crest & Titles ── */}
+          <div className="relative z-10 my-auto py-0.5 sm:py-1 flex flex-col items-center text-center">
+            {/* Emblem Crest Bezel with Glow */}
+            <div className="relative mb-1.5 sm:mb-2.5">
+              <div
+                className="w-11 h-11 sm:w-15 sm:h-15 md:w-18 md:h-18 lg:w-20 lg:h-20 xl:w-22 xl:h-22 rounded-full p-1 sm:p-1.5 flex items-center justify-center transition-all duration-300 group-hover:scale-105"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.6) 100%)",
+                  boxShadow: `0 4px 18px rgba(0,0,0,0.85)`,
+                }}
+              >
+                <div
+                  className="w-full h-full rounded-full p-0.5 sm:p-1 flex items-center justify-center border border-white/20 group-hover:border-white/50 transition-colors duration-300 bg-black/70 backdrop-blur-sm shadow-[inset_0_0_12px_rgba(0,0,0,0.9)]"
+                >
+                  <img
+                    src={club.logo}
+                    alt={`${club.shortName} Logo`}
+                    className="w-full h-full object-contain rounded-full drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+              </div>
+
+              {/* Ambient Colored Halo Glow around Crest */}
+              <div
+                className="absolute -inset-1 rounded-full blur-md opacity-25 group-hover:opacity-65 transition-opacity duration-300 pointer-events-none -z-10"
+                style={{ backgroundColor: club.glowColor }}
+              />
+            </div>
+
+            {/* Typography */}
+            <p className="font-bebas text-[18px] sm:text-[24px] md:text-[28px] lg:text-[32px] tracking-widest text-white uppercase leading-none drop-shadow-[0_2px_12px_rgba(0,0,0,1)] group-hover:text-white transition-colors">
               {club.shortName}
             </p>
-            <p className="mt-0.5 sm:mt-1 font-mono text-[7.5px] sm:text-[9px] tracking-[0.12em] text-neutral-300 uppercase leading-tight line-clamp-1">
+            <p className="mt-0.5 sm:mt-1 font-mono text-[6.5px] sm:text-[8.5px] tracking-[0.1em] text-neutral-300 uppercase leading-tight line-clamp-1 max-w-[95%]">
               {club.fullName}
             </p>
-            <p className="mt-1 sm:mt-2 font-sans text-[8px] sm:text-[10px] md:text-[11px] text-neutral-400 group-hover:text-neutral-200 leading-snug line-clamp-2 sm:line-clamp-3 transition-colors duration-300">
+            <p className="mt-1 sm:mt-1.5 font-sans text-[7.5px] sm:text-[9.5px] md:text-[10px] text-neutral-400 group-hover:text-neutral-200 leading-snug line-clamp-2 transition-colors duration-300 max-w-[95%]">
               {club.tagline}
             </p>
           </div>
 
-          {/* Divider */}
-          <div className="relative flex items-center justify-center w-full py-0.5 mb-0.5 sm:mb-1">
+          {/* ── Divider ── */}
+          <div className="relative flex items-center justify-center w-full py-0.5 mb-0.5 sm:mb-1 z-10">
             <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
             <span className="absolute px-1 text-white/50 text-[6.5px] sm:text-[8px]">✦</span>
           </div>
 
-          {/* Event count */}
-          <div className="flex items-center justify-between font-mono text-[7.5px] sm:text-[9px] tracking-[0.12em] text-neutral-500 uppercase border-t border-white/10 pt-1 sm:pt-1.5">
+          {/* ── Event count & Action ── */}
+          <div className="flex items-center justify-between font-mono text-[7px] sm:text-[9px] tracking-[0.12em] text-neutral-500 uppercase border-t border-white/10 pt-1 sm:pt-1.5 z-10">
             <span>{club.eventCount} EVENTS</span>
-            <span className="text-white/70 group-hover:text-white transition-colors flex items-center gap-0.5">
+            <span className="text-white/70 group-hover:text-white transition-colors flex items-center gap-0.5 font-semibold">
               VIEW <ChevronDown className="w-2.5 h-2.5 mt-0.5 group-hover:translate-y-0.5 transition-transform" />
             </span>
           </div>

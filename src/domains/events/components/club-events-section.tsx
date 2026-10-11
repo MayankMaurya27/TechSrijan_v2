@@ -6,6 +6,7 @@ import { ChevronRight, ChevronLeft, RotateCcw, LayoutGrid, Orbit, Sparkles, Arro
 import type { ClubId } from "./arena-spatial-cards";
 import { CLUBS } from "./arena-spatial-cards";
 import { EventDetailModal } from "./event-detail-modal";
+import { InteractiveDossierParticles } from "./interactive-dossier-particles";
 
 // ─── Data Types ───────────────────────────────────────────────────────────────
 
@@ -780,7 +781,7 @@ function ClubTab({
     <button
       type="button"
       onClick={onClick}
-      className={`relative px-4 sm:px-5 py-2 sm:py-2.5 font-mono text-[10px] sm:text-xs tracking-[0.18em] uppercase transition-all duration-300 border cursor-pointer active:scale-95 whitespace-nowrap ${
+      className={`relative px-3.5 sm:px-4.5 py-1.5 sm:py-2 font-mono text-[10px] sm:text-xs tracking-[0.16em] uppercase transition-all duration-300 border cursor-pointer active:scale-95 whitespace-nowrap flex items-center gap-2 ${
         isActive
           ? "bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] font-bold"
           : "bg-transparent text-neutral-400 border-white/15 hover:border-white/40 hover:text-white"
@@ -791,8 +792,19 @@ function ClubTab({
           : undefined,
       }}
     >
-      {club.shortName}
-      <span className={`ml-1.5 font-normal ${isActive ? "text-black/70" : "text-neutral-500"}`}>
+      <div
+        className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full p-0.5 flex items-center justify-center border flex-shrink-0 ${
+          isActive ? "border-black/30 bg-black/10" : "border-white/20 bg-black/40"
+        }`}
+      >
+        <img
+          src={club.logo}
+          alt=""
+          className="w-full h-full object-contain rounded-full"
+        />
+      </div>
+      <span>{club.shortName}</span>
+      <span className={`ml-0.5 font-normal ${isActive ? "text-black/70" : "text-neutral-500"}`}>
         {club.eventCount}
       </span>
     </button>
@@ -906,8 +918,11 @@ export function ClubEventsSection({
     <section
       id="our-events-section"
       ref={sectionRef}
-      className="relative w-full bg-[#030406] overflow-x-clip text-white"
+      className="relative w-full bg-[#030406] overflow-x-clip text-white min-h-screen"
     >
+      {/* ── Interactive Cosmic Particle Field (Micro Stardust, Cyber Sparks, Floating Bokeh Orbs & Shockwaves) ── */}
+      <InteractiveDossierParticles activeClubGlow={activeClub.glowColor} />
+
       {/* Streaming Rays Background SVG (Monochrome) */}
       <StreamingRays />
 
@@ -915,9 +930,9 @@ export function ClubEventsSection({
       <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
       {/* ── Section Header ─────────────────────────────────────────────────── */}
-      <div className="relative z-10 pt-16 sm:pt-24 pb-6 sm:pb-10 px-4 sm:px-8 text-center border-b border-white/10">
+      <div className="relative z-10 pt-8 sm:pt-12 pb-4 sm:pb-6 px-4 sm:px-8 text-center border-b border-white/10">
         {/* Dune ornament */}
-        <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="flex items-center justify-center gap-3 sm:gap-4 mb-2 sm:mb-3">
           <div className="h-[1px] w-12 sm:w-24 bg-gradient-to-r from-transparent to-white/40" />
           <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.4em] text-white/80 uppercase flex items-center gap-1.5">
             <Sparkles className="w-3 h-3 text-white inline" />
@@ -941,14 +956,14 @@ export function ClubEventsSection({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="mt-3 font-sans italic text-sm sm:text-lg text-neutral-300 max-w-2xl mx-auto leading-relaxed"
+          className="mt-2 font-sans italic text-sm sm:text-base text-neutral-300 max-w-2xl mx-auto leading-relaxed"
         >
           &ldquo;A dynamic lineup of technical, creative, and high-energy competitions designed to challenge, engage, and inspire.&rdquo;
         </motion.p>
       </div>
 
       {/* ── Club Filter Tabs Bar ────────────────────────────────────────────── */}
-      <div className="relative z-10 sticky top-[60px] sm:top-[68px] bg-black/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3">
+      <div className="relative z-10 bg-black/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3">
         <div className="flex items-center justify-between gap-3 max-w-6xl mx-auto">
           {/* Club Tabs */}
           <div
@@ -1012,20 +1027,35 @@ export function ClubEventsSection({
       </div>
 
       {/* ── Active Club Eyebrow & Subtitle ───────────────────────────────────── */}
-      <div className="relative z-10 px-4 sm:px-8 pt-8 sm:pt-10 pb-4 max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-          <div className="inline-flex items-center gap-2 mb-1.5">
-            <div className="w-4 h-[1px] bg-white" />
-            <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] text-white/80 uppercase">
-              {activeClub.eventCount} Competitions
-            </span>
+      <div className="relative z-10 px-4 sm:px-8 pt-6 sm:pt-8 pb-4 max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="flex items-center gap-3.5 sm:gap-4.5">
+          {/* Active Club Seal Crest */}
+          <div
+            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full p-1 bg-black/70 border border-white/25 flex-shrink-0 flex items-center justify-center transition-transform duration-300 hover:scale-105"
+            style={{
+              boxShadow: `0 0 24px ${activeClub.glowColor || "rgba(255,255,255,0.25)"}`,
+            }}
+          >
+            <img
+              src={activeClub.logo}
+              alt={activeClub.fullName}
+              className="w-full h-full object-contain rounded-full drop-shadow-md"
+            />
           </div>
-          <h3 className="font-montserrat font-bold text-2xl sm:text-4xl tracking-tight text-white uppercase">
-            {activeClub.fullName}
-          </h3>
-          <p className="mt-1 font-sans text-xs sm:text-sm text-neutral-400 max-w-xl leading-relaxed">
-            {activeClub.tagline}
-          </p>
+          <div>
+            <div className="inline-flex items-center gap-2 mb-1.5">
+              <div className="w-4 h-[1px] bg-white" />
+              <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] text-white/80 uppercase">
+                {activeClub.eventCount} Competitions
+              </span>
+            </div>
+            <h3 className="font-montserrat font-bold text-2xl sm:text-4xl tracking-tight text-white uppercase">
+              {activeClub.fullName}
+            </h3>
+            <p className="mt-1 font-sans text-xs sm:text-sm text-neutral-400 max-w-xl leading-relaxed">
+              {activeClub.tagline}
+            </p>
+          </div>
         </div>
 
         {/* Circular loop controls (visible in stack / circle mode) */}

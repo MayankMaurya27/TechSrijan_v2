@@ -127,11 +127,23 @@ export function EventsHeroScroll({
 
   // ─── Smooth Scroll to Our Events Section ─────────────────────────────────────
   const scrollToOurEvents = useCallback(() => {
+    const st = ScrollTrigger.getById("events-hero-scroll");
+    const lenis = (window as any).__lenis;
+
+    if (st) {
+      const targetScroll = st.end;
+      if (lenis) {
+        lenis.scrollTo(targetScroll, { duration: 1.2 });
+      } else {
+        window.scrollTo({ top: targetScroll, behavior: "smooth" });
+      }
+      return;
+    }
+
     const target = document.getElementById("our-events-section");
     if (target) {
-      const lenis = (window as any).__lenis;
       if (lenis) {
-        lenis.scrollTo(target, { offset: -30, duration: 1.4 });
+        lenis.scrollTo(target, { duration: 1.2 });
       } else {
         target.scrollIntoView({ behavior: "smooth" });
       }
@@ -153,9 +165,10 @@ export function EventsHeroScroll({
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
+          id: "events-hero-scroll",
           trigger: scrollWrapperRef.current,
           start: "top top",
-          end: "+=380%",
+          end: "+=300%",
           pin: pinnedStageRef.current,
           scrub: 0.8,
           anticipatePin: 1,
@@ -378,12 +391,12 @@ export function EventsHeroScroll({
   return (
     <div
       ref={scrollWrapperRef}
-      className="relative w-full min-h-[440vh] sm:min-h-[480vh] bg-black select-none"
+      className="relative w-full bg-black select-none"
     >
-      {/* Sticky Fullscreen Pinned Stage for Video & Arena Cards Transition */}
+      {/* Cinematic Stage Viewport (Pinned by GSAP ScrollTrigger) */}
       <div
         ref={pinnedStageRef}
-        className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden bg-black"
+        className="relative h-screen h-[100dvh] w-full overflow-hidden bg-black"
       >
         {/* =================================================================== */}
         {/* LAYER 0 & 1: VIDEO SCRUBBER & BASELINE ARENA POSTERS               */}

@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArenaSpatialCards } from "./arena-spatial-cards";
 import type { ClubId } from "./arena-spatial-cards";
 import { getMediaVideoUrl } from "@/shared/utils/cloudinary-video";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -130,6 +131,7 @@ export function EventsHeroScroll({
     syncCanvasSize();
 
     const poster = new Image();
+    poster.crossOrigin = "anonymous";
     poster.src = isMobile ? "/events-mobile-hero-poster.webp" : "/events-hero-poster.webp";
     poster.onload = () => {
       const canvas = canvasRef.current;
@@ -139,8 +141,8 @@ export function EventsHeroScroll({
 
       const cW = canvas.width;
       const cH = canvas.height;
-      const pW = poster.naturalWidth;
-      const pH = poster.naturalHeight;
+      const pW = poster.naturalWidth || 720;
+      const pH = poster.naturalHeight || 1280;
       const canvasAspect = cW / cH;
       const posterAspect = pW / pH;
 
@@ -162,7 +164,12 @@ export function EventsHeroScroll({
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "medium";
       ctx.drawImage(poster, oX, oY, dW, dH);
+      setHasDrawnFrame(true);
     };
+
+    if (poster.complete) {
+      poster.onload?.(new Event("load") as any);
+    }
 
     const handleResize = () => {
       syncCanvasSize();
@@ -172,7 +179,7 @@ export function EventsHeroScroll({
     return () => window.removeEventListener("resize", handleResize);
   }, [isMobile, renderFrameToCanvas, syncCanvasSize]);
 
-  // Prime mobile video decoder on first user touch/scroll gesture (iOS/Android requirement)
+  // Prime mobile video decoder on mount and first user gesture (iOS/Android requirement)
   const primeMobileVideo = useCallback(() => {
     if (isPrimedRef.current) return;
     isPrimedRef.current = true;
@@ -185,6 +192,14 @@ export function EventsHeroScroll({
   }, []);
 
   useEffect(() => {
+    // Attempt non-gesture priming for mobile/desktop
+    const v = videoRef.current;
+    if (v && v.paused) {
+      v.play()
+        .then(() => v.pause())
+        .catch(() => {});
+    }
+
     window.addEventListener("touchstart", primeMobileVideo, { passive: true, once: true });
     window.addEventListener("pointerdown", primeMobileVideo, { passive: true, once: true });
     window.addEventListener("wheel", primeMobileVideo, { passive: true, once: true });
@@ -419,10 +434,19 @@ export function EventsHeroScroll({
     };
   }, [attemptSeek, onScrollProgress]);
 
-  // Poster URLs tailored to device aspect ratio
-  const heroPoster = isMobile ? "/events-mobile-hero-poster.webp" : "/events-hero-poster.webp";
-  const midPoster = isMobile ? "/events-mobile-mid-poster.webp" : "/events-mid-poster.webp";
-  const arenaPoster = isMobile ? "/events-mobile-arena-poster.webp" : "/events-arena-poster.webp";
+  // Poster URLs tailored to device aspect ratio with Cloudinary CDN optimization
+  const heroPoster = getOptimizedImageUrl(
+    isMobile ? "/events-mobile-hero-poster.webp" : "/events-hero-poster.webp",
+    1200
+  );
+  const midPoster = getOptimizedImageUrl(
+    isMobile ? "/events-mobile-mid-poster.webp" : "/events-mid-poster.webp",
+    1200
+  );
+  const arenaPoster = getOptimizedImageUrl(
+    isMobile ? "/events-mobile-arena-poster.webp" : "/events-arena-poster.webp",
+    1200
+  );
 
   return (
     <div
@@ -440,21 +464,21 @@ export function EventsHeroScroll({
         <div ref={bgArenaRef} className="absolute inset-0 h-full w-full will-change-transform z-0">
           {/* Baseline WebP Posters: Always render underneath to prevent any blank frames */}
           <div
-            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-1"
+            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-[1]"
             style={{
               backgroundImage: `url('${heroPoster}')`,
               opacity: scrollProgress < 0.26 ? 1 : 0,
             }}
           />
           <div
-            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-1"
+            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-[1]"
             style={{
               backgroundImage: `url('${midPoster}')`,
               opacity: scrollProgress >= 0.26 && scrollProgress < 0.45 ? 1 : 0,
             }}
           />
           <div
-            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-1"
+            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-[1]"
             style={{
               backgroundImage: `url('${arenaPoster}')`,
               opacity: scrollProgress >= 0.45 ? 1 : 0,
@@ -466,13 +490,13 @@ export function EventsHeroScroll({
             ref={canvasRef}
             className="absolute inset-0 h-full w-full object-cover pointer-events-none transition-opacity duration-300"
             style={{
-              opacity: isVideoLoaded && hasDrawnFrame ? 1 : 0,
+              opacity: hasDrawnFrame ? 1 : 0,
               zIndex: 2,
               filter: "contrast(1.04) brightness(1.02)",
             }}
           />
 
-          {/* Hidden Video element for hardware decoding */}
+          {/* Active Off-Screen Video Element for Hardware Media Decoding (Safe on iOS Safari & Android Chrome) */}
           <video
             ref={videoRef}
             src={getMediaVideoUrl(isMobile ? "/event_video_mobile.mp4" : "/event_video_desktop.mp4")}
@@ -480,9 +504,19 @@ export function EventsHeroScroll({
             playsInline
             muted
             preload="auto"
+            crossOrigin="anonymous"
             onLoadedMetadata={handleLoadedMetadata}
             onSeeked={handleSeeked}
-            className="hidden"
+            style={{
+              position: "absolute",
+              width: "1px",
+              height: "1px",
+              opacity: 0.001,
+              pointerEvents: "none",
+              zIndex: -1,
+              top: 0,
+              left: 0,
+            }}
           />
 
           {/* Deep Obsidian Left/Bottom Vignette for cinematic depth and typography contrast */}
@@ -490,7 +524,7 @@ export function EventsHeroScroll({
             className="absolute inset-0 pointer-events-none z-10"
             style={{
               background: isMobile
-                ? "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.7) 100%)"
+                ? "linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.65) 100%)"
                 : "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.3) 60%, transparent 100%)",
               opacity: Math.max(0, 1 - scrollProgress * 2.8),
             }}

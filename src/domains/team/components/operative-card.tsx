@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { ArrowUpRight } from "lucide-react";
 import type { Operative } from "../data/team-roster";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 const MAX_TILT = 9; // degrees
 
@@ -14,6 +15,7 @@ interface OperativeCardProps {
 export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) {
   const circleRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
+  const [hasImgError, setHasImgError] = useState(false);
   const [tilt, setTilt] = useState({ rx: 0, ry: 0, mx: 50, my: 50, active: false });
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -96,12 +98,13 @@ export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) 
             />
 
             {/* Member Photo */}
-            {operative.image ? (
+            {operative.image && !hasImgError ? (
               <img
-                src={operative.image}
+                src={getOptimizedImageUrl(operative.image, 400)}
                 alt={operative.name}
                 className="h-full w-full rounded-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
-                loading="lazy"
+                onError={() => setHasImgError(true)}
+                decoding="async"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-b from-[#181B26] to-[#0A0B0E] text-3xl font-bold text-white/90">

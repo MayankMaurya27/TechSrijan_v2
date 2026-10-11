@@ -164,8 +164,11 @@ export function PageTransitionLoader() {
         };
 
         try {
-          const cdnUrl = cloudinaryLoader({ src: assetPath, width: 1200, quality: 85 });
+          const targetWidth =
+            targetRoute.includes("developer") || targetRoute.includes("team") ? 400 : 1200;
+          const cdnUrl = cloudinaryLoader({ src: assetPath, width: targetWidth, quality: 85 });
           const img = new Image();
+          img.crossOrigin = "anonymous";
           img.onload = settle;
           img.onerror = settle;
           img.src = cdnUrl;

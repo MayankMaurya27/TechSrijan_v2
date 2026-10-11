@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Trophy, Users, MapPin, Calendar, CheckCircle2, Shield, Share2 } from "lucide-react";
 import type { DetailedEvent } from "./club-events-section";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 interface EventDetailModalProps {
   event: DetailedEvent | null;
@@ -92,7 +93,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
               {event.image && (
                 <div className="relative w-full h-44 sm:h-52 rounded-2xl overflow-hidden border border-white/15 bg-black">
                   <img
-                    src={event.image}
+                    src={getOptimizedImageUrl(event.image, 1000)}
                     alt={event.name}
                     draggable={false}
                     onError={(e) => {

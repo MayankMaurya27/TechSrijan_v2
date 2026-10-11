@@ -12,8 +12,10 @@ import {
   QrCode,
   Share2,
   Check,
+  AlertCircle,
 } from "lucide-react";
 import { useAmbassadorTheme } from "./ambassador-theme";
+import { api } from "@/lib/api";
 
 const GORAKHPUR_COLLEGES = [
   "MMMUT Gorakhpur (Madan Mohan Malaviya Univ. of Tech)",
@@ -57,6 +59,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [operativeId, setOperativeId] = useState("");
+  const [apiError, setApiError] = useState<string | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -139,17 +142,34 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateStep2()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      const generated = `TS27-OP-${Math.floor(1000 + Math.random() * 9000)}`;
-      setOperativeId(generated);
-      setIsSubmitting(false);
+    setApiError(null);
+
+    try {
+      const cleanPhone = formData.phone.replace(/\D/g, "");
+      const res = await api.ambassador.apply({
+        fullName: formData.fullName.trim(),
+        email: formData.email.trim(),
+        phone: cleanPhone,
+        college: formData.college.trim(),
+        city: formData.city.trim(),
+        branch: formData.branch.trim(),
+        courseYear: formData.courseYear,
+        statement: formData.statement.trim() || undefined,
+      });
+
+      setOperativeId(res.operativeCode || `TS27-OP-${res.id.slice(0, 4).toUpperCase()}`);
       setSubmitted(true);
-    }, 1200);
+    } catch (err: any) {
+      console.warn("Ambassador apply error:", err);
+      setApiError(err.message || "Failed to submit operative directive.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCopyId = () => {
@@ -621,6 +641,13 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                           className={`w-full px-3.5 py-1.5 sm:py-2 bg-[#111215] border border-neutral-700/60 rounded-md text-xs sm:text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} font-mono uppercase`}
                         />
                       </div>
+
+                      {apiError && (
+                        <div className="p-3 my-2 rounded-lg border border-red-500/50 bg-red-950/40 text-red-300 text-xs flex items-center gap-2">
+                          <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-400" />
+                          <span>{apiError}</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Pinned Action Footer */}

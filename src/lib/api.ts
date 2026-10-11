@@ -5,45 +5,34 @@
  * ==============================================================================
  */
 
-export interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: {
-    code: string;
-    message: string;
-    details?: any;
-  };
-  meta?: {
-    timestamp: string;
-    traceId?: string;
-  };
-}
+import type {
+  ApiResponse,
+  SafeUser,
+  AuthResponse,
+  MeResponse,
+  InventoryTier,
+  ReservationResult,
+  UserBookingResponse,
+  BackendEvent,
+  CampusAmbassador,
+  Sponsor,
+  PresignedPostResult,
+  UserPointsProfile,
+  PaymentRecord,
+} from "./types";
 
-export interface InventoryTier {
-  gender: "boys" | "girls";
-  totalCapacity: number;
-  reservedCount: number;
-  confirmedCount: number;
-  availableBeds: number;
-  isSoldOut: boolean;
-  updatedAt: string;
-}
+export * from "./types";
 
-export interface ReservationResult {
-  bookingId: string;
-  paymentReference: string;
-  bedCount: number;
-  amount: number;
-  expiresAt: string;
-  upiUri: string;
-  qrDataUrl: string;
-}
+export class ApiError extends Error {
+  code: string;
+  details?: any;
 
-export interface PresignedPostResult {
-  uploadUrl: string;
-  fields: Record<string, string>;
-  fileKey: string;
-  publicUrl: string;
+  constructor(message: string, code = "API_ERROR", details?: any) {
+    super(message);
+    this.name = "ApiError";
+    this.code = code;
+    this.details = details;
+  }
 }
 
 class ApiClient {
@@ -66,10 +55,13 @@ class ApiClient {
     const data: ApiResponse<T> = await res.json().catch(() => ({
       success: false,
       error: { code: "PARSE_ERROR", message: "Failed to parse JSON response" },
+      meta: { timestamp: new Date().toISOString() },
     }));
 
     if (!res.ok || !data.success) {
-      throw new Error(data.error?.message || `Request failed with status ${res.status}`);
+      const errorMessage =
+        data.error?.message || `Request failed with status ${res.status}`;
+      throw new ApiError(errorMessage, data.error?.code, data.error?.details);
     }
 
     return data.data as T;
@@ -85,25 +77,34 @@ class ApiClient {
       collegeName: string;
       gender: "MALE" | "FEMALE" | "OTHER";
       rollNumber?: string;
+      isMmmutStudent?: boolean;
+      studentType?: "MMMUT" | "OUTSIDER";
       turnstileToken?: string;
     }) =>
-      this.request<{ token: string; user: any }>("/api/auth/register", {
+      this.request<AuthResponse>("/api/auth/register", {
         method: "POST",
         body: JSON.stringify(body),
       }).then((res) => {
         if (typeof window !== "undefined" && res.token) {
           localStorage.setItem("ts27_token", res.token);
+          localStorage.setItem("ts27_user_profile", JSON.stringify(res.user));
         }
         return res;
       }),
 
-    login: (body: { email: string; password: string; turnstileToken?: string }) =>
-      this.request<{ token: string; user: any }>("/api/auth/login", {
+    login: (body: {
+      email?: string;
+      identifier?: string;
+      password: string;
+      turnstileToken?: string;
+    }) =>
+      this.request<AuthResponse>("/api/auth/login", {
         method: "POST",
         body: JSON.stringify(body),
       }).then((res) => {
         if (typeof window !== "undefined" && res.token) {
           localStorage.setItem("ts27_token", res.token);
+          localStorage.setItem("ts27_user_profile", JSON.stringify(res.user));
         }
         return res;
       }),
@@ -111,10 +112,54 @@ class ApiClient {
     logout: () => {
       if (typeof window !== "undefined") {
         localStorage.removeItem("ts27_token");
+        localStorage.removeItem("ts27_user_profile");
       }
     },
 
-    getMe: () => this.request<{ profile: any; stayBooking: any; eventRegistrations: any[] }>("/api/auth/me"),
+    getMe: () => this.request<MeResponse>("/api/auth/me"),
+  };
+
+  // ── USER PROFILE & ONBOARDING ───────────────────────────────────────────────
+  user = {
+    onboard: (body: {
+      bankAccountNumber?: string;
+      bankIfsc?: string;
+      collegeName?: string;
+      city?: string;
+      branch?: string;
+      courseYear?: number;
+    }) =>
+      this.request<SafeUser>("/api/user/onboarding", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }).then((user) => {
+        if (typeof window !== "undefined" && user) {
+          localStorage.setItem("ts27_user_profile", JSON.stringify(user));
+        }
+        return user;
+      }),
+
+    updateProfile: (body: {
+      name?: string;
+      mobile?: string;
+      collegeName?: string;
+      bankAccountNumber?: string;
+      bankIfsc?: string;
+      city?: string;
+      branch?: string;
+      courseYear?: number;
+    }) =>
+      this.request<SafeUser>("/api/user/profile", {
+        method: "PUT",
+        body: JSON.stringify(body),
+      }).then((user) => {
+        if (typeof window !== "undefined" && user) {
+          localStorage.setItem("ts27_user_profile", JSON.stringify(user));
+        }
+        return user;
+      }),
+
+    getPoints: () => this.request<UserPointsProfile>("/api/user/points"),
   };
 
   // ── ACCOMMODATION & BED RESERVATION (LOCKING) ────────────────────────────────
@@ -142,20 +187,22 @@ class ApiClient {
       amount: number;
       receiptUrl: string;
     }) =>
-      this.request<{ bookingId: string; paymentId: string; status: string; utrNumber: string }>(
-        "/api/stay/submit",
-        {
-          method: "POST",
-          body: JSON.stringify(body),
-        }
-      ),
+      this.request<{
+        bookingId: string;
+        paymentId: string;
+        status: string;
+        utrNumber: string;
+      }>("/api/stay/submit", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
 
-    getStatus: () => this.request<{ booking: any; guests: any[]; payment: any | null }>("/api/stay/status"),
+    getStatus: () => this.request<UserBookingResponse>("/api/stay/status"),
   };
 
   // ── TECHNICAL & CULTURAL EVENTS ─────────────────────────────────────────────
   events = {
-    list: () => this.request<any[]>("/api/events"),
+    list: () => this.request<BackendEvent[]>("/api/events"),
 
     registerSolo: (eventId: string) =>
       this.request<any>("/api/events/register", {
@@ -176,15 +223,68 @@ class ApiClient {
       }),
   };
 
+  // ── CAMPUS AMBASSADOR ───────────────────────────────────────────────────────
+  ambassador = {
+    apply: (body: {
+      fullName: string;
+      email: string;
+      phone: string;
+      college: string;
+      city: string;
+      branch: string;
+      courseYear: string;
+      statement?: string;
+    }) =>
+      this.request<CampusAmbassador>("/api/ambassador/apply", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+  };
+
+  // ── SPONSORS ────────────────────────────────────────────────────────────────
+  sponsors = {
+    list: () => this.request<Sponsor[]>("/api/sponsors"),
+
+    inquire: (body: {
+      company_name: string;
+      contact_person: string;
+      email: string;
+      phone: string;
+      proposed_budget_tier?: string;
+      message?: string;
+    }) =>
+      this.request<{ success: boolean; message: string }>("/api/sponsors/inquiry", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+  };
+
+  // ── CONTACT & TRANSMISSIONS ─────────────────────────────────────────────────
+  contact = {
+    submit: (body: {
+      name: string;
+      email: string;
+      subject?: string;
+      message: string;
+    }) =>
+      this.request<{ success: boolean; message: string }>("/api/contact", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+  };
+
   // ── ZERO-TRUST STORAGE (CLOUDFLARE R2 PRESIGNED POST) ───────────────────────
   storage = {
-    getPresignPolicy: (category: "stay" | "event") =>
+    getPresignPolicy: (category: "stay" | "event", turnstileToken?: string) =>
       this.request<PresignedPostResult>("/api/storage/presign", {
         method: "POST",
-        body: JSON.stringify({ category }),
+        body: JSON.stringify({ category, turnstileToken }),
       }),
 
-    uploadReceipt: async (file: File | Blob, policy: PresignedPostResult): Promise<string> => {
+    uploadReceipt: async (
+      file: File | Blob,
+      policy: PresignedPostResult
+    ): Promise<string> => {
       const formData = new FormData();
       Object.entries(policy.fields).forEach(([k, v]) => formData.append(k, v));
       formData.append("file", file);
@@ -195,7 +295,10 @@ class ApiClient {
       });
 
       if (!res.ok && res.status !== 204 && res.status !== 200) {
-        throw new Error("Direct Cloudflare R2 upload rejected by edge policy.");
+        throw new ApiError(
+          "Direct Cloudflare R2 upload rejected by edge policy.",
+          "UPLOAD_REJECTED"
+        );
       }
 
       return policy.publicUrl;
@@ -204,14 +307,16 @@ class ApiClient {
     /**
      * Browser canvas downscaler:
      * Downscales phone camera photos (5-12MB) to 1920x1080 WebP (~180KB)
-     * and uploads directly to R2.
+     * and uploads directly to Cloudflare R2.
      */
-    compressAndUpload: async (file: File, category: "stay" | "event"): Promise<string> => {
+    compressAndUpload: async (
+      file: File,
+      category: "stay" | "event"
+    ): Promise<string> => {
       const policy = await this.storage.getPresignPolicy(category);
 
       let blobToUpload: Blob = file;
 
-      // Downscale if in browser environment
       if (typeof window !== "undefined") {
         try {
           blobToUpload = await new Promise((resolve) => {
@@ -247,6 +352,118 @@ class ApiClient {
 
       return await this.storage.uploadReceipt(blobToUpload, policy);
     },
+  };
+
+  // ── ADMIN SUITE ─────────────────────────────────────────────────────────────
+  admin = {
+    payments: {
+      list: (status?: string) =>
+        this.request<any[]>(
+          status ? `/api/admin/payments?status=${encodeURIComponent(status)}` : "/api/admin/payments"
+        ),
+      verify: (body: {
+        paymentId: string;
+        status: "VERIFIED" | "REJECTED";
+        rejectionReason?: string;
+      }) =>
+        this.request<PaymentRecord>("/api/admin/verify-payment", {
+          method: "POST",
+          body: JSON.stringify(body),
+        }),
+    },
+
+    stay: {
+      listBookings: () => this.request<any[]>("/api/admin/stay/bookings"),
+    },
+
+    events: {
+      list: () => this.request<BackendEvent[]>("/api/admin/events"),
+      create: (body: any) =>
+        this.request<BackendEvent>("/api/admin/events", {
+          method: "POST",
+          body: JSON.stringify(body),
+        }),
+      update: (id: string, body: any) =>
+        this.request<BackendEvent>(`/api/admin/events/${id}`, {
+          method: "PUT",
+          body: JSON.stringify(body),
+        }),
+      delete: (id: string) =>
+        this.request<{ success: boolean; message: string }>(`/api/admin/events/${id}`, {
+          method: "DELETE",
+        }),
+      getParticipants: (id: string) =>
+        this.request<any>(`/api/admin/events/${id}/participants`),
+      markAttendance: (id: string, attendees: Array<{ registrationId: string; attended: boolean }>) =>
+        this.request<any>(`/api/admin/events/${id}/attendance`, {
+          method: "PATCH",
+          body: JSON.stringify({ attendees }),
+        }),
+      getPodium: (id: string) => this.request<any>(`/api/admin/events/${id}/podium`),
+      declarePodium: (id: string, podium: Array<{ position: 1 | 2 | 3; registrationId: string }>) =>
+        this.request<any>(`/api/admin/events/${id}/podium`, {
+          method: "POST",
+          body: JSON.stringify({ podium }),
+        }),
+      updatePointsConfig: (id: string, body: any) =>
+        this.request<BackendEvent>(`/api/admin/events/${id}/points-config`, {
+          method: "PATCH",
+          body: JSON.stringify(body),
+        }),
+    },
+
+    ambassadors: {
+      list: () => this.request<CampusAmbassador[]>("/api/admin/ambassadors"),
+      updateStatus: (id: string, status: "PENDING" | "APPROVED" | "ACTIVE" | "REJECTED") =>
+        this.request<CampusAmbassador>(`/api/admin/ambassadors/${id}`, {
+          method: "PUT",
+          body: JSON.stringify({ status }),
+        }),
+    },
+
+    sponsors: {
+      list: () => this.request<Sponsor[]>("/api/admin/sponsors"),
+      create: (body: any) =>
+        this.request<Sponsor>("/api/admin/sponsors", {
+          method: "POST",
+          body: JSON.stringify(body),
+        }),
+      update: (id: string, body: any) =>
+        this.request<Sponsor>(`/api/admin/sponsors/${id}`, {
+          method: "PUT",
+          body: JSON.stringify(body),
+        }),
+      delete: (id: string) =>
+        this.request<{ success: boolean; message: string }>(`/api/admin/sponsors/${id}`, {
+          method: "DELETE",
+        }),
+    },
+
+    credentials: {
+      list: () => this.request<any[]>("/api/admin/credentials"),
+      create: (body: any) =>
+        this.request<any>("/api/admin/credentials", {
+          method: "POST",
+          body: JSON.stringify(body),
+        }),
+      update: (id: string, body: any) =>
+        this.request<any>(`/api/admin/credentials/${id}`, {
+          method: "PATCH",
+          body: JSON.stringify(body),
+        }),
+      delete: (id: string) =>
+        this.request<any>(`/api/admin/credentials/${id}`, {
+          method: "DELETE",
+        }),
+    },
+
+    checkIn: (body: { type: "STAY_GUEST" | "EVENT_ATTENDEE"; id: string }) =>
+      this.request<{ type: string; record: any; message: string }>("/api/admin/check-in", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+
+    exportGateRosterUrl: () => "/api/admin/export-gate-roster",
   };
 }
 

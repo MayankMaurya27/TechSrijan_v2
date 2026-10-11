@@ -23,6 +23,9 @@ import {
   Save,
   Check,
 } from "lucide-react";
+import { useAuth } from "@/core";
+import { api } from "@/lib/api";
+import { useAuthModal } from "@/domains/auth";
 
 export interface UserProfileData {
   fullName: string;
@@ -67,6 +70,8 @@ const DEFAULT_PROFILE: UserProfileData = {
 };
 
 export function ProfileView() {
+  const { user, refreshUser } = useAuth();
+  const { openAuthModal } = useAuthModal();
   const [profile, setProfile] = useState<UserProfileData>(DEFAULT_PROFILE);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<UserProfileData>(DEFAULT_PROFILE);
@@ -75,29 +80,96 @@ export function ProfileView() {
 
   useEffect(() => {
     setMounted(true);
-    // Hydrate from localStorage if user completed onboarding
-    if (typeof window !== "undefined") {
+
+    const loadProfile = async () => {
       try {
-        const stored = localStorage.getItem("ts27_user_profile");
-        if (stored) {
-          const parsed = JSON.parse(stored);
+        const data = await api.auth.getMe();
+        if (data?.profile) {
+          const u = data.profile;
+          const pts = data.pointsProfile?.totalPoints ?? u.totalPoints ?? 0;
+          const tier =
+            pts >= 600
+              ? "Imperial Sovereign · Tier IV"
+              : pts >= 300
+                ? "Gold Sentinel · Tier III"
+                : pts >= 100
+                  ? "Silver Vanguard · Tier II"
+                  : "Bronze Legion · Tier I";
+
+          const stayBooking = data.stayBooking;
+          const hasStay = Boolean(
+            stayBooking?.booking &&
+              !["EXPIRED", "CANCELLED", "REJECTED"].includes(
+                stayBooking.booking.overallStatus
+              )
+          );
+
+          const hall =
+            stayBooking?.guests?.[0]?.gender === "girls"
+              ? "Sarojini Bhavan · Girls Wing"
+              : "Subhash Bhavan · Boys Wing";
+
+          const statusStr =
+            stayBooking?.payment?.status === "VERIFIED"
+              ? "Bed Confirmed"
+              : stayBooking?.booking?.overallStatus === "PENDING_VERIFICATION"
+                ? "Payment Verification Underway"
+                : stayBooking?.booking?.overallStatus === "PENDING_SUBMISSION"
+                  ? "Reservation Hold Active"
+                  : "Allocation Pending";
+
           const merged: UserProfileData = {
-            ...DEFAULT_PROFILE,
-            fullName: parsed.fullName || DEFAULT_PROFILE.fullName,
-            email: parsed.email || DEFAULT_PROFILE.email,
-            phone: parsed.phone || DEFAULT_PROFILE.phone,
-            college: parsed.college || DEFAULT_PROFILE.college,
-            course: parsed.course || DEFAULT_PROFILE.course,
-            year: parsed.year || DEFAULT_PROFILE.year,
-            city: parsed.city || DEFAULT_PROFILE.city,
+            fullName: u.name || DEFAULT_PROFILE.fullName,
+            email: u.email || DEFAULT_PROFILE.email,
+            phone: u.mobile || DEFAULT_PROFILE.phone,
+            college: u.collegeName || DEFAULT_PROFILE.college,
+            course: u.role === "STUDENT" ? "Undergraduate / Participant" : u.role,
+            year: u.rollNumber ? `Roll: ${u.rollNumber}` : "Registered Attendee",
+            city: DEFAULT_PROFILE.city,
+            participantId:
+              u.rollNumber || (u.id ? `TS27-${u.id.slice(0, 8).toUpperCase()}` : "TS27-USER"),
+            isProfileComplete: u.isOnboarded,
+            accommodationBooked: hasStay,
+            bookingRef: stayBooking?.booking?.paymentReference || "N/A",
+            hallName: hasStay ? hall : "Not Reserved",
+            roomBed: hasStay ? statusStr : "No Allocation",
+            duration: hasStay
+              ? `${stayBooking?.booking?.numPeople ?? 1} Bed(s) Allocated`
+              : "None",
+            eventPoints: pts,
+            rankTier: tier,
+            registeredEventsCount: data.eventRegistrations?.length ?? 0,
           };
+
           setProfile(merged);
           setEditForm(merged);
         }
-      } catch {
-        // use default fallback
+      } catch (err) {
+        console.warn("Failed to load user profile from API, checking cached session:", err);
+        // Fallback to local storage if offline
+        if (typeof window !== "undefined") {
+          try {
+            const stored = localStorage.getItem("ts27_user_profile");
+            if (stored) {
+              const parsed = JSON.parse(stored);
+              const merged: UserProfileData = {
+                ...DEFAULT_PROFILE,
+                fullName: parsed.name || parsed.fullName || DEFAULT_PROFILE.fullName,
+                email: parsed.email || DEFAULT_PROFILE.email,
+                phone: parsed.mobile || parsed.phone || DEFAULT_PROFILE.phone,
+                college: parsed.collegeName || parsed.college || DEFAULT_PROFILE.college,
+              };
+              setProfile(merged);
+              setEditForm(merged);
+            }
+          } catch {
+            // ignore
+          }
+        }
       }
-    }
+    };
+
+    loadProfile();
   }, []);
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -105,8 +177,19 @@ export function ProfileView() {
     setEditForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      await api.user.onboard({
+        collegeName: editForm.college,
+        city: editForm.city,
+        branch: editForm.course,
+      });
+      await refreshUser();
+    } catch (err) {
+      console.warn("Could not save to backend user endpoint, updating local state:", err);
+    }
+
     setProfile(editForm);
     if (typeof window !== "undefined") {
       localStorage.setItem("ts27_user_profile", JSON.stringify(editForm));

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { isMobileDevice } from "@/core";
+import { getMediaVideoUrl } from "@/shared/utils/cloudinary-video";
 
 import dynamic from "next/dynamic";
 import { HeroTitle } from "./hero-title";
@@ -54,8 +55,10 @@ export function ScrollJourney({
   }, []);
 
   // Choose video source based on device (1080x1920 all-intra mobile_asset on mobile, scrolling-hd on laptop)
-  const activeScrollSrc =
-    scrollSrc || (isMobile ? "/scrolling-mobile.mp4" : "/scrolling-hd.mp4");
+  const activeScrollSrc = getMediaVideoUrl(
+    scrollSrc || (isMobile ? "/scrolling-mobile.mp4" : "/scrolling-hd.mp4")
+  );
+  const activeLandingSrc = getMediaVideoUrl(landingSrc);
 
   useEffect(() => {
     const mobile = checkIsMobile();
@@ -480,7 +483,7 @@ export function ScrollJourney({
         {/* Layer 1.2: Ambient Landing Background Loop */}
         <video
           ref={landingVideoRef}
-          src={landingSrc}
+          src={activeLandingSrc}
           autoPlay
           loop
           muted

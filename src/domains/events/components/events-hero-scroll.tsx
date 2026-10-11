@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArenaSpatialCards } from "./arena-spatial-cards";
 import type { ClubId } from "./arena-spatial-cards";
+import { getMediaVideoUrl } from "@/shared/utils/cloudinary-video";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -474,7 +475,7 @@ export function EventsHeroScroll({
           {/* Hidden Video element for hardware decoding */}
           <video
             ref={videoRef}
-            src={isMobile ? "/event_video_mobile.mp4" : "/event_video_desktop.mp4"}
+            src={getMediaVideoUrl(isMobile ? "/event_video_mobile.mp4" : "/event_video_desktop.mp4")}
             poster={heroPoster}
             playsInline
             muted

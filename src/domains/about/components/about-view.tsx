@@ -586,8 +586,10 @@ export function AboutView() {
                   <span>Campus Facilities & Arenas</span>
                 </div>
                 <p className="text-sm sm:text-base text-neutral-200 font-geist leading-relaxed">
-                  Equipped with high-performance computing centers (Aryabhatta & Ramanujan), a 2,000-seat multi-purpose
-                  auditorium, outdoor sports stadiums for drone arenas, and dedicated hostel quarters for visiting delegates.
+                  Hosted across MMMUT&apos;s apex campus infrastructure: the air-conditioned 800-seat Multi-Purpose Hall (MPH),
+                  Pushpagiri Lecture Hall Complex, Information Technology Resource Centre (ITRC) with 1 Gbps NKN high-speed
+                  computing labs, the 12-acre Shaheed Bandhu Singh Stadium for drone and RC flight arenas, and university
+                  residential halls for visiting national delegates.
                 </p>
               </div>
             </div>
@@ -595,7 +597,7 @@ export function AboutView() {
         </section>
 
         {/* ============================================================
-            THE FIVE SPECIALIST SOCIETIES: Compact Showcase
+            TECHNICAL SUB-COUNCIL & SOCIETIES: Compact Showcase
             ============================================================ */}
         <section className="mb-14 sm:mb-20 py-6 border-t border-white/[0.08]">
           <div className="mb-8 max-w-2xl">
@@ -607,13 +609,13 @@ export function AboutView() {
             </div>
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-montserrat font-black tracking-tight text-white leading-tight">
               <span className="font-chancery italic font-normal text-neutral-200 mr-2">
-                The Five
+                Technical Sub-Council &amp;
               </span>
               <span>Specialist Societies</span>
             </h2>
             <p className="mt-2 text-sm sm:text-base text-neutral-200 font-geist">
-              Under the apex direction of the Technical Sub-Council, five specialist student societies spearhead
-              individual disciplines — ensuring world-class execution across robotics, automotive, AI, and systems.
+              Under the apex governance of the Technical Sub-Council (TSC), student societies spearhead
+              specialized engineering disciplines — powering 25+ flagship events across robotics, coding, aeromodelling, automotive, and innovation.
             </p>
           </div>
 

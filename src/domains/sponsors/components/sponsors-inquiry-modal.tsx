@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, CheckCircle2, Shield, Phone, Mail } from "lucide-react";
 import { useTheme, type CanonicalTheme } from "@/core";
+import { api } from "@/lib/api";
 
 const MODAL_THEME = {
   "geass-moon": {
@@ -129,22 +130,9 @@ export function SponsorsInquiryModal({
     setFormMsg("");
 
     try {
-      const res = await fetch("/api/sponsors/inquiry", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!res.ok) {
-        setTimeout(() => {
-          setFormState("success");
-          setFormMsg("Inquiry transmitted successfully. Our Secretariat will contact you within 24 hours.");
-        }, 800);
-        return;
-      }
-
+      const res = await api.sponsors.inquire(formData);
       setFormState("success");
-      setFormMsg("Inquiry transmitted successfully. Our Secretariat will contact you within 24 hours.");
+      setFormMsg(res?.message || "Inquiry transmitted successfully. Our Secretariat will contact you within 24 hours.");
       setFormData({
         company_name: "",
         contact_person: "",
@@ -153,13 +141,12 @@ export function SponsorsInquiryModal({
         proposed_budget_tier: "",
         message: "",
       });
-    } catch {
-      setTimeout(() => {
-        setFormState("success");
-        setFormMsg("Inquiry received. Our Corporate Relations team will connect with your liaison shortly.");
-      }, 800);
+    } catch (err: any) {
+      setFormState("error");
+      setFormMsg(err?.message || "Transmission failed. Please dispatch via direct contact liaisons.");
     }
   };
+
 
   return (
     <AnimatePresence>

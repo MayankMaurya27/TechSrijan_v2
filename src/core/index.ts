@@ -7,6 +7,7 @@ export {
   type ThemeContextType,
 } from "./providers/theme-provider";
 export { LenisProvider } from "./providers/lenis-provider";
+export { AuthProvider, useAuth } from "./providers/auth-provider";
 export { cn } from "./utils/cn";
 export { useDeviceTier, isMobileDevice, type DeviceTier } from "./utils/device-tier";
 export { sanitizeCsvField, generateSafeCsv, downloadCsv } from "./utils/csv";

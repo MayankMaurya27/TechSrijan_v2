@@ -8,6 +8,7 @@ import { CLUBS } from "./arena-spatial-cards";
 import { EventDetailModal } from "./event-detail-modal";
 import { InteractiveDossierParticles } from "./interactive-dossier-particles";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
+import { api } from "@/lib/api";
 
 // ─── Data Types ───────────────────────────────────────────────────────────────
 
@@ -832,10 +833,43 @@ export function ClubEventsSection({
   onReturnToArena,
 }: ClubEventsSectionProps) {
   const [activeClubId, setActiveClubId] = useState<ClubId>("tsc");
+  const [eventsList, setEventsList] = useState<DetailedEvent[]>(ALL_EVENTS);
   const [activeEventModal, setActiveEventModal] = useState<DetailedEvent | null>(null);
   const [viewMode, setViewMode] = useState<"stack" | "grid">("stack");
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const liveEvents = await api.events.list();
+        if (liveEvents && liveEvents.length > 0) {
+          setEventsList((prev) => {
+            return prev.map((staticEv) => {
+              const matched = liveEvents.find(
+                (le) =>
+                  le.slug === staticEv.id ||
+                  le.title.toLowerCase().includes(staticEv.name.toLowerCase()) ||
+                  staticEv.name.toLowerCase().includes(le.title.toLowerCase())
+              );
+              if (matched) {
+                return {
+                  ...staticEv,
+                  id: matched.id,
+                  prizePool: `₹${matched.prizePool.toLocaleString("en-IN")}`,
+                  venue: matched.venue || staticEv.venue,
+                };
+              }
+              return staticEv;
+            });
+          });
+        }
+      } catch (err) {
+        console.warn("Could not fetch live events from backend, using catalog fallback:", err);
+      }
+    }
+    fetchEvents();
+  }, []);
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -862,7 +896,7 @@ export function ClubEventsSection({
   }, [propActiveClubId]);
 
   const activeClub = CLUBS.find((c) => c.id === activeClubId) || CLUBS[0];
-  const filteredEvents = ALL_EVENTS.filter((e) => e.clubId === activeClubId);
+  const filteredEvents = eventsList.filter((e) => e.clubId === activeClubId);
 
   // Reset circle index when switching clubs
   const handleTabClick = (clubId: ClubId) => {

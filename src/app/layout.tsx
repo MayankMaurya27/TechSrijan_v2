@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue, Geist, Montserrat } from "next/font/google";
-import { ThemeProvider, LenisProvider, cn } from "@/core";
+import { ThemeProvider, LenisProvider, AuthProvider, cn } from "@/core";
 import { AmbientParticles, TwinSunsRays, Navbar, SwordCursor, TechSrijanPreloader, PageTransitionLoader } from "@/shared";
+
 import "@/styles/globals.css";
 import { AuthModalProvider, SignInRouteModal } from "@/domains/auth";
 
@@ -166,21 +167,24 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans relative selection:bg-[var(--accent-primary)] selection:text-[var(--bg-primary)] overflow-x-hidden">
         <ThemeProvider>
-          <TechSrijanPreloader />
-          <PageTransitionLoader />
-          <AuthModalProvider>
-            <LenisProvider>
-              <SwordCursor />
-              <div className="pointer-events-none fixed inset-0 z-40 film-grain" />
-              <TwinSunsRays />
-              <AmbientParticles />
-              <Navbar />
-              <main className="relative z-10 flex min-h-screen flex-col">
-                {children}
-              </main>
-              <SignInRouteModal />
-            </LenisProvider>
-          </AuthModalProvider>
+          <AuthProvider>
+            <TechSrijanPreloader />
+            <PageTransitionLoader />
+            <AuthModalProvider>
+              <LenisProvider>
+                <SwordCursor />
+                <div className="pointer-events-none fixed inset-0 z-40 film-grain" />
+                <TwinSunsRays />
+                <AmbientParticles />
+                <Navbar />
+                <main className="relative z-10 flex min-h-screen flex-col">
+                  {children}
+                </main>
+                <SignInRouteModal />
+              </LenisProvider>
+            </AuthModalProvider>
+          </AuthProvider>
+
         </ThemeProvider>
       </body>
     </html>

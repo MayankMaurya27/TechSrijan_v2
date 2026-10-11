@@ -31,6 +31,8 @@ import {
 import { SponsorsInquiryModal } from "./sponsors-inquiry-modal";
 import { useTheme, type CanonicalTheme } from "@/core";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
+import { api } from "@/lib/api";
+
 
 export const SPONSOR_THEMES = {
   "geass-moon": {
@@ -416,8 +418,9 @@ export function SponsorsPageView() {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
-  const [sponsors] = useState<Sponsor[]>(INITIAL_SPONSORS);
+  const [sponsors, setSponsors] = useState<Sponsor[]>(INITIAL_SPONSORS);
   const [activeSponsor, setActiveSponsor] = useState<string>("sp-nova");
+
 
   // Mouse Parallax Springs
   const mouseX = useMotionValue(0);
@@ -469,8 +472,50 @@ export function SponsorsPageView() {
     const timer = setTimeout(() => {
       setRobotSpawned(true);
     }, 150);
+
+    api.sponsors
+      .list()
+      .then((backendSponsors) => {
+        if (backendSponsors && backendSponsors.length > 0) {
+          const roles: Sponsor["role"][] = ["KING", "QUEEN", "ROOK", "BISHOP", "KNIGHT", "PAWN"];
+          const mapped: Sponsor[] = backendSponsors.map((bs, idx) => {
+            const pieceIdx = (idx % 6) + 1;
+            const tierName =
+              bs.category === "TITLE"
+                ? "Title Partner"
+                : bs.category === "POWERED_BY"
+                ? "Gold Partner"
+                : bs.category === "ASSOCIATE"
+                ? "Associate Partner"
+                : bs.category === "MEDIA"
+                ? "Supporting Partner"
+                : "Strategic Partner";
+
+            return {
+              id: bs.id,
+              name: bs.name.toUpperCase(),
+              tier: tierName as Sponsor["tier"],
+              role: roles[idx % roles.length],
+              pieceImg: `/images/sponsors/cp-${pieceIdx}.webp`,
+              pieceName: roles[idx % roles.length],
+              logoType: "custom" as const,
+              customLogoText: bs.name,
+              accent: "#F59E0B",
+              borderGlow: "rgba(245, 158, 11, 0.95)",
+              rankWeight: 5 - (idx % 5),
+            };
+          });
+          setSponsors(mapped);
+          if (mapped[0]) setActiveSponsor(mapped[0].id);
+        }
+      })
+      .catch(() => {
+        // Retain default visually curated sponsors if offline or error
+      });
+
     return () => clearTimeout(timer);
   }, []);
+
 
   useEffect(() => {
     const handleMove = (e: MouseEvent) => {

@@ -17,6 +17,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { usePageTheme, type PageThemeConfig } from "@/core";
+import { api } from "@/lib/api";
 
 /* Social Icon SVGs */
 function IconInstagram({ className }: { className?: string }) {
@@ -236,15 +237,25 @@ export function ContactView() {
     setStatusMessage("");
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      const res = await api.contact.submit({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
+      });
       setFormStatus("sent");
-      setStatusMessage("Transmission Received: Our core council will respond within 24–48 hours.");
+      setStatusMessage(
+        res?.message || "Transmission Received: Our core council will respond within 24–48 hours."
+      );
       setFormData({ name: "", email: "", subject: "General Inquiry", message: "" });
-    } catch {
+    } catch (err: any) {
       setFormStatus("error");
-      setStatusMessage("Transmission failed. Please dispatch via direct email.");
+      setStatusMessage(
+        err?.message || "Transmission failed. Please dispatch via direct email."
+      );
     }
   };
+
 
   const filteredFaqs = useMemo(() => {
     if (activeFaqCategory === "ALL") return FAQS;

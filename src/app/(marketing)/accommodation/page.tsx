@@ -852,7 +852,7 @@ export default function AccommodationPage() {
                 >
                   <div className="relative w-full h-full">
                     <Image
-                      src="/images/lelouch-character.png"
+                      src="/images/lelouch-character.webp"
                       alt="Zero - Code Geass Commander Character"
                       fill
                       priority
@@ -894,7 +894,7 @@ export default function AccommodationPage() {
                 >
                   <div className="relative w-full h-full">
                     <Image
-                      src="/images/lelouch-tactical-left.png"
+                      src="/images/lelouch-tactical-left.webp"
                       alt="Lelouch - Looking Towards Left Facilities"
                       fill
                       priority
@@ -924,7 +924,7 @@ export default function AccommodationPage() {
                 >
                   <div className="relative w-full h-full">
                     <Image
-                      src="/images/lelouch-tactical-right.png"
+                      src="/images/lelouch-tactical-right.webp"
                       alt="Lelouch - Zero Command with Helmet"
                       fill
                       priority

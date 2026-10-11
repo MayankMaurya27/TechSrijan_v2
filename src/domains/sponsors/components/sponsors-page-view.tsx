@@ -161,7 +161,7 @@ const INITIAL_SPONSORS: Sponsor[] = [
     name: "GRIDLINE MEDIA",
     tier: "Associate Partner",
     role: "KNIGHT",
-    pieceImg: "/images/sponsors/cp-5.png",
+    pieceImg: "/images/sponsors/cp-5.webp",
     pieceName: "Knight",
     logoType: "gridline",
     accent: "#EF4444",
@@ -173,7 +173,7 @@ const INITIAL_SPONSORS: Sponsor[] = [
     name: "AETHER ENERGY",
     tier: "Gold Partner",
     role: "QUEEN",
-    pieceImg: "/images/sponsors/cp-2.png",
+    pieceImg: "/images/sponsors/cp-2.webp",
     pieceName: "Queen",
     logoType: "aether",
     accent: "#F59E0B",
@@ -185,7 +185,7 @@ const INITIAL_SPONSORS: Sponsor[] = [
     name: "NOVA SYSTEMS",
     tier: "Title Partner",
     role: "KING",
-    pieceImg: "/images/sponsors/cp-1.png",
+    pieceImg: "/images/sponsors/cp-1.webp",
     pieceName: "King",
     logoType: "nova",
     accent: "#FFE600",
@@ -197,7 +197,7 @@ const INITIAL_SPONSORS: Sponsor[] = [
     name: "QUANTUM WORKS",
     tier: "Silver Partner",
     role: "ROOK",
-    pieceImg: "/images/sponsors/cp-6.png",
+    pieceImg: "/images/sponsors/cp-6.webp",
     pieceName: "Rook",
     logoType: "quantum",
     accent: "#38BDF8",
@@ -209,7 +209,7 @@ const INITIAL_SPONSORS: Sponsor[] = [
     name: "SKYWARD LABS",
     tier: "Supporting Partner",
     role: "PAWN",
-    pieceImg: "/images/sponsors/cp-4.png",
+    pieceImg: "/images/sponsors/cp-4.webp",
     pieceName: "Pawn",
     logoType: "skyward",
     accent: "#06B6D4",
@@ -578,7 +578,7 @@ export function SponsorsPageView() {
           <picture className="w-full h-full">
             <source srcSet="/images/sponsors/spons_land.webp" type="image/webp" />
             <img
-              src="/images/sponsors/spons_land.png"
+              src="/images/sponsors/spons_land.webp"
               alt="TechSrijan Imperial Citadel"
               className="w-full h-full object-cover object-bottom"
               draggable={false}
@@ -1024,7 +1024,7 @@ export function SponsorsPageView() {
           <picture className="w-full h-full">
             <source srcSet="/images/sponsors/spons_land.webp" type="image/webp" />
             <img
-              src="/images/sponsors/spons_land.png"
+              src="/images/sponsors/spons_land.webp"
               alt=""
               className="w-full h-full object-cover object-bottom"
               draggable={false}

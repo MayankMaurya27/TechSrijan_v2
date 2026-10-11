@@ -70,9 +70,9 @@ export function SignInRouteModal({
         {/* Ambient Crimson Halo behind the eye */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 sm:w-40 h-14 sm:h-18 bg-red-600/35 blur-xl rounded-full pointer-events-none" />
         <picture className="relative w-full h-auto">
-          <source srcSet="/images/auth/eye_asset.png" type="image/png" />
+          <source srcSet="/images/auth/eye_asset.webp" type="image/webp" />
           <img
-            src="/images/auth/eye_asset.png"
+            src="/images/auth/eye_asset.webp"
             alt="TechSrijan All-Seeing Eye Crest"
             className="w-full h-auto object-contain drop-shadow-[0_4px_25px_rgba(220,38,38,0.85)]"
             draggable={false}

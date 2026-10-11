@@ -20,9 +20,9 @@ export default function SignUpPage() {
       {/* Background Image: Red Moon & Imperial Landscape */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <picture className="w-full h-full">
-          <source srcSet="/images/redmoon1.png" type="image/png" />
+          <source srcSet="/images/redmoon1.webp" type="image/webp" />
           <img
-            src="/images/redmoon1.png"
+            src="/images/redmoon1.webp"
             alt="Red Moon Atmosphere"
             className="w-full h-full object-cover object-center opacity-40 filter brightness-75 contrast-125"
             draggable={false}

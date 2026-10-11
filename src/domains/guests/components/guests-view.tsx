@@ -67,7 +67,7 @@ export function GuestsView() {
         <picture className="w-full h-full">
           <source srcSet="/images/guests/guests-bg.webp" type="image/webp" />
           <img
-            src="/images/guests/guests-bg.png"
+            src="/images/guests/guests-bg.webp"
             alt=""
             className="w-full h-full object-cover object-center brightness-[1.08] contrast-[1.10]"
           />
@@ -149,9 +149,10 @@ export function GuestsView() {
                 }}
               >
                 <Image
-                  src="/images/guests/kiran-bedi-real.jpg"
+                  src="/images/guests/kiran-bedi-real.webp"
                   alt="Dr. Kiran Bedi"
                   fill
+                  sizes="48px"
                   className="object-cover object-top group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
@@ -199,9 +200,10 @@ export function GuestsView() {
                 }}
               >
                 <Image
-                  src="/images/guests/hc-verma-padmashri.jpg"
+                  src="/images/guests/hc-verma-padmashri.webp"
                   alt="Prof. H. C. Verma"
                   fill
+                  sizes="48px"
                   className="object-cover object-top group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
@@ -279,7 +281,7 @@ export function GuestsView() {
                   }}
                 >
                   <Image
-                    src="/images/guests/kiran-bedi-real.jpg"
+                    src="/images/guests/kiran-bedi-real.webp"
                     alt="Dr. Kiran Bedi"
                     fill
                     priority

@@ -134,7 +134,7 @@ export function AboutView() {
         <picture className="w-full h-full">
           <source srcSet="/images/about/about-bg.webp" type="image/webp" />
           <img
-            src="/images/about/about-bg.png"
+            src="/images/about/about-bg.webp"
             alt=""
             className="w-full h-full object-cover object-center brightness-[0.82] contrast-[1.18]"
           />

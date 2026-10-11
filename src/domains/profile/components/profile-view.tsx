@@ -134,9 +134,9 @@ export function ProfileView() {
           ======================================================== */}
       <div className="fixed inset-0 z-0 pointer-events-none select-none overflow-hidden">
         <picture className="w-full h-full">
-          <source srcSet="/images/profile/profileland.png" type="image/png" />
+          <source srcSet="/images/profile/profileland.webp" type="image/webp" />
           <img
-            src="/images/profile/profileland.png"
+            src="/images/profile/profileland.webp"
             alt="TechSrijan Citadel Desert"
             className="w-full h-full object-cover object-[78%_center] md:object-center brightness-[1.02] contrast-[1.14]"
             draggable={false}
@@ -340,7 +340,7 @@ export function ProfileView() {
                 <div className="absolute inset-0 rounded-full bg-red-600/25 blur-md pointer-events-none animate-pulse" />
                 <div className="relative w-16 h-16 sm:w-[74px] sm:h-[74px] scale-125 flex items-center justify-center">
                   <Image
-                    src="/images/profile/eye_asset.png"
+                    src="/images/profile/eye_asset.webp"
                     alt="Imperium Eye Crest"
                     fill
                     sizes="(max-width: 640px) 64px, 74px"

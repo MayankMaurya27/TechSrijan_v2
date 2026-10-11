@@ -65,9 +65,9 @@ export function OnboardingView() {
           ======================================================== */}
       <div className="fixed inset-0 z-0 pointer-events-none select-none overflow-hidden">
         <picture className="w-full h-full">
-          <source srcSet="/images/auth/onboarding_bg.png" type="image/png" />
+          <source srcSet="/images/auth/onboarding_bg.webp" type="image/webp" />
           <img
-            src="/images/auth/onboarding_bg.png"
+            src="/images/auth/onboarding_bg.webp"
             alt="TechSrijan Imperial Landscape"
             className="w-full h-full object-cover object-[72%_center] md:object-center brightness-[1.03] contrast-[1.12]"
             draggable={false}
@@ -169,9 +169,9 @@ export function OnboardingView() {
           />
 
           <picture className="w-full h-full flex items-end justify-center">
-            <source srcSet="/images/auth/robosign_flipped.png" type="image/png" />
+            <source srcSet="/images/auth/robosign_flipped.webp" type="image/webp" />
             <img
-              src="/images/auth/robosign_flipped.png"
+              src="/images/auth/robosign_flipped.webp"
               alt="Knightmare Vanguard Guardian"
               className="w-full h-full object-contain object-bottom drop-shadow-[0_15px_45px_rgba(0,0,0,0.95)]"
               draggable={false}

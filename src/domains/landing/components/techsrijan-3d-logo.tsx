@@ -480,7 +480,7 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
                 <picture className="w-full flex justify-center">
                   <source srcSet={conf.imageSrcWebp} type="image/webp" />
                   <Image
-                    src={conf.imageSrcPng}
+                    src={conf.imageSrcWebp}
                     alt="TechSrijan '27 — The Awakening Begins — Coming Soon"
                     width={2172}
                     height={724}

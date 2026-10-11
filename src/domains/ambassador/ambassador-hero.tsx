@@ -224,7 +224,7 @@ export function AmbassadorHero() {
             <picture className="w-full h-full pointer-events-none">
               <source srcSet={t.moonImageWebp} type="image/webp" />
               <img
-                src={t.moonImage}
+                src={t.moonImageWebp}
                 alt="TechSrijan Celestial Body"
                 className="w-full h-full object-contain rounded-full transition-all duration-500"
                 style={{

@@ -4,7 +4,18 @@ const nextConfig: NextConfig = {
   // Use standalone output only when building in a container (Docker/Cloud Run)
   ...(process.env.DOCKER_BUILD === "true" ? { output: "standalone" as const } : {}),
   images: {
-    qualities: [75, 100],
+    loader: "custom",
+    loaderFile: "./src/shared/utils/cloudinary-loader.ts",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+    ],
+    formats: ["image/avif", "image/webp"],
+    qualities: [75, 90, 100],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   experimental: {
     serverActions: {

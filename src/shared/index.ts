@@ -4,4 +4,4 @@ export { Footer } from "./layout/footer";
 export { AmbientParticles } from "./effects/ambient-particles";
 export { TwinSunsRays } from "./effects/twin-suns-rays";
 export { SwordCursor } from "./effects/sword-cursor";
-
+export { TechSrijanPreloader } from "./components/techsrijan-preloader";

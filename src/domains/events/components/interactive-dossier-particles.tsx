@@ -95,8 +95,13 @@ export function InteractiveDossierParticles({
     const ripples: ClickRipple[] = [];
 
     const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      // Mobile touch optimization: completely bypass continuous 4000px canvas RAF animation loop.
+      // Eliminates GPU fillrate bottleneck and delivers solid 60-120fps native touch scrolling.
+      return;
+    }
 
-    // Resize handling with DPR capping at 1 for mobile to save up to 75% GPU VRAM
+    // Resize handling with DPR capping at 2 for desktop
     const updateDimensions = () => {
       const rect = container.getBoundingClientRect();
       width = rect.width;

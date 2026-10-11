@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArenaSpatialCards } from "./arena-spatial-cards";
+import { ChevronDown } from "lucide-react";
+import { ArenaSpatialCards, CLUBS } from "./arena-spatial-cards";
 import type { ClubId } from "./arena-spatial-cards";
 
 // Register GSAP plugins on client
@@ -128,33 +129,27 @@ export function EventsHeroScroll({
 
   // ─── Smooth Scroll to Our Events Section ─────────────────────────────────────
   const scrollToOurEvents = useCallback(() => {
-    const st = ScrollTrigger.getById("events-hero-scroll");
-    const lenis = (window as any).__lenis;
-
-    if (st) {
-      const targetScroll = st.end;
-      if (lenis) {
-        lenis.scrollTo(targetScroll, { duration: 1.2 });
-      } else {
-        window.scrollTo({ top: targetScroll, behavior: "smooth" });
-      }
+    const target = document.getElementById("our-events-section");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
       return;
     }
 
-    const target = document.getElementById("our-events-section");
-    if (target) {
-      if (lenis) {
-        lenis.scrollTo(target, { duration: 1.2 });
-      } else {
-        target.scrollIntoView({ behavior: "smooth" });
-      }
+    const st = ScrollTrigger.getById("events-hero-scroll");
+    if (st) {
+      window.scrollTo({ top: st.end, behavior: "smooth" });
     }
   }, []);
 
-  // ─── GSAP ScrollTrigger Sequence (Exact Stay Section Physics & Timing) ────────
+  // ─── GSAP ScrollTrigger Sequence (Desktop only — Mobile uses native 120Hz momentum) ───
   useEffect(() => {
     if (typeof window === "undefined" || !scrollWrapperRef.current || !pinnedStageRef.current)
       return;
+
+    // Mobile touch devices: do not pin or scrub! Mobile users scroll with native 120Hz momentum
+    if (window.innerWidth < 768) {
+      return;
+    }
 
     ScrollTrigger.config({ ignoreMobileResize: true });
 
@@ -388,6 +383,128 @@ export function EventsHeroScroll({
   // Dynamic horizontal focal point for mobile so character stays centered
   const mobileFocalX = scrollProgress <= 0.28 ? Math.round(72 - (scrollProgress / 0.28) * 22) : 50;
   const currentFocal = isMobile ? `${mobileFocalX}% center` : "center center";
+
+  // ─── Mobile Touch Devices: Dedicated High-Performance Hero ──────────────────
+  if (isMobile) {
+    return (
+      <div className="relative w-full min-h-[95dvh] bg-black text-white flex flex-col justify-between py-6 px-4 select-none overflow-hidden">
+        {/* Full-bleed Hardware-Composited Background Poster */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/events-arena-poster.webp"
+            alt="The Arena"
+            className="w-full h-full object-cover object-center filter brightness-95"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/80 pointer-events-none" />
+          <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-black/90 to-transparent pointer-events-none" />
+        </div>
+
+        {/* Top Header */}
+        <div className="relative z-10 pt-16 text-center max-w-md mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-white/20 backdrop-blur-md mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-white/80">
+              TECHSRIJAN &apos;27 // THE ARENA
+            </span>
+          </div>
+          <h1 className="font-montserrat tracking-tight text-4xl sm:text-5xl font-black text-white uppercase drop-shadow-[0_4px_25px_rgba(0,0,0,1)]">
+            THE ARENA
+          </h1>
+          <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-neutral-300 uppercase">
+            5 CHAPTERS · 23 CHAMPIONSHIP EVENTS
+          </p>
+        </div>
+
+        {/* 5 Club Cards Grid */}
+        <div className="relative z-10 my-auto py-4 w-full max-w-sm mx-auto">
+          <p className="font-mono text-[8px] tracking-[0.3em] text-white/50 uppercase text-center mb-3">
+            TAP A CLUB TO ENTER DOSSIER
+          </p>
+          <div className="grid grid-cols-2 gap-2.5">
+            {CLUBS.slice(0, 4).map((club) => (
+              <div
+                key={club.id}
+                onClick={() => {
+                  if (onClubSelect) onClubSelect(club.id);
+                  scrollToOurEvents();
+                }}
+                className="relative cursor-pointer active:scale-95 transition-transform duration-150 rounded-xl bg-black/85 border border-white/15 p-3 flex flex-col items-center text-center shadow-[0_4px_20px_rgba(0,0,0,0.8)] backdrop-blur-md overflow-hidden"
+              >
+                <div
+                  className="w-12 h-12 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 mb-2"
+                  style={{
+                    boxShadow: `0 0 15px ${club.glowColor}`,
+                  }}
+                >
+                  <img
+                    src={club.logo}
+                    alt={club.shortName}
+                    className="w-full h-full object-contain rounded-full"
+                  />
+                </div>
+                <span className="font-mono text-[8px] tracking-[0.2em] text-white/60 uppercase">
+                  CLUB // {club.slotNumber}
+                </span>
+                <span className="font-bebas text-lg tracking-wider text-white uppercase mt-0.5">
+                  {club.shortName}
+                </span>
+                <span className="mt-1 px-2 py-0.5 rounded-full bg-white/10 text-[8px] font-mono tracking-wider text-neutral-300 uppercase">
+                  {club.eventCount} EVENTS
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* 5th Club (SAE) full-width centered card */}
+          <div
+            onClick={() => {
+              if (onClubSelect) onClubSelect(CLUBS[4].id);
+              scrollToOurEvents();
+            }}
+            className="mt-2.5 relative cursor-pointer active:scale-95 transition-transform duration-150 rounded-xl bg-black/85 border border-white/15 p-3 flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.8)] backdrop-blur-md overflow-hidden"
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="w-11 h-11 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 shrink-0"
+                style={{
+                  boxShadow: `0 0 15px ${CLUBS[4].glowColor}`,
+                }}
+              >
+                <img
+                  src={CLUBS[4].logo}
+                  alt={CLUBS[4].shortName}
+                  className="w-full h-full object-contain rounded-full"
+                />
+              </div>
+              <div className="text-left">
+                <span className="font-mono text-[8px] tracking-[0.2em] text-white/60 uppercase block">
+                  CLUB // {CLUBS[4].slotNumber}
+                </span>
+                <span className="font-bebas text-lg tracking-wider text-white uppercase">
+                  {CLUBS[4].shortName} · {CLUBS[4].fullName}
+                </span>
+              </div>
+            </div>
+            <span className="px-2.5 py-1 rounded-full bg-white/10 text-[8px] font-mono tracking-wider text-neutral-300 uppercase shrink-0">
+              {CLUBS[4].eventCount} EVENTS
+            </span>
+          </div>
+        </div>
+
+        {/* Bottom CTA Button */}
+        <div className="relative z-10 text-center pb-2">
+          <button
+            type="button"
+            onClick={scrollToOurEvents}
+            className="w-full max-w-sm mx-auto flex items-center justify-center gap-2 py-3 px-6 bg-white text-black font-mono text-xs font-bold tracking-[0.25em] uppercase rounded-lg active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] cursor-pointer"
+          >
+            <span>EXPLORE ALL 23 EVENTS</span>
+            <ChevronDown className="w-4 h-4 animate-bounce" />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

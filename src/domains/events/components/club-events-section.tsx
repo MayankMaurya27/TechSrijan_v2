@@ -888,14 +888,18 @@ export function ClubEventsSection({
     setActiveIndex(0);
   };
 
-  // Scroll on cards listener: when user scrolls over the circular stage, smoothly rotate cards
+  // Scroll on cards listener: only rotate when user explicitly scrolls horizontally or holds Shift
   const handleStageWheel = (e: React.WheelEvent) => {
     if (viewMode !== "stack" || filteredEvents.length <= 1) return;
+
+    // Only respond to horizontal scrolling or shift-wheel so normal vertical page scrolling is uninterrupted
+    const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.5 || e.shiftKey;
+    if (!isHorizontal) return;
 
     const now = Date.now();
     if (now - lastScrollTimeRef.current < 280) return;
 
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    const delta = e.shiftKey ? e.deltaY : e.deltaX;
     if (Math.abs(delta) < 25) return;
 
     lastScrollTimeRef.current = now;

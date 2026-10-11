@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue, Geist, Montserrat } from "next/font/google";
 import { ThemeProvider, LenisProvider, cn } from "@/core";
-import { AmbientParticles, TwinSunsRays, Navbar, SwordCursor } from "@/shared";
+import { AmbientParticles, TwinSunsRays, Navbar, SwordCursor, TechSrijanPreloader } from "@/shared";
 import "@/styles/globals.css";
 import { AuthModalProvider, SignInRouteModal } from "@/domains/auth";
 
@@ -166,6 +166,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans relative selection:bg-[var(--accent-primary)] selection:text-[var(--bg-primary)] overflow-x-hidden">
         <ThemeProvider>
+          <TechSrijanPreloader />
           <AuthModalProvider>
             <LenisProvider>
               <SwordCursor />

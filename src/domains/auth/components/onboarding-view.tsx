@@ -3,59 +3,76 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/core";
+import { api } from "@/lib/api";
+import { AlertCircle } from "lucide-react";
 
 export function OnboardingView() {
+  const { user, refreshUser } = useAuth();
   const [step, setStep] = useState<1 | 2>(1);
   const [formData, setFormData] = useState({
-    fullName: "Aarav Sharma",
-    email: "aarav.sharma@gmail.com",
+    fullName: "",
+    email: "",
     phone: "",
     college: "",
     course: "",
     year: "",
     city: "",
+    bankAccountNumber: "",
+    bankIfsc: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        fullName: user.name || prev.fullName,
+        email: user.email || prev.email,
+        phone: user.mobile || prev.phone,
+        college: user.collegeName || prev.college,
+        bankAccountNumber: user.bankAccountNumber || prev.bankAccountNumber,
+        bankIfsc: user.bankIfsc || prev.bankIfsc,
+      }));
+    }
+  }, [user]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (error) setError(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Persist profile data so /profile immediately displays submitted details
-    if (typeof window !== "undefined") {
-      try {
-        localStorage.setItem(
-          "ts27_user_profile",
-          JSON.stringify({
-            fullName: formData.fullName,
-            email: formData.email,
-            phone: formData.phone,
-            college: formData.college,
-            course: formData.course,
-            year: formData.year,
-            city: formData.city,
-          })
-        );
-      } catch {
-        // ignore
-      }
-    }
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setError(null);
+
+    try {
+      const yearInt = parseInt(formData.year, 10);
+      await api.user.onboard({
+        collegeName: formData.college || undefined,
+        city: formData.city || undefined,
+        branch: formData.course || undefined,
+        courseYear: !isNaN(yearInt) ? yearInt : undefined,
+        bankAccountNumber: formData.bankAccountNumber || undefined,
+        bankIfsc: formData.bankIfsc || undefined,
+      });
+
+      await refreshUser();
       setStep(2);
-    }, 600);
+    } catch (err: any) {
+      console.warn("Onboarding API error:", err);
+      setError(err.message || "Failed to finalize participant credentials.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -495,8 +512,8 @@ export function OnboardingView() {
                     </div>
                   </div>
 
-                  {/* Field 7: CITY (Span 2 columns) */}
-                  <div className="flex flex-col sm:col-span-2">
+                  {/* Field 7: CITY (Span 2 columns if not MMMUT, or 1 column if MMMUT) */}
+                  <div className={`flex flex-col ${user?.isMmmutStudent ? "sm:col-span-2" : "sm:col-span-2"}`}>
                     <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold">
                       CITY
                     </label>
@@ -509,7 +526,48 @@ export function OnboardingView() {
                       className="w-full px-3.5 py-2.5 rounded-lg bg-[#130d0e]/90 border border-[#382a24]/90 text-sm text-[#f7f2ea] placeholder:text-[#6a5e52] focus:border-[#caa462] focus:bg-[#1a1113] focus:outline-none transition-all duration-200"
                     />
                   </div>
+
+                  {/* MMMUT Bank Details for Prize Money Disbursement */}
+                  {user?.isMmmutStudent && (
+                    <>
+                      <div className="flex flex-col">
+                        <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#caa462] mb-1.5 font-semibold">
+                          BANK ACCOUNT NUMBER (FOR PRIZE DISBURSEMENTS) *
+                        </label>
+                        <input
+                          type="text"
+                          name="bankAccountNumber"
+                          value={formData.bankAccountNumber}
+                          onChange={handleChange}
+                          placeholder="e.g. 102938475612"
+                          required
+                          className="w-full px-3.5 py-2.5 rounded-lg bg-[#130d0e]/90 border border-[#caa462]/60 text-sm text-[#f7f2ea] placeholder:text-[#6a5e52] focus:border-[#caa462] focus:bg-[#1a1113] focus:outline-none transition-all duration-200"
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#caa462] mb-1.5 font-semibold">
+                          BANK IFSC CODE *
+                        </label>
+                        <input
+                          type="text"
+                          name="bankIfsc"
+                          value={formData.bankIfsc}
+                          onChange={handleChange}
+                          placeholder="e.g. SBIN0002578"
+                          required
+                          className="w-full px-3.5 py-2.5 rounded-lg bg-[#130d0e]/90 border border-[#caa462]/60 text-sm text-[#f7f2ea] placeholder:text-[#6a5e52] focus:border-[#caa462] focus:bg-[#1a1113] focus:outline-none transition-all duration-200 uppercase"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
+
+                {error && (
+                  <div className="mt-4 p-3 rounded-lg border border-red-500/60 bg-red-950/40 text-red-300 text-xs flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-400" />
+                    <span>{error}</span>
+                  </div>
+                )}
 
                 {/* ========================================================
                     SAVE AND CONTINUE BUTTON (Beveled Hexagonal Pill)
@@ -604,7 +662,7 @@ export function OnboardingView() {
                       PARTICIPANT ID
                     </span>
                     <span className="font-mono text-[#caa462] font-bold tracking-widest text-[11px]">
-                      TS27-EXT-{Math.floor(1000 + Math.random() * 9000)}
+                      {user?.rollNumber || (user?.id ? `TS27-${user.id.slice(0, 8).toUpperCase()}` : "TS27-AUTHENTICATED")}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-xs border-b border-[#382a24]/60 pb-2">

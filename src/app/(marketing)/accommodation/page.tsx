@@ -19,8 +19,11 @@ import {
   Phone,
   MapPin,
   Calendar,
+  UploadCloud,
+  Check,
+  Loader2,
 } from "lucide-react";
-import { useTheme } from "@/core";
+import { useTheme, useAuth } from "@/core";
 import { api } from "@/lib/api";
 
 import gsap from "gsap";
@@ -141,12 +144,45 @@ export default function AccommodationPage() {
     confirmed: false,
   });
 
+  const { user } = useAuth();
+  const [inventory, setInventory] = useState<any[] | null>(null);
+  const [bookingId, setBookingId] = useState("");
+  const [utrNumber, setUtrNumber] = useState("");
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [isSubmittingPayment, setIsSubmittingPayment] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmationId, setConfirmationId] = useState("");
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    async function loadInventory() {
+      try {
+        const inv = await api.stay.getInventory();
+        setInventory(inv);
+      } catch (e) {
+        console.warn("Could not load stay inventory:", e);
+      }
+    }
+    loadInventory();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        fullName: user.name || prev.fullName,
+        email: user.email || prev.email,
+        phone: user.mobile || prev.phone,
+        college: user.collegeName || prev.college,
+      }));
+    }
+  }, [user]);
 
   // Card Mouse Event Handlers with 2s retention
   const handleCardMouseEnter = useCallback((side: "left" | "right") => {
@@ -626,6 +662,7 @@ export default function AccommodationPage() {
         ],
       });
 
+      setBookingId(reservation.bookingId);
       setConfirmationId(reservation.paymentReference);
       if (reservation.qrDataUrl) {
         setQrCodeUrl(reservation.qrDataUrl);
@@ -639,6 +676,37 @@ export default function AccommodationPage() {
       setIsSubmitted(true);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!utrNumber.trim() || utrNumber.trim().length < 6) {
+      setPaymentError("A valid 6-20 character alphanumeric UTR number is required.");
+      return;
+    }
+    if (!receiptFile) {
+      setPaymentError("Please attach a screenshot receipt of your UPI payment.");
+      return;
+    }
+
+    setIsSubmittingPayment(true);
+    setPaymentError(null);
+
+    try {
+      const receiptUrl = await api.storage.compressAndUpload(receiptFile, "stay");
+      await api.stay.submitPayment({
+        bookingId,
+        utrNumber: utrNumber.trim(),
+        amount: 649,
+        receiptUrl,
+      });
+      setPaymentSuccess(true);
+    } catch (err: any) {
+      console.warn("Payment submission error:", err);
+      setPaymentError(err.message || "Failed to submit payment verification.");
+    } finally {
+      setIsSubmittingPayment(false);
     }
   };
 
@@ -1157,6 +1225,79 @@ export default function AccommodationPage() {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={qrCodeUrl} alt="UPI Payment QR" className="w-36 h-36 rounded bg-white p-1 shadow-lg" />
                     </div>
+                  )}
+
+                  {/* Payment Submission Section */}
+                  {paymentSuccess ? (
+                    <div className="pt-3 border-t border-emerald-500/30 text-emerald-300 text-center space-y-1">
+                      <div className="flex items-center justify-center gap-1.5 font-bold text-xs text-emerald-400">
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>PAYMENT SUBMITTED FOR RECONCILIATION</span>
+                      </div>
+                      <p className="text-[10px] text-neutral-400">
+                        UTR: <span className="font-bold text-white">{utrNumber}</span> · High Command will verify within 2-4 hours.
+                      </p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handlePaymentSubmit} className="pt-3 border-t border-white/[0.08] space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-white uppercase tracking-wider">
+                          STEP 2: SUBMIT PAYMENT RECEIPT
+                        </span>
+                        <span className="text-[9px] text-[#E61924] font-mono">15-MIN HOLD</span>
+                      </div>
+
+                      {paymentError && (
+                        <div className="p-2 rounded bg-red-950/40 border border-red-500/40 text-red-300 text-[10px] flex items-center gap-1.5">
+                          <AlertCircle className="w-3 h-3 flex-shrink-0 text-red-400" />
+                          <span>{paymentError}</span>
+                        </div>
+                      )}
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] text-neutral-400 uppercase tracking-wider">
+                          UTR / UPI Transaction ID *
+                        </label>
+                        <input
+                          type="text"
+                          value={utrNumber}
+                          onChange={(e) => setUtrNumber(e.target.value)}
+                          placeholder="e.g. 428901847291"
+                          required
+                          className="w-full px-3 py-1.5 rounded bg-black/60 border border-white/20 text-xs text-white placeholder:text-neutral-600 focus:border-[#E61924] focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] text-neutral-400 uppercase tracking-wider">
+                          Screenshot Receipt Image *
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.target.files?.[0]) setReceiptFile(e.target.files[0]);
+                          }}
+                          required
+                          className="w-full text-[10px] text-neutral-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border file:border-white/20 file:bg-white/10 file:text-white file:text-[10px] hover:file:bg-white/20 cursor-pointer"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isSubmittingPayment}
+                        className="w-full py-2 px-3 rounded font-mono text-xs font-bold uppercase tracking-wider bg-[#E61924] hover:bg-[#b3141c] text-white transition-all flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(230,25,36,0.3)] disabled:opacity-50 cursor-pointer"
+                      >
+                        {isSubmittingPayment ? (
+                          <>
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            <span>COMPRESSING &amp; VERIFYING...</span>
+                          </>
+                        ) : (
+                          <span>CONFIRM PAYMENT DIRECTIVE →</span>
+                        )}
+                      </button>
+                    </form>
                   )}
                 </div>
 

@@ -176,16 +176,16 @@ export function ScrollJourney({
     if (!video || !video.duration) return;
     if (isSeekingRef.current) return;
 
-    // Mobile hardware decoder optimization: throttle rapid seek flooding
+    // Mobile hardware decoder optimization: 16ms throttle (targets 60 FPS)
     if (isMobileRef.current) {
       const now = performance.now();
       const elapsed = now - lastSeekTimeRef.current;
-      if (elapsed < 40) {
+      if (elapsed < 16) {
         if (!throttledSeekTimerRef.current) {
           throttledSeekTimerRef.current = setTimeout(() => {
             throttledSeekTimerRef.current = null;
             attemptSeek();
-          }, 40 - elapsed);
+          }, 16 - elapsed);
         }
         return;
       }
@@ -197,28 +197,24 @@ export function ScrollJourney({
       ? Math.max(0, video.duration - 0.05)
       : Math.min(3.65, Math.max(0, video.duration - 0.05));
     const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
-    const minDelta = isMobileRef.current ? 0.045 : 0.015;
+    const minDelta = 0.01;
 
     if (Math.abs(video.currentTime - target) > minDelta) {
       isSeekingRef.current = true;
       lastSeekTimeRef.current = performance.now();
 
-      // Use fastSeek on supported mobile browsers (instant hardware keyframe seek)
-      const v = video as HTMLVideoElement & { fastSeek?: (time: number) => void };
-      if (typeof v.fastSeek === "function") {
-        v.fastSeek(target);
-      } else {
-        video.currentTime = target;
-      }
+      // Direct currentTime seek on All-Intra media (zero latency, exact frame precision)
+      video.currentTime = target;
 
-      // Watchdog: If browser drops `seeked` event, unlock after 150ms
+      // Watchdog: If browser drops `seeked` event, unlock after 80ms
       if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
       seekWatchdogRef.current = setTimeout(() => {
         isSeekingRef.current = false;
+        paintCanvas(true);
         attemptSeek();
-      }, 150);
+      }, 80);
     }
-  }, []);
+  }, [paintCanvas]);
 
   const handleSeeked = useCallback(() => {
     if (seekWatchdogRef.current) {
@@ -237,7 +233,7 @@ export function ScrollJourney({
         ? Math.max(0, video.duration - 0.05)
         : Math.min(3.65, Math.max(0, video.duration - 0.05));
       const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
-      const minDelta = isMobileRef.current ? 0.045 : 0.015;
+      const minDelta = 0.01;
       if (Math.abs(video.currentTime - target) > minDelta) {
         attemptSeek();
       }
@@ -462,6 +458,7 @@ export function ScrollJourney({
             playsInline
             muted
             preload="auto"
+            crossOrigin="anonymous"
             onSeeked={handleSeeked}
             onLoadedData={() => paintCanvas(true)}
             onLoadedMetadata={() => {

@@ -23,7 +23,7 @@ export function EventsHeroScroll({
   const scrollWrapperRef = useRef<HTMLDivElement>(null);
   const pinnedStageRef = useRef<HTMLDivElement>(null);
 
-  // Video scrubber elements: Canvas frame buffer (zero-black frame guarantee) & hidden video decoder
+  // Hardware Canvas & Video Decoder
   const bgArenaRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -38,120 +38,234 @@ export function EventsHeroScroll({
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasDrawnFrame, setHasDrawnFrame] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const isMobileRef = useRef(false);
 
-  // Seeking watchdog & throttling
+  // Decoder priming & throttle refs (proven from landing page mobile optimization)
   const isSeekingRef = useRef(false);
   const targetTimeRef = useRef(0);
   const seekWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSeekTimeRef = useRef(0);
+  const throttledSeekTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isPrimedRef = useRef(false);
+  const lastPaintedTimeRef = useRef(-1);
 
-  // Detect mobile
+  // Detect mobile viewport (< 768px or touch device)
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
+    const check = () => {
+      const mobile =
+        window.innerWidth < 768 ||
+        (typeof navigator !== "undefined" && navigator.maxTouchPoints > 1 && window.innerWidth < 1024);
+      setIsMobile(mobile);
+      isMobileRef.current = mobile;
+    };
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // ─── Draw Video Frame to Persistent Canvas ──────────────────────────────────
-  // A canvas retains its frame buffer in GPU memory during seeks, which physically
-  // prevents the browser video decoder from flashing a blank or black surface!
-  const renderFrameToCanvas = useCallback(() => {
+  // ─── Precision Canvas Frame Painting ────────────────────────────────────────
+  // Uses alpha: false for 2x-3x GPU compositor throughput on mobile chips.
+  // Draws with DPR clamping (1.25 on mobile) to eliminate fill-rate stutter.
+  const renderFrameToCanvas = useCallback((force = false) => {
     const canvas = canvasRef.current;
     const video = videoRef.current;
     if (!canvas || !video) return;
+    if (video.videoWidth === 0 || video.videoHeight === 0) return;
 
-    if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
-      canvas.width = canvas.clientWidth || window.innerWidth;
-      canvas.height = canvas.clientHeight || window.innerHeight;
+    // Never paint during active seeking or insufficient buffered data
+    if (video.seeking || video.readyState < 2) return;
+
+    // Avoid redundant frame repaints of identical timestamps
+    if (!force && Math.abs(video.currentTime - lastPaintedTimeRef.current) < 0.004) return;
+
+    const ctx = canvas.getContext("2d", { alpha: false });
+    if (!ctx) return;
+
+    const cW = canvas.width;
+    const cH = canvas.height;
+    const vW = video.videoWidth;
+    const vH = video.videoHeight;
+    const canvasAspect = cW / cH;
+    const videoAspect = vW / vH;
+
+    let drawW = cW;
+    let drawH = cH;
+    let offX = 0;
+    let offY = 0;
+
+    if (canvasAspect > videoAspect) {
+      drawW = cW;
+      drawH = cW / videoAspect;
+      offY = (cH - drawH) / 2;
+    } else {
+      drawH = cH;
+      drawW = cH * videoAspect;
+      offX = (cW - drawW) / 2;
     }
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx || !video.videoWidth || !video.videoHeight) return;
-
-    const cWidth = canvas.width;
-    const cHeight = canvas.height;
-    const vWidth = video.videoWidth;
-    const vHeight = video.videoHeight;
-
-    const hRatio = cWidth / vWidth;
-    const vRatio = cHeight / vHeight;
-    const ratio = Math.max(hRatio, vRatio);
-
-    const drawWidth = vWidth * ratio;
-    const drawHeight = vHeight * ratio;
-    const offsetX = (cWidth - drawWidth) / 2;
-    const offsetY = (cHeight - drawHeight) / 2;
-
-    ctx.drawImage(video, 0, 0, vWidth, vHeight, offsetX, offsetY, drawWidth, drawHeight);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = isMobileRef.current ? "medium" : "high";
+    ctx.drawImage(video, offX, offY, drawW, drawH);
+    lastPaintedTimeRef.current = video.currentTime;
     setHasDrawnFrame(true);
   }, []);
 
-  // Trigger first frame draw as soon as video is ready
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      if (video.readyState >= 2) {
-        setIsVideoLoaded(true);
-        renderFrameToCanvas();
-      }
+  // Sync canvas dimensions with optimal DPR clamping for mobile devices
+  const syncCanvasSize = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, isMobileRef.current ? 1.25 : 1.5);
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.round((rect.width || window.innerWidth) * dpr);
+    const h = Math.round((rect.height || window.innerHeight) * dpr);
+    if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
+      canvas.width = w;
+      canvas.height = h;
     }
-  }, [renderFrameToCanvas]);
+  }, []);
 
-  // Handle Canvas resize
+  // Pre-paint initial baseline poster onto canvas on mount (Zero blank pause)
   useEffect(() => {
-    const handleResize = () => {
+    syncCanvasSize();
+
+    const poster = new Image();
+    poster.src = isMobile ? "/events-mobile-hero-poster.webp" : "/events-hero-poster.webp";
+    poster.onload = () => {
       const canvas = canvasRef.current;
-      if (canvas) {
-        canvas.width = canvas.clientWidth || window.innerWidth;
-        canvas.height = canvas.clientHeight || window.innerHeight;
-        renderFrameToCanvas();
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d", { alpha: false });
+      if (!ctx) return;
+
+      const cW = canvas.width;
+      const cH = canvas.height;
+      const pW = poster.naturalWidth;
+      const pH = poster.naturalHeight;
+      const canvasAspect = cW / cH;
+      const posterAspect = pW / pH;
+
+      let dW = cW;
+      let dH = cH;
+      let oX = 0;
+      let oY = 0;
+
+      if (canvasAspect > posterAspect) {
+        dW = cW;
+        dH = cW / posterAspect;
+        oY = (cH - dH) / 2;
+      } else {
+        dH = cH;
+        dW = cH * posterAspect;
+        oX = (cW - dW) / 2;
       }
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "medium";
+      ctx.drawImage(poster, oX, oY, dW, dH);
+    };
+
+    const handleResize = () => {
+      syncCanvasSize();
+      renderFrameToCanvas(true);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [renderFrameToCanvas]);
+  }, [isMobile, renderFrameToCanvas, syncCanvasSize]);
 
-  // ─── Smooth Video Seek Scrubber ─────────────────────────────────────────────
+  // Prime mobile video decoder on first user touch/scroll gesture (iOS/Android requirement)
+  const primeMobileVideo = useCallback(() => {
+    if (isPrimedRef.current) return;
+    isPrimedRef.current = true;
+    const v = videoRef.current;
+    if (v && v.paused) {
+      v.play()
+        .then(() => v.pause())
+        .catch(() => {});
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("touchstart", primeMobileVideo, { passive: true, once: true });
+    window.addEventListener("pointerdown", primeMobileVideo, { passive: true, once: true });
+    window.addEventListener("wheel", primeMobileVideo, { passive: true, once: true });
+    return () => {
+      window.removeEventListener("touchstart", primeMobileVideo);
+      window.removeEventListener("pointerdown", primeMobileVideo);
+      window.removeEventListener("wheel", primeMobileVideo);
+    };
+  }, [primeMobileVideo]);
+
+  // ─── Smooth Hardware Video Scrubber (with fastSeek) ─────────────────────────
   const attemptSeek = useCallback(() => {
     const video = videoRef.current;
     if (!video || !video.duration || isSeekingRef.current) return;
 
-    const target = targetTimeRef.current;
-    if (Math.abs(video.currentTime - target) < 0.03) return;
-
-    isSeekingRef.current = true;
-    try {
-      video.currentTime = target;
-    } catch {
-      isSeekingRef.current = false;
+    // Mobile hardware decoder throttle: guard against rapid finger scroll flooding
+    if (isMobileRef.current) {
+      const now = performance.now();
+      const elapsed = now - lastSeekTimeRef.current;
+      if (elapsed < 35) {
+        if (!throttledSeekTimerRef.current) {
+          throttledSeekTimerRef.current = setTimeout(() => {
+            throttledSeekTimerRef.current = null;
+            attemptSeek();
+          }, 35 - elapsed);
+        }
+        return;
+      }
     }
 
-    if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
-    seekWatchdogRef.current = setTimeout(() => {
-      if (isSeekingRef.current) {
-        isSeekingRef.current = false;
-        renderFrameToCanvas();
+    const maxDuration = Math.max(0, video.duration - 0.05);
+    const target = Math.max(0, Math.min(maxDuration, targetTimeRef.current));
+    const minDelta = isMobileRef.current ? 0.035 : 0.015;
+
+    if (Math.abs(video.currentTime - target) > minDelta) {
+      isSeekingRef.current = true;
+      lastSeekTimeRef.current = performance.now();
+
+      // Use fastSeek on supported mobile browsers (direct hardware keyframe jump)
+      const v = video as HTMLVideoElement & { fastSeek?: (time: number) => void };
+      if (typeof v.fastSeek === "function") {
+        v.fastSeek(target);
+      } else {
+        video.currentTime = target;
       }
-    }, 80);
+
+      // Watchdog: If mobile browser drops seeked callback, unblock after 120ms
+      if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
+      seekWatchdogRef.current = setTimeout(() => {
+        isSeekingRef.current = false;
+        renderFrameToCanvas(true);
+      }, 120);
+    }
   }, [renderFrameToCanvas]);
 
   const handleLoadedMetadata = useCallback(() => {
     setIsVideoLoaded(true);
+    syncCanvasSize();
     const video = videoRef.current;
     if (video) {
       video.currentTime = 0.01;
-      renderFrameToCanvas();
+      renderFrameToCanvas(true);
     }
-  }, [renderFrameToCanvas]);
+  }, [renderFrameToCanvas, syncCanvasSize]);
 
   const handleSeeked = useCallback(() => {
-    if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
+    if (seekWatchdogRef.current) {
+      clearTimeout(seekWatchdogRef.current);
+      seekWatchdogRef.current = null;
+    }
     isSeekingRef.current = false;
     renderFrameToCanvas();
 
+    // Chain to pending scroll target if user moved during previous seek
     const video = videoRef.current;
-    if (video && Math.abs(video.currentTime - targetTimeRef.current) >= 0.04) {
-      attemptSeek();
+    if (video && video.duration) {
+      const maxDuration = Math.max(0, video.duration - 0.05);
+      const target = Math.max(0, Math.min(maxDuration, targetTimeRef.current));
+      const minDelta = isMobileRef.current ? 0.035 : 0.015;
+      if (Math.abs(video.currentTime - target) > minDelta) {
+        attemptSeek();
+      }
     }
   }, [attemptSeek, renderFrameToCanvas]);
 
@@ -186,7 +300,7 @@ export function EventsHeroScroll({
       lenis.on("scroll", ScrollTrigger.update);
     }
 
-    const isMobileViewport = window.innerWidth < 768;
+    const isMobileViewport = isMobileRef.current;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -196,7 +310,7 @@ export function EventsHeroScroll({
           start: "top top",
           end: isMobileViewport ? "+=130%" : "+=150%",
           pin: pinnedStageRef.current,
-          scrub: isMobileViewport ? 0.4 : 0.6,
+          scrub: isMobileViewport ? 0.35 : 0.6,
           anticipatePin: 0,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
@@ -207,19 +321,33 @@ export function EventsHeroScroll({
             // Synchronize video scrubber time
             const video = videoRef.current;
             if (video && video.duration) {
-              const tFrame1 = 0;
-              const tFrame2 = 3.5;
-              const tArena = 5.04;
-
               let target = 0;
-              if (p <= 0.25) {
-                const norm = p / 0.25;
-                target = tFrame1 + norm * (tFrame2 - tFrame1);
-              } else if (p <= 0.45) {
-                const norm = (p - 0.25) / 0.20;
-                target = tFrame2 + norm * (tArena - tFrame2);
+
+              if (isMobileViewport) {
+                // Mobile Video (6.0s 9:16 portrait):
+                // 0.0s - 2.0s: Character close-up portrait (p: 0.00 - 0.22)
+                // 2.0s - 4.8s: Walks into arena, raises sword (p: 0.22 - 0.42)
+                // 4.8s - 5.4s: Arena amphitheatre wide view (p: 0.42 - 1.00)
+                if (p <= 0.22) {
+                  const norm = p / 0.22;
+                  target = norm * 2.0;
+                } else if (p <= 0.42) {
+                  const norm = (p - 0.22) / 0.20;
+                  target = 2.0 + norm * 2.8;
+                } else {
+                  target = 4.8 + Math.min(0.6, (p - 0.42) * 1.0);
+                }
               } else {
-                target = tArena;
+                // Desktop Video (5.04s 16:9 landscape):
+                if (p <= 0.25) {
+                  const norm = p / 0.25;
+                  target = norm * 3.5;
+                } else if (p <= 0.45) {
+                  const norm = (p - 0.25) / 0.20;
+                  target = 3.5 + norm * 1.54;
+                } else {
+                  target = 5.04;
+                }
               }
 
               targetTimeRef.current = Math.max(0, Math.min(video.duration - 0.05, target));
@@ -230,51 +358,49 @@ export function EventsHeroScroll({
       });
 
       // ─────────────────────────────────────────────────────────────────────────
-      // PHASE 1: 0.00 - 0.20 Hero Text Fade-out
+      // PHASE 1: 0.00 - 0.12 Hero Text Fade-out
       // ─────────────────────────────────────────────────────────────────────────
       if (heroTextRef.current) {
         tl.to(
           heroTextRef.current,
           {
             opacity: 0,
-            y: -35,
+            y: isMobileViewport ? -20 : -35,
             scale: 0.96,
             ease: "power2.inOut",
-            duration: 0.20,
+            duration: 0.12,
           },
           0
         );
       }
 
       // ─────────────────────────────────────────────────────────────────────────
-      // PHASE 2: 0.12 - 0.35 Crucible / Horizon HUD (Smooth Bridge)
+      // PHASE 2: 0.13 - 0.29 Horizon HUD (Clean Bridge between Hero and Cards)
       // ─────────────────────────────────────────────────────────────────────────
       if (arenaHudRef.current) {
         tl.fromTo(
           arenaHudRef.current,
-          { opacity: 0, y: 25, scale: 0.94 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.10, ease: "power2.out" },
-          0.12
+          { opacity: 0, y: 20, scale: 0.94 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.07, ease: "power2.out" },
+          0.13
         );
         tl.to(
           arenaHudRef.current,
-          { opacity: 0, y: -25, scale: 1.04, duration: 0.08, ease: "power2.in" },
-          0.28
+          { opacity: 0, y: -20, scale: 1.04, duration: 0.07, ease: "power2.in" },
+          0.22
         );
       }
 
       // ─────────────────────────────────────────────────────────────────────────
-      // PHASE 3: 0.26 - 1.00 Arena Spatial Cards Entrance & Solid Dwell
-      // Note: Cards and Arena background remain fully visible all the way to 1.00!
-      // Once progress reaches 1.00, the stage cleanly unpins directly into
-      // the Our Events section with zero black gap or blank screen!
+      // PHASE 3: 0.31 - 1.00 Arena Spatial Cards Entrance & Solid Dwell
+      // Stays visible and interactive all the way to 1.00, then smoothly unpins!
       // ─────────────────────────────────────────────────────────────────────────
       if (cardsContainerRef.current) {
         tl.fromTo(
           cardsContainerRef.current,
-          { opacity: 0, y: 40, scale: 0.94 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "power2.out" },
-          0.26
+          { opacity: 0, y: isMobileViewport ? 25 : 40, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.12, ease: "power2.out" },
+          0.31
         );
       }
     }, scrollWrapperRef);
@@ -292,44 +418,49 @@ export function EventsHeroScroll({
     };
   }, [attemptSeek, onScrollProgress]);
 
+  // Poster URLs tailored to device aspect ratio
+  const heroPoster = isMobile ? "/events-mobile-hero-poster.webp" : "/events-hero-poster.webp";
+  const midPoster = isMobile ? "/events-mobile-mid-poster.webp" : "/events-mid-poster.webp";
+  const arenaPoster = isMobile ? "/events-mobile-arena-poster.webp" : "/events-arena-poster.webp";
+
   return (
     <div
       ref={scrollWrapperRef}
       className="relative w-full bg-[#030406] select-none"
     >
-      {/* Cinematic Stage Viewport (Pinned by GSAP ScrollTrigger on Desktop & Mobile) */}
+      {/* Cinematic Stage Viewport (Pinned by GSAP ScrollTrigger) */}
       <div
         ref={pinnedStageRef}
         className="relative h-screen h-[100dvh] w-full overflow-hidden bg-[#030406]"
       >
         {/* =================================================================== */}
-        {/* LAYER 0 & 1: VIDEO SCRUBBER, PERSISTENT CANVAS & BASELINE POSTERS   */}
+        {/* LAYER 0 & 1: HARDWARE CANVAS FRAME SCRUBBER & BASELINE WEBP POSTERS */}
         {/* =================================================================== */}
         <div ref={bgArenaRef} className="absolute inset-0 h-full w-full will-change-transform z-0">
-          {/* Baseline WebP Posters: Solid foundation prevents blank flashes */}
+          {/* Baseline WebP Posters: Always render underneath to prevent any blank frames */}
           <div
             className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-1"
             style={{
-              backgroundImage: "url('/events-hero-poster.webp')",
+              backgroundImage: `url('${heroPoster}')`,
               opacity: scrollProgress < 0.26 ? 1 : 0,
             }}
           />
           <div
             className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-1"
             style={{
-              backgroundImage: "url('/events-mid-poster.webp')",
+              backgroundImage: `url('${midPoster}')`,
               opacity: scrollProgress >= 0.26 && scrollProgress < 0.45 ? 1 : 0,
             }}
           />
           <div
             className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-1"
             style={{
-              backgroundImage: "url('/events-arena-poster.webp')",
+              backgroundImage: `url('${arenaPoster}')`,
               opacity: scrollProgress >= 0.45 ? 1 : 0,
             }}
           />
 
-          {/* High-Performance Canvas Frame Scrubber: Retains previous frame during seeks so it NEVER goes black */}
+          {/* High-Performance Canvas Frame Scrubber: Retains frame buffer in GPU memory */}
           <canvas
             ref={canvasRef}
             className="absolute inset-0 h-full w-full object-cover pointer-events-none transition-opacity duration-300"
@@ -340,11 +471,11 @@ export function EventsHeroScroll({
             }}
           />
 
-          {/* Hidden Video element for hardware decoding (Desktop: 1080p, Mobile: 720p 1.3MB with GOP=2) */}
+          {/* Hidden Video element for hardware decoding */}
           <video
             ref={videoRef}
             src={isMobile ? "/event_video_mobile.mp4" : "/event_video_desktop.mp4"}
-            poster="/events-hero-poster.webp"
+            poster={heroPoster}
             playsInline
             muted
             preload="auto"
@@ -353,13 +484,14 @@ export function EventsHeroScroll({
             className="hidden"
           />
 
-          {/* Deep Obsidian Left Vignette */}
+          {/* Deep Obsidian Left/Bottom Vignette for cinematic depth and typography contrast */}
           <div
             className="absolute inset-0 pointer-events-none z-10"
             style={{
-              background:
-                "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.3) 60%, transparent 100%)",
-              opacity: Math.max(0, 1 - scrollProgress * 3.2),
+              background: isMobile
+                ? "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.7) 100%)"
+                : "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.3) 60%, transparent 100%)",
+              opacity: Math.max(0, 1 - scrollProgress * 2.8),
             }}
           />
 
@@ -368,13 +500,13 @@ export function EventsHeroScroll({
         </div>
 
         {/* =================================================================== */}
-        {/* LAYER 2: HERO TEXT OVERLAY (FADES OUT IN FIRST 20%)                */}
+        {/* LAYER 2: HERO TEXT OVERLAY                                          */}
         {/* =================================================================== */}
         <div
           ref={heroTextRef}
           className="absolute inset-0 z-20 flex items-center px-5 sm:px-12 md:px-16 lg:px-24 pointer-events-none"
         >
-          <div className="max-w-[88vw] sm:max-w-xl text-left">
+          <div className="max-w-[90vw] sm:max-w-xl text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-white/20 backdrop-blur-md mb-3 sm:mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               <span className="font-mono text-[8px] sm:text-[9.5px] tracking-[0.25em] uppercase text-white/80">
@@ -384,10 +516,10 @@ export function EventsHeroScroll({
             <h1 className="font-montserrat tracking-tight text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white uppercase drop-shadow-[0_4px_30px_rgba(0,0,0,1)]">
               EVENTS
             </h1>
-            <p className="mt-3 sm:mt-6 font-chancery text-base sm:text-xl md:text-2xl tracking-wide text-neutral-300 max-w-2xl leading-relaxed drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] italic">
+            <p className="mt-2.5 sm:mt-6 font-chancery text-sm sm:text-xl md:text-2xl tracking-wide text-neutral-300 max-w-2xl leading-relaxed drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] italic">
               &ldquo;Fear is the mind-killer. Beyond fear lies destiny. Step into the crucible and forge your legacy.&rdquo;
             </p>
-            <div className="mt-5 sm:mt-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-sm">
+            <div className="mt-4 sm:mt-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               <span className="font-bebas text-xs sm:text-sm tracking-widest uppercase text-neutral-300">
                 SCROLL TO ENTER THE ARENA
@@ -403,24 +535,24 @@ export function EventsHeroScroll({
           ref={arenaHudRef}
           className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none px-4 text-center opacity-0"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/70 border border-white/20 backdrop-blur-md mb-3 shadow-[0_0_20px_rgba(0,0,0,0.8)]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/70 border border-white/20 backdrop-blur-md mb-2.5 shadow-[0_0_20px_rgba(0,0,0,0.8)]">
             <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-            <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-white/90">
+            <span className="font-mono text-[8.5px] sm:text-[10px] tracking-[0.3em] uppercase text-white/90">
               CRUCIBLE MATRIX // ONLINE
             </span>
           </div>
           <h2 className="font-montserrat tracking-tight text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white uppercase drop-shadow-[0_4px_35px_rgba(0,0,0,1)]">
             THE ARENA
           </h2>
-          <p className="mt-2 sm:mt-3 font-mono text-[10px] sm:text-xs md:text-sm tracking-[0.25em] text-neutral-300 uppercase max-w-lg">
+          <p className="mt-2 sm:mt-3 font-mono text-[9px] sm:text-xs md:text-sm tracking-[0.25em] text-neutral-300 uppercase max-w-lg">
             5 CHAPTERS · 23 CHAMPIONSHIP EVENTS
           </p>
-          <div className="mt-4 flex items-center gap-2">
-            <div className="h-[1px] w-8 sm:w-16 bg-gradient-to-r from-transparent to-white/50" />
-            <span className="font-mono text-[8px] sm:text-[9px] tracking-[0.3em] text-white/60 uppercase">
+          <div className="mt-3.5 flex items-center gap-2">
+            <div className="h-[1px] w-6 sm:w-16 bg-gradient-to-r from-transparent to-white/50" />
+            <span className="font-mono text-[7.5px] sm:text-[9px] tracking-[0.3em] text-white/60 uppercase">
               SCROLL TO ACCESS CLUBS
             </span>
-            <div className="h-[1px] w-8 sm:w-16 bg-gradient-to-l from-transparent to-white/50" />
+            <div className="h-[1px] w-6 sm:w-16 bg-gradient-to-l from-transparent to-white/50" />
           </div>
         </div>
 
@@ -433,7 +565,7 @@ export function EventsHeroScroll({
           className="absolute inset-0 z-30 opacity-0 pointer-events-auto"
         >
           <ArenaSpatialCards
-            isVisible={scrollProgress >= 0.26}
+            isVisible={scrollProgress >= 0.28}
             onClubSelect={onClubSelect}
             onExploreEvents={scrollToOurEvents}
           />

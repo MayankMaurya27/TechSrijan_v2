@@ -299,7 +299,7 @@ export function ArenaSpatialCards({
       </div>
 
       {/* ── Mobile View (<md): Compact High-Performance Touch Deck ── */}
-      <div className="flex md:hidden flex-1 flex-col justify-center items-center py-2 px-3 pointer-events-auto w-full max-w-sm mx-auto">
+      <div className="flex md:hidden flex-1 flex-col justify-center items-center pt-14 pb-18 px-3 pointer-events-auto w-full max-w-sm mx-auto">
         <div className="w-full text-center mb-2">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-md mb-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />

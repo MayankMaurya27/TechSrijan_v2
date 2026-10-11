@@ -53,11 +53,11 @@ export const ABOUT_THEMES: Record<CanonicalTheme, AboutThemeTokens> = {
     accentGlow: "rgba(255, 30, 39, 0.55)",
     accentBright: "#FFD6D8",
 
-    bgGradient: "bg-gradient-to-b from-[#0e0407]/75 via-[#090305]/58 to-[#070305]/92",
+    bgGradient: "bg-gradient-to-b from-[#0e0407]/40 via-transparent to-[#070305]/60",
     radialCenterScrim:
-      "bg-[radial-gradient(ellipse_at_center,rgba(14,4,7,0.72)_0%,rgba(9,3,5,0.52)_55%,rgba(7,3,5,0.90)_100%)]",
+      "bg-[radial-gradient(ellipse_at_center,rgba(14,4,7,0.30)_0%,transparent_75%)]",
     radialColumnScrim:
-      "bg-[radial-gradient(ellipse_75%_75%_at_50%_45%,rgba(14,4,7,0.44)_0%,transparent_100%)]",
+      "bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,rgba(14,4,7,0.20)_0%,transparent_100%)]",
 
     selectionClass: "selection:bg-[#FF1E27]/30 selection:text-white",
 
@@ -91,11 +91,11 @@ export const ABOUT_THEMES: Record<CanonicalTheme, AboutThemeTokens> = {
     accentGlow: "rgba(212, 168, 67, 0.50)",
     accentBright: "#FFF5D6",
 
-    bgGradient: "bg-gradient-to-b from-[#100b04]/75 via-[#0c0803]/58 to-[#070503]/92",
+    bgGradient: "bg-gradient-to-b from-[#100b04]/40 via-transparent to-[#070503]/60",
     radialCenterScrim:
-      "bg-[radial-gradient(ellipse_at_center,rgba(16,11,4,0.72)_0%,rgba(12,8,3,0.52)_55%,rgba(7,5,3,0.90)_100%)]",
+      "bg-[radial-gradient(ellipse_at_center,rgba(16,11,4,0.30)_0%,transparent_75%)]",
     radialColumnScrim:
-      "bg-[radial-gradient(ellipse_75%_75%_at_50%_45%,rgba(16,11,4,0.44)_0%,transparent_100%)]",
+      "bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,rgba(16,11,4,0.20)_0%,transparent_100%)]",
 
     selectionClass: "selection:bg-[#D4A843]/30 selection:text-white",
 
@@ -129,11 +129,11 @@ export const ABOUT_THEMES: Record<CanonicalTheme, AboutThemeTokens> = {
     accentGlow: "rgba(203, 213, 225, 0.45)",
     accentBright: "#FFFFFF",
 
-    bgGradient: "bg-gradient-to-b from-[#111317]/80 via-[#0d0f12]/65 to-[#08090b]/94",
+    bgGradient: "bg-gradient-to-b from-[#111317]/40 via-transparent to-[#08090b]/60",
     radialCenterScrim:
-      "bg-[radial-gradient(ellipse_at_center,rgba(26,29,36,0.70)_0%,rgba(15,17,21,0.55)_55%,rgba(8,9,11,0.92)_100%)]",
+      "bg-[radial-gradient(ellipse_at_center,rgba(26,29,36,0.30)_0%,transparent_75%)]",
     radialColumnScrim:
-      "bg-[radial-gradient(ellipse_75%_75%_at_50%_45%,rgba(30,35,42,0.45)_0%,transparent_100%)]",
+      "bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,rgba(30,35,42,0.20)_0%,transparent_100%)]",
 
     selectionClass: "selection:bg-[#CBD5E1]/30 selection:text-white",
 

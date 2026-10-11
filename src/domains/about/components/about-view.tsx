@@ -172,7 +172,7 @@ export function AboutView() {
             ============================================================ */}
         <section className="pt-4 sm:pt-8 pb-10 sm:pb-14">
           <div className="space-y-6 lg:space-y-8">
-            
+
             {/* Grand Headline: HELLO ENGINEERS ! WE ARE TECHSRIJAN '27 */}
             <div className="space-y-2 sm:space-y-4">
               <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-montserrat font-black tracking-tight text-white uppercase leading-[0.92] drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
@@ -282,9 +282,8 @@ export function AboutView() {
             {ABOUT_STATS.map((stat, idx) => (
               <div
                 key={stat.id}
-                className={`space-y-1.5 ${
-                  idx > 0 ? "lg:border-l lg:border-white/[0.08] lg:pl-8" : ""
-                }`}
+                className={`space-y-1.5 ${idx > 0 ? "lg:border-l lg:border-white/[0.08] lg:pl-8" : ""
+                  }`}
               >
                 <div
                   className="text-3xl sm:text-4xl lg:text-5xl font-montserrat font-black tracking-tight text-transparent bg-clip-text transition-all duration-500"
@@ -344,12 +343,11 @@ export function AboutView() {
                   className="rounded-3xl p-6 sm:p-10 lg:p-12 bg-gradient-to-b from-[#160b0e]/85 via-[#0d0709]/85 to-[#070305]/95 border border-white/[0.12] backdrop-blur-xl shadow-[0_16px_50px_rgba(0,0,0,0.85)] hover:border-white/[0.24] transition-all duration-400"
                 >
                   <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-                    
+
                     {/* Centered Imperial Portrait Medallion */}
                     <div
-                      className={`lg:col-span-4 flex flex-col items-center justify-center ${
-                        isEven ? "lg:order-2" : "lg:order-1"
-                      }`}
+                      className={`lg:col-span-4 flex flex-col items-center justify-center ${isEven ? "lg:order-2" : "lg:order-1"
+                        }`}
                     >
                       <div className="relative group">
                         {/* Ambient Outer Halo */}
@@ -394,9 +392,8 @@ export function AboutView() {
 
                     {/* Editorial Leadership Narrative */}
                     <div
-                      className={`lg:col-span-8 ${
-                        isEven ? "lg:order-1" : "lg:order-2"
-                      }`}
+                      className={`lg:col-span-8 ${isEven ? "lg:order-1" : "lg:order-2"
+                        }`}
                     >
                       <div className="space-y-4">
                         {/* Kicker / Title */}
@@ -628,11 +625,10 @@ export function AboutView() {
                 <button
                   key={house.id}
                   onClick={() => setActiveHouseId(house.id)}
-                  className={`px-5 py-2.5 rounded-full text-sm font-montserrat font-semibold tracking-wider transition-all duration-300 cursor-pointer ${
-                    isSelected
+                  className={`px-5 py-2.5 rounded-full text-sm font-montserrat font-semibold tracking-wider transition-all duration-300 cursor-pointer ${isSelected
                       ? `${theme.activeHouseTabBg} border ${theme.activeHouseTabBorder} ${theme.activeHouseTabShadow} scale-105`
                       : "bg-[#0e0508]/80 text-neutral-400 hover:text-white hover:bg-white/[0.06] border border-white/[0.08]"
-                  }`}
+                    }`}
                 >
                   {house.shortName}
                 </button>

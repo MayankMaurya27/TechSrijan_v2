@@ -75,14 +75,15 @@ export function EventsHeroScroll({
 
   // Detect mobile
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 640);
+    const check = () => setIsMobile(window.innerWidth < 768);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Hardware-accelerated video seeking
+  // Hardware-accelerated video seeking (Desktop only — mobile uses lightweight WebP posters)
   const attemptSeek = useCallback(() => {
+    if (isMobile) return;
     const video = videoRef.current;
     if (!video || !video.duration) return;
     if (isSeekingRef.current) return;
@@ -426,26 +427,28 @@ export function EventsHeroScroll({
             }}
           />
 
-          {/* Upscaled QHD Video Scrubber */}
-          <video
-            ref={videoRef}
-            src="/event_video.mp4"
-            poster="/events-hero-poster.webp"
-            playsInline
-            muted
-            preload="auto"
-            onLoadedMetadata={handleLoadedMetadata}
-            onSeeked={handleSeeked}
-            className="absolute inset-0 h-full w-full object-cover pointer-events-none transition-opacity duration-300"
-            style={{
-              opacity: isVideoLoaded ? 1 : 0.9,
-              zIndex: 2,
-              filter: "contrast(1.04) brightness(1.02)",
-              transform: "translate3d(0, 0, 0)",
-              backfaceVisibility: "hidden",
-              objectPosition: currentFocal,
-            }}
-          />
+          {/* Upscaled QHD Video Scrubber (Desktop only — Mobile uses lightweight hardware-composited WebP posters) */}
+          {!isMobile && (
+            <video
+              ref={videoRef}
+              src="/event_video.mp4"
+              poster="/events-hero-poster.webp"
+              playsInline
+              muted
+              preload="auto"
+              onLoadedMetadata={handleLoadedMetadata}
+              onSeeked={handleSeeked}
+              className="absolute inset-0 h-full w-full object-cover pointer-events-none transition-opacity duration-300"
+              style={{
+                opacity: isVideoLoaded ? 1 : 0.9,
+                zIndex: 2,
+                filter: "contrast(1.04) brightness(1.02)",
+                transform: "translate3d(0, 0, 0)",
+                backfaceVisibility: "hidden",
+                objectPosition: currentFocal,
+              }}
+            />
+          )}
 
           {/* Deep Obsidian Left Vignette */}
           <div

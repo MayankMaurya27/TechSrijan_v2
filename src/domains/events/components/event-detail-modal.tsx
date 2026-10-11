@@ -94,7 +94,11 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                   <img
                     src={event.image}
                     alt={event.name}
-                    className="w-full h-full object-cover"
+                    draggable={false}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = "/events-hero-poster.webp";
+                    }}
+                    className="w-full h-full object-cover select-none"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0d0e13] via-transparent to-transparent pointer-events-none" />
                 </div>

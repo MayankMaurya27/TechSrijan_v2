@@ -613,7 +613,8 @@ function getCircleCardTransform(
   const opacity = Math.max(0.35, 0.4 + 0.6 * ((cosFactor + 1) / 2));
   const zIndex = Math.round(((cosFactor + 1) / 2) * 50) + 1;
   const isFront = Math.abs(diff) < 0.1;
-  const blur = isFront ? 0 : Math.min(2.5, Math.round((1 - cosFactor) * 2));
+  // Disable blur filter on mobile to eliminate GPU render pass overhead and scroll lag
+  const blur = isMobile || isFront ? 0 : Math.min(2.5, Math.round((1 - cosFactor) * 2));
 
   return {
     transform: `translate3d(calc(-50% + ${x.toFixed(1)}px), -50%, ${z.toFixed(
@@ -664,7 +665,11 @@ function StackCardItem({
               src={event.image}
               alt={event.name}
               loading="lazy"
-              className="w-full h-full object-cover"
+              draggable={false}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = "/events-hero-poster.webp";
+              }}
+              className="w-full h-full object-cover select-none"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
             <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20">
@@ -726,7 +731,11 @@ function StackCardItem({
             src={event.image}
             alt={event.name}
             loading="lazy"
-            className="w-full h-full object-cover"
+            draggable={false}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = "/events-hero-poster.webp";
+            }}
+            className="w-full h-full object-cover select-none"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
 
@@ -831,6 +840,7 @@ export function ClubEventsSection({
   const tabsRef = useRef<HTMLDivElement>(null);
   const lastScrollTimeRef = useRef(0);
   const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
 
   // Detect mobile screen width for circle radius scaling
   useEffect(() => {
@@ -896,22 +906,27 @@ export function ClubEventsSection({
     }
   };
 
-  // Touch swipe support for smooth mobile circular loop rotation
+  // Touch swipe support: only triggers when swipe is primarily horizontal
+  // Prevents normal vertical page scrolling from accidentally rotating cards
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartXRef.current === null) return;
-    const diff = e.changedTouches[0].clientX - touchStartXRef.current;
-    if (Math.abs(diff) > 40) {
-      if (diff < 0) {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const diffX = e.changedTouches[0].clientX - touchStartXRef.current;
+    const diffY = e.changedTouches[0].clientY - touchStartYRef.current;
+
+    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY) * 1.4) {
+      if (diffX < 0) {
         handleNextCard();
       } else {
         handlePrevCard();
       }
     }
     touchStartXRef.current = null;
+    touchStartYRef.current = null;
   };
 
   return (
@@ -996,27 +1011,30 @@ export function ClubEventsSection({
             )}
 
             {/* View Mode Toggle: Orbit Circle vs Grid */}
-            <div className="hidden sm:flex items-center gap-1 p-1 bg-black/60 rounded-xl border border-white/15">
+            <div className="flex items-center gap-0.5 sm:gap-1 p-0.5 sm:p-1 bg-black/60 rounded-lg sm:rounded-xl border border-white/15">
               <button
                 type="button"
                 onClick={() => setViewMode("stack")}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-mono text-[10px] uppercase tracking-wider transition-all cursor-pointer ${
+                className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-md sm:rounded-lg font-mono text-[9px] sm:text-[10px] uppercase tracking-wider transition-all cursor-pointer ${
                   viewMode === "stack"
                     ? "bg-white text-black font-bold border border-white shadow-[0_0_12px_rgba(255,255,255,0.3)]"
                     : "text-neutral-400 hover:text-white"
                 }`}
+                title="Circle Loop View"
               >
                 <Orbit className="w-3 h-3" />
-                <span>Circle Loop</span>
+                <span className="hidden xs:inline sm:inline">Circle Loop</span>
+                <span className="xs:hidden sm:hidden">Circle</span>
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode("grid")}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-mono text-[10px] uppercase tracking-wider transition-all cursor-pointer ${
+                className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-md sm:rounded-lg font-mono text-[9px] sm:text-[10px] uppercase tracking-wider transition-all cursor-pointer ${
                   viewMode === "grid"
                     ? "bg-white text-black font-bold border border-white shadow-[0_0_12px_rgba(255,255,255,0.3)]"
                     : "text-neutral-400 hover:text-white"
                 }`}
+                title="All Cards View"
               >
                 <LayoutGrid className="w-3 h-3" />
                 <span>All Cards</span>
@@ -1058,10 +1076,10 @@ export function ClubEventsSection({
           </div>
         </div>
 
-        {/* Circular loop controls (visible in stack / circle mode) */}
-        {viewMode === "stack" && (
-          <div className="flex items-center gap-2 font-mono text-xs">
-            <span className="text-white/60 mr-2">
+        {/* Controls row */}
+        {viewMode === "stack" ? (
+          <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+            <span className="text-white/60 mr-1 sm:mr-2">
               {activeIndex + 1} / {filteredEvents.length}
             </span>
             <button
@@ -1077,7 +1095,7 @@ export function ClubEventsSection({
               type="button"
               onClick={handleNextCard}
               disabled={filteredEvents.length <= 1}
-              className="px-4 py-2 rounded-lg bg-white hover:bg-neutral-200 border border-white text-black font-bold transition-all shadow-[0_0_15px_rgba(255,255,255,0.25)] flex items-center gap-1.5 cursor-pointer active:scale-95"
+              className="px-3 sm:px-4 py-2 rounded-lg bg-white hover:bg-neutral-200 border border-white text-black font-bold transition-all shadow-[0_0_15px_rgba(255,255,255,0.25)] flex items-center gap-1.5 cursor-pointer active:scale-95 text-xs sm:text-sm"
               title="Rotate Circle Loop"
             >
               <span>Next</span>
@@ -1090,6 +1108,30 @@ export function ClubEventsSection({
               title="Reset Loop"
             >
               <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("grid")}
+              className="sm:hidden flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-black/60 border border-white/20 text-white/80 hover:text-white text-[10px] uppercase tracking-wider cursor-pointer active:scale-95 ml-auto"
+              title="View All Cards in Grid"
+            >
+              <LayoutGrid className="w-3 h-3" />
+              <span>All Cards</span>
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2.5 font-mono text-xs">
+            <span className="text-white/60 mr-1 sm:mr-2">
+              {filteredEvents.length} {filteredEvents.length === 1 ? "EVENT" : "EVENTS"}
+            </span>
+            <button
+              type="button"
+              onClick={() => setViewMode("stack")}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/60 hover:bg-white/10 border border-white/25 text-white/90 hover:text-white text-[10px] uppercase tracking-wider transition-all cursor-pointer active:scale-95 shadow-[0_0_10px_rgba(255,255,255,0.1)]"
+              title="Switch to Circle Loop"
+            >
+              <Orbit className="w-3.5 h-3.5 text-white" />
+              <span>Circle Loop</span>
             </button>
           </div>
         )}

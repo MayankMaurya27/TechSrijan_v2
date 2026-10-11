@@ -57,15 +57,22 @@ export function TechSrijanLogoScrollReveal() {
   const activeLogo = LOGO_CONFIGS[activeCanonical] || LOGO_CONFIGS["geass-moon"];
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      const start = windowHeight * 1.05;
-      const end = windowHeight * 0.3;
-      const progress = Math.min(1, Math.max(0, (start - rect.top) / (start - end)));
-      setScrollProgress(progress);
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          if (containerRef.current) {
+            const rect = containerRef.current.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            const start = windowHeight * 1.05;
+            const end = windowHeight * 0.3;
+            const progress = Math.min(1, Math.max(0, (start - rect.top) / (start - end)));
+            setScrollProgress(progress);
+          }
+          ticking = false;
+        });
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });

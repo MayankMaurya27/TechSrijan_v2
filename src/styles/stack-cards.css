@@ -254,6 +254,18 @@
   transform: scale(1.04);
 }
 
+/* Mobile & Touch Performance: Disable GPU grayscale shader filters so images render instantly with natural colors and 0 filter lag */
+@media (max-width: 768px), (hover: none) {
+  .card-image-wrap img {
+    filter: none !important;
+  }
+  .stack-cards__item:hover .card-image-wrap img,
+  .grid-card-wrap:hover .card-image-wrap img,
+  .stack-cards__item.is-front .card-image-wrap img {
+    filter: none !important;
+  }
+}
+
 /* Grid Card Container */
 .grid-card-wrap {
   position: relative;
@@ -267,6 +279,9 @@
 @media (max-width: 640px) {
   .grid-card-wrap {
     height: 380px;
-    max-width: 280px;
+    width: 100%;
+    max-width: min(340px, calc(100vw - 32px));
+    margin-left: auto;
+    margin-right: auto;
   }
 }

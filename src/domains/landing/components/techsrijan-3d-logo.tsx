@@ -440,7 +440,7 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
       onPointerLeave={handlePointerLeave}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
-      className="relative w-full max-w-[94vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex items-center justify-center cursor-pointer select-none pointer-events-auto touch-none py-2"
+      className="relative w-full max-w-[94vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex items-center justify-center cursor-pointer select-none pointer-events-auto touch-pan-y py-2"
       style={{
         perspective: "1200px",
       }}

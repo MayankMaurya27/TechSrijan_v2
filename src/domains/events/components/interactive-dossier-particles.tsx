@@ -94,13 +94,15 @@ export function InteractiveDossierParticles({
 
     const ripples: ClickRipple[] = [];
 
-    // Resize handling with DPR capping at 2 for silky 60fps performance
+    const isMobile = window.innerWidth < 768;
+
+    // Resize handling with DPR capping at 1 for mobile to save up to 75% GPU VRAM
     const updateDimensions = () => {
       const rect = container.getBoundingClientRect();
       width = rect.width;
       height = rect.height;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`;
@@ -138,6 +140,7 @@ export function InteractiveDossierParticles({
     };
 
     const handlePointerMove = (e: PointerEvent) => {
+      if (isMobile) return;
       rawClientX = e.clientX;
       rawClientY = e.clientY;
       updateMouseCoords();
@@ -150,7 +153,9 @@ export function InteractiveDossierParticles({
     };
 
     const handleScroll = () => {
-      updateMouseCoords();
+      if (!isMobile) {
+        updateMouseCoords();
+      }
     };
 
     // Pointer leave listener
@@ -177,14 +182,15 @@ export function InteractiveDossierParticles({
       }
     };
 
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    if (!isMobile) {
+      window.addEventListener("pointermove", handlePointerMove, { passive: true });
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      document.addEventListener("mouseleave", handlePointerLeave);
+    }
     window.addEventListener("pointerdown", handlePointerDown, { passive: true });
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    document.addEventListener("mouseleave", handlePointerLeave);
 
     // Particle Population Generator
-    const isMobile = width < 768;
-    const count = isMobile ? 65 : Math.min(150, Math.max(90, Math.floor((width * height) / 14000)));
+    const count = isMobile ? 20 : Math.min(150, Math.max(90, Math.floor((width * height) / 14000)));
 
     const particles: Particle[] = [];
 
@@ -311,51 +317,52 @@ export function InteractiveDossierParticles({
         ctx.stroke();
       }
 
-      // ─── 3. Constellation & Tether Lines ──────────────────────────────────
-      // Connect nearby nodes together and to mouse for high-tech cybernetic look
-      const connectThreshold = isMobile ? 65 : 95;
-      const tetherThreshold = isMobile ? 90 : 130;
+      // ─── 3. Constellation & Tether Lines (Desktop only — skipped on mobile for 60fps scroll) ───
+      if (!isMobile) {
+        const connectThreshold = 95;
+        const tetherThreshold = 130;
 
-      for (let i = 0; i < particles.length; i++) {
-        const p1 = particles[i];
-        if (p1.type === "micro") continue; // Keep micro dust free of heavy line calculations
+        for (let i = 0; i < particles.length; i++) {
+          const p1 = particles[i];
+          if (p1.type === "micro") continue; // Keep micro dust free of heavy line calculations
 
-        // Inter-particle links
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          if (p2.type === "micro" || p2.type === "orb") continue;
+          // Inter-particle links
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            if (p2.type === "micro" || p2.type === "orb") continue;
 
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const distSq = dx * dx + dy * dy;
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const distSq = dx * dx + dy * dy;
 
-          if (distSq < connectThreshold * connectThreshold) {
-            const dist = Math.sqrt(distSq);
-            const lineAlpha = (1 - dist / connectThreshold) * 0.12 * Math.min(p1.alpha, p2.alpha);
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(255, 255, 255, ${lineAlpha})`;
-            ctx.lineWidth = 0.75;
-            ctx.stroke();
+            if (distSq < connectThreshold * connectThreshold) {
+              const dist = Math.sqrt(distSq);
+              const lineAlpha = (1 - dist / connectThreshold) * 0.12 * Math.min(p1.alpha, p2.alpha);
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = `rgba(255, 255, 255, ${lineAlpha})`;
+              ctx.lineWidth = 0.75;
+              ctx.stroke();
+            }
           }
-        }
 
-        // Filament line connecting particle to cursor
-        if (isMouseActive) {
-          const mdx = mouseX - p1.x;
-          const mdy = mouseY - p1.y;
-          const mDistSq = mdx * mdx + mdy * mdy;
+          // Filament line connecting particle to cursor
+          if (isMouseActive) {
+            const mdx = mouseX - p1.x;
+            const mdy = mouseY - p1.y;
+            const mDistSq = mdx * mdx + mdy * mdy;
 
-          if (mDistSq < tetherThreshold * tetherThreshold) {
-            const mDist = Math.sqrt(mDistSq);
-            const tetherAlpha = (1 - mDist / tetherThreshold) * 0.22;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(mouseX, mouseY);
-            ctx.strokeStyle = `rgba(${accentR}, ${accentG}, ${accentB}, ${tetherAlpha})`;
-            ctx.lineWidth = 0.8;
-            ctx.stroke();
+            if (mDistSq < tetherThreshold * tetherThreshold) {
+              const mDist = Math.sqrt(mDistSq);
+              const tetherAlpha = (1 - mDist / tetherThreshold) * 0.22;
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(mouseX, mouseY);
+              ctx.strokeStyle = `rgba(${accentR}, ${accentG}, ${accentB}, ${tetherAlpha})`;
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
           }
         }
       }
@@ -450,23 +457,31 @@ export function InteractiveDossierParticles({
 
         // ── Render by Particle Type ──
         if (p.type === "orb") {
-          // Big ethereal bokeh orbs with volumetric radial falloff
-          const rad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
-          rad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.55})`);
-          rad.addColorStop(0.35, `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.25})`);
-          rad.addColorStop(0.75, `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.07})`);
-          rad.addColorStop(1, "rgba(0, 0, 0, 0)");
+          if (isMobile) {
+            // Lightweight translucent circular ambient orb on mobile
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.25})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, Math.min(10, p.size * 0.5), 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Ethereal bokeh orbs with volumetric radial falloff on desktop
+            const rad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+            rad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.55})`);
+            rad.addColorStop(0.35, `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.25})`);
+            rad.addColorStop(0.75, `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.07})`);
+            rad.addColorStop(1, "rgba(0, 0, 0, 0)");
 
-          ctx.fillStyle = rad;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
+            ctx.fillStyle = rad;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
 
-          // Luminous bright pinprick core
-          ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.8})`;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, Math.max(1, p.size * 0.08), 0, Math.PI * 2);
-          ctx.fill();
+            // Luminous bright pinprick core
+            ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.8})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, Math.max(1, p.size * 0.08), 0, Math.PI * 2);
+            ctx.fill();
+          }
         } else if (p.type === "diamond") {
           // 4-point sci-fi diamond flare
           ctx.save();
@@ -483,8 +498,10 @@ export function InteractiveDossierParticles({
           ctx.closePath();
 
           ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.9})`;
-          ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.6})`;
-          ctx.shadowBlur = 6;
+          if (!isMobile) {
+            ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.6})`;
+            ctx.shadowBlur = 6;
+          }
           ctx.fill();
           ctx.restore();
         } else if (p.type === "spark") {
@@ -492,8 +509,10 @@ export function InteractiveDossierParticles({
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.85})`;
-          ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.5})`;
-          ctx.shadowBlur = 4;
+          if (!isMobile) {
+            ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.5})`;
+            ctx.shadowBlur = 4;
+          }
           ctx.fill();
         } else {
           // Micro stardust

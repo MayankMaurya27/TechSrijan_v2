@@ -13,20 +13,27 @@ export function GuestsView() {
   const [activeGuestId, setActiveGuestId] = useState<string>(GUESTS_LIST[0].id);
   const [selectedHcPhoto, setSelectedHcPhoto] = useState<number>(0);
 
-  // Active section tracking on scroll
+  // Active section tracking on scroll (Throttled with requestAnimationFrame to prevent scroll lag)
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 350;
-      for (const guest of GUESTS_LIST) {
-        const el = document.getElementById(guest.id);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveGuestId(guest.id);
-            break;
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          const scrollPosition = window.scrollY + 350;
+          for (const guest of GUESTS_LIST) {
+            const el = document.getElementById(guest.id);
+            if (el) {
+              const top = el.offsetTop;
+              const height = el.offsetHeight;
+              if (scrollPosition >= top && scrollPosition < top + height) {
+                setActiveGuestId(guest.id);
+                break;
+              }
+            }
           }
-        }
+          ticking = false;
+        });
       }
     };
 
@@ -81,13 +88,13 @@ export function GuestsView() {
         />
       </div>
 
-      {/* Ambient background glow points reacting to theme */}
+      {/* Ambient background glow points reacting to theme (Optimized for desktop, bypassed on mobile to prevent composite thrashing) */}
       <div
-        className="fixed top-1/4 -left-48 w-96 h-96 rounded-full blur-[140px] pointer-events-none transition-colors duration-700 z-[1] opacity-40"
+        className="hidden sm:block fixed top-1/4 -left-48 w-96 h-96 rounded-full blur-[140px] pointer-events-none transition-colors duration-700 z-[1] opacity-40 will-change-transform"
         style={{ backgroundColor: theme.accentGlow }}
       />
       <div
-        className="fixed bottom-1/3 -right-48 w-96 h-96 rounded-full blur-[140px] pointer-events-none transition-colors duration-700 opacity-30 z-[1]"
+        className="hidden sm:block fixed bottom-1/3 -right-48 w-96 h-96 rounded-full blur-[140px] pointer-events-none transition-colors duration-700 opacity-30 z-[1] will-change-transform"
         style={{ backgroundColor: theme.guest2Glow }}
       />
 

@@ -31,6 +31,24 @@ export function About3DScene() {
     };
     window.addEventListener("resize", onResize);
 
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      // Draw ambient volumetric bloom once on mobile, saving 100% of GPU animation overhead
+      const currentTheme = themeRef.current;
+      ctx.clearRect(0, 0, width, height);
+      const grad1 = ctx.createRadialGradient(width * 0.6, height * 0.3, 20, width * 0.6, height * 0.3, width * 0.55);
+      grad1.addColorStop(0, `rgba(${currentTheme.particlePrimary}, 0.12)`);
+      grad1.addColorStop(0.5, `rgba(${currentTheme.particleSecondary}, 0.05)`);
+      grad1.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = grad1;
+      ctx.fillRect(0, 0, width, height);
+
+      window.addEventListener("resize", onResize);
+      return () => {
+        window.removeEventListener("resize", onResize);
+      };
+    }
+
     let mouseX = width * 0.5;
     let mouseY = height * 0.3;
     let targetMouseX = mouseX;

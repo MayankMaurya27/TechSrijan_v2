@@ -18,6 +18,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import type { DetailedEvent } from "./club-events-section";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 import { useAuth } from "@/core";
 import { useAuthModal } from "@/domains/auth";
 import { api } from "@/lib/api";
@@ -224,7 +225,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
               {event.image && (
                 <div className="relative w-full h-44 sm:h-52 rounded-2xl overflow-hidden border border-white/15 bg-black">
                   <img
-                    src={event.image}
+                    src={getOptimizedImageUrl(event.image, 1000)}
                     alt={event.name}
                     draggable={false}
                     onError={(e) => {

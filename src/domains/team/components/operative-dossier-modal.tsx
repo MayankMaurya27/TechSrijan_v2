@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { X, Send, ExternalLink, Shield, Check, Copy } from "lucide-react";
 import type { Operative } from "../data/team-roster";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 function IconLinkedin({ className }: { className?: string }) {
   return (
@@ -90,7 +91,7 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
           <div className="relative h-28 w-28 sm:h-32 sm:w-32 shrink-0 overflow-hidden rounded-2xl border border-white/[0.1] bg-[#12141C]">
             {operative.image ? (
               <img
-                src={operative.image}
+                src={getOptimizedImageUrl(operative.image, 400)}
                 alt={operative.name}
                 className="h-full w-full object-cover object-top"
               />

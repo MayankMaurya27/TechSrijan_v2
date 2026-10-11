@@ -7,6 +7,7 @@ import type { ClubId } from "./arena-spatial-cards";
 import { CLUBS } from "./arena-spatial-cards";
 import { EventDetailModal } from "./event-detail-modal";
 import { InteractiveDossierParticles } from "./interactive-dossier-particles";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 import { api } from "@/lib/api";
 
 // ─── Data Types ───────────────────────────────────────────────────────────────
@@ -663,7 +664,7 @@ function StackCardItem({
           {/* Real Extracted Event Photo */}
           <div className="card-image-wrap">
             <img
-              src={event.image}
+              src={getOptimizedImageUrl(event.image, 600)}
               alt={event.name}
               loading="lazy"
               draggable={false}
@@ -729,7 +730,7 @@ function StackCardItem({
         {/* Real Extracted Event Photo */}
         <div className="card-image-wrap">
           <img
-            src={event.image}
+            src={getOptimizedImageUrl(event.image, 600)}
             alt={event.name}
             loading="lazy"
             draggable={false}

@@ -24,7 +24,13 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["qrcode", "lucide-react"],
   },
   async rewrites() {
-    const backendUrl = process.env.BACKEND_API_URL || "http://localhost:4000";
+    const backendUrl =
+      process.env.BACKEND_API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      (process.env.NODE_ENV === "production"
+        ? "https://techsrijan-backend.onrender.com"
+        : "http://localhost:4000");
+
     return [
       {
         source: "/api/:path*",
@@ -32,6 +38,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
 };
 
 export default nextConfig;

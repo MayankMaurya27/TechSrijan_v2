@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { usePathname } from "next/navigation";
 
 // Core assets to pre-cache in memory so pages reveal with zero missing images or layout pops
 const CRITICAL_GLOBAL_ASSETS = [
@@ -16,62 +15,44 @@ const CRITICAL_GLOBAL_ASSETS = [
   "/club-logos/sae-logo-white.png",
 ];
 
-const EVENTS_ROUTE_ASSETS = [
-  "/events-hero-poster.webp",
-  "/events-mid-poster.webp",
-  "/events-arena-poster.webp",
-  "/images/events/tsc-vail.jpg",
-  "/images/events/tsc-science.jpg",
-  "/images/events/tsc-informals.jpg",
-  "/images/events/tsc-mrandmrs.jpg",
-  "/images/events/reso-mantrastra.jpg",
-  "/images/events/ieee-codezilla.jpg",
-  "/images/events/ieee-incognito.jpg",
-  "/images/events/ieee-robosoccer.jpg",
-  "/images/events/rc-robowar.jpg",
-  "/images/events/rc-laser-strike.jpg",
-  "/images/events/sae-bridgekriti.jpg",
-  "/images/events/sae-cadathon.jpg",
-];
-
 export function TechSrijanPreloader() {
-  const pathname = usePathname();
   const [progress, setProgress] = useState(0);
   const [statusText, setStatusText] = useState("INITIALIZING NEURAL INTERFACE...");
   const [isDone, setIsDone] = useState(false);
-  const [isMounted, setIsMounted] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const startTimeRef = useRef(Date.now());
 
   useEffect(() => {
-    // Only run full preloader on initial session or hard page refresh
-    const sessionKey = "techsrijan_preloaded_session";
-    const alreadyLoaded = typeof window !== "undefined" && sessionStorage.getItem(sessionKey);
+    // Check if initial boot preloader has already completed during this session
+    const sessionKey = "techsrijan_site_booted";
+    if (typeof window !== "undefined" && sessionStorage.getItem(sessionKey)) {
+      setIsMounted(false);
+      return;
+    }
 
-    // Lock scroll during initial preloader
+    // First time entering the site: mount and initiate the boot sequence
+    setIsMounted(true);
     document.body.style.overflow = "hidden";
 
-    const assetsToLoad = [
-      ...CRITICAL_GLOBAL_ASSETS,
-      ...(pathname?.includes("/events") ? EVENTS_ROUTE_ASSETS : []),
-    ];
+    const assetsToLoad = [...CRITICAL_GLOBAL_ASSETS];
 
     let loadedCount = 0;
     const totalCount = assetsToLoad.length;
-    let targetProgress = 15;
+    let targetProgress = 20;
 
     // 1. Font readiness check
     if (typeof document !== "undefined" && "fonts" in document) {
       document.fonts.ready.then(() => {
-        targetProgress = Math.max(targetProgress, 35);
+        targetProgress = Math.max(targetProgress, 40);
       }).catch(() => {});
     }
 
-    // 2. Pre-cache all image assets into memory
+    // 2. Pre-cache initial global assets into memory
     assetsToLoad.forEach((src) => {
       const img = new Image();
       img.onload = img.onerror = () => {
         loadedCount++;
-        const pct = Math.round(35 + (loadedCount / totalCount) * 60);
+        const pct = Math.round(40 + (loadedCount / totalCount) * 55);
         targetProgress = Math.max(targetProgress, pct);
       };
       img.src = src;
@@ -79,27 +60,32 @@ export function TechSrijanPreloader() {
 
     // 3. Document ready state check
     if (document.readyState === "complete") {
-      targetProgress = Math.max(targetProgress, 50);
+      targetProgress = Math.max(targetProgress, 60);
     } else {
       window.addEventListener(
         "load",
         () => {
-          targetProgress = Math.max(targetProgress, 85);
+          targetProgress = Math.max(targetProgress, 90);
         },
         { once: true }
       );
     }
 
     // 4. Smooth progress animation ticker
-    const minDisplayTime = alreadyLoaded ? 450 : 900; // Fast for warm sessions, cinematic for cold entry
+    const minDisplayTime = 950; // Premium cinematic entry rhythm for initial landing
     const maxSafetyTimeout = 1800; // Safety cap: never stall the user beyond 1.8s
 
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTimeRef.current;
 
-      // Update telemetry status message based on progress
       setProgress((prev) => {
-        const next = Math.min(100, Math.max(prev + 4, Math.min(targetProgress, Math.round((elapsed / minDisplayTime) * 100))));
+        const next = Math.min(
+          100,
+          Math.max(
+            prev + 4,
+            Math.min(targetProgress, Math.round((elapsed / minDisplayTime) * 100))
+          )
+        );
 
         if (next < 30) {
           setStatusText("INITIALIZING SPATIAL SUBSYSTEMS...");
@@ -138,7 +124,7 @@ export function TechSrijanPreloader() {
 
       setTimeout(() => {
         setIsMounted(false);
-      }, 750);
+      }, 700);
     }
 
     return () => {
@@ -146,7 +132,7 @@ export function TechSrijanPreloader() {
       clearTimeout(safetyTimer);
       document.body.style.overflow = "";
     };
-  }, [pathname]);
+  }, []); // Run strictly once on initial site visit, never on route changes!
 
   if (!isMounted) return null;
 

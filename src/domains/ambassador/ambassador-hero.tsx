@@ -145,7 +145,7 @@ export function AmbassadorHero() {
           <picture className="w-full h-full">
             <source srcSet="/images/ambassador-desert-bg.webp" type="image/webp" />
             <img
-              src="/images/ambassador-desert-bg.png"
+              src="/images/ambassador-desert-bg.webp"
               alt="TechSrijan Arrakis Crimson Dunes"
               className="w-full h-full object-cover object-bottom"
               draggable={false}

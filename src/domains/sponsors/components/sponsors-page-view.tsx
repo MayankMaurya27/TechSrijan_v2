@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { SponsorsInquiryModal } from "./sponsors-inquiry-modal";
 import { useTheme, type CanonicalTheme } from "@/core";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 export const SPONSOR_THEMES = {
   "geass-moon": {
@@ -39,11 +40,11 @@ export const SPONSOR_THEMES = {
     accentGlow: "rgba(230, 30, 37, 0.75)",
     gold: "#D4AF37",
     goldBright: "#FFE55C",
-    robotImage: "/images/sponsors/spons_robot.png",
-    robotWebp: "/images/sponsors/spons_robot.webp",
+    robotImage: getOptimizedImageUrl("/images/sponsors/spons_robot.webp", 1200),
+    robotWebp: getOptimizedImageUrl("/images/sponsors/spons_robot.webp", 1200),
     robotGlowColor: "#E61E25",
-    sigilImage: "/images/sponsors/3-sigil.png",
-    sigilWebp: "/images/sponsors/3-sigil.webp",
+    sigilImage: getOptimizedImageUrl("/images/sponsors/3-sigil.webp", 800),
+    sigilWebp: getOptimizedImageUrl("/images/sponsors/3-sigil.webp", 800),
     sigilGlowDrop: "drop-shadow-[0_0_70px_rgba(230,30,37,0.95)]",
     curtainAmbientGlow1: "#E61E25",
     curtainAmbientGlow2: "#D4AF37",
@@ -74,11 +75,11 @@ export const SPONSOR_THEMES = {
     accentGlow: "rgba(245, 158, 11, 0.75)",
     gold: "#FDE68A",
     goldBright: "#FFFBEB",
-    robotImage: "/images/sponsors/spons_robot_arrakis.png",
-    robotWebp: "/images/sponsors/spons_robot_arrakis.webp",
+    robotImage: getOptimizedImageUrl("/images/sponsors/spons_robot_arrakis.webp", 1200),
+    robotWebp: getOptimizedImageUrl("/images/sponsors/spons_robot_arrakis.webp", 1200),
     robotGlowColor: "#F59E0B",
-    sigilImage: "/images/sponsors/3-sigil_arrakis.png",
-    sigilWebp: "/images/sponsors/3-sigil_arrakis.webp",
+    sigilImage: getOptimizedImageUrl("/images/sponsors/3-sigil_arrakis.webp", 800),
+    sigilWebp: getOptimizedImageUrl("/images/sponsors/3-sigil_arrakis.webp", 800),
     sigilGlowDrop: "drop-shadow-[0_0_70px_rgba(245,158,11,0.95)]",
     curtainAmbientGlow1: "#F59E0B",
     curtainAmbientGlow2: "#FBBF24",
@@ -109,11 +110,11 @@ export const SPONSOR_THEMES = {
     accentGlow: "rgba(215, 219, 226, 0.70)",
     gold: "#94A3B8",
     goldBright: "#E2E8F0",
-    robotImage: "/images/sponsors/spons_robot_krelln.png",
-    robotWebp: "/images/sponsors/spons_robot_krelln.webp",
+    robotImage: getOptimizedImageUrl("/images/sponsors/spons_robot_krelln.webp", 1200),
+    robotWebp: getOptimizedImageUrl("/images/sponsors/spons_robot_krelln.webp", 1200),
     robotGlowColor: "#CBD5E1",
-    sigilImage: "/images/sponsors/3-sigil_krelln.png",
-    sigilWebp: "/images/sponsors/3-sigil_krelln.webp",
+    sigilImage: getOptimizedImageUrl("/images/sponsors/3-sigil_krelln.webp", 800),
+    sigilWebp: getOptimizedImageUrl("/images/sponsors/3-sigil_krelln.webp", 800),
     sigilGlowDrop: "drop-shadow-[0_0_70px_rgba(215,219,226,0.90)]",
     curtainAmbientGlow1: "#CBD5E1",
     curtainAmbientGlow2: "#778292",
@@ -161,7 +162,7 @@ const INITIAL_SPONSORS: Sponsor[] = [
     name: "GRIDLINE MEDIA",
     tier: "Associate Partner",
     role: "KNIGHT",
-    pieceImg: "/images/sponsors/cp-5.webp",
+    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-5.webp", 400),
     pieceName: "Knight",
     logoType: "gridline",
     accent: "#EF4444",
@@ -173,7 +174,7 @@ const INITIAL_SPONSORS: Sponsor[] = [
     name: "AETHER ENERGY",
     tier: "Gold Partner",
     role: "QUEEN",
-    pieceImg: "/images/sponsors/cp-2.webp",
+    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-2.webp", 400),
     pieceName: "Queen",
     logoType: "aether",
     accent: "#F59E0B",
@@ -185,7 +186,7 @@ const INITIAL_SPONSORS: Sponsor[] = [
     name: "NOVA SYSTEMS",
     tier: "Title Partner",
     role: "KING",
-    pieceImg: "/images/sponsors/cp-1.webp",
+    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-1.webp", 400),
     pieceName: "King",
     logoType: "nova",
     accent: "#FFE600",
@@ -197,7 +198,7 @@ const INITIAL_SPONSORS: Sponsor[] = [
     name: "QUANTUM WORKS",
     tier: "Silver Partner",
     role: "ROOK",
-    pieceImg: "/images/sponsors/cp-6.webp",
+    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-6.webp", 400),
     pieceName: "Rook",
     logoType: "quantum",
     accent: "#38BDF8",
@@ -209,7 +210,7 @@ const INITIAL_SPONSORS: Sponsor[] = [
     name: "SKYWARD LABS",
     tier: "Supporting Partner",
     role: "PAWN",
-    pieceImg: "/images/sponsors/cp-4.webp",
+    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-4.webp", 400),
     pieceName: "Pawn",
     logoType: "skyward",
     accent: "#06B6D4",
@@ -576,9 +577,9 @@ export function SponsorsPageView() {
           }}
         >
           <picture className="w-full h-full">
-            <source srcSet="/images/sponsors/spons_land.webp" type="image/webp" />
+            <source srcSet={getOptimizedImageUrl("/images/sponsors/spons_land.webp", 1920)} type="image/webp" />
             <img
-              src="/images/sponsors/spons_land.webp"
+              src={getOptimizedImageUrl("/images/sponsors/spons_land.webp", 1920)}
               alt="TechSrijan Imperial Citadel"
               className="w-full h-full object-cover object-bottom"
               draggable={false}

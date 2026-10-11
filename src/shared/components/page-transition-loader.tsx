@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import cloudinaryLoader from "@/shared/utils/cloudinary-loader";
 
-// Critical assets mapped per route for instant pre-caching during the transition window
+// Critical assets mapped per route for guaranteed pre-caching during the transition window
 const ROUTE_ASSETS_MAP: Record<string, string[]> = {
   "/": [
     "/hero-logo-arrakis-day.webp",
@@ -34,6 +34,20 @@ const ROUTE_ASSETS_MAP: Record<string, string[]> = {
     "/images/events/sae-bridgekriti.jpg",
     "/images/events/sae-cadathon.jpg",
   ],
+  "/sponsors": [
+    "/images/sponsors/spons_land.webp",
+    "/images/sponsors/spons_robot.webp",
+    "/images/sponsors/spons_robot_arrakis.webp",
+    "/images/sponsors/spons_robot_krelln.webp",
+    "/images/sponsors/3-sigil.webp",
+    "/images/sponsors/3-sigil_arrakis.webp",
+    "/images/sponsors/3-sigil_krelln.webp",
+    "/images/sponsors/cp-1.webp",
+    "/images/sponsors/cp-2.webp",
+    "/images/sponsors/cp-4.webp",
+    "/images/sponsors/cp-5.webp",
+    "/images/sponsors/cp-6.webp",
+  ],
   "/about": [
     "/images/about/about-bg.webp",
     "/images/about/ajeet_kumar_clean.png",
@@ -43,15 +57,6 @@ const ROUTE_ASSETS_MAP: Record<string, string[]> = {
     "/images/about/patron_anupama_clean.png",
     "/images/about/rajan_mishra_tight.png",
   ],
-  "/sponsors": [
-    "/images/sponsors/spons_land.webp",
-    "/images/sponsors/cp-1.webp",
-    "/images/sponsors/cp-2.webp",
-    "/images/sponsors/cp-3.webp",
-    "/images/sponsors/cp-4.webp",
-    "/images/sponsors/cp-5.webp",
-    "/images/sponsors/cp-6.webp",
-  ],
   "/accommodation": [
     "/images/accommodation-city-bg.webp",
     "/images/lelouch-character.webp",
@@ -60,15 +65,24 @@ const ROUTE_ASSETS_MAP: Record<string, string[]> = {
   ],
   "/guests": [
     "/images/guests/guests-bg.webp",
+    "/images/guests/guest-bg-hc-verma.webp",
+    "/images/guests/guest-bg-kiran-bedi.webp",
   ],
   "/ambassador": [
     "/images/ambassador-character-arrakis.webp",
+    "/images/ambassador-character-geass.webp",
+    "/images/ambassador-character-krelln.webp",
     "/images/ambassador-desert-bg.webp",
-    "/images/ambassador-moon-arrakis.webp",
+    "/images/ambassador-moon.webp",
   ],
   "/profile": [
     "/images/profile/profileland.webp",
     "/images/profile/eye_asset.webp",
+  ],
+  "/contact": [
+    "/images/citadel-frame.webp",
+    "/images/contact/contact-bg-citadel.webp",
+    "/images/contact/contact-bg-worm.webp",
   ],
   "/signin": [
     "/images/auth/onboarding_bg.webp",
@@ -105,24 +119,50 @@ export function PageTransitionLoader() {
   const currentPathRef = useRef(pathname);
   const transitionStartRef = useRef<number>(0);
   const safetyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const inFlightPromiseRef = useRef<Promise<void> | null>(null);
 
-  // Preloads high-res images via Cloudinary CDN loader or local fallback
-  const preloadRouteAssets = useCallback((targetRoute: string) => {
+  // Preloads high-res assets into browser memory and returns a Promise that settles only when loaded
+  const preloadRouteAssets = useCallback((targetRoute: string): Promise<void> => {
     const matchedRoute = Object.keys(ROUTE_ASSETS_MAP).find(
       (route) => route === targetRoute || (route !== "/" && targetRoute.startsWith(route))
     );
     const assets = matchedRoute ? ROUTE_ASSETS_MAP[matchedRoute] : [];
+    if (assets.length === 0) return Promise.resolve();
 
-    assets.forEach((assetPath) => {
-      try {
-        const cdnUrl = cloudinaryLoader({ src: assetPath, width: 1200, quality: 85 });
-        const img = new Image();
-        img.src = cdnUrl;
-      } catch {
-        const img = new Image();
-        img.src = assetPath;
-      }
+    const promises = assets.map((assetPath) => {
+      return new Promise<void>((resolve) => {
+        let settled = false;
+        const settle = () => {
+          if (!settled) {
+            settled = true;
+            resolve();
+          }
+        };
+
+        try {
+          const cdnUrl = cloudinaryLoader({ src: assetPath, width: 1200, quality: 85 });
+          const img = new Image();
+          img.onload = settle;
+          img.onerror = settle;
+          img.src = cdnUrl;
+
+          // If image is already in browser cache
+          if (img.complete) {
+            settle();
+          }
+        } catch {
+          const img = new Image();
+          img.onload = settle;
+          img.onerror = settle;
+          img.src = assetPath;
+          if (img.complete) {
+            settle();
+          }
+        }
+      });
     });
+
+    return Promise.all(promises).then(() => {});
   }, []);
 
   const finishTransition = useCallback(() => {
@@ -133,12 +173,13 @@ export function PageTransitionLoader() {
     setTimeout(() => {
       setIsActive(false);
       setIsFadingOut(false);
+      inFlightPromiseRef.current = null;
     }, 320);
   }, []);
 
   const startTransition = useCallback(
     (targetHref: string) => {
-      // Don't trigger if initial boot loader is currently running
+      // Don't trigger if initial boot preloader hasn't finished yet
       if (typeof window !== "undefined" && !sessionStorage.getItem("techsrijan_site_booted")) {
         return;
       }
@@ -146,25 +187,24 @@ export function PageTransitionLoader() {
       const cleanPath = targetHref.split("?")[0].split("#")[0];
       if (cleanPath === currentPathRef.current && isActive) return;
 
-      // Set sector telemetry text
       const matchedSectorKey = Object.keys(ROUTE_SECTOR_NAMES).find(
         (route) => route === cleanPath || (route !== "/" && cleanPath.startsWith(route))
       );
       setTargetSector(matchedSectorKey ? ROUTE_SECTOR_NAMES[matchedSectorKey] : "SYNCHRONIZING SECTOR...");
 
-      // Start pre-caching target route's high-res media immediately
-      preloadRouteAssets(cleanPath);
+      // Start pre-caching target route's high-res media immediately and store promise
+      inFlightPromiseRef.current = preloadRouteAssets(cleanPath);
 
       transitionStartRef.current = Date.now();
       setIsActive(true);
       setIsFadingOut(false);
       document.body.style.overflow = "hidden";
 
-      // Safety timeout: never trap the user on loading screen beyond 1200ms
+      // Safety timeout: never trap user beyond 3500ms even on degraded 2G connections
       if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
       safetyTimeoutRef.current = setTimeout(() => {
         finishTransition();
-      }, 1200);
+      }, 3500);
     },
     [isActive, preloadRouteAssets, finishTransition]
   );
@@ -178,7 +218,6 @@ export function PageTransitionLoader() {
       const href = anchor.getAttribute("href");
       if (!href) return;
 
-      // Ignore external URLs, hashes, protocols, new tabs
       if (
         href.startsWith("http://") ||
         href.startsWith("https://") ||
@@ -215,33 +254,34 @@ export function PageTransitionLoader() {
     };
   }, [startTransition]);
 
-  // 2. Respond to pathname change completion
+  // 2. Respond to pathname change completion AND wait for assets to actually finish loading
   useEffect(() => {
     if (currentPathRef.current !== pathname) {
       currentPathRef.current = pathname;
 
-      // If transition wasn't initiated by anchor click (e.g., router push or popstate), activate briefly
       if (!isActive) {
         if (typeof window !== "undefined" && sessionStorage.getItem("techsrijan_site_booted")) {
           startTransition(pathname);
-          const t = setTimeout(() => {
-            finishTransition();
-          }, 600);
-          return () => clearTimeout(t);
         }
-      } else {
-        // Enforce calibrated minimum animation display duration (600ms) for cinematic rhythm
+      }
+
+      // Wait for destination page assets to finish loading before dissolving
+      const assetsPromise = inFlightPromiseRef.current || preloadRouteAssets(pathname);
+
+      assetsPromise.finally(() => {
         const elapsed = Date.now() - transitionStartRef.current;
-        const minDuration = 600;
+        // Minimum visual display duration (650ms) to ensure smooth, non-jarring rhythm
+        const minDuration = 650;
         const remaining = Math.max(0, minDuration - elapsed);
 
         const timer = setTimeout(() => {
           finishTransition();
         }, remaining);
+
         return () => clearTimeout(timer);
-      }
+      });
     }
-  }, [pathname, isActive, startTransition, finishTransition]);
+  }, [pathname, isActive, preloadRouteAssets, startTransition, finishTransition]);
 
   if (!isActive) return null;
 

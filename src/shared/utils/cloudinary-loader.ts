@@ -43,3 +43,11 @@ export default function cloudinaryLoader({
 
   return `https://res.cloudinary.com/${cloudName}/image/upload/${transforms}/techsrijan/${pathWithoutExt}`;
 }
+
+export function getOptimizedImageUrl(src: string, width = 1200, quality = 85): string {
+  try {
+    return cloudinaryLoader({ src, width, quality });
+  } catch {
+    return src;
+  }
+}

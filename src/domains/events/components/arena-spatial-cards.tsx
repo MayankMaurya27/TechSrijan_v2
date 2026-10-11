@@ -232,13 +232,13 @@ export function ArenaSpatialCards({
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
-      {/* 5 Club Cards with Ref Attachment for Stay-Style Structural Collapse */}
-      <div className="flex-1 flex flex-col justify-center items-center pb-2 sm:pb-8 pointer-events-auto w-full px-2 sm:px-6">
-        <div className="w-full max-w-[98vw] lg:max-w-6xl xl:max-w-7xl flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 lg:gap-5">
+      {/* ── Desktop & Tablet View (md+): 5 Ornate Spatial Columns ── */}
+      <div className="hidden md:flex flex-1 flex-col justify-center items-center pb-2 sm:pb-8 pointer-events-auto w-full px-2 sm:px-6">
+        <div className="w-full max-w-[98vw] lg:max-w-6xl xl:max-w-7xl flex flex-row items-center justify-center gap-3.5 lg:gap-5">
           {/* Left Column (Cards 0 & 1: TSC, RESO) */}
           <div
             ref={leftCardsRef}
-            className="flex items-center justify-center gap-2 sm:gap-3.5 lg:gap-5 will-change-transform"
+            className="flex items-center justify-center gap-3.5 lg:gap-5 will-change-transform"
           >
             {CLUBS.slice(0, 2).map((club, i) => (
               <ClubCard
@@ -265,7 +265,7 @@ export function ArenaSpatialCards({
           {/* Right Column (Cards 3 & 4: RC, SAE) */}
           <div
             ref={rightCardsRef}
-            className="flex items-center justify-center gap-2 sm:gap-3.5 lg:gap-5 will-change-transform mt-1 sm:mt-0"
+            className="flex items-center justify-center gap-3.5 lg:gap-5 will-change-transform"
           >
             {CLUBS.slice(3, 5).map((club, i) => (
               <ClubCard
@@ -295,6 +295,130 @@ export function ArenaSpatialCards({
           <p className="font-mono text-[9px] tracking-[0.25em] text-white/40 uppercase text-center">
             SELECT A CLUB OR SCROLL DOWN TO ENTER THE DOSSIER
           </p>
+        </div>
+      </div>
+
+      {/* ── Mobile View (<md): Compact High-Performance Touch Deck ── */}
+      <div className="flex md:hidden flex-1 flex-col justify-center items-center py-2 px-3 pointer-events-auto w-full max-w-sm mx-auto">
+        <div className="w-full text-center mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-md mb-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/80">
+              THE ARENA // 5 CHAPTERS
+            </span>
+          </div>
+          <p className="font-mono text-[7.5px] tracking-[0.25em] text-white/50 uppercase">
+            TAP A CLUB TO ENTER DOSSIER
+          </p>
+        </div>
+
+        {/* 2x2 Grid with Left & Right Collapse Refs */}
+        <div className="w-full grid grid-cols-2 gap-2">
+          {/* Left Column Mobile (TSC, IEEE) */}
+          <div ref={leftCardsRef} className="flex flex-col gap-2 will-change-transform">
+            {[CLUBS[0], CLUBS[2]].map((club) => (
+              <div
+                key={club.id}
+                onClick={() => handleClubClick(club)}
+                className="relative cursor-pointer active:scale-95 transition-transform duration-150 rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
+              >
+                <div
+                  className="w-10 h-10 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 mb-1.5"
+                  style={{ boxShadow: `0 0 12px ${club.glowColor}` }}
+                >
+                  <img
+                    src={club.logo}
+                    alt={club.shortName}
+                    className="w-full h-full object-contain rounded-full"
+                  />
+                </div>
+                <span className="font-mono text-[7.5px] tracking-[0.15em] text-white/60 uppercase">
+                  CLUB // {club.slotNumber}
+                </span>
+                <span className="font-bebas text-base tracking-wider text-white uppercase leading-none mt-0.5">
+                  {club.shortName}
+                </span>
+                <span className="mt-1 px-1.5 py-0.5 rounded-full bg-white/10 text-[7px] font-mono tracking-wider text-neutral-300 uppercase">
+                  {club.eventCount} EVENTS
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Right Column Mobile (RESO, RC) */}
+          <div ref={rightCardsRef} className="flex flex-col gap-2 will-change-transform">
+            {[CLUBS[1], CLUBS[3]].map((club) => (
+              <div
+                key={club.id}
+                onClick={() => handleClubClick(club)}
+                className="relative cursor-pointer active:scale-95 transition-transform duration-150 rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
+              >
+                <div
+                  className="w-10 h-10 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 mb-1.5"
+                  style={{ boxShadow: `0 0 12px ${club.glowColor}` }}
+                >
+                  <img
+                    src={club.logo}
+                    alt={club.shortName}
+                    className="w-full h-full object-contain rounded-full"
+                  />
+                </div>
+                <span className="font-mono text-[7.5px] tracking-[0.15em] text-white/60 uppercase">
+                  CLUB // {club.slotNumber}
+                </span>
+                <span className="font-bebas text-base tracking-wider text-white uppercase leading-none mt-0.5">
+                  {club.shortName}
+                </span>
+                <span className="mt-1 px-1.5 py-0.5 rounded-full bg-white/10 text-[7px] font-mono tracking-wider text-neutral-300 uppercase">
+                  {club.eventCount} EVENTS
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 5th Club (SAE) full-width centered card inside centerCardRef */}
+        <div ref={centerCardRef} className="w-full mt-2 will-change-transform">
+          <div
+            onClick={() => handleClubClick(CLUBS[4])}
+            className="relative cursor-pointer active:scale-95 transition-transform duration-150 rounded-xl bg-black/85 border border-white/15 p-2.5 flex items-center justify-between shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
+          >
+            <div className="flex items-center gap-2.5">
+              <div
+                className="w-9 h-9 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 shrink-0"
+                style={{ boxShadow: `0 0 12px ${CLUBS[4].glowColor}` }}
+              >
+                <img
+                  src={CLUBS[4].logo}
+                  alt={CLUBS[4].shortName}
+                  className="w-full h-full object-contain rounded-full"
+                />
+              </div>
+              <div className="text-left">
+                <span className="font-mono text-[7.5px] tracking-[0.15em] text-white/60 uppercase block">
+                  CLUB // {CLUBS[4].slotNumber}
+                </span>
+                <span className="font-bebas text-base tracking-wider text-white uppercase">
+                  {CLUBS[4].shortName} · {CLUBS[4].fullName}
+                </span>
+              </div>
+            </div>
+            <span className="px-2 py-0.5 rounded-full bg-white/10 text-[7px] font-mono tracking-wider text-neutral-300 uppercase shrink-0">
+              {CLUBS[4].eventCount} EVENTS
+            </span>
+          </div>
+        </div>
+
+        {/* Mobile Action Button */}
+        <div className="w-full mt-2.5 text-center">
+          <button
+            type="button"
+            onClick={onExploreEvents}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-white text-black font-mono text-[10px] font-bold tracking-[0.2em] uppercase rounded-lg active:scale-95 transition-all shadow-[0_0_15px_rgba(255,255,255,0.25)] cursor-pointer"
+          >
+            <span>EXPLORE ALL 23 EVENTS</span>
+            <ChevronDown className="w-3.5 h-3.5 animate-bounce" />
+          </button>
         </div>
       </div>
     </div>

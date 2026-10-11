@@ -3,34 +3,12 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ChevronDown } from "lucide-react";
-import { ArenaSpatialCards, CLUBS } from "./arena-spatial-cards";
+import { ArenaSpatialCards } from "./arena-spatial-cards";
 import type { ClubId } from "./arena-spatial-cards";
 
-// Register GSAP plugins on client
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
-
-// ─── Radial Dissolution Spark Particles (Matches Stay Section) ────────────────
-const DISSOLVE_PARTICLES = [
-  { size: 5, top: 26, left: 45, dx: -55, dy: -70, color: "silver" },
-  { size: 6, top: 30, left: 53, dx: 65, dy: -80, color: "white" },
-  { size: 4, top: 38, left: 48, dx: -85, dy: -30, color: "silver" },
-  { size: 7, top: 42, left: 56, dx: 75, dy: -40, color: "dark" },
-  { size: 5, top: 48, left: 42, dx: -100, dy: 10, color: "white" },
-  { size: 6, top: 54, left: 58, dx: 95, dy: 20, color: "silver" },
-  { size: 4, top: 58, left: 46, dx: -65, dy: 55, color: "white" },
-  { size: 5, top: 64, left: 54, dx: 55, dy: 65, color: "dark" },
-  { size: 6, top: 33, left: 50, dx: 25, dy: -90, color: "white" },
-  { size: 4, top: 46, left: 52, dx: -35, dy: -80, color: "silver" },
-  { size: 7, top: 56, left: 48, dx: 90, dy: 40, color: "white" },
-  { size: 5, top: 60, left: 52, dx: -80, dy: 45, color: "dark" },
-  { size: 4, top: 28, left: 47, dx: -45, dy: -55, color: "silver" },
-  { size: 5, top: 36, left: 54, dx: 50, dy: -45, color: "white" },
-  { size: 6, top: 44, left: 44, dx: -70, dy: -10, color: "silver" },
-  { size: 4, top: 50, left: 55, dx: 80, dy: 5, color: "dark" },
-];
 
 interface EventsHeroScrollProps {
   onScrollProgress?: (progress: number) => void;
@@ -45,31 +23,23 @@ export function EventsHeroScroll({
   const scrollWrapperRef = useRef<HTMLDivElement>(null);
   const pinnedStageRef = useRef<HTMLDivElement>(null);
 
-  // Video scrubber elements
+  // Video scrubber elements: Canvas frame buffer (zero-black frame guarantee) & hidden video decoder
   const bgArenaRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Hero text overlay
+  // Hero overlays
   const heroTextRef = useRef<HTMLDivElement>(null);
-
-  // Arena card collapse refs
-  const leftCardsRef = useRef<HTMLDivElement>(null);
-  const centerCardRef = useRef<HTMLDivElement>(null);
-  const rightCardsRef = useRef<HTMLDivElement>(null);
-
-  // Stay-style Transition Layers
-  const scanBeamRef = useRef<HTMLDivElement>(null);
-  const headingScanLinesRef = useRef<HTMLDivElement>(null);
-  const lowerSmokeRef = useRef<HTMLDivElement>(null);
-  const dissolveParticlesRef = useRef<HTMLDivElement>(null);
-  const chamberBgRef = useRef<HTMLDivElement>(null);
+  const arenaHudRef = useRef<HTMLDivElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
 
   // State
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [hasDrawnFrame, setHasDrawnFrame] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Seeking watchdog
+  // Seeking watchdog & throttling
   const isSeekingRef = useRef(false);
   const targetTimeRef = useRef(0);
   const seekWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -82,56 +52,119 @@ export function EventsHeroScroll({
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Hardware-accelerated video seeking (Desktop only — mobile uses lightweight WebP posters)
-  const attemptSeek = useCallback(() => {
-    if (isMobile) return;
+  // ─── Draw Video Frame to Persistent Canvas ──────────────────────────────────
+  // A canvas retains its frame buffer in GPU memory during seeks, which physically
+  // prevents the browser video decoder from flashing a blank or black surface!
+  const renderFrameToCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
     const video = videoRef.current;
-    if (!video || !video.duration) return;
-    if (isSeekingRef.current) return;
+    if (!canvas || !video) return;
 
-    const maxSafe = Math.max(0, video.duration - 0.05);
-    const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
-
-    if (Math.abs(video.currentTime - target) > 0.02) {
-      isSeekingRef.current = true;
-      video.currentTime = target;
-
-      if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
-      seekWatchdogRef.current = setTimeout(() => {
-        isSeekingRef.current = false;
-        attemptSeek();
-      }, 100);
+    if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+      canvas.width = canvas.clientWidth || window.innerWidth;
+      canvas.height = canvas.clientHeight || window.innerHeight;
     }
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx || !video.videoWidth || !video.videoHeight) return;
+
+    const cWidth = canvas.width;
+    const cHeight = canvas.height;
+    const vWidth = video.videoWidth;
+    const vHeight = video.videoHeight;
+
+    const hRatio = cWidth / vWidth;
+    const vRatio = cHeight / vHeight;
+    const ratio = Math.max(hRatio, vRatio);
+
+    const drawWidth = vWidth * ratio;
+    const drawHeight = vHeight * ratio;
+    const offsetX = (cWidth - drawWidth) / 2;
+    const offsetY = (cHeight - drawHeight) / 2;
+
+    ctx.drawImage(video, 0, 0, vWidth, vHeight, offsetX, offsetY, drawWidth, drawHeight);
+    setHasDrawnFrame(true);
   }, []);
 
-  const handleSeeked = useCallback(() => {
-    if (seekWatchdogRef.current) {
-      clearTimeout(seekWatchdogRef.current);
-      seekWatchdogRef.current = null;
-    }
-    isSeekingRef.current = false;
-
+  // Trigger first frame draw as soon as video is ready
+  useEffect(() => {
     const video = videoRef.current;
-    if (video && video.duration) {
-      const maxSafe = Math.max(0, video.duration - 0.05);
-      const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
-      if (Math.abs(video.currentTime - target) > 0.02) {
-        attemptSeek();
+    if (video) {
+      if (video.readyState >= 2) {
+        setIsVideoLoaded(true);
+        renderFrameToCanvas();
       }
     }
-  }, [attemptSeek]);
+  }, [renderFrameToCanvas]);
 
-  const handleLoadedMetadata = () => {
-    if (videoRef.current) {
-      setIsVideoLoaded(true);
+  // Handle Canvas resize
+  useEffect(() => {
+    const handleResize = () => {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.width = canvas.clientWidth || window.innerWidth;
+        canvas.height = canvas.clientHeight || window.innerHeight;
+        renderFrameToCanvas();
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [renderFrameToCanvas]);
+
+  // ─── Smooth Video Seek Scrubber ─────────────────────────────────────────────
+  const attemptSeek = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || !video.duration || isSeekingRef.current) return;
+
+    const target = targetTimeRef.current;
+    if (Math.abs(video.currentTime - target) < 0.03) return;
+
+    isSeekingRef.current = true;
+    try {
+      video.currentTime = target;
+    } catch {
+      isSeekingRef.current = false;
     }
-  };
 
-  // ─── Smooth Scroll to Our Events Section ─────────────────────────────────────
+    if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
+    seekWatchdogRef.current = setTimeout(() => {
+      if (isSeekingRef.current) {
+        isSeekingRef.current = false;
+        renderFrameToCanvas();
+      }
+    }, 80);
+  }, [renderFrameToCanvas]);
+
+  const handleLoadedMetadata = useCallback(() => {
+    setIsVideoLoaded(true);
+    const video = videoRef.current;
+    if (video) {
+      video.currentTime = 0.01;
+      renderFrameToCanvas();
+    }
+  }, [renderFrameToCanvas]);
+
+  const handleSeeked = useCallback(() => {
+    if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
+    isSeekingRef.current = false;
+    renderFrameToCanvas();
+
+    const video = videoRef.current;
+    if (video && Math.abs(video.currentTime - targetTimeRef.current) >= 0.04) {
+      attemptSeek();
+    }
+  }, [attemptSeek, renderFrameToCanvas]);
+
+  // Scroll directly into Our Events Dossier
   const scrollToOurEvents = useCallback(() => {
     const target = document.getElementById("our-events-section");
     if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
+      const lenis = (window as any).__lenis;
+      if (lenis) {
+        lenis.scrollTo(target, { duration: 1.1, offset: -20 });
+      } else {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
       return;
     }
 
@@ -141,15 +174,10 @@ export function EventsHeroScroll({
     }
   }, []);
 
-  // ─── GSAP ScrollTrigger Sequence (Desktop only — Mobile uses native 120Hz momentum) ───
+  // ─── GSAP ScrollTrigger Sequence ─────────────────────────────────────────────
   useEffect(() => {
     if (typeof window === "undefined" || !scrollWrapperRef.current || !pinnedStageRef.current)
       return;
-
-    // Mobile touch devices: do not pin or scrub! Mobile users scroll with native 120Hz momentum
-    if (window.innerWidth < 768) {
-      return;
-    }
 
     ScrollTrigger.config({ ignoreMobileResize: true });
 
@@ -158,16 +186,18 @@ export function EventsHeroScroll({
       lenis.on("scroll", ScrollTrigger.update);
     }
 
+    const isMobileViewport = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           id: "events-hero-scroll",
           trigger: scrollWrapperRef.current,
           start: "top top",
-          end: "+=300%",
+          end: isMobileViewport ? "+=130%" : "+=150%",
           pin: pinnedStageRef.current,
-          scrub: 0.8,
-          anticipatePin: 1,
+          scrub: isMobileViewport ? 0.4 : 0.6,
+          anticipatePin: 0,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const p = self.progress;
@@ -182,17 +212,14 @@ export function EventsHeroScroll({
               const tArena = 5.04;
 
               let target = 0;
-              if (p <= 0.28) {
-                // Phase 1 (Frame 1 -> Frame 2)
-                const norm = p / 0.28;
+              if (p <= 0.25) {
+                const norm = p / 0.25;
                 target = tFrame1 + norm * (tFrame2 - tFrame1);
-              } else if (p <= 0.44) {
-                // Phase 2 (Frame 2 -> Arena)
-                const norm = (p - 0.28) / 0.16;
+              } else if (p <= 0.45) {
+                const norm = (p - 0.25) / 0.20;
                 target = tFrame2 + norm * (tArena - tFrame2);
               } else {
-                // Settle and dwell inside the arena with subtle slow drift
-                target = Math.min(video.duration - 0.05, tArena + Math.min(0.4, (p - 0.44) * 0.8));
+                target = tArena;
               }
 
               targetTimeRef.current = Math.max(0, Math.min(video.duration - 0.05, target));
@@ -203,166 +230,51 @@ export function EventsHeroScroll({
       });
 
       // ─────────────────────────────────────────────────────────────────────────
-      // 0.00 - 0.20: Hero Text Fade-out
+      // PHASE 1: 0.00 - 0.20 Hero Text Fade-out
       // ─────────────────────────────────────────────────────────────────────────
       if (heroTextRef.current) {
         tl.to(
           heroTextRef.current,
           {
             opacity: 0,
-            y: -50,
+            y: -35,
             scale: 0.96,
             ease: "power2.inOut",
-            duration: 0.18,
+            duration: 0.20,
           },
           0
         );
       }
 
       // ─────────────────────────────────────────────────────────────────────────
-      // 0.82 - 0.93: Structural Collapse (Left & Right Cards Shoot Outward)
-      // Extended dwell time (0.44 to 0.82) allows ample trackpad scroll to browse
+      // PHASE 2: 0.12 - 0.35 Crucible / Horizon HUD (Smooth Bridge)
       // ─────────────────────────────────────────────────────────────────────────
-      if (leftCardsRef.current) {
-        tl.to(
-          leftCardsRef.current,
-          {
-            xPercent: -130,
-            opacity: 0,
-            scaleX: 0.88,
-            scaleY: 0.45,
-            filter: "grayscale(1) brightness(2.4) contrast(1.8) drop-shadow(0 0 4px rgba(255,255,255,0.9))",
-            ease: "power2.inOut",
-            duration: 0.11,
-          },
-          0.82
-        );
-      }
-
-      if (rightCardsRef.current) {
-        tl.to(
-          rightCardsRef.current,
-          {
-            xPercent: 130,
-            opacity: 0,
-            scaleX: 0.88,
-            scaleY: 0.45,
-            filter: "grayscale(1) brightness(2.4) contrast(1.8) drop-shadow(0 0 4px rgba(255,255,255,0.9))",
-            ease: "power2.inOut",
-            duration: 0.11,
-          },
-          0.82
-        );
-      }
-
-      if (centerCardRef.current) {
-        tl.to(
-          centerCardRef.current,
-          {
-            scale: 0.72,
-            y: 40,
-            filter: "brightness(0) contrast(300%) blur(8px)",
-            opacity: 0,
-            ease: "power2.inOut",
-            duration: 0.11,
-          },
-          0.82
-        );
-      }
-
-      // Horizontal Scanlines Split Flicker
-      if (headingScanLinesRef.current) {
+      if (arenaHudRef.current) {
         tl.fromTo(
-          headingScanLinesRef.current,
-          { opacity: 0 },
-          { opacity: 0.9, duration: 0.05, yoyo: true, repeat: 1, ease: "steps(3)" },
-          0.82
-        );
-      }
-
-      // Vertical Scan Beam travels downwards across full viewport
-      if (scanBeamRef.current) {
-        tl.fromTo(
-          scanBeamRef.current,
-          { y: "-8vh", opacity: 0 },
-          {
-            y: "112vh",
-            opacity: 1,
-            ease: "power1.inOut",
-            duration: 0.12,
-          },
-          0.82
+          arenaHudRef.current,
+          { opacity: 0, y: 25, scale: 0.94 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.10, ease: "power2.out" },
+          0.12
         );
         tl.to(
-          scanBeamRef.current,
-          { opacity: 0, duration: 0.04 },
-          0.94
-        );
-      }
-
-      if (lowerSmokeRef.current) {
-        tl.to(
-          lowerSmokeRef.current,
-          {
-            opacity: 0.85,
-            y: -25,
-            scaleY: 1.35,
-            ease: "power1.out",
-            duration: 0.11,
-          },
-          0.82
+          arenaHudRef.current,
+          { opacity: 0, y: -25, scale: 1.04, duration: 0.08, ease: "power2.in" },
+          0.28
         );
       }
 
       // ─────────────────────────────────────────────────────────────────────────
-      // 0.90 - 0.98: Central Arena Zoom & Dissolve Particle Explosion
+      // PHASE 3: 0.26 - 1.00 Arena Spatial Cards Entrance & Solid Dwell
+      // Note: Cards and Arena background remain fully visible all the way to 1.00!
+      // Once progress reaches 1.00, the stage cleanly unpins directly into
+      // the Our Events section with zero black gap or blank screen!
       // ─────────────────────────────────────────────────────────────────────────
-      if (bgArenaRef.current) {
-        tl.to(
-          bgArenaRef.current,
-          {
-            scale: 3.0,
-            filter: "blur(18px)",
-            opacity: 0,
-            ease: "power3.inOut",
-            duration: 0.09,
-          },
-          0.90
-        );
-      }
-
-      if (dissolveParticlesRef.current) {
+      if (cardsContainerRef.current) {
         tl.fromTo(
-          dissolveParticlesRef.current,
-          { opacity: 0, scale: 0.85 },
-          { opacity: 1, scale: 1.3, duration: 0.04, ease: "power1.out" },
-          0.90
-        );
-        tl.to(
-          ".dissolve-spark",
-          {
-            x: (i) => DISSOLVE_PARTICLES[i % DISSOLVE_PARTICLES.length].dx,
-            y: (i) => DISSOLVE_PARTICLES[i % DISSOLVE_PARTICLES.length].dy,
-            opacity: 0,
-            scale: 0.2,
-            duration: 0.08,
-            stagger: 0.004,
-            ease: "power2.out",
-          },
-          0.91
-        );
-      }
-
-      // Abstract Control Chamber Fade-in
-      if (chamberBgRef.current) {
-        tl.to(
-          chamberBgRef.current,
-          {
-            opacity: 1,
-            ease: "power2.inOut",
-            duration: 0.09,
-          },
-          0.90
+          cardsContainerRef.current,
+          { opacity: 0, y: 40, scale: 0.94 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: "power2.out" },
+          0.26
         );
       }
     }, scrollWrapperRef);
@@ -380,200 +292,74 @@ export function EventsHeroScroll({
     };
   }, [attemptSeek, onScrollProgress]);
 
-  // Dynamic horizontal focal point for mobile so character stays centered
-  const mobileFocalX = scrollProgress <= 0.28 ? Math.round(72 - (scrollProgress / 0.28) * 22) : 50;
-  const currentFocal = isMobile ? `${mobileFocalX}% center` : "center center";
-
-  // ─── Mobile Touch Devices: Dedicated High-Performance Hero ──────────────────
-  if (isMobile) {
-    return (
-      <div className="relative w-full min-h-[95dvh] bg-black text-white flex flex-col justify-between py-6 px-4 select-none overflow-hidden">
-        {/* Full-bleed Hardware-Composited Background Poster */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="/events-arena-poster.webp"
-            alt="The Arena"
-            className="w-full h-full object-cover object-center filter brightness-95"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/80 pointer-events-none" />
-          <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-black/90 to-transparent pointer-events-none" />
-        </div>
-
-        {/* Top Header */}
-        <div className="relative z-10 pt-16 text-center max-w-md mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-white/20 backdrop-blur-md mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-white/80">
-              TECHSRIJAN &apos;27 // THE ARENA
-            </span>
-          </div>
-          <h1 className="font-montserrat tracking-tight text-4xl sm:text-5xl font-black text-white uppercase drop-shadow-[0_4px_25px_rgba(0,0,0,1)]">
-            THE ARENA
-          </h1>
-          <p className="mt-2 font-mono text-[10px] tracking-[0.2em] text-neutral-300 uppercase">
-            5 CHAPTERS · 23 CHAMPIONSHIP EVENTS
-          </p>
-        </div>
-
-        {/* 5 Club Cards Grid */}
-        <div className="relative z-10 my-auto py-4 w-full max-w-sm mx-auto">
-          <p className="font-mono text-[8px] tracking-[0.3em] text-white/50 uppercase text-center mb-3">
-            TAP A CLUB TO ENTER DOSSIER
-          </p>
-          <div className="grid grid-cols-2 gap-2.5">
-            {CLUBS.slice(0, 4).map((club) => (
-              <div
-                key={club.id}
-                onClick={() => {
-                  if (onClubSelect) onClubSelect(club.id);
-                  scrollToOurEvents();
-                }}
-                className="relative cursor-pointer active:scale-95 transition-transform duration-150 rounded-xl bg-black/85 border border-white/15 p-3 flex flex-col items-center text-center shadow-[0_4px_20px_rgba(0,0,0,0.8)] backdrop-blur-md overflow-hidden"
-              >
-                <div
-                  className="w-12 h-12 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 mb-2"
-                  style={{
-                    boxShadow: `0 0 15px ${club.glowColor}`,
-                  }}
-                >
-                  <img
-                    src={club.logo}
-                    alt={club.shortName}
-                    className="w-full h-full object-contain rounded-full"
-                  />
-                </div>
-                <span className="font-mono text-[8px] tracking-[0.2em] text-white/60 uppercase">
-                  CLUB // {club.slotNumber}
-                </span>
-                <span className="font-bebas text-lg tracking-wider text-white uppercase mt-0.5">
-                  {club.shortName}
-                </span>
-                <span className="mt-1 px-2 py-0.5 rounded-full bg-white/10 text-[8px] font-mono tracking-wider text-neutral-300 uppercase">
-                  {club.eventCount} EVENTS
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* 5th Club (SAE) full-width centered card */}
-          <div
-            onClick={() => {
-              if (onClubSelect) onClubSelect(CLUBS[4].id);
-              scrollToOurEvents();
-            }}
-            className="mt-2.5 relative cursor-pointer active:scale-95 transition-transform duration-150 rounded-xl bg-black/85 border border-white/15 p-3 flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.8)] backdrop-blur-md overflow-hidden"
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className="w-11 h-11 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 shrink-0"
-                style={{
-                  boxShadow: `0 0 15px ${CLUBS[4].glowColor}`,
-                }}
-              >
-                <img
-                  src={CLUBS[4].logo}
-                  alt={CLUBS[4].shortName}
-                  className="w-full h-full object-contain rounded-full"
-                />
-              </div>
-              <div className="text-left">
-                <span className="font-mono text-[8px] tracking-[0.2em] text-white/60 uppercase block">
-                  CLUB // {CLUBS[4].slotNumber}
-                </span>
-                <span className="font-bebas text-lg tracking-wider text-white uppercase">
-                  {CLUBS[4].shortName} · {CLUBS[4].fullName}
-                </span>
-              </div>
-            </div>
-            <span className="px-2.5 py-1 rounded-full bg-white/10 text-[8px] font-mono tracking-wider text-neutral-300 uppercase shrink-0">
-              {CLUBS[4].eventCount} EVENTS
-            </span>
-          </div>
-        </div>
-
-        {/* Bottom CTA Button */}
-        <div className="relative z-10 text-center pb-2">
-          <button
-            type="button"
-            onClick={scrollToOurEvents}
-            className="w-full max-w-sm mx-auto flex items-center justify-center gap-2 py-3 px-6 bg-white text-black font-mono text-xs font-bold tracking-[0.25em] uppercase rounded-lg active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] cursor-pointer"
-          >
-            <span>EXPLORE ALL 23 EVENTS</span>
-            <ChevronDown className="w-4 h-4 animate-bounce" />
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
       ref={scrollWrapperRef}
-      className="relative w-full bg-black select-none"
+      className="relative w-full bg-[#030406] select-none"
     >
-      {/* Cinematic Stage Viewport (Pinned by GSAP ScrollTrigger) */}
+      {/* Cinematic Stage Viewport (Pinned by GSAP ScrollTrigger on Desktop & Mobile) */}
       <div
         ref={pinnedStageRef}
-        className="relative h-screen h-[100dvh] w-full overflow-hidden bg-black"
+        className="relative h-screen h-[100dvh] w-full overflow-hidden bg-[#030406]"
       >
         {/* =================================================================== */}
-        {/* LAYER 0 & 1: VIDEO SCRUBBER & BASELINE ARENA POSTERS               */}
+        {/* LAYER 0 & 1: VIDEO SCRUBBER, PERSISTENT CANVAS & BASELINE POSTERS   */}
         {/* =================================================================== */}
         <div ref={bgArenaRef} className="absolute inset-0 h-full w-full will-change-transform z-0">
+          {/* Baseline WebP Posters: Solid foundation prevents blank flashes */}
           <div
-            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-500 bg-cover"
+            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-1"
             style={{
               backgroundImage: "url('/events-hero-poster.webp')",
-              backgroundPosition: currentFocal,
-              opacity: scrollProgress < 0.28 ? 1 : 0,
+              opacity: scrollProgress < 0.26 ? 1 : 0,
             }}
           />
           <div
-            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-500 bg-cover"
+            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-1"
             style={{
               backgroundImage: "url('/events-mid-poster.webp')",
-              backgroundPosition: isMobile ? "50% center" : "center center",
-              opacity: scrollProgress >= 0.28 && scrollProgress < 0.44 ? 1 : 0,
+              opacity: scrollProgress >= 0.26 && scrollProgress < 0.45 ? 1 : 0,
             }}
           />
           <div
-            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-500 bg-cover bg-center"
+            className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-1"
             style={{
               backgroundImage: "url('/events-arena-poster.webp')",
-              opacity: scrollProgress >= 0.44 ? 1 : 0,
+              opacity: scrollProgress >= 0.45 ? 1 : 0,
             }}
           />
 
-          {/* Upscaled QHD Video Scrubber (Desktop only — Mobile uses lightweight hardware-composited WebP posters) */}
-          {!isMobile && (
-            <video
-              ref={videoRef}
-              src="/event_video.mp4"
-              poster="/events-hero-poster.webp"
-              playsInline
-              muted
-              preload="auto"
-              onLoadedMetadata={handleLoadedMetadata}
-              onSeeked={handleSeeked}
-              className="absolute inset-0 h-full w-full object-cover pointer-events-none transition-opacity duration-300"
-              style={{
-                opacity: isVideoLoaded ? 1 : 0.9,
-                zIndex: 2,
-                filter: "contrast(1.04) brightness(1.02)",
-                transform: "translate3d(0, 0, 0)",
-                backfaceVisibility: "hidden",
-                objectPosition: currentFocal,
-              }}
-            />
-          )}
+          {/* High-Performance Canvas Frame Scrubber: Retains previous frame during seeks so it NEVER goes black */}
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 h-full w-full object-cover pointer-events-none transition-opacity duration-300"
+            style={{
+              opacity: isVideoLoaded && hasDrawnFrame ? 1 : 0,
+              zIndex: 2,
+              filter: "contrast(1.04) brightness(1.02)",
+            }}
+          />
+
+          {/* Hidden Video element for hardware decoding (Desktop: 1080p, Mobile: 720p 1.3MB with GOP=2) */}
+          <video
+            ref={videoRef}
+            src={isMobile ? "/event_video_mobile.mp4" : "/event_video_desktop.mp4"}
+            poster="/events-hero-poster.webp"
+            playsInline
+            muted
+            preload="auto"
+            onLoadedMetadata={handleLoadedMetadata}
+            onSeeked={handleSeeked}
+            className="hidden"
+          />
 
           {/* Deep Obsidian Left Vignette */}
           <div
             className="absolute inset-0 pointer-events-none z-10"
             style={{
               background:
-                "linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.1) 85%, transparent 100%)",
-              opacity: Math.max(0, 1 - scrollProgress * 3.0),
+                "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.3) 60%, transparent 100%)",
+              opacity: Math.max(0, 1 - scrollProgress * 3.2),
             }}
           />
 
@@ -588,16 +374,22 @@ export function EventsHeroScroll({
           ref={heroTextRef}
           className="absolute inset-0 z-20 flex items-center px-5 sm:px-12 md:px-16 lg:px-24 pointer-events-none"
         >
-          <div className="max-w-[85vw] sm:max-w-xl text-left">
+          <div className="max-w-[88vw] sm:max-w-xl text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-white/20 backdrop-blur-md mb-3 sm:mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              <span className="font-mono text-[8px] sm:text-[9.5px] tracking-[0.25em] uppercase text-white/80">
+                TECHSRIJAN &apos;27 // THE ARENA
+              </span>
+            </div>
             <h1 className="font-montserrat tracking-tight text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white uppercase drop-shadow-[0_4px_30px_rgba(0,0,0,1)]">
               EVENTS
             </h1>
-            <p className="mt-4 sm:mt-8 font-chancery text-base sm:text-xl md:text-2xl tracking-wide text-neutral-300 max-w-2xl leading-relaxed drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] italic">
+            <p className="mt-3 sm:mt-6 font-chancery text-base sm:text-xl md:text-2xl tracking-wide text-neutral-300 max-w-2xl leading-relaxed drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] italic">
               &ldquo;Fear is the mind-killer. Beyond fear lies destiny. Step into the crucible and forge your legacy.&rdquo;
             </p>
-            <div className="mt-6 sm:hidden inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-sm">
+            <div className="mt-5 sm:mt-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              <span className="font-bebas text-xs tracking-widest uppercase text-neutral-300">
+              <span className="font-bebas text-xs sm:text-sm tracking-widest uppercase text-neutral-300">
                 SCROLL TO ENTER THE ARENA
               </span>
             </div>
@@ -605,75 +397,46 @@ export function EventsHeroScroll({
         </div>
 
         {/* =================================================================== */}
-        {/* LAYER 3: 5 SPATIAL CLUB CARDS (EXTENDED DWELL: 44%-82%, COLLAPSE 82%-93%) */}
-        {/* =================================================================== */}
-        <ArenaSpatialCards
-          isVisible={scrollProgress >= 0.44 && scrollProgress <= 0.92}
-          onClubSelect={onClubSelect}
-          onExploreEvents={scrollToOurEvents}
-          leftCardsRef={leftCardsRef}
-          centerCardRef={centerCardRef}
-          rightCardsRef={rightCardsRef}
-        />
-
-        {/* =================================================================== */}
-        {/* LAYER 4: TRANSITION - ABSTRACT CYBERNETIC CHAMBER (ACTIVATES 84%)  */}
+        {/* LAYER 2.5: MID-TRANSITION HORIZON HUD (BRIDGES HERO & ARENA CARDS) */}
         {/* =================================================================== */}
         <div
-          ref={chamberBgRef}
-          className="absolute inset-0 pointer-events-none opacity-0 will-change-transform z-15"
+          ref={arenaHudRef}
+          className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none px-4 text-center opacity-0"
         >
-          <div className="absolute inset-0 bg-[#040507]" />
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.02)_0px,rgba(255,255,255,0.02)_1px,transparent_1px,transparent_80px)] opacity-80" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08)_0%,transparent_70%)]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#040507]/90 via-transparent to-[#040507]/90" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/70 border border-white/20 backdrop-blur-md mb-3 shadow-[0_0_20px_rgba(0,0,0,0.8)]">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+            <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-white/90">
+              CRUCIBLE MATRIX // ONLINE
+            </span>
+          </div>
+          <h2 className="font-montserrat tracking-tight text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white uppercase drop-shadow-[0_4px_35px_rgba(0,0,0,1)]">
+            THE ARENA
+          </h2>
+          <p className="mt-2 sm:mt-3 font-mono text-[10px] sm:text-xs md:text-sm tracking-[0.25em] text-neutral-300 uppercase max-w-lg">
+            5 CHAPTERS · 23 CHAMPIONSHIP EVENTS
+          </p>
+          <div className="mt-4 flex items-center gap-2">
+            <div className="h-[1px] w-8 sm:w-16 bg-gradient-to-r from-transparent to-white/50" />
+            <span className="font-mono text-[8px] sm:text-[9px] tracking-[0.3em] text-white/60 uppercase">
+              SCROLL TO ACCESS CLUBS
+            </span>
+            <div className="h-[1px] w-8 sm:w-16 bg-gradient-to-l from-transparent to-white/50" />
+          </div>
         </div>
 
         {/* =================================================================== */}
-        {/* LAYER 5: TRANSITION - SCAN BEAM SWEEP (TRAVELS DOWN AT 74%-88%)     */}
+        {/* LAYER 3: 5 SPATIAL CLUB CARDS                                       */}
+        {/* Dwells until end of stage, then flows directly into Our Events!     */}
         {/* =================================================================== */}
         <div
-          ref={scanBeamRef}
-          className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_25px_#ffffff,0_0_50px_rgba(255,255,255,0.7)] z-40 pointer-events-none opacity-0"
-        />
-
-        {/* Horizontal Scanlines Split Flicker */}
-        <div
-          ref={headingScanLinesRef}
-          className="absolute inset-0 pointer-events-none opacity-0 bg-[repeating-linear-gradient(0deg,transparent_0px,transparent_3px,rgba(255,255,255,0.6)_3px,rgba(255,255,255,0.6)_4px)] mix-blend-overlay z-40"
-        />
-
-        {/* Lower Smoke Drift */}
-        <div
-          ref={lowerSmokeRef}
-          className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black to-transparent opacity-30 z-20 pointer-events-none"
-        />
-
-        {/* =================================================================== */}
-        {/* LAYER 6: TRANSITION - RADIAL DISSOLUTION PARTICLES EXPLOSION (84%) */}
-        {/* =================================================================== */}
-        <div
-          ref={dissolveParticlesRef}
-          className="absolute inset-0 pointer-events-none opacity-0 flex items-center justify-center z-35"
+          ref={cardsContainerRef}
+          className="absolute inset-0 z-30 opacity-0 pointer-events-auto"
         >
-          {DISSOLVE_PARTICLES.map((p, idx) => (
-            <div
-              key={idx}
-              className={`dissolve-spark absolute rounded-full ${
-                p.color === "white"
-                  ? "bg-white shadow-[0_0_12px_#ffffff,0_0_24px_rgba(255,255,255,0.85)]"
-                  : p.color === "silver"
-                  ? "bg-slate-200 shadow-[0_0_8px_rgba(255,255,255,0.6)]"
-                  : "bg-neutral-900 border border-white/40"
-              }`}
-              style={{
-                width: `${p.size}px`,
-                height: `${p.size}px`,
-                top: `${p.top}%`,
-                left: `${p.left}%`,
-              }}
-            />
-          ))}
+          <ArenaSpatialCards
+            isVisible={scrollProgress >= 0.26}
+            onClubSelect={onClubSelect}
+            onExploreEvents={scrollToOurEvents}
+          />
         </div>
       </div>
     </div>

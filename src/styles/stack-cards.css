@@ -1,0 +1,272 @@
+:root {
+  --font-size-h-sm: 1.3rem;
+  --card-width: calc(var(--font-size-h-sm) * 10);
+  --gap-x: 12px;
+  --gap-y: 18px;
+  --step: 1;
+}
+
+.poppins-font {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Streaming Ray Animation (Monochrome Dune Giedi-Prime Styling) */
+@keyframes a-rays-move {
+  0% {
+    transform: translateZ(0);
+  }
+  100% {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+.s__rays {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+  width: 420px;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.a-rays {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0.45;
+  pointer-events: none;
+  transform: skew(-20deg);
+  transition: opacity 0.7s linear;
+  will-change: opacity;
+}
+
+.a-rays .a__scene {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translate3d(-50%, 0, 0);
+}
+
+.a-rays .a__scene path {
+  stroke-linecap: round;
+  stroke-width: 1.2px;
+  animation: a-rays-move 28s linear infinite;
+  will-change: transform;
+}
+
+/* 3D Perspective Stage for Circular Loop Transition */
+.stack-cards-stage {
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  perspective-origin: center center;
+  user-select: none;
+  overflow: visible;
+}
+
+.stack-cards {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  overflow: visible;
+}
+
+/* Stack Card Item with 3D Depth Layer in Stark Black & White */
+.stack-cards__item {
+  height: 410px;
+  padding: 0;
+  background: transparent;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), 
+              opacity 0.55s ease,
+              filter 0.4s ease;
+  will-change: opacity, transform, filter;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .stack-cards-stage {
+    min-height: 450px;
+    height: 450px;
+  }
+  .stack-cards {
+    height: 410px;
+  }
+  .stack-cards__item {
+    width: 270px;
+    height: 380px;
+  }
+}
+
+/* Offset Shadow Layer: Stark Deep Black with Subtle Silver Edge */
+.stack-cards__item .shadow,
+.grid-card-wrap .shadow {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.55rem;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background-color: #020203;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.25rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.95);
+  transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Inner Surface Layer: Deep Obsidian with Crisp White/Silver Border */
+.stack-cards__item .inner,
+.grid-card-wrap .inner {
+  position: relative;
+  z-index: 2;
+  padding: 1rem;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #13141a 0%, #08090c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  overflow: hidden;
+}
+
+/* Active / Front Card Highlight */
+.stack-cards__item.is-front .inner {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(255, 255, 255, 0.16);
+}
+
+.stack-cards__item:hover .inner,
+.grid-card-wrap:hover .inner {
+  transform: translate(-2px, -2px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.75);
+}
+
+.stack-cards__item:hover .shadow,
+.grid-card-wrap:hover .shadow {
+  transform: translate(2px, 2px);
+  border-color: rgba(255, 255, 255, 0.25);
+  background-color: #000000;
+}
+
+/* Typography matching Poppins & Stark Monochrome Dune Style */
+.stack-cards__item h3,
+.grid-card-wrap h3 {
+  font-family: 'Poppins', sans-serif;
+  color: #ffffff;
+  font-weight: 700;
+  margin-top: 0;
+  line-height: 1.25;
+}
+
+.stack-cards__item p,
+.grid-card-wrap p {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.45;
+}
+
+/* Corner Counter Badge */
+.stack-cards__item .counter,
+.grid-card-wrap .counter {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 42px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-family: 'Poppins', monospace;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.08);
+  border-top-left-radius: 1rem;
+  border-bottom-right-radius: 1.25rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-blur-sm: blur(4px);
+}
+
+/* Card Image Container */
+.card-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 145px;
+  border-radius: 0.85rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: #000000;
+  margin-bottom: 0.75rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .card-image-wrap {
+    height: 125px;
+  }
+}
+
+.card-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease, filter 0.5s ease;
+  filter: grayscale(85%) contrast(110%) brightness(95%);
+}
+
+.stack-cards__item:hover .card-image-wrap img,
+.grid-card-wrap:hover .card-image-wrap img,
+.stack-cards__item.is-front .card-image-wrap img {
+  filter: grayscale(0%) contrast(105%) brightness(100%);
+  transform: scale(1.04);
+}
+
+/* Grid Card Container */
+.grid-card-wrap {
+  position: relative;
+  height: 410px;
+  width: 100%;
+  max-width: 330px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .grid-card-wrap {
+    height: 380px;
+    max-width: 280px;
+  }
+}

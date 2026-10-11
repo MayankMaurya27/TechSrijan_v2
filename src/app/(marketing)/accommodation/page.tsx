@@ -8,6 +8,8 @@ import {
   Utensils,
   Headphones,
   ArrowRight,
+  ArrowUp,
+  ArrowLeft,
   CheckCircle2,
   AlertCircle,
   FileText,
@@ -59,7 +61,7 @@ const RIGHT_FACILITIES: FacilityItem[] = [
     id: "fac-meals",
     code: "03",
     title: "MEALS & REFRESHMENT",
-    description: "Scheduled mess access and refreshment points throughout campus.",
+    description: "Scheduled mess access and refreshment points campus-wide.",
     icon: Utensils,
   },
   {
@@ -97,25 +99,6 @@ export default function AccommodationPage() {
     setTheme("giedi-prime");
   }, [setTheme]);
 
-  // Mobile detection (< 768px skips GSAP pin for performance)
-  const [isMobile, setIsMobile] = useState(false);
-  const [mobileScrollY, setMobileScrollY] = useState(0);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  // Mobile scroll progress for parallax
-  useEffect(() => {
-    if (!isMobile) return;
-    const onScroll = () => setMobileScrollY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isMobile]);
-
   // Active hover stance: "none" | "left" | "right"
   const [activeHover, setActiveHover] = useState<"none" | "left" | "right">("none");
   const [isCharHovered, setIsCharHovered] = useState(false);
@@ -142,6 +125,7 @@ export default function AccommodationPage() {
   const scanBeamRef = useRef<HTMLDivElement>(null);
   const lowerSmokeRef = useRef<HTMLDivElement>(null);
   const formPanelRef = useRef<HTMLDivElement>(null);
+  const formCardRef = useRef<HTMLDivElement>(null);
   const formFieldsRef = useRef<HTMLDivElement>(null);
 
   // Form State & Validation
@@ -206,15 +190,15 @@ export default function AccommodationPage() {
     mousePos.current.targetY = 0;
   }, []);
 
-  // GSAP ScrollTrigger Cinematic Sequence (desktop only)
+  // GSAP ScrollTrigger Cinematic Sequence (responsive for mobile & desktop)
   useEffect(() => {
     if (typeof window === "undefined" || !scrollWrapperRef.current || !pinnedStageRef.current)
       return;
 
-    // Skip GSAP pin on mobile — vertical scroll used instead
-    if (window.innerWidth < 768) return;
+    // Prevent mobile address bar show/hide from thrashing ScrollTrigger
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
-    // Connect Lenis with GSAP ScrollTrigger
+    // Connect Lenis with GSAP ScrollTrigger if present
     const lenis = window.__lenis;
     if (lenis) {
       lenis.on("scroll", ScrollTrigger.update);
@@ -227,8 +211,9 @@ export default function AccommodationPage() {
           start: "top top",
           end: "+=250%",
           pin: pinnedStageRef.current,
-          scrub: 1,
+          scrub: 0.8,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
             setScrollProgress(self.progress);
           },
@@ -239,7 +224,6 @@ export default function AccommodationPage() {
       // 0% - 25%: Facilities Introduction
       // Subtle depth parallax, floating cards at different depths, stable heading
       // =========================================================================
-      // Background architecture moves more slowly than foreground
       tl.fromTo(
         bgCityRef.current,
         { y: 0, scale: 1 },
@@ -247,7 +231,6 @@ export default function AccommodationPage() {
         0
       );
 
-      // Character subtle depth parallax
       tl.fromTo(
         charImageWrapRef.current,
         { y: 0, scale: 1 },
@@ -255,7 +238,6 @@ export default function AccommodationPage() {
         0
       );
 
-      // Facility cards float slightly at different depths
       tl.fromTo(
         leftCardsRef.current,
         { y: 0 },
@@ -270,17 +252,16 @@ export default function AccommodationPage() {
         0
       );
 
-      // Heading and subtitle remain crisp and stable
       tl.to(headerSectionRef.current, { y: 0, opacity: 1, duration: 0.25 }, 0);
 
       // =========================================================================
       // 25% - 50%: Structural Collapse
       // =========================================================================
-      // Left cards slide outward, collapse into thin silver structural outline & fade
+      // Left cards slide outward to the left, collapse and fade
       tl.to(
         leftCardsRef.current,
         {
-          x: -340,
+          xPercent: -120,
           opacity: 0,
           scaleX: 0.88,
           scaleY: 0.45,
@@ -291,11 +272,11 @@ export default function AccommodationPage() {
         0.25
       );
 
-      // Right cards slide outward, collapse into thin silver structural outline & fade
+      // Right cards slide outward to the right, collapse and fade
       tl.to(
         rightCardsRef.current,
         {
-          x: 340,
+          xPercent: 120,
           opacity: 0,
           scaleX: 0.88,
           scaleY: 0.45,
@@ -306,23 +287,22 @@ export default function AccommodationPage() {
         0.25
       );
 
-      // Heading stretches slightly, splits apart with horizontal scan blur & fades
+      // Heading stretches, blurs & fades
       tl.to(
         headerSectionRef.current,
         {
-          scaleX: 1.35,
+          scaleX: 1.25,
           scaleY: 0.85,
-          letterSpacing: "0.45em",
+          letterSpacing: "0.3em",
           opacity: 0,
           filter: "blur(6px)",
-          y: -35,
+          y: -25,
           ease: "power2.inOut",
           duration: 0.22,
         },
         0.25
       );
 
-      // Horizontal scan lines tear across the heading
       if (headingScanLinesRef.current) {
         tl.fromTo(
           headingScanLinesRef.current,
@@ -332,7 +312,6 @@ export default function AccommodationPage() {
         );
       }
 
-      // Bottom status bar slides down & fades
       tl.to(
         bottomStatusBarRef.current,
         {
@@ -344,19 +323,18 @@ export default function AccommodationPage() {
         0.25
       );
 
-      // Character scales down slightly and recedes into corridor
       tl.to(
         charImageWrapRef.current,
         {
           scale: 0.82,
-          y: 35,
+          y: 25,
           ease: "power2.inOut",
           duration: 0.25,
         },
         0.25
       );
 
-      // Crimson scan beam travels vertically across the screen
+      // Crimson scan beam travels vertically across screen
       tl.fromTo(
         scanBeamRef.current,
         { y: "-8vh", opacity: 0 },
@@ -369,7 +347,6 @@ export default function AccommodationPage() {
         0.25
       );
 
-      // Lower dark smoke and dust moves across the bottom
       tl.to(
         lowerSmokeRef.current,
         {
@@ -383,13 +360,12 @@ export default function AccommodationPage() {
       );
 
       // =========================================================================
-      // 50% - 75%: Cinematic Transition (Passing Through Central Architecture)
+      // 50% - 75%: Cinematic Transition (Central Architecture Zoom & Character Dissolve)
       // =========================================================================
-      // Central corridor background pushes forward with deep zoom effect
       tl.to(
         bgCityRef.current,
         {
-          scale: 3.5,
+          scale: 3.2,
           filter: "blur(18px)",
           opacity: 0,
           ease: "power3.inOut",
@@ -398,21 +374,19 @@ export default function AccommodationPage() {
         0.5
       );
 
-      // Character becomes a silhouette, then dissolves into darkness & red particles
       tl.to(
         charImageWrapRef.current,
         {
           filter: "brightness(0) contrast(300%) blur(8px)",
           scale: 0.6,
           opacity: 0,
-          y: 75,
+          y: 60,
           ease: "power3.inOut",
           duration: 0.25,
         },
         0.5
       );
 
-      // Dissolution particles burst outward as character dissolves
       if (dissolveParticlesRef.current) {
         tl.fromTo(
           dissolveParticlesRef.current,
@@ -435,14 +409,6 @@ export default function AccommodationPage() {
         );
       }
 
-      // Top navigation fades slightly but remains usable
-      const navElement = document.querySelector("header") || document.querySelector("nav");
-      if (navElement) {
-        tl.to(navElement, { opacity: 0.45, ease: "power1.inOut", duration: 0.25 }, 0.5);
-        tl.to(navElement, { opacity: 0.95, ease: "power1.inOut", duration: 0.25 }, 0.75);
-      }
-
-      // Transition to abstract black residence-control chamber with faint silver lines
       tl.to(
         chamberBgRef.current,
         {
@@ -453,7 +419,6 @@ export default function AccommodationPage() {
         0.5
       );
 
-      // Scan beam fades out completely
       tl.to(
         scanBeamRef.current,
         {
@@ -466,7 +431,6 @@ export default function AccommodationPage() {
       // =========================================================================
       // 75% - 100%: Form Reveal (Aperture Opening & Dossier Panel Stabilization)
       // =========================================================================
-      // Aperture vertical reveal of smoked-glass dossier panel with subtle 4deg -> 0deg perspective
       tl.fromTo(
         formPanelRef.current,
         {
@@ -488,7 +452,6 @@ export default function AccommodationPage() {
         0.75
       );
 
-      // Staggered reveal of form fields
       if (formFieldsRef.current) {
         const fieldElements = formFieldsRef.current.children;
         tl.fromTo(
@@ -509,15 +472,123 @@ export default function AccommodationPage() {
       }
     }, scrollWrapperRef);
 
+    // Refresh ScrollTrigger after DOM has fully settled
+    const refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 150);
+
     return () => {
+      clearTimeout(refreshTimer);
       if (lenis) {
         lenis.off("scroll", ScrollTrigger.update);
       }
-      const navElement = document.querySelector("header") || document.querySelector("nav");
-      if (navElement) {
-        gsap.set(navElement, { opacity: 1 });
-      }
       ctx.revert();
+    };
+  }, []);
+
+  // Programmatic scroll helper to specific cinematic stage progress
+  const scrollToStageProgress = useCallback((targetProgress: number) => {
+    const triggerTop = scrollWrapperRef.current?.offsetTop || 0;
+    const totalDistance = window.innerHeight * 2.5;
+    const targetScroll = triggerTop + totalDistance * Math.max(0, Math.min(1, targetProgress));
+
+    const lenis = window.__lenis;
+    if (lenis) {
+      lenis.scrollTo(targetScroll, { duration: 1.2 });
+    } else {
+      window.scrollTo({
+        top: targetScroll,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
+  // Touch & Wheel gesture bridge for the Form Panel
+  // Bridges swipe-down gestures when at the top of the form directly to window scroll,
+  // allowing mobile users to effortlessly scroll back up into the cinematic experience.
+  useEffect(() => {
+    const card = formCardRef.current;
+    const panel = formPanelRef.current;
+    if (!card || !panel) return;
+
+    let touchStartY = 0;
+    let touchLastY = 0;
+    let isTouching = false;
+
+    const scrollPage = (deltaY: number) => {
+      const lenis = window.__lenis;
+      if (lenis) {
+        lenis.scrollTo(lenis.scroll + deltaY, { immediate: true });
+      } else {
+        window.scrollBy({ top: deltaY, behavior: "auto" });
+      }
+      ScrollTrigger.update();
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      touchStartY = e.touches[0].clientY;
+      touchLastY = e.touches[0].clientY;
+      isTouching = true;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isTouching || e.touches.length !== 1) return;
+      const currentY = e.touches[0].clientY;
+      const deltaFromLast = currentY - touchLastY;
+      touchLastY = currentY;
+
+      const target = e.target as Node | null;
+      const insideCard = card.contains(target);
+
+      if (insideCard) {
+        // If swiping down (deltaFromLast > 0, meaning finger moves down to scroll page UP)
+        if (deltaFromLast > 0 && card.scrollTop <= 2) {
+          // At top of form: bridge swipe-down directly to window scroll-up
+          scrollPage(-deltaFromLast * 1.4);
+          if (e.cancelable) e.preventDefault();
+        }
+      } else {
+        // Touching outside the card (on backdrop / margins):
+        // All vertical swipes directly scroll the window
+        scrollPage(-deltaFromLast * 1.4);
+        if (e.cancelable) e.preventDefault();
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isTouching = false;
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      const target = e.target as Node | null;
+      const insideCard = card.contains(target);
+
+      if (insideCard) {
+        // Wheeling up (e.deltaY < 0) when at the top of the card
+        if (e.deltaY < 0 && card.scrollTop <= 2) {
+          scrollPage(e.deltaY * 1.1);
+          if (e.cancelable) e.preventDefault();
+        }
+      } else {
+        // Wheeling outside the card on the backdrop
+        scrollPage(e.deltaY * 1.1);
+        if (e.cancelable) e.preventDefault();
+      }
+    };
+
+    panel.addEventListener("touchstart", handleTouchStart, { passive: true });
+    panel.addEventListener("touchmove", handleTouchMove, { passive: false });
+    panel.addEventListener("touchend", handleTouchEnd, { passive: true });
+    panel.addEventListener("touchcancel", handleTouchEnd, { passive: true });
+    panel.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      panel.removeEventListener("touchstart", handleTouchStart);
+      panel.removeEventListener("touchmove", handleTouchMove);
+      panel.removeEventListener("touchend", handleTouchEnd);
+      panel.removeEventListener("touchcancel", handleTouchEnd);
+      panel.removeEventListener("wheel", handleWheel);
     };
   }, []);
 
@@ -571,266 +642,6 @@ export default function AccommodationPage() {
     }
   };
 
-  // ─── MOBILE LAYOUT ─────────────────────────────────────────────────────────
-  if (isMobile) {
-    const ALL_FACILITIES = [...LEFT_FACILITIES, ...RIGHT_FACILITIES];
-    const charParallax = Math.max(0, Math.min(1, mobileScrollY / (window?.innerHeight ?? 600)));
-
-    return (
-      <div className="relative w-full min-h-screen bg-[#050608] text-[#F0EAE1] overflow-x-hidden">
-        {/* ── MOBILE HERO ── */}
-        <section className="relative h-[100dvh] w-full flex flex-col items-center justify-between pb-8 overflow-hidden">
-          {/* Background city with scroll parallax */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ transform: `scale(${1 + charParallax * 0.06}) translateY(${charParallax * 18}px)`, willChange: "transform" }}
-          >
-            <Image
-              src="/images/accommodation-city-bg.webp"
-              alt="Residence citadel"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-center brightness-[0.8] contrast-[1.1]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050608] via-[#050608]/40 to-[#050608]/70" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#050608]/60 via-transparent to-[#050608]/60" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,#050608_95%)] opacity-90" />
-            {/* Ambient crimson glow */}
-            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[300px] h-[300px] rounded-full bg-[#E61924]/15 blur-[80px] pointer-events-none" />
-          </div>
-
-          {/* Header */}
-          <div className="relative z-10 text-center pt-20 px-6 space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900/70 border border-neutral-800/80 backdrop-blur-md">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#E61924]" />
-              <p className="font-bebas text-xs sm:text-sm tracking-wider uppercase text-[#D2CCC0]">CAMPUS ACCOMMODATION</p>
-            </div>
-            <h1 className="font-montserrat font-black text-6xl sm:text-7xl tracking-tight uppercase text-[#F5F2EB] leading-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">FACILITIES</h1>
-            <p className="font-geist text-xs text-[#C4BEB2] max-w-xs mx-auto leading-relaxed tracking-wide">
-              Secure, connected quarters for every participant throughout the fest.
-            </p>
-          </div>
-
-          {/* Character — centered, scroll-aware eye glow */}
-          <div className="relative z-10 w-full flex items-end justify-center flex-1">
-            <div
-              className="relative w-[280px] h-[380px] select-none"
-              style={{ transform: `translateY(${-charParallax * 12}px)`, willChange: "transform" }}
-            >
-              <Image
-                src="/images/lelouch-character.png"
-                alt="Zero - Commander"
-                fill
-                priority
-                sizes="280px"
-                className="object-contain object-bottom brightness-[0.98] contrast-[1.06] drop-shadow-[0_20px_40px_rgba(0,0,0,0.9)]"
-              />
-              {/* Eye glow activates as user scrolls */}
-              <div
-                className="absolute rounded-full bg-[#E61924] blur-[3px] transition-opacity duration-500"
-                style={{
-                  top: "24.8%", left: "55.8%",
-                  transform: "translate(-50%, -50%)",
-                  width: "16px", height: "16px",
-                  opacity: Math.min(1, charParallax * 3),
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Scroll hint */}
-          <div className="relative z-10 flex flex-col items-center gap-1 pb-2 animate-bounce">
-            <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-neutral-500">SCROLL</span>
-            <svg className="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
-        </section>
-
-        {/* ── MOBILE FACILITIES CARDS ── */}
-        <section className="relative px-4 py-10 space-y-4">
-          <div className="text-center mb-6">
-            <span className="font-bebas text-sm tracking-wider uppercase text-neutral-400">// INCLUDED SERVICES</span>
-            <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-[#F5F2EB] mt-1">WHAT YOU GET</h2>
-          </div>
-          {ALL_FACILITIES.map((facility, idx) => {
-            const Icon = facility.icon;
-            return (
-              <div
-                key={facility.id}
-                className="group relative w-full flex items-center gap-4 p-4 bg-[#0c0d10]/80 border border-white/[0.08] active:border-[#E61924]/60 active:bg-[#E61924]/5 transition-all duration-200 rounded-sm"
-                style={{
-                  clipPath: "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))",
-                  animationDelay: `${idx * 80}ms`,
-                }}
-              >
-                {/* HUD corner accents */}
-                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#E61924]/50 pointer-events-none" />
-                <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/20 pointer-events-none" />
-
-                <div className="p-2.5 rounded bg-white/[0.04] border border-white/10 text-[#D2CCC0] flex-shrink-0">
-                  <Icon className="w-5 h-5 stroke-[1.8]" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-mono text-xs font-bold tracking-[0.14em] uppercase text-[#F5F2EB]">{facility.title}</h3>
-                    <span className="font-mono text-[9px] text-neutral-600">{facility.code}</span>
-                  </div>
-                  <p className="mt-1 font-sans text-[11px] text-[#A8A49C] leading-relaxed">{facility.description}</p>
-                </div>
-              </div>
-            );
-          })}
-        </section>
-
-        {/* ── MOBILE FORM SECTION ── */}
-        <section className="relative px-4 pb-16 pt-4">
-          <div className="p-1 rounded-sm border border-white/[0.07] bg-[#07080b]/90 backdrop-blur-xl shadow-[0_25px_80px_rgba(0,0,0,0.95)]" style={{ clipPath: "polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px))" }}>
-            {/* HUD corners */}
-            <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#E61924]/70 pointer-events-none" />
-            <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white/20 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-white/20 pointer-events-none" />
-            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#E61924]/70 pointer-events-none" />
-
-            <div className="p-5">
-              {isSubmitted ? (
-                <div className="py-10 text-center space-y-4">
-                  <div className="inline-flex p-4 rounded-full bg-[#E61924]/10 border border-[#E61924]/40 text-[#E61924]">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-                  <div className="space-y-1">
-                    <span className="font-bebas text-sm tracking-wider uppercase text-[#E61924] font-semibold block">DISPATCH CONFIRMED</span>
-                    <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-[#F5F2EB]">REQUEST RECEIVED</h2>
-                    <p className="font-geist text-xs text-[#A8A49C] max-w-[280px] mx-auto leading-relaxed">Your residency directive has been registered. Check your email for the allocation dossier.</p>
-                  </div>
-                  <div className="p-3 rounded bg-white/[0.02] border border-white/[0.06] text-left font-mono text-[10px] space-y-2">
-                    <div className="flex justify-between"><span className="text-neutral-500">REF:</span><span className="text-[#E61924] font-bold">{confirmationId}</span></div>
-                    <div className="flex justify-between"><span className="text-neutral-500">NAME:</span><span className="text-[#F5F2EB]">{formData.fullName}</span></div>
-                    <div className="flex justify-between"><span className="text-neutral-500">DURATION:</span><span className="text-[#F5F2EB]">{formData.nights}</span></div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => { setIsSubmitted(false); setFormData({ fullName: "", email: "", phone: "", college: "", city: "", gender: "boys", nights: "3 Nights (Full Fest)", specialRequirements: "", confirmed: false }); }}
-                    className="w-full py-3 font-mono text-xs uppercase tracking-[0.2em] bg-white/[0.03] border border-white/20 text-[#F5F2EB] active:bg-[#E61924] active:border-[#E61924] transition-all duration-200"
-                  >SUBMIT ANOTHER REQUEST</button>
-                </div>
-              ) : (
-                <form onSubmit={handleFormSubmit} className="space-y-4">
-                  {/* Form header */}
-                  <div className="pb-4 border-b border-white/[0.07] space-y-1">
-                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.08]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E61924] shadow-[0_0_6px_#E61924]" />
-                      <span className="font-bebas text-xs tracking-wider uppercase text-[#C4BEB2]">RESIDENCE DIRECTIVE</span>
-                    </div>
-                    <h2 className="font-montserrat font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-[#F5F2EB] leading-none">RESERVE YOUR STAY</h2>
-                    <p className="font-geist text-xs text-[#A8A49C] tracking-wide">Submit your details to begin your accommodation request.</p>
-                  </div>
-
-                  {/* Fields */}
-                  <div className="space-y-3">
-                    {[
-                      { key: "fullName", label: "Full Name", type: "text", placeholder: "e.g. Lelouch Lamperouge", Icon: User, required: true },
-                      { key: "email", label: "Email Address", type: "email", placeholder: "resident@institution.edu", Icon: Mail, required: true },
-                      { key: "phone", label: "Phone Number", type: "tel", placeholder: "+91 9876543210", Icon: Phone, required: true },
-                      { key: "college", label: "College / University", type: "text", placeholder: "e.g. MMMUT / IIT / NIT", Icon: Building, required: true },
-                      { key: "city", label: "City", type: "text", placeholder: "e.g. Lucknow, Delhi", Icon: MapPin, required: true },
-                    ].map(({ key, label, type, placeholder, Icon: FieldIcon, required }) => (
-                      <div key={key} className="space-y-1">
-                        <label className="font-mono text-[9px] tracking-[0.2em] uppercase text-[#A8A49C] flex items-center justify-between">
-                          <span className="flex items-center gap-1.5"><FieldIcon className="w-2.5 h-2.5 text-[#E61924]" />{label}</span>
-                          {required && <span className="text-[#E61924] text-[10px]">*</span>}
-                        </label>
-                        <input
-                          type={type}
-                          value={(formData as Record<string, string | boolean>)[key] as string}
-                          onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                          placeholder={placeholder}
-                          className={`w-full px-3 py-3 rounded bg-white/[0.025] border text-xs text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all ${
-                            (formErrors as Record<string, string>)[key] ? "border-[#E61924]" : "border-white/[0.08] focus:border-[#E61924]"
-                          }`}
-                        />
-                        {(formErrors as Record<string, string>)[key] && (
-                          <p className="font-mono text-[9px] text-[#E61924] flex items-center gap-1">
-                            <AlertCircle className="w-2.5 h-2.5" />{(formErrors as Record<string, string>)[key]}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-
-                    {/* Nights select */}
-                    <div className="space-y-1">
-                      <label className="font-mono text-[9px] tracking-[0.2em] uppercase text-[#A8A49C] flex items-center gap-1.5">
-                        <Calendar className="w-2.5 h-2.5 text-[#E61924]" />Number of Nights
-                      </label>
-                      <div className="relative">
-                        <select
-                          value={formData.nights}
-                          onChange={(e) => setFormData({ ...formData, nights: e.target.value })}
-                          className="w-full appearance-none px-3 py-3 pr-8 rounded bg-white/[0.025] border border-white/[0.08] focus:border-[#E61924] text-xs text-[#F5F2EB] focus:outline-none cursor-pointer"
-                        >
-                          <option value="1 Night" className="bg-[#0e1015]">1 Night (Day Pass)</option>
-                          <option value="2 Nights" className="bg-[#0e1015]">2 Nights (Weekend)</option>
-                          <option value="3 Nights (Full Fest)" className="bg-[#0e1015]">3 Nights (Full Fest)</option>
-                          <option value="4 Nights" className="bg-[#0e1015]">4 Nights (Extended)</option>
-                        </select>
-                        <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                    </div>
-
-                    {/* Special requirements */}
-                    <div className="space-y-1">
-                      <label className="font-mono text-[9px] tracking-[0.2em] uppercase text-[#A8A49C] flex items-center justify-between">
-                        <span className="flex items-center gap-1.5"><FileText className="w-2.5 h-2.5 text-[#E61924]" />Special Requirements</span>
-                        <span className="text-neutral-500 text-[9px]">OPTIONAL</span>
-                      </label>
-                      <textarea
-                        rows={2}
-                        value={formData.specialRequirements}
-                        onChange={(e) => setFormData({ ...formData, specialRequirements: e.target.value })}
-                        placeholder="Dietary requirements, room adjacency..."
-                        className="w-full px-3 py-3 rounded bg-white/[0.025] border border-white/[0.08] focus:border-[#E61924] text-xs text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all resize-none"
-                      />
-                    </div>
-
-                    {/* Confirmation checkbox */}
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, confirmed: !formData.confirmed })}
-                      className="flex items-center gap-3 text-left cursor-pointer select-none w-full"
-                    >
-                      <div className={`w-4 h-4 rounded-sm border flex items-center justify-center flex-shrink-0 ${
-                        formData.confirmed ? "bg-[#E61924] border-[#E61924]" : "bg-white/[0.03] border-white/20"
-                      }`}>
-                        {formData.confirmed && <svg className="w-3 h-3 text-white stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12" /></svg>}
-                      </div>
-                      <span className="font-mono text-[10px] text-[#C4BEB2]">I confirm my details are accurate.</span>
-                    </button>
-                    {formErrors.confirmed && <p className="font-mono text-[9px] text-[#E61924] flex items-center gap-1 pl-7"><AlertCircle className="w-2.5 h-2.5" />{formErrors.confirmed}</p>}
-                  </div>
-
-                  {/* Submit */}
-                  <div className="pt-3 border-t border-white/[0.07]">
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full py-4 font-mono text-xs font-semibold tracking-[0.22em] uppercase text-white bg-gradient-to-r from-[#8b141d] to-[#b31926] border border-[#E61924]/60 transition-all duration-300 shadow-[0_4px_25px_rgba(230,25,36,0.35)] active:scale-95 disabled:opacity-50"
-                    >
-                      {isSubmitting ? "PROCESSING..." : "SUBMIT ACCOMMODATION REQUEST →"}
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
-  // ─── END MOBILE LAYOUT ──────────────────────────────────────────────────────
-
   return (
     <div
       ref={scrollWrapperRef}
@@ -841,7 +652,7 @@ export default function AccommodationPage() {
         ref={pinnedStageRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="relative h-screen w-full overflow-hidden flex items-center justify-center bg-[#050608]"
+        className="relative h-screen h-[100dvh] w-full overflow-hidden flex items-center justify-center bg-[#050608]"
       >
         {/* =================================================================== */}
         {/* BACKGROUND LAYER 1: MONUMENTAL CITADEL ARCHITECTURE                */}
@@ -915,14 +726,14 @@ export default function AccommodationPage() {
         {/* HERO PHASE LAYER: FACILITIES INTRODUCTION & CHARACTER (0% - 75%)     */}
         {/* =================================================================== */}
         <div
-          className={`relative z-20 w-full max-w-7xl mx-auto h-full px-4 sm:px-8 lg:px-12 flex flex-col justify-between py-6 lg:py-10 transition-opacity duration-300 ${
+          className={`relative z-20 w-full max-w-7xl mx-auto h-full px-3 sm:px-6 lg:px-12 flex flex-col justify-between py-3 sm:py-6 lg:pt-20 lg:pb-3 xl:pt-24 xl:pb-4 transition-opacity duration-300 ${
             scrollProgress > 0.7 ? "pointer-events-none" : "pointer-events-auto"
           }`}
         >
           {/* TOP CENTERED HEADER SECTION */}
           <section
             ref={headerSectionRef}
-            className="relative text-center pt-2 sm:pt-4 max-w-3xl mx-auto space-y-2.5 will-change-transform"
+            className="relative text-center pt-10 sm:pt-12 lg:pt-2 xl:pt-3 max-w-3xl mx-auto space-y-1.5 sm:space-y-2 will-change-transform z-30"
           >
             {/* Horizontal Scan Lines Split Overlay (active during 25%-50% collapse) */}
             <div
@@ -930,47 +741,43 @@ export default function AccommodationPage() {
               className="absolute inset-0 pointer-events-none opacity-0 bg-[repeating-linear-gradient(0deg,transparent_0px,transparent_3px,rgba(255,255,255,0.7)_3px,rgba(255,255,255,0.7)_4px)] mix-blend-overlay"
             />
 
-            {/* Eyebrow Copy */}
-            <div className="inline-flex items-center justify-center gap-2 px-4 py-1 rounded-full bg-neutral-900/70 border border-neutral-800/80 backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-              <span
-                className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${
-                  activeHover === "right" ? "bg-purple-500" : "bg-[#E61924]"
-                }`}
-              />
-              <p className="font-bebas text-sm sm:text-base tracking-wider uppercase text-[#D2CCC0] font-medium">
-                CAMPUS ACCOMMODATION · RESIDENT SERVICES
-              </p>
-            </div>
-
             {/* Large Centered Heading (Montserrat) */}
-            <h1 className="font-montserrat font-black text-5xl sm:text-7xl lg:text-8xl tracking-tight uppercase text-[#F5F2EB] leading-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
+            <h1 className="font-montserrat font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight uppercase text-[#F5F2EB] leading-none drop-shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
               FACILITIES
             </h1>
 
             {/* Supporting Line (Geist) */}
-            <p className="font-geist text-xs sm:text-sm md:text-[15px] text-[#C4BEB2] max-w-2xl mx-auto leading-relaxed tracking-wide font-normal">
+            <p className="font-geist text-[11px] sm:text-xs md:text-sm text-[#C4BEB2] max-w-2xl mx-auto leading-relaxed tracking-wide font-normal px-2">
               Secure, connected, and comfortable living spaces for every participant throughout the fest.
             </p>
           </section>
 
           {/* MIDDLE SECTION: 3-COLUMN SPATIAL COMPOSITION */}
-          <div className="relative w-full flex-1 flex flex-col lg:flex-row items-center justify-between gap-6 my-4 lg:my-0">
+          <div className="relative w-full flex-1 flex items-start lg:items-stretch justify-between pt-10 sm:pt-14 lg:pt-2 lg:pb-0 my-1 sm:my-2 lg:my-0">
             {/* LEFT COLUMN: 2 FACILITY CARDS */}
             <div
               ref={leftCardsRef}
-              className="w-full lg:w-[30%] max-w-[420px] flex flex-col gap-4 sm:gap-5 z-20 will-change-transform"
+              className="w-[46%] sm:w-[42%] lg:w-[30%] max-w-[420px] flex flex-col gap-2.5 sm:gap-4 lg:gap-5 z-20 will-change-transform lg:self-center"
             >
               {LEFT_FACILITIES.map((facility) => {
                 const Icon = facility.icon;
                 return (
                   <div
                     key={facility.id}
+                    onClick={() => {
+                      handleCardMouseEnter("left");
+                      setTimeout(handleCardMouseLeave, 2000);
+                    }}
                     onMouseEnter={() => handleCardMouseEnter("left")}
                     onMouseLeave={handleCardMouseLeave}
-                    className="group relative w-full aspect-[975/319] min-h-[110px] sm:min-h-[120px] flex items-center transition-all duration-300 hover:-translate-y-1.5 cursor-pointer select-none"
+                    className="group relative w-full min-h-[72px] sm:min-h-[100px] lg:min-h-[120px] flex items-center p-2.5 sm:p-4 lg:px-7 lg:py-4 bg-[#0a0c10]/85 sm:bg-transparent border border-white/10 sm:border-0 rounded-sm sm:rounded-none transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none"
+                    style={{
+                      clipPath:
+                        "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
+                    }}
                   >
-                    {/* Transparent Frame Asset Layer */}
-                    <div className="absolute inset-0 pointer-events-none transition-all duration-300">
+                    {/* Transparent Frame Asset Layer (Desktop/Tablet) */}
+                    <div className="absolute inset-0 pointer-events-none transition-all duration-300 hidden sm:block">
                       <Image
                         src="/images/facility-card-frame.png"
                         alt=""
@@ -982,21 +789,25 @@ export default function AccommodationPage() {
                       <div className="absolute bottom-1 right-2.5 w-6 h-3 rounded-full bg-[#E61924]/0 group-hover:bg-[#E61924]/60 blur-[4px] transition-all duration-300 pointer-events-none" />
                     </div>
 
+                    {/* Mobile Cyberpunk Corner Accents */}
+                    <div className="sm:hidden absolute top-0 left-0 w-2 h-2 border-t border-l border-[#E61924]/70 pointer-events-none" />
+                    <div className="sm:hidden absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/30 pointer-events-none" />
+
                     {/* Live HTML Content Layer */}
-                    <div className="relative z-10 w-full h-full flex items-center px-6 sm:px-8 py-3 sm:py-4 gap-3.5 sm:gap-4">
-                      <div className="p-2 sm:p-2.5 rounded bg-white/[0.03] border border-white/5 group-hover:border-white/20 text-[#D2CCC0] group-hover:text-white transition-colors duration-300 flex-shrink-0">
-                        <Icon className="w-4 sm:w-5 h-4 sm:h-5 stroke-[1.8] group-hover:stroke-[#E61924] transition-colors duration-300" />
+                    <div className="relative z-10 w-full h-full flex items-center gap-2 sm:gap-3.5 lg:gap-4">
+                      <div className="p-1.5 sm:p-2.5 rounded bg-white/[0.04] border border-white/10 group-hover:border-white/20 text-[#D2CCC0] group-hover:text-white transition-colors duration-300 flex-shrink-0">
+                        <Icon className="w-3.5 h-3.5 sm:w-4 lg:w-5 sm:h-4 lg:h-5 stroke-[1.8] group-hover:stroke-[#E61924] transition-colors duration-300" />
                       </div>
-                      <div className="flex-1 min-w-0 pr-3 sm:pr-6">
+                      <div className="flex-1 min-w-0 pr-1 sm:pr-4 lg:pr-6">
                         <div className="flex items-center justify-between gap-1">
-                          <h2 className="font-mono text-xs sm:text-[13px] font-bold tracking-[0.16em] uppercase text-[#F5F2EB] group-hover:text-white transition-colors duration-300 truncate">
+                          <h2 className="font-mono text-[10px] sm:text-xs lg:text-[13px] font-bold tracking-[0.12em] uppercase text-[#F5F2EB] group-hover:text-white transition-colors duration-300 truncate">
                             {facility.title}
                           </h2>
-                          <span className="font-mono text-[9px] tracking-widest text-neutral-600 group-hover:text-neutral-400 transition-colors">
+                          <span className="font-mono text-[8px] sm:text-[9px] tracking-widest text-neutral-500 group-hover:text-neutral-400 transition-colors">
                             {facility.code}
                           </span>
                         </div>
-                        <p className="mt-1 font-sans text-[11px] sm:text-xs text-[#A8A49C] group-hover:text-[#D4CEC3] leading-relaxed transition-colors duration-300">
+                        <p className="mt-0.5 font-sans text-[9px] sm:text-[11px] lg:text-xs text-[#A8A49C] group-hover:text-[#D4CEC3] leading-snug sm:leading-relaxed transition-colors duration-300 line-clamp-2">
                           {facility.description}
                         </p>
                       </div>
@@ -1011,11 +822,11 @@ export default function AccommodationPage() {
               ref={centerCharacterRef}
               onMouseEnter={() => setIsCharHovered(true)}
               onMouseLeave={() => setIsCharHovered(false)}
-              className="relative w-full lg:w-[40%] h-[380px] sm:h-[480px] lg:h-[580px] flex items-end justify-center z-10 will-change-transform cursor-pointer group"
+              className="absolute inset-0 flex items-end justify-center pointer-events-none lg:pointer-events-auto lg:relative lg:w-[40%] h-full z-10 will-change-transform cursor-pointer group"
             >
               {/* Restrained Dynamic Outline Rim Glow */}
               <div
-                className={`absolute inset-x-12 bottom-0 top-12 rounded-full transition-all duration-700 pointer-events-none blur-3xl ${
+                className={`absolute inset-x-8 sm:inset-x-12 bottom-0 top-12 rounded-full transition-all duration-700 pointer-events-none blur-3xl ${
                   activeHover === "right"
                     ? "opacity-60 bg-purple-600/30"
                     : activeHover === "left"
@@ -1029,7 +840,7 @@ export default function AccommodationPage() {
               {/* Character Stage Wrapper */}
               <div
                 ref={charImageWrapRef}
-                className="relative w-[340px] sm:w-[420px] lg:w-[500px] h-[360px] sm:h-[460px] lg:h-[560px] select-none flex items-end justify-center will-change-transform"
+                className="relative w-[210px] sm:w-[320px] lg:w-[480px] xl:w-[560px] 2xl:w-[620px] h-[260px] sm:h-[400px] lg:h-[580px] xl:h-[660px] 2xl:h-[720px] select-none flex items-end justify-center will-change-transform"
               >
                 {/* 1. DEFAULT STATE: NORMAL CENTERED LELOUCH CHARACTER CUTOUT */}
                 <div
@@ -1045,7 +856,7 @@ export default function AccommodationPage() {
                       alt="Zero - Code Geass Commander Character"
                       fill
                       priority
-                      sizes="(max-width: 768px) 340px, (max-width: 1200px) 440px, 520px"
+                      sizes="(max-width: 768px) 260px, (max-width: 1200px) 440px, 520px"
                       className={`object-contain object-bottom filter transition-all duration-500 ${
                         isCharHovered
                           ? "brightness-[1.08] contrast-[1.12] drop-shadow-[0_0_28px_rgba(230,25,36,0.55)] drop-shadow-[0_15px_45px_rgba(0,0,0,0.95)]"
@@ -1073,7 +884,7 @@ export default function AccommodationPage() {
                   </div>
                 </div>
 
-                {/* 2. LEFT HOVER STATE: BRAND NEW GENERATED CUTOUT (Lelouch looking left) */}
+                {/* 2. LEFT HOVER STATE: Brand new cutout looking left */}
                 <div
                   className={`absolute inset-0 flex items-end justify-center transition-all duration-500 ease-out ${
                     activeHover === "left"
@@ -1084,10 +895,10 @@ export default function AccommodationPage() {
                   <div className="relative w-full h-full">
                     <Image
                       src="/images/lelouch-tactical-left.png"
-                      alt="Lelouch - Command Vision Looking Towards Left Facilities"
+                      alt="Lelouch - Looking Towards Left Facilities"
                       fill
                       priority
-                      sizes="(max-width: 768px) 340px, (max-width: 1200px) 440px, 520px"
+                      sizes="(max-width: 768px) 260px, (max-width: 1200px) 440px, 520px"
                       className="object-contain object-bottom filter brightness-[1.02] contrast-[1.08] transition-all duration-500 drop-shadow-[0_0_25px_rgba(230,25,36,0.45)] drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)]"
                     />
 
@@ -1103,7 +914,7 @@ export default function AccommodationPage() {
                   </div>
                 </div>
 
-                {/* 3. RIGHT HOVER STATE: COMPLETE UNCROPPED CUTOUT (Lelouch with Zero helmet) */}
+                {/* 3. RIGHT HOVER STATE: Zero Helmet cutout */}
                 <div
                   className={`absolute inset-0 flex items-end justify-center transition-all duration-500 ease-out ${
                     activeHover === "right"
@@ -1114,10 +925,10 @@ export default function AccommodationPage() {
                   <div className="relative w-full h-full">
                     <Image
                       src="/images/lelouch-tactical-right.png"
-                      alt="Lelouch - Zero Command with Helmet (Complete Cutout)"
+                      alt="Lelouch - Zero Command with Helmet"
                       fill
                       priority
-                      sizes="(max-width: 768px) 340px, (max-width: 1200px) 440px, 520px"
+                      sizes="(max-width: 768px) 260px, (max-width: 1200px) 440px, 520px"
                       className="object-contain object-bottom filter brightness-[1.02] contrast-[1.1] transition-all duration-500 drop-shadow-[0_0_25px_rgba(168,85,247,0.45)] drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)]"
                     />
 
@@ -1163,19 +974,27 @@ export default function AccommodationPage() {
             {/* RIGHT COLUMN: 2 FACILITY CARDS */}
             <div
               ref={rightCardsRef}
-              className="w-full lg:w-[30%] max-w-[420px] flex flex-col gap-4 sm:gap-5 z-20 will-change-transform"
+              className="w-[46%] sm:w-[42%] lg:w-[30%] max-w-[420px] flex flex-col gap-2.5 sm:gap-4 lg:gap-5 z-20 will-change-transform lg:self-center"
             >
               {RIGHT_FACILITIES.map((facility) => {
                 const Icon = facility.icon;
                 return (
                   <div
                     key={facility.id}
+                    onClick={() => {
+                      handleCardMouseEnter("right");
+                      setTimeout(handleCardMouseLeave, 2000);
+                    }}
                     onMouseEnter={() => handleCardMouseEnter("right")}
                     onMouseLeave={handleCardMouseLeave}
-                    className="group relative w-full aspect-[975/319] min-h-[110px] sm:min-h-[120px] flex items-center transition-all duration-300 hover:-translate-y-1.5 cursor-pointer select-none"
+                    className="group relative w-full min-h-[72px] sm:min-h-[100px] lg:min-h-[120px] flex items-center p-2.5 sm:p-4 lg:px-7 lg:py-4 bg-[#0a0c10]/85 sm:bg-transparent border border-white/10 sm:border-0 rounded-sm sm:rounded-none transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none"
+                    style={{
+                      clipPath:
+                        "polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px))",
+                    }}
                   >
-                    {/* Transparent Frame Asset Layer */}
-                    <div className="absolute inset-0 pointer-events-none transition-all duration-300">
+                    {/* Transparent Frame Asset Layer (Desktop/Tablet) */}
+                    <div className="absolute inset-0 pointer-events-none transition-all duration-300 hidden sm:block">
                       <Image
                         src="/images/facility-card-frame.png"
                         alt=""
@@ -1187,21 +1006,25 @@ export default function AccommodationPage() {
                       <div className="absolute bottom-1 right-2.5 w-6 h-3 rounded-full bg-[#E61924]/0 group-hover:bg-[#E61924]/60 blur-[4px] transition-all duration-300 pointer-events-none" />
                     </div>
 
+                    {/* Mobile Cyberpunk Corner Accents */}
+                    <div className="sm:hidden absolute top-0 left-0 w-2 h-2 border-t border-l border-[#E61924]/70 pointer-events-none" />
+                    <div className="sm:hidden absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/30 pointer-events-none" />
+
                     {/* Live HTML Content Layer */}
-                    <div className="relative z-10 w-full h-full flex items-center px-6 sm:px-8 py-3 sm:py-4 gap-3.5 sm:gap-4">
-                      <div className="p-2 sm:p-2.5 rounded bg-white/[0.03] border border-white/5 group-hover:border-white/20 text-[#D2CCC0] group-hover:text-white transition-colors duration-300 flex-shrink-0">
-                        <Icon className="w-4 sm:w-5 h-4 sm:h-5 stroke-[1.8] group-hover:stroke-[#E61924] transition-colors duration-300" />
+                    <div className="relative z-10 w-full h-full flex items-center gap-2 sm:gap-3.5 lg:gap-4">
+                      <div className="p-1.5 sm:p-2.5 rounded bg-white/[0.04] border border-white/10 group-hover:border-white/20 text-[#D2CCC0] group-hover:text-white transition-colors duration-300 flex-shrink-0">
+                        <Icon className="w-3.5 h-3.5 sm:w-4 lg:w-5 sm:h-4 lg:h-5 stroke-[1.8] group-hover:stroke-[#E61924] transition-colors duration-300" />
                       </div>
-                      <div className="flex-1 min-w-0 pr-3 sm:pr-6">
+                      <div className="flex-1 min-w-0 pr-1 sm:pr-4 lg:pr-6">
                         <div className="flex items-center justify-between gap-1">
-                          <h2 className="font-mono text-xs sm:text-[13px] font-bold tracking-[0.16em] uppercase text-[#F5F2EB] group-hover:text-white transition-colors duration-300 truncate">
+                          <h2 className="font-mono text-[10px] sm:text-xs lg:text-[13px] font-bold tracking-[0.12em] uppercase text-[#F5F2EB] group-hover:text-white transition-colors duration-300 truncate">
                             {facility.title}
                           </h2>
-                          <span className="font-mono text-[9px] tracking-widest text-neutral-600 group-hover:text-neutral-400 transition-colors">
+                          <span className="font-mono text-[8px] sm:text-[9px] tracking-widest text-neutral-500 group-hover:text-neutral-400 transition-colors">
                             {facility.code}
                           </span>
                         </div>
-                        <p className="mt-1 font-sans text-[11px] sm:text-xs text-[#A8A49C] group-hover:text-[#D4CEC3] leading-relaxed transition-colors duration-300">
+                        <p className="mt-0.5 font-sans text-[9px] sm:text-[11px] lg:text-xs text-[#A8A49C] group-hover:text-[#D4CEC3] leading-snug sm:leading-relaxed transition-colors duration-300 line-clamp-2">
                           {facility.description}
                         </p>
                       </div>
@@ -1215,38 +1038,32 @@ export default function AccommodationPage() {
           {/* BOTTOM SECTION: STATUS LINE & REFINED CTA BUTTON */}
           <section
             ref={bottomStatusBarRef}
-            className="relative z-30 pt-4 pb-2 border-t border-neutral-800/70 flex flex-col sm:flex-row items-center justify-between gap-4 will-change-transform"
+            className="relative z-30 pt-3 pb-2 border-t border-neutral-800/70 flex items-center justify-between gap-3 will-change-transform"
           >
-            <div className="flex items-center gap-3 font-mono text-[11px] sm:text-xs text-[#D6D0C5] tracking-[0.22em] uppercase">
+            <div className="flex items-center gap-2 sm:gap-3 font-mono text-[10px] sm:text-xs text-[#D6D0C5] tracking-[0.18em] sm:tracking-[0.22em] uppercase">
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <span>RESIDENT QUARTERS STATUS: ALLOCATIONS OPEN</span>
+              <span className="hidden sm:inline">RESIDENT QUARTERS: ALLOCATIONS OPEN</span>
+              <span className="sm:hidden">ALLOCATIONS ACTIVE</span>
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                const lenis = window.__lenis;
-                if (lenis && scrollWrapperRef.current) {
-                  lenis.scrollTo(scrollWrapperRef.current.offsetTop + window.innerHeight * 2.3);
-                } else {
-                  window.scrollTo({
-                    top: window.innerHeight * 2.5,
-                    behavior: "smooth",
-                  });
-                }
-              }}
-              className="group relative inline-flex items-center justify-center gap-3 px-8 py-3 font-mono text-xs font-semibold tracking-[0.25em] uppercase text-[#F5F2EB] hover:text-white bg-[#0e1015]/90 hover:bg-[#8b1525] border border-neutral-600/70 hover:border-[#E61924] transition-all duration-300 shadow-[0_6px_25px_rgba(0,0,0,0.6)] hover:shadow-[0_10px_35px_rgba(230,25,36,0.35)] active:scale-95 cursor-pointer"
-              style={{
-                clipPath:
-                  "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))",
-              }}
-            >
-              <span>RESERVE PASS</span>
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
+            <div className="flex items-center gap-2">
+              <span className="sm:hidden font-mono text-[9px] text-neutral-500 tracking-wider">SCROLL ↓</span>
+              <button
+                type="button"
+                onClick={() => scrollToStageProgress(0.95)}
+                className="group relative inline-flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-8 py-2 sm:py-3 font-mono text-[10px] sm:text-xs font-semibold tracking-[0.2em] sm:tracking-[0.25em] uppercase text-[#F5F2EB] hover:text-white bg-[#0e1015]/90 hover:bg-[#8b1525] border border-neutral-600/70 hover:border-[#E61924] transition-all duration-300 shadow-[0_6px_25px_rgba(0,0,0,0.6)] hover:shadow-[0_10px_35px_rgba(230,25,36,0.35)] active:scale-95 cursor-pointer"
+                style={{
+                  clipPath:
+                    "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))",
+                }}
+              >
+                <span>RESERVE PASS</span>
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+            </div>
           </section>
         </div>
 
@@ -1255,16 +1072,32 @@ export default function AccommodationPage() {
         {/* =================================================================== */}
         <div
           ref={formPanelRef}
-          className={`absolute z-30 inset-0 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-6 will-change-transform ${
+          onClick={(e) => {
+            if (e.target === formPanelRef.current) {
+              scrollToStageProgress(0.58);
+            }
+          }}
+          className={`absolute z-30 inset-0 flex items-center justify-center px-3 sm:px-6 lg:px-8 py-4 sm:py-6 will-change-transform ${
             scrollProgress >= 0.72 ? "pointer-events-auto" : "pointer-events-none opacity-0"
           }`}
           style={{ perspective: "1200px" }}
         >
           {/* Large Centered Smoked-Black Glass Panel */}
           <div
+            ref={formCardRef}
             data-lenis-prevent
-            className="relative w-full max-w-3xl max-h-[88vh] overflow-y-auto rounded-lg bg-[#07080b]/92 backdrop-blur-2xl border border-white/[0.09] p-6 sm:p-9 shadow-[0_25px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.06)]"
+            className="relative w-full max-w-3xl max-h-[82vh] sm:max-h-[88vh] overflow-y-auto rounded-lg bg-[#07080b]/95 backdrop-blur-2xl border border-white/[0.09] p-4 sm:p-8 pb-28 sm:pb-8 shadow-[0_25px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.06)]"
           >
+            {/* Mobile Sheet Pull-Down Grab Handle (quick return) */}
+            <div className="flex sm:hidden flex-col items-center gap-1 pb-2 -mt-1">
+              <button
+                type="button"
+                onClick={() => scrollToStageProgress(0.58)}
+                aria-label="Swipe or tap to return to specifications"
+                className="w-12 h-1 rounded-full bg-white/20 active:bg-[#E61924] transition-colors cursor-pointer"
+              />
+            </div>
+
             {/* Subtle cybernetic grid texture inside panel */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] pointer-events-none rounded-lg opacity-60" />
 
@@ -1327,7 +1160,7 @@ export default function AccommodationPage() {
                   )}
                 </div>
 
-                <div className="pt-2 flex justify-center gap-4">
+                <div className="pt-2 flex flex-wrap justify-center gap-3">
                   <button
                     type="button"
                     onClick={() => {
@@ -1348,21 +1181,50 @@ export default function AccommodationPage() {
                   >
                     SUBMIT ANOTHER REQUEST
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollToStageProgress(0)}
+                    className="px-6 py-2.5 font-mono text-xs uppercase tracking-[0.2em] bg-white/[0.03] hover:bg-white/[0.08] border border-white/20 text-[#F5F2EB] transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.5)] cursor-pointer"
+                  >
+                    RETURN TO OVERVIEW
+                  </button>
                 </div>
               </div>
             ) : (
               /* REGISTRATION FORM */
               <form onSubmit={handleFormSubmit} className="relative z-10 space-y-5">
                 {/* Form Header */}
-                <div className="relative pb-5 border-b border-white/[0.07] flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-                  <div className="space-y-1.5">
-                    <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.08]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#E61924] shadow-[0_0_6px_#E61924]" />
-                      <span className="font-bebas text-xs sm:text-sm tracking-wider uppercase text-[#C4BEB2] font-medium">
-                        RESIDENCE DIRECTIVE · STEP 01
-                      </span>
+                <div className="relative pb-4 sm:pb-5 border-b border-white/[0.07] flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4">
+                  <div className="space-y-1.5 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.08]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#E61924] shadow-[0_0_6px_#E61924]" />
+                        <span className="font-bebas text-xs sm:text-sm tracking-wider uppercase text-[#C4BEB2] font-medium">
+                          RESIDENCE DIRECTIVE · STEP 01
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <button
+                          type="button"
+                          onClick={() => scrollToStageProgress(0.58)}
+                          className="inline-flex items-center gap-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-300 hover:text-white px-2 sm:px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 transition-colors cursor-pointer active:scale-95"
+                          title="Return to Pass Specifications"
+                        >
+                          <ArrowLeft className="w-3 h-3 text-[#E61924]" />
+                          <span>Specs</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => scrollToStageProgress(0)}
+                          className="inline-flex items-center gap-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-300 hover:text-white px-2 sm:px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 transition-colors cursor-pointer active:scale-95"
+                          title="Scroll to Top Overview"
+                        >
+                          <ArrowUp className="w-3 h-3 text-[#E61924]" />
+                          <span>Overview</span>
+                        </button>
+                      </div>
                     </div>
-                    <h2 className="font-montserrat font-black text-3xl sm:text-4xl md:text-5xl uppercase tracking-tight text-[#F5F2EB] leading-none pt-1">
+                    <h2 className="font-montserrat font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-tight text-[#F5F2EB] leading-none pt-1">
                       RESERVE YOUR STAY
                     </h2>
                     <p className="font-geist text-xs sm:text-[13px] text-[#A8A49C] tracking-wide">
@@ -1377,8 +1239,8 @@ export default function AccommodationPage() {
                   </div>
                 </div>
 
-                {/* Staggered Form Fields Container - Balanced 3 Rows of 2 Columns */}
-                <div ref={formFieldsRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                {/* Staggered Form Fields Container - Balanced 4 Rows of 2 Columns */}
+                <div ref={formFieldsRef} className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-5">
                   {/* Row 1, Col 1: Full Name */}
                   <div className="space-y-1.5 group">
                     <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">
@@ -1534,7 +1396,42 @@ export default function AccommodationPage() {
                     )}
                   </div>
 
-                  {/* Row 3, Col 2: Number of Nights */}
+                  {/* Row 3, Col 2: Hostel Allocation */}
+                  <div className="space-y-1.5 group">
+                    <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] transition-colors flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <Shield className="w-3 h-3 text-[#E61924]" />
+                        Hostel Allocation
+                      </span>
+                      <span className="text-[#E61924] text-xs leading-none">*</span>
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, gender: "boys" })}
+                        className={`py-2 px-2.5 rounded font-mono text-[11px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer border ${
+                          formData.gender === "boys"
+                            ? "bg-[#E61924]/20 border-[#E61924] text-white shadow-[0_0_10px_rgba(230,25,36,0.3)] font-semibold"
+                            : "bg-white/[0.02] border-white/10 text-neutral-400 hover:border-white/20"
+                        }`}
+                      >
+                        Boys Hostel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, gender: "girls" })}
+                        className={`py-2 px-2.5 rounded font-mono text-[11px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer border ${
+                          formData.gender === "girls"
+                            ? "bg-[#E61924]/20 border-[#E61924] text-white shadow-[0_0_10px_rgba(230,25,36,0.3)] font-semibold"
+                            : "bg-white/[0.02] border-white/10 text-neutral-400 hover:border-white/20"
+                        }`}
+                      >
+                        Girls Hostel
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Row 4, Col 1: Number of Nights */}
                   <div className="space-y-1.5 group">
                     <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
@@ -1562,7 +1459,6 @@ export default function AccommodationPage() {
                           4 Nights (Extended Hackathon)
                         </option>
                       </select>
-                      {/* Custom dropdown chevron */}
                       <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400 group-hover:text-white transition-colors">
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
@@ -1572,8 +1468,8 @@ export default function AccommodationPage() {
                     </div>
                   </div>
 
-                  {/* Row 4: Special Requirements (Full Width) */}
-                  <div className="space-y-1.5 md:col-span-2 group">
+                  {/* Row 4, Col 2: Special Requirements */}
+                  <div className="space-y-1.5 group">
                     <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
                         <FileText className="w-3 h-3 text-[#E61924]" />
@@ -1583,12 +1479,12 @@ export default function AccommodationPage() {
                     </label>
                     <div className="relative">
                       <textarea
-                        rows={2}
+                        rows={1}
                         value={formData.specialRequirements}
                         onChange={(e) =>
                           setFormData({ ...formData, specialRequirements: e.target.value })
                         }
-                        placeholder="Dietary requirements, room adjacency with team, early arrival time..."
+                        placeholder="Dietary, room adjacency, early arrival..."
                         className="w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.18] focus:border-[#E61924] focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(230,25,36,0.18)] text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 resize-none"
                       />
                       <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 pointer-events-none group-focus-within:border-[#E61924]" />

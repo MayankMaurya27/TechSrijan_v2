@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
+  ChevronDown,
+  HelpCircle,
 } from "lucide-react";
 import { usePageTheme, type PageThemeConfig } from "@/core";
 
@@ -96,9 +98,7 @@ function ContactFullFrameAtmosphere({ theme }: { theme: PageThemeConfig }) {
     };
     window.addEventListener("mousemove", onMouseMove);
 
-    let time = 0;
     const render = () => {
-      time += 0.01;
       ctx.clearRect(0, 0, width, height);
 
       // Ambient radial warm glow following cursor across full screen
@@ -149,6 +149,50 @@ function ContactFullFrameAtmosphere({ theme }: { theme: PageThemeConfig }) {
 
 type FormStatus = "idle" | "sending" | "sent" | "error";
 
+/* FAQ Data from official conclave guidelines */
+const FAQ_CATEGORIES = ["ALL", "REGISTRATION", "ACCOMMODATION", "EVENTS", "SPONSORSHIP"] as const;
+
+type FaqCategory = (typeof FAQ_CATEGORIES)[number];
+
+interface FaqItem {
+  category: FaqCategory;
+  q: string;
+  a: string;
+}
+
+const FAQS: FaqItem[] = [
+  {
+    category: "REGISTRATION",
+    q: "Who is eligible to participate in TechSrijan '27?",
+    a: "Any enrolled student with a valid college identity card from any recognized university, institute, or polytechnic. Cross-college teams are permitted and encouraged in flagship events such as RoboWars, Codethon, and CAD Masters.",
+  },
+  {
+    category: "ACCOMMODATION",
+    q: "How does outstation campus accommodation work?",
+    a: "Visiting teams receive dedicated hostel accommodation within the 354-acre residential campus of MMMUT Gorakhpur upon payment of a nominal hospitality token. This includes security clearance, high-speed Wi-Fi, bedding, and mess meal coupons.",
+  },
+  {
+    category: "REGISTRATION",
+    q: "Can we register on-spot upon arriving at the campus?",
+    a: "Yes. Physical on-spot registration and badge counters operate at the University Main Gate and Student Activity Centre (SAC) during festival days. However, early online portal registration is strongly advised as arena brackets fill fast.",
+  },
+  {
+    category: "EVENTS",
+    q: "What security and identification protocols are required at the gate?",
+    a: "Every attendee must present their official TechSrijan digital participant badge (generated on this portal) alongside a valid institute photo ID card at the security checkpoint for entry clearance.",
+  },
+  {
+    category: "SPONSORSHIP",
+    q: "How can brands or technology companies partner as sponsors?",
+    a: "Contact our Corporate Alliances team directly via sponsorship.techsrijan@mmmut.ac.in or through the transmission console above. The secretariat delivers customized pitch decks, booth allocations, and branding packages within 24 hours.",
+  },
+  {
+    category: "EVENTS",
+    q: "Whom should I contact in case of emergency during fest days?",
+    a: "The central Command Post at the Student Activity Centre (SAC) operates 24/7 with on-ground student conveners, faculty proctors, and a physical medical aid center. You can also dial our central desk at techsrijan@mmmut.ac.in.",
+  },
+];
+
 export function ContactView() {
   const pageTheme = usePageTheme();
   const [formData, setFormData] = useState({
@@ -159,6 +203,16 @@ export function ContactView() {
   });
   const [formStatus, setFormStatus] = useState<FormStatus>("idle");
   const [statusMessage, setStatusMessage] = useState("");
+
+  // FAQ State
+  const [activeFaqCategory, setActiveFaqCategory] = useState<FaqCategory>("ALL");
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
+  const formSectionRef = useRef<HTMLElement>(null);
+
+  const scrollToForm = () => {
+    formSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -192,6 +246,11 @@ export function ContactView() {
     }
   };
 
+  const filteredFaqs = useMemo(() => {
+    if (activeFaqCategory === "ALL") return FAQS;
+    return FAQS.filter((f) => f.category === activeFaqCategory);
+  }, [activeFaqCategory]);
+
   return (
     <div className="relative min-h-screen w-full bg-[#07060a] text-white selection:bg-[#79C7E3]/30 selection:text-white font-sans overflow-x-hidden">
       {/* Full-Frame Ambient Embers & Lighting Animation */}
@@ -207,7 +266,7 @@ export function ContactView() {
           </div>
           <button
             onClick={() => setFormStatus("idle")}
-            className="ml-auto text-emerald-400 hover:text-white text-xs font-bold"
+            className="ml-auto text-emerald-400 hover:text-white text-xs font-bold cursor-pointer"
           >
             ✕
           </button>
@@ -223,7 +282,7 @@ export function ContactView() {
           </div>
           <button
             onClick={() => setFormStatus("idle")}
-            className="ml-auto text-red-400 hover:text-white text-xs font-bold"
+            className="ml-auto text-red-400 hover:text-white text-xs font-bold cursor-pointer"
           >
             ✕
           </button>
@@ -238,8 +297,8 @@ export function ContactView() {
         {/* Full-Frame Background Artwork */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/contact/contact-hero-bg-clean.webp"
-            alt="TechSrijan Citadel Commander overlooking the alien metropolis"
+            src="/images/contact/contact-bg-citadel.webp"
+            alt="TechSrijan Citadel Commander overlooking the metropolis"
             fill
             priority
             sizes="100vw"
@@ -251,7 +310,7 @@ export function ContactView() {
           <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#07060a] to-transparent" />
         </div>
 
-        {/* Foreground Content (Full-Frame Edge Spacing) */}
+        {/* Foreground Content */}
         <div className="relative z-10 w-full max-w-[1720px] mx-auto px-6 sm:px-12 lg:px-20 py-20 lg:py-28">
           <div className="max-w-2xl space-y-6 sm:space-y-8">
             {/* Eyebrow Label with Compass Star & Trailing Line */}
@@ -271,7 +330,7 @@ export function ContactView() {
               />
             </div>
 
-            {/* Grand Headline: GET IN TOUCH (Montserrat with Moon Theme Dynamic Gradient) */}
+            {/* Grand Headline: GET IN TOUCH */}
             <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-montserrat font-black tracking-tight text-white leading-[0.92]">
               <span
                 className="block text-transparent bg-clip-text transition-all duration-300"
@@ -293,21 +352,48 @@ export function ContactView() {
               </span>
             </h1>
 
-            {/* Editorial Subtitle (Chancery Italic) */}
+            {/* Editorial Subtitle */}
             <p className="text-zinc-200 text-lg sm:text-xl md:text-2xl font-chancery leading-relaxed max-w-xl">
               Have a question, collaboration idea or just want to say hi? We would love to hear from you.
             </p>
 
-            {/* Thematic Directives (Bebas Neue) */}
-            <div
-              className="flex items-center gap-3 pt-4 font-bebas text-sm sm:text-base tracking-[0.35em] uppercase transition-colors duration-300"
-              style={{ color: pageTheme.accent }}
-            >
+            {/* Interactive Call to Action Buttons */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <button
+                type="button"
+                onClick={scrollToForm}
+                className={`inline-flex items-center gap-2.5 rounded-lg px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider ${pageTheme.btnText} hover:scale-105 active:scale-95 transition-all cursor-pointer`}
+                style={{
+                  backgroundImage: `linear-gradient(to right, ${pageTheme.headingTo}, ${pageTheme.accentBright}, ${pageTheme.headingTo})`,
+                  boxShadow: `0 0 30px ${pageTheme.accentGlow}`,
+                }}
+              >
+                <PenLine className="h-3.5 w-3.5" />
+                <span>SEND A MESSAGE</span>
+                <ArrowUpRight className="h-4 w-4" />
+              </button>
+
+              <a
+                href="mailto:techsrijan@mmmut.ac.in"
+                className="inline-flex items-center gap-2 rounded-lg px-6 py-3.5 text-xs font-geist font-medium text-white bg-black/60 hover:bg-black/80 transition-colors backdrop-blur-md"
+                style={{
+                  border: `1px solid ${pageTheme.border}`,
+                }}
+              >
+                <Mail className="h-3.5 w-3.5" style={{ color: pageTheme.accent }} />
+                <span>techsrijan@mmmut.ac.in</span>
+              </a>
+            </div>
+
+            {/* Quick Slogan Bar */}
+            <div className="pt-8 flex items-center gap-6 text-xs font-bebas tracking-[0.25em] text-zinc-400 uppercase">
               <span>PEOPLE</span>
-              <span>•</span>
+              <span style={{ color: pageTheme.accent }}>✦</span>
               <span>IDEAS</span>
-              <span>•</span>
+              <span style={{ color: pageTheme.accent }}>✦</span>
               <span>IMPACT</span>
+              <span className="hidden sm:inline" style={{ color: pageTheme.accent }}>✦</span>
+              <span className="hidden sm:inline">MMMUT GORAKHPUR</span>
             </div>
           </div>
         </div>
@@ -317,32 +403,34 @@ export function ContactView() {
           SECTION 2: FULL-FRAME MESSAGE TRANSMISSION (FORM)
           Clean Blood-Moon Night Artwork + Live Interactive HUD Form
           ============================================================ */}
-      <section className="relative w-full min-h-[95vh] lg:min-h-[105vh] flex items-center overflow-hidden bg-[#07060a]">
+      <section
+        ref={formSectionRef}
+        id="transmission-form"
+        className="relative w-full min-h-[95vh] lg:min-h-[105vh] flex items-center overflow-hidden bg-[#07060a]"
+      >
         {/* Full-Frame Background Artwork */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/contact/contact-form-bg-clean.webp"
-            alt="Blood moon night citadel with commander on the parapet"
+            src="/images/contact/contact-bg-worm.webp"
+            alt="Citadel spires glowing beneath desert sand dunes"
             fill
-            priority
             sizes="100vw"
-            className="object-cover object-center w-full h-full filter contrast-[1.08] brightness-90"
+            className="object-cover object-center w-full h-full filter contrast-[1.05] brightness-90"
           />
 
-          {/* Deep dark gradient on left for the form area */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#07060a] via-[#07060a]/85 to-transparent w-full lg:w-[65%]" />
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#07060a] to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#07060a] to-transparent" />
+          {/* Deep dark gradient on left for crystal-clear HUD form readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#07060a] via-[#07060a]/85 to-transparent w-full lg:w-[68%]" />
+          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#07060a] to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#07060a] to-transparent" />
         </div>
 
         {/* Foreground Content */}
         <div className="relative z-10 w-full max-w-[1720px] mx-auto px-6 sm:px-12 lg:px-20 py-20 lg:py-28">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Column: Form Header & Live Form */}
-            <div className="lg:col-span-7 space-y-8">
+            <div className="lg:col-span-7 space-y-6 sm:space-y-8">
               {/* Form Section Eyebrow */}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <span style={{ color: pageTheme.accent }} className="text-base leading-none transition-colors duration-300">✦</span>
                   <span
@@ -476,10 +564,10 @@ export function ContactView() {
                         }}
                       >
                         <option value="General Inquiry">What is this about? (General Inquiry)</option>
-                        <option value="Events & Battle Arenas">Events & Arena Competitions</option>
-                        <option value="Corporate Sponsorships">Corporate Alliances & Sponsorship</option>
-                        <option value="Campus Accommodation">Campus Passes & Delegation Stay</option>
-                        <option value="Media & Press">Media & Press Accreditation</option>
+                        <option value="Events & Battle Arenas">Events &amp; Arena Competitions</option>
+                        <option value="Corporate Sponsorships">Corporate Alliances &amp; Sponsorship</option>
+                        <option value="Campus Accommodation">Campus Passes &amp; Delegation Stay</option>
+                        <option value="Media & Press">Media &amp; Press Accreditation</option>
                       </select>
                     </div>
                   </div>
@@ -580,23 +668,161 @@ export function ContactView() {
       </section>
 
       {/* ============================================================
-          SECTION 3: FULL-FRAME PANORAMIC FOOTER & DIRECTIVES
+          SECTION 3: FULL-WIDTH FREQUENTLY ASKED QUESTIONS (FAQ)
+          Spanning Full Width with Responsive Categorization & Accordions
+          ============================================================ */}
+      <section className="relative w-full py-24 sm:py-32 px-6 sm:px-12 lg:px-20 border-t border-white/10 bg-[#07060a] overflow-hidden">
+        {/* Subtle Ambient Radial Glow */}
+        <div
+          className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] rounded-full blur-[140px] opacity-20 transition-all duration-500"
+          style={{ background: pageTheme.accentGlow }}
+        />
+
+        <div className="relative z-10 w-full max-w-[1720px] mx-auto">
+          {/* Section Header */}
+          <div className="flex flex-col items-center text-center max-w-3xl mx-auto space-y-4 mb-14">
+            <div className="flex items-center gap-3">
+              <span style={{ color: pageTheme.accent }} className="text-base leading-none transition-colors duration-300">✦</span>
+              <span
+                style={{ color: pageTheme.accent }}
+                className="font-bebas text-base sm:text-lg tracking-[0.25em] uppercase transition-colors duration-300"
+              >
+                TRANSMISSION RESOLUTION
+              </span>
+              <div
+                className="h-px w-20 transition-all duration-300"
+                style={{
+                  background: `linear-gradient(to right, ${pageTheme.accent}, transparent)`,
+                }}
+              />
+            </div>
+
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-montserrat font-black tracking-tight text-white leading-tight">
+              <span
+                className="text-transparent bg-clip-text transition-all duration-300"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, #FFFFFF 0%, ${pageTheme.headingVia} 45%, ${pageTheme.headingTo} 100%)`,
+                  filter: `drop-shadow(0 4px 30px ${pageTheme.accentGlow})`,
+                }}
+              >
+                FREQUENTLY ASKED QUESTIONS
+              </span>
+            </h2>
+
+            <p className="text-zinc-300 text-base sm:text-lg font-chancery max-w-2xl leading-relaxed">
+              Common inquiries on registration, arena guidelines, outstation lodging, and security clearance.
+            </p>
+
+            {/* Filter Pills */}
+            <div className="pt-4 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+              {FAQ_CATEGORIES.map((cat) => {
+                const isActive = activeFaqCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => {
+                      setActiveFaqCategory(cat);
+                      setOpenFaqIndex(null);
+                    }}
+                    className={`px-4 sm:px-5 py-2 rounded-full text-xs font-bebas tracking-[0.2em] uppercase transition-all duration-300 cursor-pointer ${
+                      isActive
+                        ? `${pageTheme.btnText} font-bold shadow-lg scale-105`
+                        : "bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 border border-white/10"
+                    }`}
+                    style={
+                      isActive
+                        ? {
+                            backgroundImage: `linear-gradient(to right, ${pageTheme.headingTo}, ${pageTheme.accentBright}, ${pageTheme.headingTo})`,
+                            boxShadow: `0 0 25px ${pageTheme.accentGlow}`,
+                          }
+                        : {}
+                    }
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Full-Width Accordion List */}
+          <div className="w-full max-w-5xl mx-auto space-y-4">
+            {filteredFaqs.map((faq, idx) => {
+              const isOpen = openFaqIndex === idx;
+              return (
+                <div
+                  key={`${faq.category}-${idx}`}
+                  className="rounded-2xl bg-black/60 backdrop-blur-xl border transition-all duration-300 overflow-hidden"
+                  style={{
+                    borderColor: isOpen ? pageTheme.border : "rgba(255, 255, 255, 0.08)",
+                    boxShadow: isOpen ? `0 10px 40px rgba(0, 0, 0, 0.6), 0 0 25px ${pageTheme.accentMuted}` : "none",
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                    className="w-full px-6 sm:px-8 py-5 text-left flex items-center justify-between gap-4 cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-3.5 pr-2">
+                      <HelpCircle
+                        className="h-4 w-4 shrink-0 transition-colors duration-300"
+                        style={{ color: isOpen ? pageTheme.accent : "#71717a" }}
+                      />
+                      <span className="text-sm sm:text-base font-montserrat font-bold text-white tracking-wide group-hover:text-zinc-200 transition-colors">
+                        {faq.q}
+                      </span>
+                    </div>
+
+                    <div
+                      className={`h-8 w-8 rounded-full border border-white/15 flex items-center justify-center shrink-0 transition-transform duration-300 ${
+                        isOpen ? "rotate-180" : ""
+                      }`}
+                      style={
+                        isOpen
+                          ? {
+                              backgroundColor: pageTheme.accent,
+                              borderColor: pageTheme.accent,
+                              color: "#000000",
+                            }
+                          : {
+                              color: "#ffffff",
+                            }
+                      }
+                    >
+                      <ChevronDown className="h-4 w-4" />
+                    </div>
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-6 sm:px-8 pb-6 pt-1 text-xs sm:text-sm text-zinc-300 font-geist leading-relaxed border-t border-white/[0.06] animate-in fade-in duration-300 pl-14">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================
+          SECTION 4: FULL-FRAME PANORAMIC FOOTER & DIRECTIVES
           Clean Sunset Mountain Artwork + Live Vector Links & Brand
           ============================================================ */}
       <footer className="relative w-full overflow-hidden bg-[#07060a]">
         {/* Full-Frame Background Artwork */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/contact/contact-footer-bg-clean.webp"
+            src="/images/contact/contact-bg-citadel.webp"
             alt="Panoramic sunset desert canyon and glowing citadel towers"
             fill
-            priority
             sizes="100vw"
-            className="object-cover object-center w-full h-full filter contrast-[1.05] brightness-90"
+            className="object-cover object-center w-full h-full filter contrast-[1.05] brightness-75 opacity-40"
           />
 
           {/* Deep dark gradient on left for crystal-clear navigation legibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#07060a] via-[#07060a]/85 to-transparent w-full lg:w-[65%]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#07060a] via-[#07060a]/90 to-[#07060a]/95" />
           <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#07060a] to-transparent" />
         </div>
 
@@ -754,8 +980,8 @@ export function ContactView() {
             </div>
           </div>
 
-          {/* Bottom Copyright Strip with Central Imperial Insignia */}
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-sans text-zinc-400">
+          {/* Bottom Bar: Copyright & Attribution */}
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-zinc-400">
             <div>
               © 2026 TechSrijan. All Rights Reserved.
             </div>

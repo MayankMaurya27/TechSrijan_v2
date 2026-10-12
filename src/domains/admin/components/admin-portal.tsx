@@ -209,7 +209,7 @@ function AdminSignInView() {
     e.preventDefault();
     setError(null);
     if (!identifier.trim() || !password) {
-      setError("Please provide both roll number / email and password.");
+      setError("Please enter your username and password.");
       return;
     }
 
@@ -235,7 +235,7 @@ function AdminSignInView() {
           </div>
           <h1 className="text-xl font-bold text-zinc-100">Admin Sign In</h1>
           <p className="text-xs text-zinc-400 mt-1">
-            Access portal using your official roll number or admin email.
+            Enter your administrator username and password.
           </p>
         </div>
 
@@ -249,13 +249,13 @@ function AdminSignInView() {
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
             <label className="block text-zinc-300 font-medium mb-1.5">
-              Roll Number or Admin Email
+              Username
             </label>
             <input
               type="text"
               required
               autoComplete="username"
-              placeholder="e.g. admin@techsrijan.org"
+              placeholder="e.g. admin, tsc_head, or your username"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               className="h-10 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"

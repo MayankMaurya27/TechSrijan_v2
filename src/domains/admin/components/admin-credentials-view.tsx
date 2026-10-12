@@ -20,6 +20,7 @@ interface AdminRecord {
   id: string;
   name: string;
   email: string;
+  rollNumber?: string | null;
   role: "ADMIN" | "SUPER_ADMIN" | "BOSS";
   club?: string | null;
   createdAt?: string;
@@ -34,7 +35,7 @@ export function AdminCredentialsView() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [createForm, setCreateForm] = useState({
     name: "",
-    email: "",
+    username: "",
     password: "",
     adminType: "CLUB_ADMIN" as "CLUB_ADMIN" | "HIGHER_ADMIN",
     club: "TSC" as "TSC" | "RC" | "IEEE" | "SAE" | "RESO",
@@ -46,6 +47,7 @@ export function AdminCredentialsView() {
   const [editingAdmin, setEditingAdmin] = useState<AdminRecord | null>(null);
   const [editForm, setEditForm] = useState({
     name: "",
+    username: "",
     password: "",
     club: "TSC" as "TSC" | "RC" | "IEEE" | "SAE" | "RESO",
   });
@@ -71,13 +73,9 @@ export function AdminCredentialsView() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const rawId = createForm.email.trim();
-    if (!createForm.name.trim() || !rawId || !createForm.password) {
-      alert("Please fill in name, email or roll number, and password.");
-      return;
-    }
-    if (createForm.password.length < 6) {
-      alert("Password must be at least 6 characters long.");
+    const rawUsername = createForm.username.trim();
+    if (!createForm.name.trim() || !rawUsername || !createForm.password) {
+      alert("Please fill in full name, username, and password.");
       return;
     }
 
@@ -85,9 +83,7 @@ export function AdminCredentialsView() {
     try {
       const payload: any = {
         name: createForm.name.trim(),
-        email: rawId.includes("@") ? rawId.toLowerCase() : undefined,
-        identifier: !rawId.includes("@") ? rawId : undefined,
-        rollNumber: !rawId.includes("@") ? rawId : undefined,
+        username: rawUsername,
         password: createForm.password,
         adminType: createForm.adminType,
       };
@@ -96,11 +92,11 @@ export function AdminCredentialsView() {
       }
 
       await api.admin.credentials.create(payload);
-      alert("Admin account created successfully.");
+      alert(`Admin account '${rawUsername}' created successfully.`);
       setCreateModalOpen(false);
       setCreateForm({
         name: "",
-        email: "",
+        username: "",
         password: "",
         adminType: "CLUB_ADMIN",
         club: "TSC",
@@ -117,6 +113,7 @@ export function AdminCredentialsView() {
     setEditingAdmin(admin);
     setEditForm({
       name: admin.name || "",
+      username: admin.rollNumber || admin.email || "",
       password: "",
       club: (admin.club as any) || "TSC",
     });
@@ -133,12 +130,13 @@ export function AdminCredentialsView() {
       if (editForm.name.trim() && editForm.name.trim() !== editingAdmin.name) {
         payload.name = editForm.name.trim();
       }
+      if (
+        editForm.username.trim() &&
+        editForm.username.trim() !== (editingAdmin.rollNumber || editingAdmin.email)
+      ) {
+        payload.username = editForm.username.trim();
+      }
       if (editForm.password.trim()) {
-        if (editForm.password.length < 8) {
-          alert("Password must be at least 8 characters long.");
-          setEditLoading(false);
-          return;
-        }
         payload.password = editForm.password;
       }
       if (editingAdmin.role === "ADMIN" && editForm.club) {
@@ -244,7 +242,7 @@ export function AdminCredentialsView() {
               <thead className="bg-zinc-900 border-b border-zinc-800 text-zinc-400 uppercase text-[11px] font-semibold tracking-wider">
                 <tr>
                   <th className="py-3.5 px-4">Admin Name</th>
-                  <th className="py-3.5 px-4">Email / Roll No</th>
+                  <th className="py-3.5 px-4">Username</th>
                   <th className="py-3.5 px-4">Role</th>
                   <th className="py-3.5 px-4">Assigned Club</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
@@ -260,7 +258,9 @@ export function AdminCredentialsView() {
                         <UserCheck className="h-4 w-4 text-zinc-500" />
                         <span>{adm.name}</span>
                       </td>
-                      <td className="py-3.5 px-4 text-zinc-300 font-mono">{adm.email}</td>
+                      <td className="py-3.5 px-4 text-zinc-300 font-mono">
+                        {adm.rollNumber || adm.email}
+                      </td>
                       <td className="py-3.5 px-4">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
@@ -347,26 +347,25 @@ export function AdminCredentialsView() {
 
               <div>
                 <label className="block text-zinc-300 font-medium mb-1.5">
-                  Email or Official Roll Number *
+                  Admin Username *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. admin@techsrijan.org or 2027DIR001"
-                  value={createForm.email}
-                  onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
+                  placeholder="e.g. tsc_head, mayank, admin1 (any username)"
+                  value={createForm.username}
+                  onChange={(e) => setCreateForm({ ...createForm, username: e.target.value })}
                   className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-zinc-300 font-medium mb-1.5">
-                  Password (min 6 chars) *
+                  Password *
                 </label>
                 <input
                   type="password"
                   required
-                  minLength={6}
                   placeholder="••••••••••••"
                   value={createForm.password}
                   onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
@@ -481,12 +480,21 @@ export function AdminCredentialsView() {
               </div>
 
               <div>
+                <label className="block text-zinc-300 font-medium mb-1.5">Username</label>
+                <input
+                  type="text"
+                  value={editForm.username}
+                  onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+                  className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
                 <label className="block text-zinc-300 font-medium mb-1.5">
                   Change Password (leave empty to keep current)
                 </label>
                 <input
                   type="password"
-                  minLength={8}
                   placeholder="New password (optional)"
                   value={editForm.password}
                   onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}

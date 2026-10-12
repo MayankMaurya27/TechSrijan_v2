@@ -1,15 +1,13 @@
 "use client";
 
 import { useState, useEffect, useId } from "react";
-import { ExternalLink } from "lucide-react";
 
 interface Waypoint {
   id: string;
   name: string;
   handle: string;
-  action: string;
   href: string;
-  cy: number; // Center Y in SVG coordinate space (0-780)
+  cy: number; // Center Y in SVG coordinate space (0-720)
   glowColor: string;
   neonColor: string;
   icon: (props: { cx: number; cy: number }) => React.JSX.Element;
@@ -88,9 +86,8 @@ const WAYPOINTS: Waypoint[] = [
     id: "instagram",
     name: "INSTAGRAM",
     handle: "@techsrijan",
-    action: "FOLLOW",
     href: "https://www.instagram.com/techsrijan_mmmut/",
-    cy: 130,
+    cy: 110,
     glowColor: "rgba(255, 180, 50, 0.95)",
     neonColor: "#ff9900",
     icon: InstagramGlyph,
@@ -99,9 +96,8 @@ const WAYPOINTS: Waypoint[] = [
     id: "youtube",
     name: "YOUTUBE",
     handle: "@techsrijan",
-    action: "SUBSCRIBE",
     href: "https://www.youtube.com/@techSrijanMMMUT",
-    cy: 275,
+    cy: 250,
     glowColor: "rgba(255, 60, 45, 0.95)",
     neonColor: "#ff2a4b",
     icon: YouTubeGlyph,
@@ -110,9 +106,8 @@ const WAYPOINTS: Waypoint[] = [
     id: "linkedin",
     name: "LINKEDIN",
     handle: "Techsrijan",
-    action: "CONNECT",
     href: "https://www.linkedin.com/company/techsrijan/",
-    cy: 420,
+    cy: 390,
     glowColor: "rgba(50, 180, 255, 0.95)",
     neonColor: "#00b4d8",
     icon: LinkedInGlyph,
@@ -121,9 +116,8 @@ const WAYPOINTS: Waypoint[] = [
     id: "x",
     name: "X",
     handle: "@techsrijan",
-    action: "DISPATCH",
     href: "https://x.com/techsrijan_",
-    cy: 565,
+    cy: 530,
     glowColor: "rgba(255, 220, 80, 0.95)",
     neonColor: "#ffd60a",
     icon: XGlyph,
@@ -174,9 +168,9 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
     <div
       className="hidden lg:block pointer-events-none absolute z-30 select-none transition-all duration-700"
       style={{
-        // Monumental presence on the right flank: perfectly scaled and grounded
-        right: "clamp(10px, 2.2vw, 44px)",
-        bottom: "0px",
+        // Shifted bit right and bit top to align with Citadel Archive cards
+        right: "clamp(2px, 0.9vw, 18px)",
+        bottom: "clamp(45px, 6.5vh, 75px)",
         opacity: currentOpacity,
         visibility: isVisible ? "visible" : "hidden",
         pointerEvents: currentOpacity > 0.35 ? "auto" : "none",
@@ -186,24 +180,14 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
         willChange: "transform, opacity",
       }}
     >
-      {/* Master Container: Sized larger to match the monumental height of the Citadel cards */}
-      <div className="relative w-[255px] lg:w-[285px] xl:w-[325px] 2xl:w-[360px] h-[450px] lg:h-[490px] xl:h-[550px] 2xl:h-[610px] flex items-end justify-center">
-        {/* ─── Layer 0: High-Intensity Floor Neon Ambient Flare Wash ─── */}
-        <div
-          className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[140%] h-[90px] rounded-full pointer-events-none blur-2xl animate-pulse"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(255, 185, 45, 0.65) 0%, rgba(255, 120, 20, 0.35) 45%, transparent 75%)",
-            animationDuration: "3.2s",
-          }}
-        />
-
+      {/* Master Container: Sized proportionally and vertically aligned with the Citadel cards */}
+      <div className="relative w-[250px] lg:w-[275px] xl:w-[315px] 2xl:w-[345px] h-[430px] lg:h-[470px] xl:h-[525px] 2xl:h-[580px] flex items-center justify-center">
         {/* ─── NATIVE ARCHITECTURAL TOTEM SPIRE WITH RADIANT NEON GLOW ─── */}
         <svg
-          viewBox="0 0 520 780"
+          viewBox="0 0 520 680"
           className="w-full h-full overflow-visible pointer-events-auto"
           style={{
-            filter: "drop-shadow(0 25px 40px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 20px rgba(212, 168, 67, 0.3))",
+            filter: "drop-shadow(0 20px 35px rgba(0, 0, 0, 0.92)) drop-shadow(0 0 18px rgba(212, 168, 67, 0.28))",
           }}
         >
           <defs>
@@ -303,29 +287,13 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
               <stop offset="100%" stopColor="#6b060f" />
             </linearGradient>
 
-            {/* Holographic Laser Beam Gradients (Connecting Ground Emitter to Waypoints) */}
+            {/* Holographic Laser Beam Gradients */}
             <linearGradient id="laserBeamGrad" x1="0%" y1="100%" x2="0%" y2="0%">
               <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
               <stop offset="15%" stopColor="#fff3b0" stopOpacity="0.95" />
               <stop offset="55%" stopColor="#ffb300" stopOpacity="0.75" />
               <stop offset="100%" stopColor="#ff8f00" stopOpacity="0.3" />
             </linearGradient>
-
-            {/* Pedestal Emitter Gradients (Flush Ground Pad) */}
-            <linearGradient id="pedMetalBase" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#2c2013" />
-              <stop offset="40%" stopColor="#4a361c" />
-              <stop offset="70%" stopColor="#261b0e" />
-              <stop offset="100%" stopColor="#120c06" />
-            </linearGradient>
-
-            <radialGradient id="pedCoreLaser" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
-              <stop offset="25%" stopColor="#fffae0" stopOpacity="0.95" />
-              <stop offset="60%" stopColor="#ffb300" stopOpacity="0.85" />
-              <stop offset="85%" stopColor="#ff6f00" stopOpacity="0.45" />
-              <stop offset="100%" stopColor="#ff6f00" stopOpacity="0" />
-            </radialGradient>
 
             <radialGradient id="lensDomeGrad" cx="45%" cy="40%" r="60%">
               <stop offset="0%" stopColor="#3d2719" />
@@ -335,94 +303,62 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
           </defs>
 
           {/* ════════════════════════════════════════════════════════════════════════ */}
-          {/* SECTION 1: HOLOGRAPHIC LASER BEAMS RISING FROM GROUND EMITTER          */}
+          {/* SECTION 1: CENTRAL OBSIDIAN & GOLDEN SPIRE SHAFT                       */}
           {/* ════════════════════════════════════════════════════════════════════════ */}
-          <g id="hologram-beams" filter={`url(#neonGlow-${uniqueId})`}>
-            {/* White-Hot Central Laser Beam Column */}
+          <g id="central-spire">
+            {/* White-Hot Core Laser Column inside the Spire */}
             <line
               x1="345"
-              y1="718"
+              y1="45"
               x2="345"
-              y2="90"
+              y2="660"
               stroke="url(#laserBeamGrad)"
-              strokeWidth="5.5"
+              strokeWidth="5"
               strokeLinecap="round"
-              opacity="0.9"
+              filter={`url(#neonGlow-${uniqueId})`}
+              opacity="0.85"
             />
             <line
               x1="345"
-              y1="718"
+              y1="45"
               x2="345"
-              y2="90"
+              y2="660"
               stroke="#ffffff"
-              strokeWidth="1.8"
+              strokeWidth="1.6"
               strokeLinecap="round"
               opacity="0.95"
             />
 
-            {/* Glowing Laser Conduit Beams Connecting to Each Waypoint Medallion */}
-            {WAYPOINTS.map((wp) => {
-              const isHover = hoveredWaypoint === wp.id;
-              return (
-                <g key={`beam-${wp.id}`}>
-                  <line
-                    x1="345"
-                    y1="718"
-                    x2="345"
-                    y2={wp.cy}
-                    stroke={wp.neonColor}
-                    strokeWidth={isHover ? 4.5 : 2.5}
-                    opacity={isHover ? 1 : 0.65}
-                    className="transition-all duration-300"
-                  />
-                  <line
-                    x1="345"
-                    y1="718"
-                    x2="345"
-                    y2={wp.cy}
-                    stroke="#ffffff"
-                    strokeWidth={isHover ? 2 : 1}
-                    opacity={isHover ? 0.95 : 0.6}
-                  />
-                </g>
-              );
-            })}
-          </g>
-
-          {/* ════════════════════════════════════════════════════════════════════════ */}
-          {/* SECTION 2: CENTRAL OBSIDIAN & GOLDEN SPIRE SHAFT                       */}
-          {/* ════════════════════════════════════════════════════════════════════════ */}
-          <g id="central-spire">
             {/* Main Obsidian Tower Body */}
             <rect
               x="318"
-              y="55"
+              y="45"
               width="54"
-              height="665"
+              height="620"
               fill="url(#spireBodyGrad)"
               stroke="#59391a"
               strokeWidth="1"
             />
 
             {/* Fluted Vertical Bronze Panels */}
-            <rect x="325" y="55" width="11" height="665" fill="#170f08" />
-            <rect x="354" y="55" width="11" height="665" fill="#20140b" />
+            <rect x="325" y="45" width="11" height="620" fill="#170f08" />
+            <rect x="354" y="45" width="11" height="620" fill="#20140b" />
 
             {/* Flanking Golden Structural Columns (Left & Right) */}
             <rect
               x="317"
-              y="50"
+              y="40"
               width="7"
-              height="670"
+              height="625"
               fill="url(#columnPillarGrad)"
               stroke="#734714"
               strokeWidth="0.8"
             />
             <rect
               x="366"
-              y="50"
+              y="40"
               width="7"
-              height="670"
+              height="625"
               fill="url(#columnPillarGrad)"
               stroke="#734714"
               strokeWidth="0.8"
@@ -432,13 +368,13 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
             {/* Banner 1: Between Instagram & YouTube */}
             <g transform="translate(0, 0)">
               <path
-                d="M 333,175 L 357,175 L 357,238 L 345,226 L 333,238 Z"
+                d="M 333,155 L 357,155 L 357,215 L 345,203 L 333,215 Z"
                 fill="url(#crimsonBannerGrad)"
                 stroke="url(#goldBevelGrad)"
                 strokeWidth="1.3"
               />
               <polygon
-                points="345,190 347,199 356,201 347,203 345,212 343,203 334,201 343,199"
+                points="345,170 347,179 356,181 347,183 345,192 343,183 334,181 343,179"
                 fill="url(#goldTextGrad)"
                 filter={`url(#intenseCore-${uniqueId})`}
               />
@@ -447,13 +383,13 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
             {/* Banner 2: Between LinkedIn & X */}
             <g transform="translate(0, 0)">
               <path
-                d="M 333,465 L 357,465 L 357,528 L 345,516 L 333,528 Z"
+                d="M 333,435 L 357,435 L 357,495 L 345,483 L 333,495 Z"
                 fill="url(#crimsonBannerGrad)"
                 stroke="url(#goldBevelGrad)"
                 strokeWidth="1.3"
               />
               <polygon
-                points="345,480 347,489 356,491 347,493 345,502 343,493 334,491 343,489"
+                points="345,450 347,459 356,461 347,463 345,472 343,463 334,461 343,459"
                 fill="url(#goldTextGrad)"
                 filter={`url(#intenseCore-${uniqueId})`}
               />
@@ -461,16 +397,16 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
 
             {/* ─── HELICAL SPIRAL RIBBON WITH NEON GOLD EDGES ─── */}
             <g id="helical-ribbon" opacity="0.95">
-              {/* Loop 1 (Bottom, around Y=510) */}
+              {/* Loop 1 (Bottom, around Y=480) */}
               <path
-                d="M 285,545 C 265,525 330,465 415,500 C 438,512 410,545 350,530"
+                d="M 285,510 C 265,490 330,430 415,465 C 438,477 410,510 350,495"
                 fill="none"
                 stroke="url(#goldMetallicGrad)"
                 strokeWidth="8"
                 strokeLinecap="round"
               />
               <path
-                d="M 285,545 C 265,525 330,465 415,500 C 438,512 410,545 350,530"
+                d="M 285,510 C 265,490 330,430 415,465 C 438,477 410,510 350,495"
                 fill="none"
                 stroke="#ffd54f"
                 strokeWidth="2.5"
@@ -478,16 +414,16 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
                 opacity="0.8"
               />
 
-              {/* Loop 2 (Middle-low, around Y=370) */}
+              {/* Loop 2 (Middle-low, around Y=340) */}
               <path
-                d="M 280,405 C 260,385 330,325 420,360 C 442,372 415,405 350,390"
+                d="M 280,370 C 260,350 330,290 420,325 C 442,337 415,370 350,355"
                 fill="none"
                 stroke="url(#goldMetallicGrad)"
                 strokeWidth="8.5"
                 strokeLinecap="round"
               />
               <path
-                d="M 280,405 C 260,385 330,325 420,360 C 442,372 415,405 350,390"
+                d="M 280,370 C 260,350 330,290 420,325 C 442,337 415,370 350,355"
                 fill="none"
                 stroke="#ffd54f"
                 strokeWidth="2.5"
@@ -495,16 +431,16 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
                 opacity="0.8"
               />
 
-              {/* Loop 3 (Middle-high, around Y=225) */}
+              {/* Loop 3 (Middle-high, around Y=200) */}
               <path
-                d="M 285,260 C 265,240 330,180 420,215 C 442,227 415,260 350,245"
+                d="M 285,230 C 265,210 330,150 420,185 C 442,197 415,230 350,215"
                 fill="none"
                 stroke="url(#goldMetallicGrad)"
                 strokeWidth="9"
                 strokeLinecap="round"
               />
               <path
-                d="M 285,260 C 265,240 330,180 420,215 C 442,227 415,260 350,245"
+                d="M 285,230 C 265,210 330,150 420,185 C 442,197 415,230 350,215"
                 fill="none"
                 stroke="#ffd54f"
                 strokeWidth="2.5"
@@ -512,16 +448,16 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
                 opacity="0.8"
               />
 
-              {/* Loop 4 (Top, around Y=90) */}
+              {/* Loop 4 (Top, around Y=75) */}
               <path
-                d="M 290,120 C 270,100 340,45 425,85 C 442,97 410,125 350,112"
+                d="M 290,95 C 270,75 340,25 425,65 C 442,77 410,105 350,92"
                 fill="none"
                 stroke="url(#goldMetallicGrad)"
                 strokeWidth="9.5"
                 strokeLinecap="round"
               />
               <path
-                d="M 290,120 C 270,100 340,45 425,85 C 442,97 410,125 350,112"
+                d="M 290,95 C 270,75 340,25 425,65 C 442,77 410,105 350,92"
                 fill="none"
                 stroke="#ffd54f"
                 strokeWidth="2.5"
@@ -530,12 +466,11 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
               />
             </g>
 
-            {/* ─── SPIRE APEX NEEDLE & CROWN (Top Finials at Y=10 to 65) ─── */}
+            {/* ─── SPIRE APEX NEEDLE & CROWN (Top Finials at Y=8 to 55) ─── */}
             <g id="apex-crown">
-              {/* Glowing Neon Corona Behind Apex */}
               <circle
                 cx="345"
-                cy="32"
+                cy="28"
                 r="18"
                 fill="none"
                 stroke="#ffb300"
@@ -543,36 +478,56 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
                 filter={`url(#neonGlow-${uniqueId})`}
                 opacity="0.85"
               />
-
-              {/* Central Tall Golden Spearhead Needle */}
               <polygon
-                points="345,10 351,60 345,66 339,60"
+                points="345,6 351,52 345,58 339,52"
                 fill="url(#goldBrightRim)"
                 stroke="#694110"
                 strokeWidth="1"
                 filter={`url(#intenseCore-${uniqueId})`}
               />
-              <line x1="345" y1="10" x2="345" y2="66" stroke="#ffffff" strokeWidth="1.2" opacity="0.95" />
+              <line x1="345" y1="6" x2="345" y2="58" stroke="#ffffff" strokeWidth="1.2" opacity="0.95" />
 
-              {/* Satellite Spikes */}
-              <polygon points="331,34 334,65 331,68 328,65" fill="url(#goldBevelGrad)" />
-              <polygon points="359,34 362,65 359,68 356,65" fill="url(#goldBevelGrad)" />
+              <polygon points="331,28 334,56 331,59 328,56" fill="url(#goldBevelGrad)" />
+              <polygon points="359,28 362,56 359,59 356,56" fill="url(#goldBevelGrad)" />
 
-              {/* Golden Spherical Nodes */}
-              <circle cx="345" cy="74" r="6.5" fill="url(#goldMetallicGrad)" stroke="#734714" strokeWidth="1" />
-              <circle cx="345" cy="94" r="5" fill="url(#goldMetallicGrad)" stroke="#734714" strokeWidth="0.8" />
+              <circle cx="345" cy="65" r="6" fill="url(#goldMetallicGrad)" stroke="#734714" strokeWidth="1" />
+              <circle cx="345" cy="82" r="4.5" fill="url(#goldMetallicGrad)" stroke="#734714" strokeWidth="0.8" />
+            </g>
+
+            {/* ─── BASE COLUMN TERMINATION (Clean Architectural Foot Plinth) ─── */}
+            <g id="spire-base-foot">
+              <rect
+                x="314"
+                y="660"
+                width="62"
+                height="8"
+                rx="2"
+                fill="url(#goldMetallicGrad)"
+                stroke="url(#goldBrightRim)"
+                strokeWidth="1.5"
+              />
+              <rect
+                x="308"
+                y="668"
+                width="74"
+                height="10"
+                rx="2"
+                fill="url(#spireBodyGrad)"
+                stroke="url(#goldBevelGrad)"
+                strokeWidth="1.5"
+              />
             </g>
           </g>
 
           {/* ════════════════════════════════════════════════════════════════════════ */}
-          {/* SECTION 3: THE 4 SIGNPOST WAYPOINTS (Arrows + Medallions + Neon Glow)     */}
+          {/* SECTION 2: THE 4 SIGNPOST WAYPOINTS (Arrows + Medallions + Neon Glow)     */}
           {/* ════════════════════════════════════════════════════════════════════════ */}
           {WAYPOINTS.map((wp) => {
             const isHover = hoveredWaypoint === wp.id;
             const cy = wp.cy;
             const Icon = wp.icon;
-            // The banner horizontal body spans from X=78 (chevron inner point) to X=345 (medallion center)
-            // Center X of the banner body is exactly (78 + 345) / 2 = 211.5!
+            // The banner horizontal body spans from X=78 to X=345
+            // Center X of the banner body is exactly (78 + 345) / 2 = 211.5
             const bannerCenterX = 211.5;
 
             return (
@@ -596,7 +551,7 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
               >
                 {/* ─── A. ORNATE DIRECTIONAL ARROW (Pointing Left) ─── */}
                 <g id={`arrow-${wp.id}`}>
-                  {/* Neon Glow Outer Outline on Hover */}
+                  {/* Neon Glow Outer Outline */}
                   <path
                     d={`
                       M 26,${cy}
@@ -647,7 +602,7 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
                     strokeWidth="0.8"
                   />
 
-                  {/* Inner Dark Obsidian Banner Panel (Height 38px, spacious & legible) */}
+                  {/* Inner Dark Obsidian Banner Panel */}
                   <path
                     d={`
                       M 44,${cy}
@@ -710,9 +665,9 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
                   )}
 
                   {/* ───────────────────────────────────────────────────────────── */}
-                  {/* BANNER TYPOGRAPHY: CENTERED, LARGE, CRISP & DEEPLY LEGIBLE   */}
+                  {/* BANNER TYPOGRAPHY: EXACTLY CENTERED & CLEARLY LEGIBLE         */}
                   {/* ───────────────────────────────────────────────────────────── */}
-                  {/* Platform Title: Exactly in the horizontal center of the arrow banner */}
+                  {/* Platform Title: Exactly in the horizontal center */}
                   <text
                     x={bannerCenterX}
                     y={cy - 3}
@@ -729,7 +684,7 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
                     {wp.name}
                   </text>
 
-                  {/* Handle / Directive: Exactly in the horizontal center */}
+                  {/* Handle / Subtitle: Exactly in the horizontal center */}
                   <text
                     x={bannerCenterX}
                     y={cy + 13}
@@ -833,171 +788,7 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
               </g>
             );
           })}
-
-          {/* ════════════════════════════════════════════════════════════════════════ */}
-          {/* SECTION 4: SLEEK HOLOGRAPHIC NEON EMITTER PAD (Flush To Ground)        */}
-          {/* (Replaces the removed saucer base with teeth with high-end neon pad)    */}
-          {/* ════════════════════════════════════════════════════════════════════════ */}
-          <g id="ground-emitter-pedestal">
-            {/* 1. Deep Contact Occlusion Shadow */}
-            <ellipse
-              cx="345"
-              cy="745"
-              rx="95"
-              ry="22"
-              fill="#000000"
-              opacity="0.95"
-              filter="blur(7px)"
-            />
-            <ellipse
-              cx="345"
-              cy="742"
-              rx="82"
-              ry="18"
-              fill="#050302"
-              opacity="0.9"
-              filter="blur(4px)"
-            />
-
-            {/* 2. Warm Amber & Gold Radiant Light Spill onto Citadel Stone Floor */}
-            <ellipse
-              cx="345"
-              cy="738"
-              rx="115"
-              ry="28"
-              fill="rgba(255, 185, 45, 0.45)"
-              filter={`url(#neonGlow-${uniqueId})`}
-            />
-
-            {/* 3. Base Flush Metallic Plinth Ring */}
-            <ellipse
-              cx="345"
-              cy="736"
-              rx="82"
-              ry="19"
-              fill="url(#pedMetalBase)"
-              stroke="#1b120a"
-              strokeWidth="1.8"
-            />
-            <ellipse
-              cx="345"
-              cy="734"
-              rx="78"
-              ry="18"
-              fill="none"
-              stroke="url(#goldBevelGrad)"
-              strokeWidth="1.6"
-              opacity="0.9"
-            />
-
-            {/* 4. Stepped Mechanical Collar */}
-            <ellipse
-              cx="345"
-              cy="728"
-              rx="64"
-              ry="15"
-              fill="url(#pedMetalBase)"
-              stroke="#150f07"
-              strokeWidth="1.2"
-            />
-            <ellipse
-              cx="345"
-              cy="726"
-              rx="60"
-              ry="14"
-              fill="none"
-              stroke="url(#goldBrightRim)"
-              strokeWidth="2.2"
-            />
-
-            {/* 5. Concentric Neon Emitter Collar Ring */}
-            <ellipse
-              cx="345"
-              cy="722"
-              rx="48"
-              ry="11"
-              fill="#1e140a"
-              stroke="#ffd54f"
-              strokeWidth="2.5"
-              filter={`url(#neonGlow-${uniqueId})`}
-            />
-            <ellipse
-              cx="345"
-              cy="721"
-              rx="42"
-              ry="9.5"
-              fill="none"
-              stroke="#fffde7"
-              strokeWidth="1.4"
-              opacity="0.95"
-            />
-
-            {/* 6. Central Holographic Laser Lens & White-Hot Laser Epicenter */}
-            <ellipse
-              cx="345"
-              cy="718"
-              rx="28"
-              ry="7"
-              fill="url(#pedCoreLaser)"
-              filter={`url(#neonGlow-${uniqueId})`}
-            />
-            <ellipse
-              cx="345"
-              cy="718"
-              rx="14"
-              ry="3.5"
-              fill="#ffffff"
-              filter={`url(#intenseCore-${uniqueId})`}
-            />
-
-            {/* Rotating Holographic Circuit Lens Crosshairs */}
-            <g className="origin-center opacity-85">
-              <line x1="324" y1="718" x2="366" y2="718" stroke="#ffffff" strokeWidth="1.2" />
-              <line x1="345" y1="713" x2="345" y2="723" stroke="#ffffff" strokeWidth="1.2" />
-            </g>
-
-            {/* Volumetric Vertical Glow Shroud Hovering Over Pedestal Core */}
-            <ellipse
-              cx="345"
-              cy="710"
-              rx="40"
-              ry="12"
-              fill="rgba(255, 213, 79, 0.45)"
-              filter="blur(8px)"
-            />
-          </g>
         </svg>
-
-        {/* ─── HOLOGRAPHIC DUNE DIRECTIVE TOOLTIPS (HTML/CSS Floating Overlay) ─── */}
-        {WAYPOINTS.map((wp) => {
-          const isHover = hoveredWaypoint === wp.id;
-          // Percentage Y in container: 130/780 ≈ 16.7%, 275/780 ≈ 35.3%, 420/780 ≈ 53.8%, 565/780 ≈ 72.4%
-          const topPercent = (wp.cy / 780) * 100;
-
-          return (
-            <div
-              key={`tooltip-${wp.id}`}
-              className={`absolute right-[102%] -translate-y-1/2 pointer-events-none flex items-center gap-2.5 px-3.5 py-1.5 rounded-md border border-[#d4a843]/80 bg-black/95 backdrop-blur-md shadow-[0_0_24px_rgba(212,168,67,0.7)] transition-all duration-300 whitespace-nowrap z-50 ${
-                isHover
-                  ? "opacity-100 translate-x-0 scale-100"
-                  : "opacity-0 translate-x-3 scale-95 pointer-events-none"
-              }`}
-              style={{ top: `${topPercent}%` }}
-            >
-              <div
-                className="w-2 h-2 rounded-full animate-ping"
-                style={{ backgroundColor: wp.neonColor, boxShadow: `0 0 10px ${wp.neonColor}` }}
-              />
-              <span className="text-[10px] font-mono tracking-[0.2em] uppercase font-bold text-[#ffd685]">
-                {wp.action}
-              </span>
-              <span className="text-[9.5px] font-mono tracking-wider font-semibold text-[#ff8080]">
-                {wp.handle}
-              </span>
-              <ExternalLink className="w-3.5 h-3.5 text-[#d4a843] ml-0.5" />
-            </div>
-          );
-        })}
 
         {/* ─── AMBIENT FLOATING SPICE PARTICLES (Desert Atmosphere) ─── */}
         <div className="absolute inset-0 pointer-events-none overflow-visible">

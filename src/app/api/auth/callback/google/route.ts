@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { SafeUser } from "@/lib/types";
+import { getServerEnv } from "@/lib/server-env";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -18,9 +19,9 @@ export async function GET(req: NextRequest) {
   }
 
   const clientId =
-    process.env.GOOGLE_CLIENT_ID ||
-    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    getServerEnv("GOOGLE_CLIENT_ID") ||
+    getServerEnv("NEXT_PUBLIC_GOOGLE_CLIENT_ID");
+  const clientSecret = getServerEnv("GOOGLE_CLIENT_SECRET");
 
   if (!clientId || !clientSecret) {
     console.error("Missing Google OAuth credentials in environment variables.");

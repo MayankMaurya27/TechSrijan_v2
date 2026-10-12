@@ -100,29 +100,14 @@ export function SignInRouteModal({
   };
 
   const handleGoogleSignIn = () => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "https://www.techsrijan.org";
-    const redirectUri = `${origin}/api/auth/callback/google`;
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    if (!clientId) {
-      setError("Google authentication service is temporarily configuring. Please try again shortly.");
-      return;
-    }
-
     if (typeof window !== "undefined") {
       const returnPath =
         window.location.pathname !== "/signin" && window.location.pathname !== "/signup"
           ? window.location.pathname + window.location.search
           : "/profile";
       localStorage.setItem("ts27_auth_return_url", returnPath);
+      window.location.href = "/api/auth/google";
     }
-
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
-      clientId
-    )}&redirect_uri=${encodeURIComponent(
-      redirectUri
-    )}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=select_account`;
-
-    window.location.href = googleAuthUrl;
   };
 
   const handleMmmutSelect = () => {

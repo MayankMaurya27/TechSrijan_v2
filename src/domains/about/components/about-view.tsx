@@ -354,10 +354,11 @@ export function AboutView() {
 
                     {/* Centered Imperial Portrait Medallion */}
                     <div
-                      className={`lg:col-span-4 flex flex-col items-center justify-center ${isEven ? "lg:order-2" : "lg:order-1"
-                        }`}
+                      className={`w-full lg:col-span-4 flex flex-col items-center justify-center text-center ${
+                        isEven ? "lg:order-2" : "lg:order-1"
+                      }`}
                     >
-                      <div className="relative group">
+                      <div className="relative group w-full flex flex-col items-center justify-center mx-auto">
                         {/* Ambient Outer Halo */}
                         <div
                           className="absolute -inset-3 rounded-full blur-2xl opacity-40 group-hover:opacity-75 transition-opacity duration-700 pointer-events-none"
@@ -366,7 +367,7 @@ export function AboutView() {
 
                         {/* Dual-Ring Imperial Frame */}
                         <div
-                          className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 rounded-full p-1.5 bg-gradient-to-b from-white/20 via-black to-black/80 border-2 transition-transform duration-500 group-hover:scale-105"
+                          className="relative mx-auto w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 rounded-full p-1.5 bg-gradient-to-b from-white/20 via-black to-black/80 border-2 transition-transform duration-500 group-hover:scale-105"
                           style={{
                             borderColor: patron.accent,
                             boxShadow: `0 0 35px ${patron.accent}55, inset 0 0 20px rgba(0,0,0,0.9)`,
@@ -384,7 +385,7 @@ export function AboutView() {
                         </div>
 
                         {/* Tactical Medallion Badge */}
-                        <div className="mt-3.5 text-center">
+                        <div className="mt-3.5 w-full flex justify-center text-center">
                           <span
                             className="inline-block px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase border bg-black/80 backdrop-blur-md"
                             style={{
@@ -491,7 +492,7 @@ export function AboutView() {
                 >
                   {/* Perfectly Fitted & Centered Circular Avatar (Zero Brochure Artifacts) */}
                   <div
-                    className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-full p-1 mb-4 bg-gradient-to-b from-white/20 via-black to-black border-2 transition-transform duration-500 group-hover:scale-105"
+                    className="relative mx-auto w-32 h-32 sm:w-36 sm:h-36 rounded-full p-1 mb-4 bg-gradient-to-b from-white/20 via-black to-black border-2 transition-transform duration-500 group-hover:scale-105"
                     style={{
                       borderColor: theme.accent,
                       boxShadow: `0 0 25px ${theme.accentGlow}`,

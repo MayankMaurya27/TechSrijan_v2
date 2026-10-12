@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme, useAuth } from "@/core";
 import { useAuthModal } from "@/domains/auth";
-import { Menu, X, Home, Calendar, Code2, Hotel, Layers } from "lucide-react";
+import { Menu, X, Home, Calendar, Code2, Hotel, Layers, Award, Handshake } from "lucide-react";
 
 const THEME_CYCLE = [
   "arrakis-day",
@@ -467,19 +467,10 @@ export function Navbar() {
       </header>
 
       {/* =========================================================
-          MOBILE BOTTOM NAVIGATION DOCK (IIT Bombay Techfest Level)
+          MOBILE BOTTOM NAVIGATION DOCK (Events, Ambassador, Sponsorship, Stay)
           ========================================================= */}
       <div className="lg:hidden fixed bottom-3 inset-x-3 z-50 pointer-events-auto">
-        <nav className="grid grid-cols-5 w-full items-center py-1.5 px-1 rounded-2xl border border-[rgba(212,168,67,0.35)] bg-[#070503]/92 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,0,0,0.9)]">
-          <Link
-            href="/"
-            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${
-              pathname === "/" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
-            }`}
-          >
-            <Home className="h-4 w-4" />
-            <span className="font-mono text-[8px] tracking-[0.08em] uppercase font-medium">Home</span>
-          </Link>
+        <nav className="grid grid-cols-4 w-full items-center py-1.5 px-1 rounded-2xl border border-[rgba(212,168,67,0.35)] bg-[#070503]/92 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,0,0,0.9)]">
           <Link
             href="/events"
             className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${
@@ -487,16 +478,25 @@ export function Navbar() {
             }`}
           >
             <Calendar className="h-4 w-4" />
-            <span className="font-mono text-[8px] tracking-[0.08em] uppercase font-medium">Events</span>
+            <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium">Events</span>
           </Link>
           <Link
-            href="/developers"
+            href="/ambassador"
             className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${
-              pathname === "/developers" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+              pathname === "/ambassador" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
             }`}
           >
-            <Code2 className="h-4 w-4" />
-            <span className="font-mono text-[8px] tracking-[0.08em] uppercase font-medium">Developers</span>
+            <Award className="h-4 w-4" />
+            <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium truncate max-w-[70px]">Ambassador</span>
+          </Link>
+          <Link
+            href="/sponsors"
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${
+              pathname === "/sponsors" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+            }`}
+          >
+            <Handshake className="h-4 w-4" />
+            <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium truncate max-w-[70px]">Sponsors</span>
           </Link>
           <Link
             href="/accommodation"
@@ -505,18 +505,8 @@ export function Navbar() {
             }`}
           >
             <Hotel className="h-4 w-4" />
-            <span className="font-mono text-[8px] tracking-[0.08em] uppercase font-medium">Stay</span>
+            <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium">Stay</span>
           </Link>
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors cursor-pointer ${
-              mobileMenuOpen ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
-            }`}
-          >
-            <Layers className="h-4 w-4" />
-            <span className="font-mono text-[8px] tracking-[0.08em] uppercase font-medium">Menu</span>
-          </button>
         </nav>
       </div>
     </>

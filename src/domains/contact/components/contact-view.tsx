@@ -481,6 +481,24 @@ export function ContactView() {
                 <p className="text-zinc-300 text-base sm:text-lg font-chancery max-w-lg">
                   Fill out the form below and we&apos;ll get back to you as soon as possible.
                 </p>
+
+                {/* Mobile Inline Slogan Ribbon: Compact between header and form with zero extra dead space */}
+                <div className="lg:hidden flex items-center justify-between py-2.5 px-3.5 rounded-xl border border-white/10 bg-black/60 backdrop-blur-md shadow-md">
+                  <div
+                    className="flex items-center gap-1.5 sm:gap-2 font-bebas text-xs sm:text-sm tracking-[0.2em] uppercase"
+                    style={{ color: pageTheme.accent }}
+                  >
+                    <span>IDEAS</span>
+                    <span>•</span>
+                    <span>PEOPLE</span>
+                    <span>•</span>
+                    <span>IMPACT</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 font-bebas text-xs sm:text-sm tracking-wider text-white">
+                    <span>LET&apos;S BUILD TOGETHER</span>
+                    <span style={{ color: pageTheme.accent }}>✦</span>
+                  </div>
+                </div>
               </div>
 
               {/* HUD Form Box with Dynamic Moon Border & Glowing Accents */}
@@ -668,8 +686,8 @@ export function ContactView() {
               </div>
             </div>
 
-            {/* Right Column: Floating Slogan in Front of the Citadel Art */}
-            <div className="lg:col-span-5 flex flex-col justify-end items-end text-right space-y-4 pt-10 lg:pt-0">
+            {/* Right Column: Floating Slogan in Front of the Citadel Art (Desktop only, hidden on mobile so it doesn't take extra space) */}
+            <div className="hidden lg:flex lg:col-span-5 flex-col justify-end items-end text-right space-y-4 pt-0">
               <div
                 className="space-y-1.5 font-bebas text-lg sm:text-2xl tracking-[0.25em] uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] transition-colors duration-300"
                 style={{ color: pageTheme.accent }}

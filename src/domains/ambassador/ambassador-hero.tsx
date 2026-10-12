@@ -19,47 +19,43 @@ export function AmbassadorHero() {
   // 3. "ready": Left title & Right HUD Card glide into position
   const [phase, setPhase] = useState<"moon" | "character" | "ready">("moon");
   const [mounted, setMounted] = useState(false);
-  const [isMoonHovered, setIsMoonHovered] = useState(false);
-  const [moonHoverOffset, setMoonHoverOffset] = useState({
-    x: 0,
-    y: 0,
-    z: 0,
-    rotX: 0,
-    rotY: 0,
-  });
+  const [isMobile, setIsMobile] = useState(false);
 
-  const handleMoonMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Smooth, zero-flicker 3D hover translation springs for the moon (like TechSrijan text on landing page)
+  const rawMoonHoverX = useMotionValue(0);
+  const rawMoonHoverY = useMotionValue(0);
+  const rawMoonHoverZ = useMotionValue(0);
+  const rawMoonHoverRotX = useMotionValue(0);
+  const rawMoonHoverRotY = useMotionValue(0);
+
+  const moonHoverX = useSpring(rawMoonHoverX, { stiffness: 140, damping: 24, mass: 0.5 });
+  const moonHoverY = useSpring(rawMoonHoverY, { stiffness: 140, damping: 24, mass: 0.5 });
+  const moonHoverZ = useSpring(rawMoonHoverZ, { stiffness: 140, damping: 24, mass: 0.5 });
+  const moonHoverRotX = useSpring(rawMoonHoverRotX, { stiffness: 140, damping: 24, mass: 0.5 });
+  const moonHoverRotY = useSpring(rawMoonHoverRotY, { stiffness: 140, damping: 24, mass: 0.5 });
+
+  const handleMoonPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Only apply on pointer interactions (ignore touch devices to prevent mobile jitter)
+    if (e.pointerType === "touch") return;
     const rect = e.currentTarget.getBoundingClientRect();
-    // Normalized position relative to center (-0.5 to +0.5)
     const nx = (e.clientX - rect.left) / rect.width - 0.5;
     const ny = (e.clientY - rect.top) / rect.height - 0.5;
 
-    // Radial distance from center (0 at center, ~0.5 at edge of orb)
-    const dist = Math.min(Math.sqrt(nx * nx + ny * ny), 0.6);
-    const edgeRatio = Math.min(dist / 0.5, 1.0);
-
-    // Pure 3D Translation along Z axis (inward and outward depth):
-    // Near center: floats gently outward (+14px towards user)
-    // Towards edges: translates inward (-28px into deep space)
-    const zPos = Math.round(14 - edgeRatio * 42);
-
-    setMoonHoverOffset({
-      x: nx * 24,
-      y: ny * 22,
-      z: zPos,
-      rotX: -ny * 12,
-      rotY: nx * 12,
-    });
+    // Smooth subtle 3D translation & tilt
+    rawMoonHoverX.set(nx * 18);
+    rawMoonHoverY.set(ny * 16);
+    rawMoonHoverZ.set(15);
+    rawMoonHoverRotX.set(-ny * 8);
+    rawMoonHoverRotY.set(nx * 8);
   };
 
-  const handleMoonMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsMoonHovered(true);
-    handleMoonMouseMove(e);
-  };
-
-  const handleMoonMouseLeave = () => {
-    setIsMoonHovered(false);
-    setMoonHoverOffset({ x: 0, y: 0, z: 0, rotX: 0, rotY: 0 });
+  const handleMoonPointerLeave = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "touch") return;
+    rawMoonHoverX.set(0);
+    rawMoonHoverY.set(0);
+    rawMoonHoverZ.set(0);
+    rawMoonHoverRotX.set(0);
+    rawMoonHoverRotY.set(0);
   };
 
   // Mouse parallax motion values
@@ -103,6 +99,9 @@ export function AmbassadorHero() {
 
   useEffect(() => {
     setMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile, { passive: true });
     // Smooth cinematic sequence:
     // 0ms: Desert background displays, Moon descends smoothly from upward into the sky
     // 650ms: Character begins materializing from backward in front of the moon
@@ -112,6 +111,7 @@ export function AmbassadorHero() {
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
+      window.removeEventListener("resize", checkMobile);
     };
   }, []);
 
@@ -168,11 +168,9 @@ export function AmbassadorHero() {
         />
 
         {/* ========================================================
-            Layer 3: 3D INTERACTIVE CELESTIAL BODY (Blood Moon / Dune Sun / Krelln Moon)
-            - Elevated higher in the sky, tucked gracefully under navbar
-            - Solid & Opaque rich artwork responding to theme
-            - Clean, premium hover glow and subtle scale expansion
-            - 3D perspective tilt reacting smoothly to cursor / touch
+            Layer 3: 3D INTERACTIVE CELESTIAL BODY
+            - Smooth, zero-jitter 3D translation on hover
+            - Touch interactions ignored on mobile to prevent flickering
             ======================================================== */}
         <motion.div
           className="absolute top-[26px] sm:top-[32px] md:top-[36px] lg:top-[40px] left-1/2 -translate-x-1/2 z-[2] flex items-center justify-center pointer-events-auto cursor-pointer"
@@ -182,34 +180,20 @@ export function AmbassadorHero() {
             scale: moonScrollScale,
             perspective: 1200,
           }}
-          onMouseEnter={handleMoonMouseEnter}
-          onMouseMove={handleMoonMouseMove}
-          onMouseLeave={handleMoonMouseLeave}
+          onPointerMove={handleMoonPointerMove}
+          onPointerLeave={handleMoonPointerLeave}
           title="TechSrijan Celestial Body"
         >
-          {/* Main Moon Container: Pure 3D Translation across X, Y, Z without Scale Enlargement */}
+          {/* Main Moon Container: Pure 3D Translation on Hover without Scale Enlargement */}
           <motion.div
-            className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] xl:w-[430px] xl:h-[430px] rounded-full flex items-center justify-center select-none"
+            className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] xl:w-[430px] xl:h-[430px] rounded-full flex items-center justify-center select-none will-change-transform"
             style={{
-              rotateX: moonTiltX,
-              rotateY: moonTiltY,
+              x: moonHoverX,
+              y: moonHoverY,
+              z: moonHoverZ,
+              rotateX: moonHoverRotX,
+              rotateY: moonHoverRotY,
               transformStyle: "preserve-3d",
-            }}
-            initial={{ y: -90, opacity: 0 }}
-            animate={{
-              x: isMoonHovered ? moonHoverOffset.x : 0,
-              y: isMoonHovered ? moonHoverOffset.y : 0,
-              z: isMoonHovered ? moonHoverOffset.z : 0,
-              rotateX: isMoonHovered ? moonHoverOffset.rotX : 0,
-              rotateY: isMoonHovered ? moonHoverOffset.rotY : 0,
-              scale: 1.0,
-              opacity: 1,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 160,
-              damping: 22,
-              mass: 0.65,
             }}
           >
             {/* Outer Atmospheric Corona Rim (Clean, zero black border, consistent lighting) */}
@@ -220,7 +204,7 @@ export function AmbassadorHero() {
               }}
             />
 
-            {/* High-Resolution Celestial Texture (Theme-specific asset with zero black border and natural lighting) */}
+            {/* High-Resolution Celestial Texture */}
             <picture className="w-full h-full pointer-events-none">
               <source srcSet={t.moonImageWebp} type="image/webp" />
               <img
@@ -241,7 +225,7 @@ export function AmbassadorHero() {
             - Emerges from backward (depth scale + translateZ + fade)
             - Upper 70-75% visible with feathered bottom leg fade
             - Head centered directly on vertical screen/moon axis
-            - Positioned slightly higher for balanced, heroic framing
+            - Positioned higher on mobile so character sits heroically above bottom HUD card
             ======================================================== */}
         <motion.div
           className="absolute inset-x-0 bottom-0 z-[4] pointer-events-none flex items-end justify-center"
@@ -251,9 +235,9 @@ export function AmbassadorHero() {
             perspective: 1000,
           }}
         >
-          {/* Character Container: Showing 70-80% of character with head aligned in center */}
+          {/* Character Container: Lifted on mobile (bottom-[76px]) so character head and torso rise above card */}
           <motion.div
-            className="relative w-[295px] sm:w-[370px] md:w-[420px] lg:w-[465px] xl:w-[505px] flex items-end justify-center bottom-2 sm:bottom-3 md:bottom-4 lg:bottom-5"
+            className="relative w-[295px] sm:w-[370px] md:w-[420px] lg:w-[465px] xl:w-[505px] flex items-end justify-center bottom-[76px] xs:bottom-[84px] sm:bottom-12 md:bottom-6 lg:bottom-4"
             style={{
               rotateY: charTiltY,
               transformStyle: "preserve-3d",
@@ -311,7 +295,7 @@ export function AmbassadorHero() {
           ======================================================== */}
       {mounted && (
         <div className="absolute inset-0 z-[6] pointer-events-none overflow-hidden">
-          {Array.from({ length: 22 }).map((_, i) => {
+          {Array.from({ length: isMobile ? 7 : 22 }).map((_, i) => {
             const size = (i % 3) + 2;
             const left = (i * 4.6 + (i % 7) * 4.2) % 98;
             const top = (i * 5.4 + 14) % 88;
@@ -331,10 +315,11 @@ export function AmbassadorHero() {
                   boxShadow: isSecondary
                     ? t.embers.secondaryShadow
                     : t.embers.primaryShadow,
+                  willChange: "transform, opacity",
                 }}
                 animate={{
                   y: [0, -30 - (i % 18), 0],
-                  x: [0, i % 2 === 0 ? 10 : -10, 0],
+                  x: [0, i % 2 === 0 ? 8 : -8, 0],
                   opacity: [0.15, 0.85, 0.15],
                   scale: [1, 1.25, 1],
                 }}

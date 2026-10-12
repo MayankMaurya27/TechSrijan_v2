@@ -240,14 +240,18 @@ export default function AccommodationPage() {
       lenis.on("scroll", ScrollTrigger.update);
     }
 
+    const isMobile = window.innerWidth < 768;
+    const pinEndDistance = isMobile ? "+=55%" : "+=145%";
+    const scrubSpeed = isMobile ? 0.2 : 0.45;
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: scrollWrapperRef.current,
           start: "top top",
-          end: "+=250%",
+          end: pinEndDistance,
           pin: pinnedStageRef.current,
-          scrub: 0.8,
+          scrub: scrubSpeed,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
@@ -256,256 +260,127 @@ export default function AccommodationPage() {
         },
       });
 
-      // =========================================================================
-      // 0% - 25%: Facilities Introduction
-      // Subtle depth parallax, floating cards at different depths, stable heading
-      // =========================================================================
+      // City background: maintains subtle scale and atmospheric depth, never completely black
       tl.fromTo(
         bgCityRef.current,
-        { y: 0, scale: 1 },
-        { y: 22, scale: 1.03, ease: "none", duration: 0.25 },
+        { y: 0, scale: 1, opacity: 1 },
+        { y: 15, scale: 1.05, opacity: 0.4, ease: "none", duration: 0.6 },
         0
       );
 
-      tl.fromTo(
-        charImageWrapRef.current,
-        { y: 0, scale: 1 },
-        { y: -16, scale: 1.015, ease: "none", duration: 0.25 },
-        0
-      );
-
-      tl.fromTo(
-        leftCardsRef.current,
-        { y: 0 },
-        { y: -10, ease: "none", duration: 0.25 },
-        0
-      );
-
-      tl.fromTo(
-        rightCardsRef.current,
-        { y: 0 },
-        { y: -18, ease: "none", duration: 0.25 },
-        0
-      );
-
-      tl.to(headerSectionRef.current, { y: 0, opacity: 1, duration: 0.25 }, 0);
-
-      // =========================================================================
-      // 25% - 50%: Structural Collapse
-      // =========================================================================
-      // Left cards slide outward to the left, collapse and fade
+      // Facilities cards glide smoothly outward to the sides
       tl.to(
         leftCardsRef.current,
         {
-          xPercent: -120,
+          xPercent: isMobile ? -75 : -95,
           opacity: 0,
-          scaleX: 0.88,
-          scaleY: 0.45,
-          filter: "grayscale(1) brightness(2.4) contrast(1.8) drop-shadow(0 0 2px rgba(255,255,255,0.9))",
+          scale: 0.94,
           ease: "power2.inOut",
-          duration: 0.25,
+          duration: 0.35,
         },
-        0.25
+        0.05
       );
 
-      // Right cards slide outward to the right, collapse and fade
       tl.to(
         rightCardsRef.current,
         {
-          xPercent: 120,
+          xPercent: isMobile ? 75 : 95,
           opacity: 0,
-          scaleX: 0.88,
-          scaleY: 0.45,
-          filter: "grayscale(1) brightness(2.4) contrast(1.8) drop-shadow(0 0 2px rgba(255,255,255,0.9))",
+          scale: 0.94,
           ease: "power2.inOut",
-          duration: 0.25,
+          duration: 0.35,
         },
-        0.25
+        0.05
       );
 
-      // Heading stretches, blurs & fades
+      // Header fades slightly up and out
       tl.to(
         headerSectionRef.current,
         {
-          scaleX: 1.25,
-          scaleY: 0.85,
-          letterSpacing: "0.3em",
+          y: -22,
           opacity: 0,
-          filter: "blur(6px)",
-          y: -25,
+          scale: 0.96,
           ease: "power2.inOut",
-          duration: 0.22,
+          duration: 0.3,
         },
-        0.25
+        0.05
       );
 
       if (headingScanLinesRef.current) {
         tl.fromTo(
           headingScanLinesRef.current,
           { opacity: 0 },
-          { opacity: 0.9, duration: 0.1, yoyo: true, repeat: 1, ease: "steps(3)" },
-          0.25
+          { opacity: 0.8, duration: 0.08, yoyo: true, repeat: 1, ease: "steps(3)" },
+          0.05
         );
       }
 
+      // Bottom status bar slides down
       tl.to(
         bottomStatusBarRef.current,
         {
-          y: 45,
+          y: 35,
           opacity: 0,
           ease: "power2.in",
-          duration: 0.2,
+          duration: 0.25,
         },
-        0.25
+        0.05
       );
 
+      // Character recedes smoothly
       tl.to(
         charImageWrapRef.current,
         {
-          scale: 0.82,
-          y: 25,
+          scale: 0.9,
+          y: 35,
+          opacity: 0,
           ease: "power2.inOut",
-          duration: 0.25,
+          duration: 0.35,
         },
-        0.25
+        0.05
       );
 
-      // Crimson scan beam travels vertically across screen
-      tl.fromTo(
-        scanBeamRef.current,
-        { y: "-8vh", opacity: 0 },
-        {
-          y: "112vh",
-          opacity: 1,
-          ease: "power1.inOut",
-          duration: 0.25,
-        },
-        0.25
-      );
-
-      tl.to(
-        lowerSmokeRef.current,
-        {
-          opacity: 0.85,
-          y: -25,
-          scaleY: 1.35,
-          ease: "power1.out",
-          duration: 0.25,
-        },
-        0.25
-      );
-
-      // =========================================================================
-      // 50% - 75%: Cinematic Transition (Central Architecture Zoom & Character Dissolve)
-      // =========================================================================
-      tl.to(
-        bgCityRef.current,
-        {
-          scale: 3.2,
-          filter: "blur(18px)",
-          opacity: 0,
-          ease: "power3.inOut",
-          duration: 0.25,
-        },
-        0.5
-      );
-
-      tl.to(
-        charImageWrapRef.current,
-        {
-          filter: "brightness(0) contrast(300%) blur(8px)",
-          scale: 0.6,
-          opacity: 0,
-          y: 60,
-          ease: "power3.inOut",
-          duration: 0.25,
-        },
-        0.5
-      );
-
-      if (dissolveParticlesRef.current) {
-        tl.fromTo(
-          dissolveParticlesRef.current,
-          { opacity: 0, scale: 0.85 },
-          { opacity: 1, scale: 1.3, duration: 0.1, ease: "power1.out" },
-          0.5
-        );
-        tl.to(
-          ".dissolve-spark",
-          {
-            x: (i) => DISSOLVE_PARTICLES[i % DISSOLVE_PARTICLES.length].dx,
-            y: (i) => DISSOLVE_PARTICLES[i % DISSOLVE_PARTICLES.length].dy,
-            opacity: 0,
-            scale: 0.2,
-            duration: 0.22,
-            stagger: 0.005,
-            ease: "power2.out",
-          },
-          0.52
-        );
-      }
-
+      // Subtle atmospheric chamber overlay deepens
       tl.to(
         chamberBgRef.current,
         {
-          opacity: 1,
+          opacity: 0.7,
           ease: "power2.inOut",
-          duration: 0.25,
+          duration: 0.4,
         },
-        0.5
+        0.2
       );
 
-      tl.to(
+      // Crimson laser scan sweep during the transition
+      tl.fromTo(
         scanBeamRef.current,
+        { y: "-6vh", opacity: 0 },
         {
-          opacity: 0,
-          duration: 0.1,
+          y: "106vh",
+          opacity: 0.9,
+          ease: "power1.inOut",
+          duration: 0.35,
         },
-        0.5
+        0.1
       );
 
-      // =========================================================================
-      // 75% - 100%: Form Reveal (Aperture Opening & Dossier Panel Stabilization)
-      // =========================================================================
+      // Form Panel emerges directly with ALL elements appearing together at once (no ghost fields)
       tl.fromTo(
         formPanelRef.current,
         {
           opacity: 0,
-          clipPath: "polygon(0 50%, 100% 50%, 100% 50%, 0 50%)",
-          rotateX: 4,
-          scale: 0.94,
+          scale: 0.96,
           y: 20,
         },
         {
           opacity: 1,
-          clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-          rotateX: 0,
           scale: 1,
           y: 0,
           ease: "power2.out",
-          duration: 0.2,
+          duration: 0.45,
         },
-        0.75
+        0.22
       );
-
-      if (formFieldsRef.current) {
-        const fieldElements = formFieldsRef.current.children;
-        tl.fromTo(
-          fieldElements,
-          {
-            opacity: 0,
-            y: 18,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.02,
-            ease: "power2.out",
-            duration: 0.18,
-          },
-          0.8
-        );
-      }
     }, scrollWrapperRef);
 
     // Refresh ScrollTrigger after DOM has fully settled
@@ -525,12 +400,13 @@ export default function AccommodationPage() {
   // Programmatic scroll helper to specific cinematic stage progress
   const scrollToStageProgress = useCallback((targetProgress: number) => {
     const triggerTop = scrollWrapperRef.current?.offsetTop || 0;
-    const totalDistance = window.innerHeight * 2.5;
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    const totalDistance = window.innerHeight * (isMobile ? 0.55 : 1.45);
     const targetScroll = triggerTop + totalDistance * Math.max(0, Math.min(1, targetProgress));
 
     const lenis = window.__lenis;
     if (lenis) {
-      lenis.scrollTo(targetScroll, { duration: 1.2 });
+      lenis.scrollTo(targetScroll, { duration: isMobile ? 0.6 : 0.85 });
     } else {
       window.scrollTo({
         top: targetScroll,
@@ -745,7 +621,7 @@ export default function AccommodationPage() {
 
           {/* Mood Atmospheric Lighting */}
           <div
-            className={`absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full blur-[160px] pointer-events-none transition-colors duration-700 ${
+            className={`hidden sm:block absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full blur-[160px] pointer-events-none transition-colors duration-700 ${
               activeHover === "right"
                 ? "bg-[#3a0937]/30"
                 : activeHover === "left"
@@ -753,7 +629,7 @@ export default function AccommodationPage() {
                 : "bg-[#3a0912]/20"
             }`}
           />
-          <div className="absolute bottom-10 left-1/4 w-[450px] h-[450px] bg-[#161820]/40 rounded-full blur-[140px] pointer-events-none" />
+          <div className="hidden sm:block absolute bottom-10 left-1/4 w-[450px] h-[450px] bg-[#161820]/40 rounded-full blur-[140px] pointer-events-none" />
 
           {/* Grid Lines & Grain */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:5rem_5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_65%,transparent_100%)] opacity-70" />
@@ -794,8 +670,8 @@ export default function AccommodationPage() {
         {/* HERO PHASE LAYER: FACILITIES INTRODUCTION & CHARACTER (0% - 75%)     */}
         {/* =================================================================== */}
         <div
-          className={`relative z-20 w-full max-w-7xl mx-auto h-full px-3 sm:px-6 lg:px-12 flex flex-col justify-between py-3 sm:py-6 lg:pt-20 lg:pb-3 xl:pt-24 xl:pb-4 transition-opacity duration-300 ${
-            scrollProgress > 0.7 ? "pointer-events-none" : "pointer-events-auto"
+          className={`relative z-20 w-full max-w-7xl mx-auto h-full px-3 sm:px-6 lg:px-12 flex flex-col justify-between py-3 sm:py-6 lg:pt-12 lg:pb-2 xl:pt-14 xl:pb-2 transition-opacity duration-300 ${
+            scrollProgress > 0.45 ? "pointer-events-none" : "pointer-events-auto"
           }`}
         >
           {/* TOP CENTERED HEADER SECTION */}
@@ -825,7 +701,7 @@ export default function AccommodationPage() {
             {/* LEFT COLUMN: 2 FACILITY CARDS */}
             <div
               ref={leftCardsRef}
-              className="w-[46%] sm:w-[42%] lg:w-[30%] max-w-[420px] flex flex-col gap-2.5 sm:gap-4 lg:gap-5 z-20 will-change-transform lg:self-center"
+              className="w-[46%] sm:w-[42%] lg:w-[30%] max-w-[420px] flex flex-col gap-2.5 sm:gap-4 lg:gap-5 z-20 will-change-transform lg:self-center -translate-y-3 sm:-translate-y-6 lg:-translate-y-8 xl:-translate-y-10"
             >
               {LEFT_FACILITIES.map((facility) => {
                 const Icon = facility.icon;
@@ -885,16 +761,16 @@ export default function AccommodationPage() {
               })}
             </div>
 
-            {/* CENTER COLUMN: DYNAMIC CHARACTER STAGE */}
+            {/* CENTER COLUMN: DYNAMIC CHARACTER STAGE (Sticks firmly to bottom with zero gap) */}
             <div
               ref={centerCharacterRef}
               onMouseEnter={() => setIsCharHovered(true)}
               onMouseLeave={() => setIsCharHovered(false)}
-              className="absolute inset-0 flex items-end justify-center pointer-events-none lg:pointer-events-auto lg:relative lg:w-[40%] h-full z-10 will-change-transform cursor-pointer group"
+              className="absolute inset-x-0 -bottom-3 sm:-bottom-4 lg:-bottom-6 xl:-bottom-7 flex items-end justify-center pointer-events-none lg:pointer-events-auto z-10 will-change-transform cursor-pointer group"
             >
               {/* Restrained Dynamic Outline Rim Glow */}
               <div
-                className={`absolute inset-x-8 sm:inset-x-12 bottom-0 top-12 rounded-full transition-all duration-700 pointer-events-none blur-3xl ${
+                className={`absolute inset-x-8 sm:inset-x-12 bottom-0 top-12 rounded-full transition-all duration-700 pointer-events-none blur-xl sm:blur-3xl ${
                   activeHover === "right"
                     ? "opacity-60 bg-purple-600/30"
                     : activeHover === "left"
@@ -905,10 +781,10 @@ export default function AccommodationPage() {
                 }`}
               />
 
-              {/* Character Stage Wrapper */}
+              {/* Character Stage Wrapper - Optimum dimensions & flush bottom anchor */}
               <div
                 ref={charImageWrapRef}
-                className="relative w-[210px] sm:w-[320px] lg:w-[480px] xl:w-[560px] 2xl:w-[620px] h-[260px] sm:h-[400px] lg:h-[580px] xl:h-[660px] 2xl:h-[720px] select-none flex items-end justify-center will-change-transform"
+                className="relative w-[190px] sm:w-[260px] md:w-[310px] lg:w-[360px] xl:w-[410px] 2xl:w-[450px] h-[240px] sm:h-[330px] md:h-[390px] lg:h-[440px] xl:h-[490px] 2xl:h-[530px] select-none flex items-end justify-center will-change-transform translate-y-4 sm:translate-y-5 lg:translate-y-7 xl:translate-y-8"
               >
                 {/* 1. DEFAULT STATE: NORMAL CENTERED LELOUCH CHARACTER CUTOUT */}
                 <div
@@ -1042,7 +918,7 @@ export default function AccommodationPage() {
             {/* RIGHT COLUMN: 2 FACILITY CARDS */}
             <div
               ref={rightCardsRef}
-              className="w-[46%] sm:w-[42%] lg:w-[30%] max-w-[420px] flex flex-col gap-2.5 sm:gap-4 lg:gap-5 z-20 will-change-transform lg:self-center"
+              className="w-[46%] sm:w-[42%] lg:w-[30%] max-w-[420px] flex flex-col gap-2.5 sm:gap-4 lg:gap-5 z-20 will-change-transform lg:self-center -translate-y-3 sm:-translate-y-6 lg:-translate-y-8 xl:-translate-y-10"
             >
               {RIGHT_FACILITIES.map((facility) => {
                 const Icon = facility.icon;
@@ -1142,11 +1018,11 @@ export default function AccommodationPage() {
           ref={formPanelRef}
           onClick={(e) => {
             if (e.target === formPanelRef.current) {
-              scrollToStageProgress(0.58);
+              scrollToStageProgress(0);
             }
           }}
           className={`absolute z-30 inset-0 flex items-center justify-center px-3 sm:px-6 lg:px-8 py-4 sm:py-6 will-change-transform ${
-            scrollProgress >= 0.72 ? "pointer-events-auto" : "pointer-events-none opacity-0"
+            scrollProgress >= 0.35 ? "pointer-events-auto" : "pointer-events-none"
           }`}
           style={{ perspective: "1200px" }}
         >
@@ -1160,7 +1036,7 @@ export default function AccommodationPage() {
             <div className="flex sm:hidden flex-col items-center gap-1 pb-2 -mt-1">
               <button
                 type="button"
-                onClick={() => scrollToStageProgress(0.58)}
+                onClick={() => scrollToStageProgress(0)}
                 aria-label="Swipe or tap to return to specifications"
                 className="w-12 h-1 rounded-full bg-white/20 active:bg-[#E61924] transition-colors cursor-pointer"
               />

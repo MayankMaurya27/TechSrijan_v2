@@ -53,6 +53,14 @@ function IconX({ className }: { className?: string }) {
   );
 }
 
+function IconWhatsApp({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24m4.52 11.59c-.25-.12-1.47-.72-1.7-.81-.23-.09-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.06 0 1.21.88 2.39 1 2.56.12.17 1.74 2.66 4.21 3.73.59.25 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.13-.22-.19-.47-.32" />
+    </svg>
+  );
+}
+
 /* Stat Counter with smooth easing */
 function StatCounter({ target, suffix }: { target: number; suffix: string }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -346,10 +354,11 @@ export function AboutView() {
 
                     {/* Centered Imperial Portrait Medallion */}
                     <div
-                      className={`lg:col-span-4 flex flex-col items-center justify-center ${isEven ? "lg:order-2" : "lg:order-1"
-                        }`}
+                      className={`w-full lg:col-span-4 flex flex-col items-center justify-center text-center ${
+                        isEven ? "lg:order-2" : "lg:order-1"
+                      }`}
                     >
-                      <div className="relative group">
+                      <div className="relative group w-full flex flex-col items-center justify-center mx-auto">
                         {/* Ambient Outer Halo */}
                         <div
                           className="absolute -inset-3 rounded-full blur-2xl opacity-40 group-hover:opacity-75 transition-opacity duration-700 pointer-events-none"
@@ -358,7 +367,7 @@ export function AboutView() {
 
                         {/* Dual-Ring Imperial Frame */}
                         <div
-                          className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 rounded-full p-1.5 bg-gradient-to-b from-white/20 via-black to-black/80 border-2 transition-transform duration-500 group-hover:scale-105"
+                          className="relative mx-auto w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 rounded-full p-1.5 bg-gradient-to-b from-white/20 via-black to-black/80 border-2 transition-transform duration-500 group-hover:scale-105"
                           style={{
                             borderColor: patron.accent,
                             boxShadow: `0 0 35px ${patron.accent}55, inset 0 0 20px rgba(0,0,0,0.9)`,
@@ -376,7 +385,7 @@ export function AboutView() {
                         </div>
 
                         {/* Tactical Medallion Badge */}
-                        <div className="mt-3.5 text-center">
+                        <div className="mt-3.5 w-full flex justify-center text-center">
                           <span
                             className="inline-block px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-widest uppercase border bg-black/80 backdrop-blur-md"
                             style={{
@@ -483,7 +492,7 @@ export function AboutView() {
                 >
                   {/* Perfectly Fitted & Centered Circular Avatar (Zero Brochure Artifacts) */}
                   <div
-                    className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-full p-1 mb-4 bg-gradient-to-b from-white/20 via-black to-black border-2 transition-transform duration-500 group-hover:scale-105"
+                    className="relative mx-auto w-32 h-32 sm:w-36 sm:h-36 rounded-full p-1 mb-4 bg-gradient-to-b from-white/20 via-black to-black border-2 transition-transform duration-500 group-hover:scale-105"
                     style={{
                       borderColor: theme.accent,
                       boxShadow: `0 0 25px ${theme.accentGlow}`,
@@ -987,14 +996,19 @@ export function AboutView() {
                 href: "https://www.instagram.com/techsrijan_mmmut",
               },
               {
+                icon: IconWhatsApp,
+                label: "WhatsApp Channel",
+                href: "https://whatsapp.com/channel/0029VbBGctj1Hsq0KeSlRl0G",
+              },
+              {
                 icon: IconLinkedin,
                 label: "LinkedIn",
-                href: "https://www.linkedin.com/school/mmmutgorakhpur",
+                href: "https://www.linkedin.com/company/techsrijan-mmmut/",
               },
               {
                 icon: IconX,
                 label: "X",
-                href: "https://twitter.com/techsrijan_mmmut",
+                href: "https://x.com/TechSrijan_Fest",
               },
             ].map((social) => (
               <a

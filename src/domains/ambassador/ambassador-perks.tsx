@@ -160,25 +160,25 @@ const listContainerVariants: Variants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.15,
+      staggerChildren: 0.04,
+      delayChildren: 0.04,
     },
   },
 };
 
 const rowVariants: Variants = {
-  hidden: { opacity: 0, x: 45 },
+  hidden: { opacity: 0, y: 14 },
   visible: {
     opacity: 1,
-    x: 0,
-    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+    y: 0,
+    transition: { duration: 0.45, ease: "easeOut" },
   },
 };
 
 export function AmbassadorPerks() {
   const t = useAmbassadorTheme();
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.15 });
+  const isInView = useInView(containerRef, { once: true, amount: 0.05, margin: "0px 0px -50px 0px" });
   const [activePerk, setActivePerk] = useState<number>(0);
 
   return (
@@ -210,7 +210,7 @@ export function AmbassadorPerks() {
         </svg>
 
         {/* Ambient Theme Glow behind HUD Cards */}
-        <div className={`absolute top-1/2 right-0 -translate-y-1/2 w-[550px] h-[550px] ${t.perksAtmosphereClass} blur-[150px] rounded-full pointer-events-none transition-colors duration-500`} />
+        <div className={`hidden sm:block absolute top-1/2 right-0 -translate-y-1/2 w-[550px] h-[550px] ${t.perksAtmosphereClass} blur-[150px] rounded-full pointer-events-none transition-colors duration-500`} />
 
         {/* Subtle Sci-Fi Dot Matrix & Reticle Crosshairs */}
         <div

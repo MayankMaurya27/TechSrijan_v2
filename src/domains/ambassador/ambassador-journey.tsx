@@ -47,17 +47,15 @@ export function AmbassadorJourney() {
   const t = useAmbassadorTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.1 });
+  const isInView = useInView(containerRef, { once: true, amount: 0.05, margin: "0px 0px -50px 0px" });
 
   // Scroll-linked glowing laser progress:
-  // Starts when the timeline enters the comfortable view band (65%) and tracks to completion
   const { scrollYProgress } = useScroll({
     target: timelineRef,
-    offset: ["start 65%", "end 65%"],
+    offset: ["start 75%", "end 65%"],
   });
 
   // Snappy, low-mass spring (0.1 mass, 450 stiffness):
-  // Eliminates all CSS transition conflicts and lag, moving the circle in real-time with the scroll
   const smoothProgress = useSpring(scrollYProgress, {
     stiffness: 450,
     damping: 38,
@@ -66,49 +64,6 @@ export function AmbassadorJourney() {
   });
 
   const lineHeight = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
-
-  // Moderated Lenis scroll speed when inside the Journey section for optimal UX
-  useEffect(() => {
-    const section = containerRef.current;
-    if (!section) return;
-
-    const updateLenisSpeed = () => {
-      const lenis = window.__lenis as any;
-      if (!lenis) return;
-
-      const rect = section.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const inView = rect.top < vh * 0.85 && rect.bottom > vh * 0.15;
-
-      if (inView) {
-        // Moderated wheel multiplier (0.55) so the user experiences the journey at a steady, controlled pace
-        if (lenis.options) lenis.options.wheelMultiplier = 0.55;
-        if (lenis.virtualScroll?.options) {
-          lenis.virtualScroll.options.wheelMultiplier = 0.55;
-        }
-      } else {
-        // Restore standard full-speed scrolling outside this section
-        if (lenis.options) lenis.options.wheelMultiplier = 1.05;
-        if (lenis.virtualScroll?.options) {
-          lenis.virtualScroll.options.wheelMultiplier = 1.05;
-        }
-      }
-    };
-
-    window.addEventListener("scroll", updateLenisSpeed, { passive: true });
-    updateLenisSpeed();
-
-    return () => {
-      window.removeEventListener("scroll", updateLenisSpeed);
-      const lenis = window.__lenis as any;
-      if (lenis) {
-        if (lenis.options) lenis.options.wheelMultiplier = 1.05;
-        if (lenis.virtualScroll?.options) {
-          lenis.virtualScroll.options.wheelMultiplier = 1.05;
-        }
-      }
-    };
-  }, []);
 
   return (
     <section
@@ -221,9 +176,9 @@ export function AmbassadorJourney() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{
-                    duration: 0.7,
-                    ease: [0.16, 1, 0.3, 1],
-                    delay: 0.12 * i + 0.15,
+                    duration: 0.45,
+                    ease: "easeOut",
+                    delay: 0.04 * i,
                   }}
                   className={`relative flex flex-col sm:flex-row items-center ${
                     !isEven ? "sm:flex-row-reverse" : ""

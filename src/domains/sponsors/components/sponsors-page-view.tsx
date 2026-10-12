@@ -418,6 +418,7 @@ export function SponsorsPageView() {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [sponsors, setSponsors] = useState<Sponsor[]>(INITIAL_SPONSORS);
   const [activeSponsor, setActiveSponsor] = useState<string>("sp-nova");
 
@@ -453,11 +454,12 @@ export function SponsorsPageView() {
 
   // ─── TRANSITION EYE SIGIL (Image 2 - Fixed overlay on scroll, zero page gap) ───
   // Blackout curtain turns screen pitch black so NO background shows through!
-  const curtainOpacity = useTransform(scrollYProgress, [0.08, 0.14, 0.28, 0.34], [0, 1, 1, 0]);
-  const sigilOpacity = useTransform(scrollYProgress, [0.10, 0.16, 0.26, 0.32], [0, 1, 1, 0]);
-  const sigilScale = useTransform(scrollYProgress, [0.10, 0.20, 0.32], [0.8, 1.15, 1.5]);
-  const sigilRotate = useTransform(scrollYProgress, [0.10, 0.32], [-5, 5]);
-  const sigilBlur = useTransform(scrollYProgress, [0.10, 0.16, 0.27, 0.32], [10, 0, 0, 14]);
+  // Fast & snappy transition window: passes quickly on mobile in 1 flick without lingering lag!
+  const curtainOpacity = useTransform(scrollYProgress, [0.05, 0.08, 0.13, 0.16], [0, 1, 1, 0]);
+  const sigilOpacity = useTransform(scrollYProgress, [0.06, 0.09, 0.12, 0.15], [0, 1, 1, 0]);
+  const sigilScale = useTransform(scrollYProgress, [0.06, 0.11, 0.15], [0.85, 1.15, 1.4]);
+  const sigilRotate = useTransform(scrollYProgress, [0.06, 0.15], [-3, 3]);
+  const sigilBlur = useTransform(scrollYProgress, [0.06, 0.09, 0.12, 0.15], [8, 0, 0, 10]);
   const sigilFilter = useTransform(sigilBlur, (b) => `blur(${b}px)`);
 
   // Robot Incoming Entrance Animation State
@@ -469,6 +471,11 @@ export function SponsorsPageView() {
 
   useEffect(() => {
     setMounted(true);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile, { passive: true });
     const timer = setTimeout(() => {
       setRobotSpawned(true);
     }, 150);
@@ -550,7 +557,7 @@ export function SponsorsPageView() {
           ======================================================== */}
       {mounted && (
         <motion.div
-          className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center overflow-hidden"
+          className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center overflow-hidden will-change-[opacity]"
           style={{
             opacity: curtainOpacity,
           }}
@@ -558,14 +565,20 @@ export function SponsorsPageView() {
           {/* Pure Pitch Black Void Curtain (Hides all background, robot, circles, text completely!) */}
           <div className="absolute inset-0 bg-[#050202]" />
 
-          {/* Ambient Theme Shockwave Glow */}
+          {/* Ambient Theme Shockwave Glow (Desktop: lush blur, Mobile: lightweight radial gradient for 60fps) */}
           <div
-            className="absolute w-[600px] h-[600px] md:w-[900px] md:h-[900px] rounded-full blur-[150px] opacity-40 transition-colors duration-500"
+            className="hidden sm:block absolute w-[600px] h-[600px] md:w-[900px] md:h-[900px] rounded-full blur-[150px] opacity-40 transition-colors duration-500 pointer-events-none"
             style={{ backgroundColor: t.curtainAmbientGlow1 }}
           />
           <div
-            className="absolute w-[350px] h-[350px] md:w-[500px] md:h-[500px] rounded-full blur-[100px] opacity-25 transition-colors duration-500"
+            className="hidden sm:block absolute w-[350px] h-[350px] md:w-[500px] md:h-[500px] rounded-full blur-[100px] opacity-25 transition-colors duration-500 pointer-events-none"
             style={{ backgroundColor: t.curtainAmbientGlow2 }}
+          />
+          <div
+            className="sm:hidden absolute inset-0 pointer-events-none opacity-30"
+            style={{
+              background: `radial-gradient(circle at 50% 50%, ${t.curtainAmbientGlow1} 0%, transparent 70%)`,
+            }}
           />
 
           {/* Central Horizontal Laser Horizon Line */}
@@ -577,14 +590,14 @@ export function SponsorsPageView() {
             }}
           />
 
-          {/* The Geass Red Eye Sigil Artwork (Theme Responsive) */}
+          {/* The Geass Red Eye Sigil Artwork (Theme Responsive & Mobile Optimized) */}
           <motion.div
-            className="relative w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] md:w-[620px] md:h-[620px] select-none"
+            className="relative w-[280px] h-[280px] sm:w-[480px] sm:h-[480px] md:w-[620px] md:h-[620px] select-none will-change-transform"
             style={{
               opacity: sigilOpacity,
               scale: sigilScale,
               rotate: sigilRotate,
-              filter: sigilFilter,
+              filter: isMobile ? undefined : sigilFilter,
             }}
           >
             <picture className="w-full h-full">
@@ -592,7 +605,7 @@ export function SponsorsPageView() {
               <img
                 src={t.sigilImage}
                 alt="Geass Awakening Sigil"
-                className={`w-full h-full object-contain mix-blend-screen ${t.sigilGlowDrop}`}
+                className={`w-full h-full object-contain mix-blend-screen ${isMobile ? "drop-shadow-[0_0_20px_rgba(230,30,37,0.7)]" : t.sigilGlowDrop}`}
                 draggable={false}
               />
             </picture>
@@ -693,7 +706,7 @@ export function SponsorsPageView() {
         {/* Floating Theme Embers */}
         {mounted && (
           <div className="absolute inset-0 z-[12] pointer-events-none overflow-hidden mix-blend-screen">
-            {Array.from({ length: 22 }).map((_, i) => {
+            {Array.from({ length: isMobile ? 6 : 22 }).map((_, i) => {
               const size = (i % 3) + 2;
               const left = (i * 4.3 + 7) % 96;
               const top = (i * 6.1 + 18) % 80;
@@ -708,18 +721,19 @@ export function SponsorsPageView() {
                     left: `${left}%`,
                     top: `${top}%`,
                     backgroundColor: emberColor,
-                    boxShadow: `0 0 10px ${emberColor}`,
+                    boxShadow: `0 0 8px ${emberColor}`,
+                    willChange: "transform, opacity",
                   }}
                   animate={{
-                    y: [0, -30 - (i % 20), 0],
-                    x: [0, i % 2 === 0 ? 6 : -6, 0],
+                    y: [0, -25 - (i % 15), 0],
+                    x: [0, i % 2 === 0 ? 4 : -4, 0],
                     opacity: [0.15, 0.85, 0.15],
                   }}
                   transition={{
-                    duration: 4 + (i % 4),
+                    duration: 4 + (i % 3),
                     repeat: Infinity,
                     ease: "easeInOut",
-                    delay: (i * 0.2) % 3,
+                    delay: (i * 0.2) % 2,
                   }}
                 />
               );
@@ -873,28 +887,33 @@ export function SponsorsPageView() {
             - Tight neon glow with white-hot core and controlled spread
             - Responsive swipe / horizontal scroll on mobile
             ======================================================== */}
-        <div className="relative z-20 w-full px-3 sm:px-6 lg:px-10 pb-12 sm:pb-16 md:pb-20 lg:pb-24 -translate-y-3 sm:-translate-y-4 md:-translate-y-6">
+        <div className="relative z-20 w-full px-1.5 xs:px-2 sm:px-6 lg:px-10 pb-8 sm:pb-16 md:pb-20 lg:pb-24 -translate-y-5 xs:-translate-y-6 sm:-translate-y-4 md:-translate-y-6">
           {/* Subtle Base Dais Shadow */}
-          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[70%] max-w-3xl h-[24px] rounded-[50%] bg-black/80 blur-md pointer-events-none" />
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[90%] sm:w-[70%] max-w-3xl h-[20px] sm:h-[24px] rounded-[50%] bg-black/80 blur-md pointer-events-none" />
 
-          {/* The Circular Pedestals Row */}
-          <div className="flex items-end justify-center gap-2.5 sm:gap-3.5 md:gap-5 lg:gap-6 xl:gap-7 overflow-x-auto py-3 px-2 no-scrollbar">
+          {/* The Circular Pedestals Row - Fits all 5 seamlessly on mobile without horizontal scroll */}
+          <div className="flex items-end justify-center gap-1 xs:gap-1.5 sm:gap-3.5 md:gap-5 lg:gap-6 xl:gap-7 w-full max-w-full overflow-visible py-2 sm:py-3 px-0.5 sm:px-2 no-scrollbar">
             {sponsors.map((sponsor) => {
               const isKing = sponsor.role === "KING";
               const isQueen = sponsor.role === "QUEEN";
               const isRook = sponsor.role === "ROOK";
               const isSelected = activeSponsor === sponsor.id;
 
-              // Size classes based on rank hierarchy (subtle difference as requested)
-              let circleSize = "w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 xl:w-52 xl:h-52";
-              let pieceHeight = "h-16 sm:h-18 md:h-20 lg:h-24 xl:h-28";
+              // Size classes based on rank hierarchy:
+              // Mobile (<sm): compact sizes so all 5 circles fit side-by-side on mobile without horizontal scroll!
+              // Title Partner (King) stands out noticeably elevated at the top!
+              let circleSize = "w-[48px] h-[48px] xs:w-[52px] xs:h-[52px] sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 xl:w-52 xl:h-52";
+              let pieceHeight = "h-7 xs:h-8 sm:h-18 md:h-20 lg:h-24 xl:h-28";
+              let hierarchyOffset = "translate-y-1 sm:translate-y-0"; // Outer tiers sit slightly lower
 
               if (isKing) {
-                circleSize = "w-40 h-40 sm:w-44 sm:h-44 md:w-48 md:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64";
-                pieceHeight = "h-20 sm:h-22 md:h-26 lg:h-30 xl:h-36";
+                circleSize = "w-[72px] h-[72px] xs:w-[78px] xs:h-[78px] sm:w-44 sm:h-44 md:w-48 md:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64";
+                pieceHeight = "h-13 xs:h-15 sm:h-22 md:h-26 lg:h-30 xl:h-36";
+                hierarchyOffset = "-translate-y-3.5 sm:translate-y-0"; // Title Partner elevated noticeably on top!
               } else if (isQueen || isRook) {
-                circleSize = "w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 lg:w-50 lg:h-50 xl:w-56 xl:h-56";
-                pieceHeight = "h-18 sm:h-20 md:h-22 lg:h-26 xl:h-30";
+                circleSize = "w-[56px] h-[56px] xs:w-[60px] xs:h-[60px] sm:w-40 sm:h-40 md:w-44 md:h-44 lg:w-50 lg:h-50 xl:w-56 xl:h-56";
+                pieceHeight = "h-9 xs:h-10 sm:h-20 md:h-22 lg:h-26 xl:h-30";
+                hierarchyOffset = "-translate-y-0.5 sm:translate-y-0"; // Inner flankers slightly stepped
               }
 
               // Tight neon glow with white-hot core and minimal color spread
@@ -910,24 +929,25 @@ export function SponsorsPageView() {
                 <motion.div
                   key={sponsor.id}
                   onClick={() => setActiveSponsor(sponsor.id)}
-                  className={`group relative flex flex-col items-center shrink-0 cursor-pointer transition-transform duration-300 ${isSelected ? "scale-[1.04]" : "hover:scale-[1.02]"
-                    }`}
+                  className={`group relative flex flex-col items-center shrink-0 cursor-pointer transition-transform duration-300 ${hierarchyOffset} ${
+                    isSelected ? "scale-[1.04]" : "hover:scale-[1.02]"
+                  }`}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: sponsor.rankWeight * 0.06 }}
                 >
                   {/* Top: Chess Piece Standing on Rim with Crisp White-Core Neon Outline */}
-                  <div className={`relative ${pieceHeight} flex items-end justify-center -mb-2.5 sm:-mb-3 z-20 transition-transform duration-300 group-hover:-translate-y-1`}>
+                  <div className={`relative ${pieceHeight} flex items-end justify-center -mb-2 sm:-mb-3 z-20 transition-transform duration-300 group-hover:-translate-y-1`}>
                     {/* Subtle, restrained backlight (no wide color spread) */}
                     <div
-                      className="absolute -inset-1 rounded-full blur-[6px] pointer-events-none opacity-30"
+                      className="absolute -inset-1 rounded-full blur-[4px] sm:blur-[6px] pointer-events-none opacity-30"
                       style={{
                         background: `radial-gradient(circle, #FFFFFF 0%, ${sponsor.accent} 60%, transparent 80%)`,
                       }}
                     />
 
                     {/* Dark silhouette contrast backing to preserve intricate piece edge definition */}
-                    <div className="absolute inset-x-2 bottom-1 h-4/5 rounded-full bg-black/80 blur-[4px] pointer-events-none" />
+                    <div className="absolute inset-x-1 sm:inset-x-2 bottom-1 h-4/5 rounded-full bg-black/80 blur-[2px] sm:blur-[4px] pointer-events-none" />
 
                     <picture className="relative z-10 h-full w-auto flex items-end">
                       <source
@@ -955,9 +975,13 @@ export function SponsorsPageView() {
                   </div>
 
                   {/* Ribbon / Pill Tier Badge below Chess Piece with Neon Trim */}
-                  <div className="z-30 -mb-2 sm:-mb-2.5">
+                  <div className="z-30 -mb-1.5 sm:-mb-2.5">
                     <div
-                      className="px-2.5 sm:px-3 py-0.5 rounded-full border text-[7.5px] sm:text-[8.5px] md:text-[9.5px] font-mono font-bold tracking-[0.2em] uppercase backdrop-blur-md transition-all duration-300 whitespace-nowrap"
+                      className={`px-1 xs:px-1.5 sm:px-3 py-0.5 rounded-full border ${
+                        isKing
+                          ? "text-[6px] xs:text-[6.5px] sm:text-[8.5px] md:text-[9.5px]"
+                          : "text-[5px] xs:text-[5.5px] sm:text-[8px] md:text-[9px]"
+                      } font-mono font-bold tracking-tight sm:tracking-[0.2em] uppercase backdrop-blur-sm sm:backdrop-blur-md transition-all duration-300 whitespace-nowrap`}
                       style={{
                         background: "rgba(8, 6, 6, 0.95)",
                         color: "#FFFFFF",
@@ -965,13 +989,28 @@ export function SponsorsPageView() {
                         boxShadow: `0 0 2px #FFFFFF, 0 0 6px ${sponsor.accent}`,
                       }}
                     >
-                      {sponsor.tier}
+                      <span className="sm:hidden">
+                        {isKing
+                          ? "TITLE PARTNER"
+                          : sponsor.tier === "Associate Partner"
+                          ? "ASSOCIATE"
+                          : sponsor.tier === "Supporting Partner"
+                          ? "SUPPORT"
+                          : sponsor.tier === "Gold Partner"
+                          ? "GOLD"
+                          : sponsor.tier === "Silver Partner"
+                          ? "SILVER"
+                          : sponsor.tier}
+                      </span>
+                      <span className="hidden sm:inline">
+                        {sponsor.tier}
+                      </span>
                     </div>
                   </div>
 
                   {/* Main Circular Pedestal / Medallion with Crisp White-Core Neon Border */}
                   <div
-                    className={`relative ${circleSize} rounded-full flex flex-col items-center justify-center p-2.5 sm:p-4 select-none transition-all duration-500 overflow-hidden`}
+                    className={`relative ${circleSize} rounded-full flex flex-col items-center justify-center p-1 xs:p-1.5 sm:p-4 select-none transition-all duration-500 overflow-hidden`}
                     style={{
                       background:
                         "radial-gradient(circle at 50% 35%, rgba(24, 20, 18, 0.98) 0%, rgba(10, 8, 8, 1) 60%, rgba(3, 2, 2, 1) 100%)",
@@ -989,18 +1028,18 @@ export function SponsorsPageView() {
 
                     {/* Inset Subtle Rim */}
                     <div
-                      className="absolute inset-[3px] sm:inset-[4px] rounded-full pointer-events-none border border-white/20"
+                      className="absolute inset-[2px] sm:inset-[4px] rounded-full pointer-events-none border border-white/20"
                     />
 
-                    {/* Faint Concentric Inlay Circles */}
-                    <div className="absolute inset-3 rounded-full border border-white/5 pointer-events-none" />
-                    <div className="absolute inset-6 rounded-full border border-white/5 pointer-events-none" />
+                    {/* Faint Concentric Inlay Circles (Kept on desktop, hidden on tiny mobile circles) */}
+                    <div className="hidden sm:block absolute inset-3 rounded-full border border-white/5 pointer-events-none" />
+                    <div className="hidden sm:block absolute inset-6 rounded-full border border-white/5 pointer-events-none" />
 
                     {/* Inner Brand Logo & Name */}
-                    <div className="relative z-10 flex flex-col items-center justify-center text-center px-1">
+                    <div className="relative z-10 flex flex-col items-center justify-center text-center px-0.5 sm:px-1">
                       {/* Logo Graphic with clean subtle rim */}
                       <div
-                        className="mb-1 sm:mb-1.5 transition-transform duration-300 group-hover:scale-110"
+                        className="mb-0.5 sm:mb-1.5 transition-transform duration-300 group-hover:scale-110"
                         style={{
                           filter: `drop-shadow(0 0 4px ${sponsor.accent})`,
                         }}
@@ -1009,18 +1048,23 @@ export function SponsorsPageView() {
                           type={sponsor.logoType}
                           className={
                             isKing
-                              ? "w-7 h-7 sm:w-9 sm:h-9"
-                              : "w-5 h-5 sm:w-7 sm:h-7"
+                              ? "w-4 h-4 xs:w-5 xs:h-5 sm:w-9 sm:h-9"
+                              : isQueen || isRook
+                              ? "w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-7 sm:h-7"
+                              : "w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-6 sm:h-6"
                           }
                         />
                       </div>
 
                       {/* Brand Name */}
                       <span
-                        className={`font-mono font-bold tracking-wider uppercase leading-tight ${isKing
-                            ? "text-[11px] sm:text-xs md:text-sm text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]"
-                            : "text-[9px] sm:text-[10px] md:text-xs text-neutral-200"
-                          }`}
+                        className={`font-mono font-bold tracking-tight xs:tracking-wider uppercase leading-tight line-clamp-2 ${
+                          isKing
+                            ? "text-[7px] xs:text-[7.5px] sm:text-xs md:text-sm text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]"
+                            : isQueen || isRook
+                            ? "text-[5.5px] xs:text-[6px] sm:text-[10px] md:text-xs text-neutral-200"
+                            : "text-[5px] xs:text-[5.5px] sm:text-[9px] md:text-xs text-neutral-300"
+                        }`}
                       >
                         {sponsor.name}
                       </span>
@@ -1028,7 +1072,7 @@ export function SponsorsPageView() {
 
                     {/* Bottom Rim Highlight */}
                     <div
-                      className="absolute bottom-1 inset-x-4 h-[1px] pointer-events-none"
+                      className="absolute bottom-0.5 sm:bottom-1 inset-x-2 sm:inset-x-4 h-[1px] pointer-events-none"
                       style={{
                         background: `linear-gradient(90deg, transparent, ${sponsor.accent}60, transparent)`,
                       }}
@@ -1037,7 +1081,7 @@ export function SponsorsPageView() {
 
                   {/* Ground Base Subtle Contact Shadow */}
                   <div
-                    className="w-[65%] h-1.5 rounded-[50%] bg-black/90 blur-[2px] mt-1 pointer-events-none"
+                    className="w-[65%] h-1 sm:h-1.5 rounded-[50%] bg-black/90 blur-[2px] mt-0.5 sm:mt-1 pointer-events-none"
                     style={{
                       boxShadow: `0 0 6px ${sponsor.accent}30`,
                     }}
@@ -1082,9 +1126,9 @@ export function SponsorsPageView() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#050202] via-[#050202]/85 to-[#050202] pointer-events-none" />
         <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#050202]/40 to-[#050202]/95 pointer-events-none" />
 
-        {/* Ambient Theme Light Glow in Center */}
+        {/* Ambient Theme Light Glow in Center (Desktop only to prevent mobile overdraw) */}
         <div
-          className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] blur-[160px] opacity-15 pointer-events-none transition-colors duration-500"
+          className="hidden sm:block absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] blur-[160px] opacity-15 pointer-events-none transition-colors duration-500"
           style={{ backgroundColor: t.accent }}
         />
 
@@ -1136,7 +1180,7 @@ export function SponsorsPageView() {
             {PARTNERSHIP_COLUMNS.map((col) => (
               <div
                 key={col.title}
-                className={`group relative rounded-none sm:rounded-sm border border-white/10 bg-black/50 p-6 sm:p-7 backdrop-blur-md ${t.cardHoverBorder} transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.6)] flex flex-col justify-between`}
+                className={`group relative rounded-none sm:rounded-sm border border-white/10 bg-black/85 sm:bg-black/50 p-6 sm:p-7 backdrop-blur-none sm:backdrop-blur-md ${t.cardHoverBorder} transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.6)] flex flex-col justify-between`}
               >
                 <div>
                   {/* Column Header */}
@@ -1239,9 +1283,9 @@ export function SponsorsPageView() {
           Beautified on-page communication hub for direct contact
           ======================================================== */}
       <section id="liaisons" className="relative z-30 bg-[#070303] py-20 px-6 sm:px-10 lg:px-16 border-t border-white/5 overflow-hidden">
-        {/* Ambient Theme Light Glow in Background */}
+        {/* Ambient Theme Light Glow in Background (Desktop only) */}
         <div
-          className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] blur-[160px] opacity-15 pointer-events-none transition-colors duration-500"
+          className="hidden sm:block absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] blur-[160px] opacity-15 pointer-events-none transition-colors duration-500"
           style={{ backgroundColor: t.accent }}
         />
 
@@ -1267,7 +1311,7 @@ export function SponsorsPageView() {
             {CONTACTS.map((c, i) => (
               <div
                 key={i}
-                className={`relative rounded-xl border ${t.liaisonsCardBorder} bg-gradient-to-b ${t.liaisonsCardBg} p-6 backdrop-blur-md ${t.liaisonsCardHoverBorder} transition-all duration-300 group flex flex-col justify-between`}
+                className={`relative rounded-xl border ${t.liaisonsCardBorder} bg-gradient-to-b ${t.liaisonsCardBg} p-6 backdrop-blur-none sm:backdrop-blur-md ${t.liaisonsCardHoverBorder} transition-all duration-300 group flex flex-col justify-between`}
               >
                 {/* Card Top */}
                 <div>

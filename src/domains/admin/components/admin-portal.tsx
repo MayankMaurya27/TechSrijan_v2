@@ -1,48 +1,63 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  CreditCard,
   Trophy,
   Hotel,
   Users,
   Handshake,
-  ShieldAlert,
-  Loader2,
+  KeyRound,
+  Sliders,
   LogOut,
-  AlertTriangle,
+  Loader2,
+  AlertCircle,
+  ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "@/core/providers/auth-provider";
 import { Button } from "@/shared";
 import Link from "next/link";
-import { AdminPaymentsView } from "./admin-payments-view";
 import { AdminEventsView } from "./admin-events-view";
 import { AdminStayView } from "./admin-stay-view";
 import { AdminAmbassadorsView } from "./admin-ambassadors-view";
 import { AdminSponsorsView } from "./admin-sponsors-view";
+import { AdminTogglesView } from "./admin-toggles-view";
+import { AdminCredentialsView } from "./admin-credentials-view";
 
-export type AdminTab = "payments" | "events" | "stay" | "ambassadors" | "sponsors";
+export type AdminTab =
+  | "events"
+  | "sponsors"
+  | "ambassadors"
+  | "stay"
+  | "toggles"
+  | "credentials";
 
 interface AdminPortalProps {
   initialTab?: AdminTab;
 }
 
-export function AdminPortal({ initialTab = "payments" }: AdminPortalProps) {
+export function AdminPortal({ initialTab = "events" }: AdminPortalProps) {
   const { user, logout, isLoading: isAuthLoading } = useAuth();
-  const [activeTab, setActiveTab] = useState<AdminTab>(initialTab);
 
-  const isAdmin =
-    user?.role === "ADMIN" ||
-    user?.role === "SUPER_ADMIN" ||
-    user?.role === "BOSS";
+  const isClubAdmin = user?.role === "ADMIN";
+  const isHigherAdmin = user?.role === "SUPER_ADMIN";
+  const isBossAdmin = user?.role === "BOSS";
+  const isAdmin = isClubAdmin || isHigherAdmin || isBossAdmin;
+
+  // Club admins only have access to "events"
+  const defaultTab = isClubAdmin ? "events" : initialTab === "credentials" && !isBossAdmin ? "events" : initialTab;
+  const [activeTab, setActiveTab] = useState<AdminTab>(defaultTab);
+
+  useEffect(() => {
+    if (isClubAdmin && activeTab !== "events") {
+      setActiveTab("events");
+    }
+  }, [isClubAdmin, activeTab]);
 
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen pt-32 px-6 flex flex-col items-center justify-center font-mono">
-        <Loader2 className="w-10 h-10 text-[var(--accent-primary)] animate-spin mb-4" />
-        <p className="text-xs tracking-[0.3em] uppercase text-[var(--text-muted)]">
-          CHECKING HIGH COMMAND CREDENTIALS...
-        </p>
+      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-zinc-950 text-zinc-400">
+        <Loader2 className="w-8 h-8 text-amber-500 animate-spin mb-3" />
+        <p className="text-xs">Verifying administrator credentials...</p>
       </div>
     );
   }
@@ -56,30 +71,33 @@ export function AdminPortal({ initialTab = "payments" }: AdminPortalProps) {
   }
 
   return (
-    <div className="min-h-screen pt-24 px-4 sm:px-6 lg:px-12 mx-auto max-w-7xl font-mono pb-24">
-      {/* HIGH COMMAND HEADER & ADMIN IDENTITY STRIP */}
-      <div className="border-b border-[var(--border)] pb-6 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="w-full min-h-screen bg-zinc-950 text-zinc-100 p-4 sm:p-6 lg:p-8 font-sans">
+      {/* TOP HEADER STRIP */}
+      <header className="w-full pb-6 mb-6 border-b border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] tracking-[0.3em] text-[var(--accent-primary)] uppercase font-semibold">
-              APEX DIRECTIVE · CENTRAL COMMAND
+          <div className="flex items-center gap-2 mb-1">
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            <span className="text-[11px] font-semibold tracking-wider text-amber-400 uppercase">
+              TechSrijan &apos;27
             </span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-[var(--text-primary)] uppercase tracking-tight">
-            ADMIN COMMAND PORTAL
-          </h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-zinc-100">Admin Portal</h1>
         </div>
 
-        {/* LOGGED IN ADMIN IDENTITY BADGE */}
+        {/* LOGGED IN USER BADGE & LOGOUT */}
         <div className="flex items-center gap-3">
-          <div className="px-3.5 py-2 rounded border border-[var(--border)] bg-[var(--surface)] text-right">
-            <div className="text-xs font-bold text-[var(--text-primary)] uppercase">
-              {user.name}
-            </div>
-            <div className="text-[9px] tracking-wider text-[var(--accent-primary)] font-semibold uppercase flex items-center justify-end gap-1.5 mt-0.5">
-              <span>{user.role}</span>
-              {user.club && <span>• {user.club} CELL</span>}
+          <div className="px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-right">
+            <div className="text-xs font-semibold text-zinc-200">{user.name}</div>
+            <div className="text-[10px] text-zinc-400 font-medium">
+              {isBossAdmin ? (
+                <span className="text-red-400 font-semibold">Boss Admin</span>
+              ) : isHigherAdmin ? (
+                <span className="text-amber-400 font-semibold">Higher Admin</span>
+              ) : (
+                <span className="text-blue-400 font-semibold">
+                  Club Admin ({user.club || "Club"})
+                </span>
+              )}
             </div>
           </div>
 
@@ -87,56 +105,68 @@ export function AdminPortal({ initialTab = "payments" }: AdminPortalProps) {
             variant="outline"
             size="sm"
             onClick={logout}
-            className="text-xs text-red-400 border-red-500/30 hover:bg-red-500/10 hover:border-red-400"
+            className="text-xs border-zinc-800 hover:bg-zinc-900 text-red-400 hover:text-red-300"
           >
             <LogOut className="mr-1.5 h-3.5 w-3.5" />
-            <span>LOGOUT</span>
+            Log Out
           </Button>
         </div>
-      </div>
+      </header>
 
-      {/* COMMAND SUITE TAB SWITCHER */}
-      <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto border-b border-[var(--border)] pb-4 mb-8 select-none">
-        <TabButton
-          icon={CreditCard}
-          label="Ledger & Payments"
-          active={activeTab === "payments"}
-          onClick={() => setActiveTab("payments")}
-        />
-        <TabButton
-          icon={Trophy}
-          label="Events & Podium"
-          active={activeTab === "events"}
-          onClick={() => setActiveTab("events")}
-        />
-        <TabButton
-          icon={Hotel}
-          label="Hostel & Stay"
-          active={activeTab === "stay"}
-          onClick={() => setActiveTab("stay")}
-        />
-        <TabButton
-          icon={Users}
-          label="Ambassadors"
-          active={activeTab === "ambassadors"}
-          onClick={() => setActiveTab("ambassadors")}
-        />
-        <TabButton
-          icon={Handshake}
-          label="Sponsors"
-          active={activeTab === "sponsors"}
-          onClick={() => setActiveTab("sponsors")}
-        />
-      </div>
+      {/* NAVIGATION TABS */}
+      {/* For Club Admin, only Events tab exists */}
+      {!isClubAdmin && (
+        <nav className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 border-b border-zinc-800">
+          <TabButton
+            icon={Trophy}
+            label="Events"
+            active={activeTab === "events"}
+            onClick={() => setActiveTab("events")}
+          />
+          <TabButton
+            icon={Handshake}
+            label="Sponsors"
+            active={activeTab === "sponsors"}
+            onClick={() => setActiveTab("sponsors")}
+          />
+          <TabButton
+            icon={Users}
+            label="Campus Ambassadors"
+            active={activeTab === "ambassadors"}
+            onClick={() => setActiveTab("ambassadors")}
+          />
+          <TabButton
+            icon={Hotel}
+            label="Accommodation"
+            active={activeTab === "stay"}
+            onClick={() => setActiveTab("stay")}
+          />
+          <TabButton
+            icon={Sliders}
+            label="Permissions & Toggles"
+            active={activeTab === "toggles"}
+            onClick={() => setActiveTab("toggles")}
+          />
+          {isBossAdmin && (
+            <TabButton
+              icon={KeyRound}
+              label="Admin Credentials"
+              active={activeTab === "credentials"}
+              onClick={() => setActiveTab("credentials")}
+            />
+          )}
+        </nav>
+      )}
 
-      {/* ACTIVE SUITE VIEW */}
-      <div>
-        {activeTab === "payments" && <AdminPaymentsView />}
+      {/* ACTIVE VIEW (FULL WIDTH) */}
+      <main className="w-full">
         {activeTab === "events" && <AdminEventsView />}
-        {activeTab === "stay" && <AdminStayView />}
-        {activeTab === "ambassadors" && <AdminAmbassadorsView />}
-        {activeTab === "sponsors" && <AdminSponsorsView />}
-      </div>
+        {activeTab === "sponsors" && !isClubAdmin && <AdminSponsorsView />}
+        {activeTab === "ambassadors" && !isClubAdmin && <AdminAmbassadorsView />}
+        {activeTab === "stay" && !isClubAdmin && <AdminStayView />}
+        {activeTab === "toggles" && !isClubAdmin && <AdminTogglesView />}
+        {activeTab === "credentials" && isBossAdmin && <AdminCredentialsView />}
+      </main>
     </div>
   );
 }
@@ -156,10 +186,10 @@ function TabButton({
     <button
       type="button"
       onClick={onClick}
-      className={`px-3.5 py-2 rounded-lg text-xs font-bold tracking-wider uppercase whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer ${
+      className={`px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap flex items-center gap-2 transition-colors cursor-pointer ${
         active
-          ? "bg-[var(--accent-primary)] text-black shadow-[0_0_15px_rgba(212,168,67,0.35)]"
-          : "border border-[var(--border)] text-[var(--text-secondary)] hover:text-white hover:border-[var(--accent-primary)]/40 hover:bg-white/[0.02]"
+          ? "bg-amber-500 text-black font-bold shadow-sm"
+          : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800"
       }`}
     >
       <Icon className="h-3.5 w-3.5" />
@@ -179,7 +209,7 @@ function AdminSignInView() {
     e.preventDefault();
     setError(null);
     if (!identifier.trim() || !password) {
-      setError("Please provide both administrator identifier and passphrase.");
+      setError("Please provide both roll number / email and password.");
       return;
     }
 
@@ -190,86 +220,73 @@ function AdminSignInView() {
         password,
       });
     } catch (err: any) {
-      setError(err?.message || "Authentication failed. High Command administrative clearance required.");
+      setError(err?.message || "Invalid credentials or unauthorized.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-20 px-6 flex flex-col items-center justify-center font-mono">
-      <div className="w-full max-w-md mx-auto border border-[var(--border)] bg-[var(--surface)] p-8 rounded-lg shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--geass-crimson)] via-[var(--accent-primary)] to-[var(--geass-crimson)]" />
-
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2.5 rounded bg-[var(--geass-crimson)]/10 border border-[var(--geass-crimson)]/30 text-[var(--geass-crimson)]">
-            <ShieldAlert className="w-6 h-6 animate-pulse" />
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-zinc-950 text-zinc-100 font-sans">
+      <div className="w-full max-w-sm rounded-xl border border-zinc-800 bg-zinc-900 p-6 sm:p-8 shadow-xl">
+        <div className="mb-6 text-center">
+          <div className="mx-auto w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 mb-3">
+            <ShieldCheck className="w-5 h-5" />
           </div>
-          <div>
-            <span className="text-[10px] tracking-[0.3em] uppercase text-[var(--accent-primary)] font-semibold block">
-              RESTRICTED APEX TERMINAL
-            </span>
-            <h1 className="text-xl font-black uppercase text-[var(--text-primary)] tracking-tight">
-              ADMIN COMMAND PORTAL
-            </h1>
-          </div>
+          <h1 className="text-xl font-bold text-zinc-100">Admin Sign In</h1>
+          <p className="text-xs text-zinc-400 mt-1">
+            Access portal using your official roll number or admin email.
+          </p>
         </div>
 
-        <p className="text-xs text-[var(--text-muted)] mb-6 leading-relaxed">
-          Authorized personnel only. Authenticate using your university administrator roll number or official directorate email.
-        </p>
-
         {error && (
-          <div className="mb-6 p-3.5 rounded border border-[var(--geass-crimson)]/50 bg-[var(--geass-crimson)]/10 text-xs text-[var(--geass-crimson)] flex items-start gap-2.5">
-            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+          <div className="mb-4 p-3 rounded-lg border border-red-800/60 bg-red-950/40 text-xs text-red-300 flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="block text-[10px] tracking-widest uppercase text-[var(--text-secondary)] mb-2 font-semibold">
-              OFFICIAL IDENTIFIER (ROLL NO / EMAIL)
+            <label className="block text-zinc-300 font-medium mb-1.5">
+              Roll Number or Admin Email
             </label>
             <input
               type="text"
               required
               autoComplete="username"
-              placeholder="e.g. 2027DIR001 or admin@techsrijan.org"
+              placeholder="e.g. admin@techsrijan.org"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              className="h-11 w-full rounded border border-[var(--border)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)]/50 focus:border-[var(--accent-primary)] focus:outline-none"
+              className="h-10 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[10px] tracking-widest uppercase text-[var(--text-secondary)] mb-2 font-semibold">
-              PASSPHRASE
-            </label>
+            <label className="block text-zinc-300 font-medium mb-1.5">Password</label>
             <input
               type="password"
               required
               autoComplete="current-password"
-              placeholder="••••••••••••••••"
+              placeholder="••••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-11 w-full rounded border border-[var(--border)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)]/50 focus:border-[var(--accent-primary)] focus:outline-none"
+              className="h-10 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <Button
             type="submit"
-            variant="default"
             disabled={loading}
-            className="w-full h-11 mt-2 text-xs font-bold tracking-wider uppercase bg-[var(--geass-crimson)] hover:bg-[var(--geass-crimson)]/90 text-white"
+            className="w-full h-10 mt-2 bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                VERIFYING CLEARANCE...
+                Signing In...
               </span>
             ) : (
-              "AUTHENTICATE DIRECTIVE"
+              "Sign In"
             )}
           </Button>
         </form>
@@ -286,36 +303,33 @@ function NonAdminRestrictedView({
   onLogout: () => void;
 }) {
   return (
-    <div className="min-h-screen pt-32 pb-20 px-6 flex flex-col items-center justify-center font-mono">
-      <div className="w-full max-w-md mx-auto border border-[var(--geass-crimson)] bg-[var(--surface)] p-8 rounded-lg shadow-2xl text-center mecha-bracket">
-        <div className="mx-auto w-12 h-12 rounded-full bg-[var(--geass-crimson)]/10 border border-[var(--geass-crimson)]/30 flex items-center justify-center text-[var(--geass-crimson)] mb-4">
-          <ShieldAlert className="w-6 h-6 animate-pulse" />
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-zinc-950 text-zinc-100 font-sans">
+      <div className="w-full max-w-sm rounded-xl border border-zinc-800 bg-zinc-900 p-6 sm:p-8 text-center shadow-xl space-y-4">
+        <div className="mx-auto w-12 h-12 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400">
+          <AlertCircle className="w-6 h-6" />
         </div>
 
-        <h2 className="text-lg font-black uppercase text-[var(--text-primary)] tracking-wide mb-2">
-          INSUFFICIENT SECURITY CLEARANCE
-        </h2>
+        <div>
+          <h2 className="text-lg font-bold text-zinc-100">Access Restricted</h2>
+          <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
+            You are signed in as <span className="text-zinc-200">{user.email}</span>, which does not
+            have administrator clearance.
+          </p>
+        </div>
 
-        <p className="text-xs text-[var(--text-muted)] mb-6 leading-relaxed">
-          Your authenticated identity (
-          <span className="text-[var(--text-primary)]">{user.email}</span>) holds role{" "}
-          <strong className="text-[var(--geass-crimson)]">[{user.role}]</strong>. Only designated
-          coordinators, club admins, and directorship can enter the Apex Terminal.
-        </p>
-
-        <div className="flex flex-col gap-3">
-          <Link href="/profile">
-            <Button variant="outline" size="sm" className="w-full text-xs">
-              <span>RETURN TO STUDENT DOSSIER</span>
+        <div className="space-y-2 pt-2">
+          <Link href="/profile" className="block w-full">
+            <Button variant="outline" size="sm" className="w-full text-xs border-zinc-700">
+              Go to Student Profile
             </Button>
           </Link>
           <Button
-            variant="danger"
+            variant="outline"
             size="sm"
             onClick={onLogout}
-            className="w-full text-xs"
+            className="w-full text-xs border-red-900/40 text-red-400 hover:bg-red-950/30"
           >
-            <span>DISENGAGE SESSION</span>
+            Log Out
           </Button>
         </div>
       </div>

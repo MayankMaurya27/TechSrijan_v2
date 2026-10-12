@@ -17,14 +17,14 @@ export function AdminStayView() {
     setError(null);
     try {
       const [invData, bookingsData] = await Promise.all([
-        api.stay.getInventory(),
+        api.stay.getInventory().catch(() => []),
         api.admin.stay.listBookings().catch(() => []),
       ]);
       setInventory(Array.isArray(invData) ? invData : []);
       setBookings(Array.isArray(bookingsData) ? bookingsData : []);
     } catch (err: any) {
       console.error("Failed to load stay data:", err);
-      setError(err?.message || "Failed to load stay inventory from hostel registry.");
+      setError(err?.message || "Failed to load accommodation data.");
     } finally {
       setLoading(false);
     }
@@ -49,153 +49,144 @@ export function AdminStayView() {
   });
 
   return (
-    <div className="space-y-8 font-mono">
+    <div className="w-full space-y-6">
       {/* HEADER */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[var(--border)] pb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <span className="text-[10px] tracking-[0.25em] text-[var(--accent-primary)] uppercase font-semibold">
-            CAMPUS RESIDENCE & LOGISTICS
-          </span>
-          <h2 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] uppercase tracking-tight">
-            HOSTEL ACCOMMODATION & STAY ROSTER
-          </h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-zinc-100">Accommodation & Stay</h2>
+          <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+            Higher & Boss Admin: Monitor campus hostel capacity and guest bookings.
+          </p>
         </div>
 
-        <Button variant="outline" size="sm" onClick={fetchData} disabled={loading} className="text-xs">
-          <RefreshCw className={`mr-2 h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
-          <span>SYNC HOSTELS</span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={fetchData}
+          disabled={loading}
+          className="text-xs border-zinc-700 hover:bg-zinc-800 text-zinc-200"
+        >
+          <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+          Refresh
         </Button>
       </div>
 
       {error && (
-        <div className="p-4 rounded border border-[var(--geass-crimson)]/50 bg-[var(--geass-crimson)]/10 text-xs text-[var(--geass-crimson)] flex items-center justify-between">
+        <div className="p-4 rounded-lg bg-red-950/40 border border-red-800/60 text-red-300 text-xs flex items-center justify-between">
           <span>{error}</span>
-          <Button variant="outline" size="sm" onClick={fetchData} className="text-[10px]">
-            <span>RETRY</span>
+          <Button variant="outline" size="sm" onClick={fetchData} className="text-xs">
+            Retry
           </Button>
         </div>
       )}
 
-      {/* INVENTORY METRIC CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* BOYS HOSTEL */}
-        <div className="mecha-bracket border border-[var(--border)] bg-[var(--surface)] p-5 rounded">
-          <div className="text-[10px] text-[var(--text-muted)] tracking-widest uppercase flex items-center justify-between">
-            <span>BOYS HOSTEL BEDS</span>
-            <BedDouble className="h-4 w-4 text-blue-400" />
+      {/* INVENTORY / HOSTEL CAPACITY CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm">
+          <div className="text-[11px] text-zinc-400 uppercase font-semibold">Total Bookings</div>
+          <div className="text-2xl font-bold text-zinc-100 mt-1">{bookings.length}</div>
+          <div className="text-[11px] text-zinc-500 mt-1">Festival guests registered</div>
+        </div>
+
+        <div className="p-4 rounded-xl border border-blue-900/30 bg-blue-950/10 shadow-sm">
+          <div className="text-[11px] text-blue-400 uppercase font-semibold">Boys Hostel</div>
+          <div className="text-2xl font-bold text-zinc-100 mt-1">
+            {boysTier ? `${boysTier.totalCapacity - boysTier.availableBeds} / ${boysTier.totalCapacity}` : "Active"}
           </div>
-          <div className="mt-2 text-2xl font-black text-[var(--text-primary)]">
-            {boysTier ? boysTier.totalCapacity - boysTier.confirmedCount : 0} Available
-          </div>
-          <div className="mt-1 text-[9px] text-[var(--text-secondary)]">
-            Total Capacity: {boysTier?.totalCapacity || 0} Beds
+          <div className="text-[11px] text-zinc-400 mt-1">
+            {boysTier?.availableBeds || 0} beds remaining
           </div>
         </div>
 
-        {/* GIRLS HOSTEL */}
-        <div className="mecha-bracket border border-[var(--border)] bg-[var(--surface)] p-5 rounded">
-          <div className="text-[10px] text-[var(--text-muted)] tracking-widest uppercase flex items-center justify-between">
-            <span>GIRLS HOSTEL BEDS</span>
-            <BedDouble className="h-4 w-4 text-purple-400" />
+        <div className="p-4 rounded-xl border border-purple-900/30 bg-purple-950/10 shadow-sm">
+          <div className="text-[11px] text-purple-400 uppercase font-semibold">Girls Hostel</div>
+          <div className="text-2xl font-bold text-zinc-100 mt-1">
+            {girlsTier ? `${girlsTier.totalCapacity - girlsTier.availableBeds} / ${girlsTier.totalCapacity}` : "Active"}
           </div>
-          <div className="mt-2 text-2xl font-black text-[var(--text-primary)]">
-            {girlsTier ? girlsTier.totalCapacity - girlsTier.confirmedCount : 0} Available
-          </div>
-          <div className="mt-1 text-[9px] text-[var(--text-secondary)]">
-            Total Capacity: {girlsTier?.totalCapacity || 0} Beds
-          </div>
-        </div>
-
-        {/* CONFIRMED GUESTS */}
-        <div className="mecha-bracket border border-[var(--border)] bg-[var(--surface)] p-5 rounded">
-          <div className="text-[10px] text-[var(--text-muted)] tracking-widest uppercase flex items-center justify-between">
-            <span>CONFIRMED GUESTS</span>
-            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-          </div>
-          <div className="mt-2 text-2xl font-black text-emerald-400">
-            {(boysTier?.confirmedCount || 0) + (girlsTier?.confirmedCount || 0)}
-          </div>
-          <div className="mt-1 text-[9px] text-[var(--text-secondary)]">
-            ACCOMMODATION ISSUED
-          </div>
-        </div>
-
-        {/* TOTAL STAY BOOKINGS */}
-        <div className="mecha-bracket border border-[var(--border)] bg-[var(--surface)] p-5 rounded">
-          <div className="text-[10px] text-[var(--text-muted)] tracking-widest uppercase flex items-center justify-between">
-            <span>TOTAL BOOKING FILES</span>
-            <Hotel className="h-4 w-4 text-[var(--accent-primary)]" />
-          </div>
-          <div className="mt-2 text-2xl font-black text-[var(--accent-primary)]">
-            {bookings.length}
-          </div>
-          <div className="mt-1 text-[9px] text-[var(--text-secondary)]">
-            LEDGER REGISTRATIONS
+          <div className="text-[11px] text-zinc-400 mt-1">
+            {girlsTier?.availableBeds || 0} beds remaining
           </div>
         </div>
       </div>
 
-      {/* BOOKINGS ROSTER TABLE */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between gap-4">
-          <div className="relative max-w-md flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
-            <input
-              type="text"
-              placeholder="Search by participant, email, college, or booking ID..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="h-10 w-full pl-10 pr-4 rounded bg-[var(--bg-primary)] border border-[var(--border)] text-xs text-[var(--text-primary)] focus:border-[var(--accent-primary)] focus:outline-none"
-            />
-          </div>
-        </div>
+      {/* SEARCH INPUT */}
+      <div className="relative max-w-md">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+        <input
+          type="text"
+          placeholder="Search by guest name, college, email, or booking ID..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full h-10 pl-10 pr-4 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-100 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
+        />
+      </div>
 
-        {loading ? (
-          <div className="py-16 flex flex-col items-center justify-center">
-            <Loader2 className="h-8 w-8 text-[var(--accent-primary)] animate-spin mb-3" />
-            <span className="text-xs text-[var(--text-muted)] uppercase">LOADING STAY ROSTER...</span>
-          </div>
-        ) : filteredBookings.length === 0 ? (
-          <div className="p-10 rounded border border-[var(--border)] bg-[var(--surface)] text-center text-xs text-[var(--text-muted)]">
-            NO STAY BOOKINGS FOUND IN REGISTRY.
-          </div>
-        ) : (
-          <div className="overflow-x-auto rounded border border-[var(--border)] bg-[var(--surface)]">
+      {/* BOOKINGS TABLE */}
+      {loading ? (
+        <div className="py-20 flex flex-col items-center justify-center text-zinc-400">
+          <Loader2 className="h-8 w-8 text-amber-500 animate-spin mb-3" />
+          <p className="text-xs">Loading hostel bookings...</p>
+        </div>
+      ) : filteredBookings.length === 0 ? (
+        <div className="p-12 text-center rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-sm">
+          No accommodation bookings found.
+        </div>
+      ) : (
+        <div className="w-full overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm">
+          <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-[var(--border)] text-[10px] uppercase text-[var(--text-muted)] tracking-wider">
-                  <th className="py-3 px-4">Booking Ref</th>
-                  <th className="py-3 px-4">Guest Name</th>
-                  <th className="py-3 px-4">Institution</th>
-                  <th className="py-3 px-4">Gender</th>
-                  <th className="py-3 px-4">Mobile</th>
-                  <th className="py-3 px-4">Status</th>
+              <thead className="bg-zinc-900 border-b border-zinc-800 text-zinc-400 uppercase text-[11px] font-semibold tracking-wider">
+                <tr>
+                  <th className="py-3.5 px-4">Guest Name</th>
+                  <th className="py-3.5 px-4">College</th>
+                  <th className="py-3.5 px-4">Gender</th>
+                  <th className="py-3.5 px-4">Contact</th>
+                  <th className="py-3.5 px-4">Dates</th>
+                  <th className="py-3.5 px-4">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--border)]/40">
-                {filteredBookings.map((b: any) => (
-                  <tr key={b.bookingId || b.id} className="hover:bg-white/[0.02]">
-                    <td className="py-3 px-4 font-mono text-[var(--accent-primary)]">
-                      {b.bookingId || b.referenceId || "TS27-STAY"}
-                    </td>
-                    <td className="py-3 px-4 font-bold text-[var(--text-primary)]">
-                      {b.userName || b.fullName || "Guest"}
-                    </td>
-                    <td className="py-3 px-4 text-[var(--text-secondary)]">{b.collegeName || "N/A"}</td>
-                    <td className="py-3 px-4 uppercase text-[10px]">{b.gender || "Boys"}</td>
-                    <td className="py-3 px-4 text-[var(--text-secondary)]">{b.mobile || "N/A"}</td>
-                    <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                        {b.status || "CONFIRMED"}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+              <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                {filteredBookings.map((b: any, idx: number) => {
+                  const name = b.userName || b.user?.name || "Guest";
+                  const email = b.userEmail || b.user?.email || "";
+                  const college = b.collegeName || b.user?.collegeName || "N/A";
+                  const gender = b.gender || b.user?.gender || "N/A";
+                  const mobile = b.userMobile || b.user?.mobile || "N/A";
+                  const checkIn = b.checkInDate ? new Date(b.checkInDate).toLocaleDateString() : "Day 1";
+                  const checkOut = b.checkOutDate ? new Date(b.checkOutDate).toLocaleDateString() : "Day 3";
+                  const isConfirmed = b.status === "CONFIRMED" || b.status === "COMPLETED";
+
+                  return (
+                    <tr key={b.id || idx} className="hover:bg-zinc-800/30 transition-colors">
+                      <td className="py-3.5 px-4">
+                        <div className="font-semibold text-zinc-100">{name}</div>
+                        <div className="text-[11px] text-zinc-400">{email}</div>
+                      </td>
+                      <td className="py-3.5 px-4 text-zinc-300">{college}</td>
+                      <td className="py-3.5 px-4 text-zinc-300">{gender}</td>
+                      <td className="py-3.5 px-4 text-zinc-300 font-mono">{mobile}</td>
+                      <td className="py-3.5 px-4 text-zinc-300">
+                        {checkIn} → {checkOut}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
+                            isConfirmed
+                              ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                              : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                          }`}
+                        >
+                          {b.status || "CONFIRMED"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

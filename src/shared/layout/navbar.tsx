@@ -79,7 +79,11 @@ export function Navbar() {
     setMobileMenuOpen(false);
   }, [pathname]);
 
-  if (pathname === "/signup" || pathname === "/signin") {
+  if (
+    pathname === "/signup" ||
+    pathname === "/signin" ||
+    pathname.startsWith("/admin")
+  ) {
     return null;
   }
 

@@ -516,6 +516,16 @@ class ApiClient {
         body: JSON.stringify(body),
       }),
 
+    settings: {
+      get: () =>
+        this.request<{ attendanceOpen: boolean; winnersOpen: boolean }>("/api/admin/settings"),
+      update: (body: { attendanceOpen?: boolean; winnersOpen?: boolean }) =>
+        this.request<{ attendanceOpen: boolean; winnersOpen: boolean }>("/api/admin/settings", {
+          method: "PATCH",
+          body: JSON.stringify(body),
+        }),
+    },
+
     exportGateRosterUrl: () => "/api/admin/export-gate-roster",
   };
 }

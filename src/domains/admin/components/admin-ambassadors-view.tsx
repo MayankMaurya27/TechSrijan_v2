@@ -1,7 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Users, Search, RefreshCw, Loader2, CheckCircle, XCircle, Award, MapPin } from "lucide-react";
+import {
+  Users,
+  Search,
+  RefreshCw,
+  Loader2,
+  CheckCircle,
+  XCircle,
+  Clock,
+  MapPin,
+  Check,
+  X,
+} from "lucide-react";
 import { api, CampusAmbassador } from "@/lib/api";
 import { Button } from "@/shared";
 
@@ -21,7 +32,7 @@ export function AdminAmbassadorsView() {
       setAmbassadors(Array.isArray(data) ? data : []);
     } catch (err: any) {
       console.error("Failed to load ambassadors:", err);
-      setError(err?.message || "Failed to load ambassador roster from Directorate.");
+      setError(err?.message || "Failed to load campus ambassadors.");
     } finally {
       setLoading(false);
     }
@@ -63,217 +74,191 @@ export function AdminAmbassadorsView() {
   });
 
   const pendingCount = ambassadors.filter((a) => a.status === "PENDING").length;
-  const activeCount = ambassadors.filter((a) => a.status === "ACTIVE" || a.status === "APPROVED").length;
+  const approvedCount = ambassadors.filter((a) => a.status === "APPROVED" || a.status === "ACTIVE").length;
+  const rejectedCount = ambassadors.filter((a) => a.status === "REJECTED").length;
 
   return (
-    <div className="space-y-8 font-mono">
+    <div className="w-full space-y-6">
       {/* HEADER */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[var(--border)] pb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <span className="text-[10px] tracking-[0.25em] text-[var(--accent-primary)] uppercase font-semibold">
-            OUTREACH & REGIONAL EMBASSIES
-          </span>
-          <h2 className="text-xl sm:text-2xl font-black text-[var(--text-primary)] uppercase tracking-tight">
-            CAMPUS AMBASSADORS DIRECTORATE
-          </h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-zinc-100">Campus Ambassadors</h2>
+          <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+            Higher & Boss Admin: Review, approve, or reject student ambassador applications.
+          </p>
         </div>
 
-        <Button variant="outline" size="sm" onClick={fetchAmbassadors} disabled={loading} className="text-xs">
-          <RefreshCw className={`mr-2 h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
-          <span>SYNC AMBASSADORS</span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={fetchAmbassadors}
+          disabled={loading}
+          className="text-xs border-zinc-700 hover:bg-zinc-800 text-zinc-200"
+        >
+          <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+          Refresh
         </Button>
       </div>
 
       {error && (
-        <div className="p-4 rounded border border-[var(--geass-crimson)]/50 bg-[var(--geass-crimson)]/10 text-xs text-[var(--geass-crimson)] flex items-center justify-between">
+        <div className="p-4 rounded-lg bg-red-950/40 border border-red-800/60 text-red-300 text-xs flex items-center justify-between">
           <span>{error}</span>
-          <Button variant="outline" size="sm" onClick={fetchAmbassadors} className="text-[10px]">
-            <span>RETRY</span>
+          <Button variant="outline" size="sm" onClick={fetchAmbassadors} className="text-xs">
+            Retry
           </Button>
         </div>
       )}
 
       {/* METRIC COUNTERS */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="mecha-bracket border border-[var(--border)] bg-[var(--surface)] p-5 rounded">
-          <div className="text-[10px] text-[var(--text-muted)] tracking-widest uppercase">
-            TOTAL APPLICANTS
-          </div>
-          <div className="mt-2 text-2xl font-black text-[var(--text-primary)]">
-            {ambassadors.length}
-          </div>
-          <div className="mt-1 text-[9px] text-[var(--accent-primary)]">
-            REGIONAL APPLICANTS
-          </div>
+        <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm">
+          <div className="text-[11px] text-zinc-400 uppercase font-semibold">Total Applicants</div>
+          <div className="text-2xl font-bold text-zinc-100 mt-1">{ambassadors.length}</div>
         </div>
 
-        <div className="mecha-bracket border border-[var(--geass-crimson)]/50 bg-[var(--surface)] p-5 rounded">
-          <div className="text-[10px] text-[var(--geass-crimson)] tracking-widest uppercase font-bold">
-            PENDING APPROVAL
-          </div>
-          <div className="mt-2 text-2xl font-black text-[var(--geass-crimson)]">
-            {pendingCount}
-          </div>
-          <div className="mt-1 text-[9px] text-[var(--text-muted)]">
-            AWAITING CLEARANCE
-          </div>
+        <div className="p-4 rounded-xl border border-amber-900/30 bg-amber-950/10 shadow-sm">
+          <div className="text-[11px] text-amber-400 uppercase font-semibold">Pending Review</div>
+          <div className="text-2xl font-bold text-amber-400 mt-1">{pendingCount}</div>
         </div>
 
-        <div className="mecha-bracket border border-[var(--border)] bg-[var(--surface)] p-5 rounded">
-          <div className="text-[10px] text-[var(--text-muted)] tracking-widest uppercase">
-            ACTIVE DIPLOMATS
-          </div>
-          <div className="mt-2 text-2xl font-black text-emerald-400">
-            {activeCount}
-          </div>
-          <div className="mt-1 text-[9px] text-[var(--text-secondary)]">
-            PROMOTING FIESTA
-          </div>
+        <div className="p-4 rounded-xl border border-emerald-900/30 bg-emerald-950/10 shadow-sm">
+          <div className="text-[11px] text-emerald-400 uppercase font-semibold">Approved</div>
+          <div className="text-2xl font-bold text-emerald-400 mt-1">{approvedCount}</div>
         </div>
 
-        <div className="mecha-bracket border border-[var(--border)] bg-[var(--surface)] p-5 rounded">
-          <div className="text-[10px] text-[var(--text-muted)] tracking-widest uppercase">
-            TOTAL CONVERSIONS
-          </div>
-          <div className="mt-2 text-2xl font-black text-[var(--accent-primary)]">
-            {ambassadors.reduce((acc, a) => acc + (a.referralCount || 0), 0)}
-          </div>
-          <div className="mt-1 text-[9px] text-[var(--text-secondary)]">
-            STUDENT REFERRALS
-          </div>
+        <div className="p-4 rounded-xl border border-red-900/30 bg-red-950/10 shadow-sm">
+          <div className="text-[11px] text-red-400 uppercase font-semibold">Rejected</div>
+          <div className="text-2xl font-bold text-red-400 mt-1">{rejectedCount}</div>
         </div>
       </div>
 
-      {/* FILTER & SEARCH */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[var(--border)] pb-6">
-        <div className="flex flex-wrap items-center gap-2">
-          {(["ALL", "PENDING", "APPROVED", "ACTIVE", "REJECTED"] as const).map((tab) => (
+      {/* SEARCH AND STATUS FILTER */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+          <input
+            type="text"
+            placeholder="Search by student name, college, city, or referral code..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full h-10 pl-10 pr-4 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-100 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
+          />
+        </div>
+
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+          {(["ALL", "PENDING", "APPROVED", "REJECTED"] as const).map((filter) => (
             <button
-              key={tab}
-              onClick={() => setStatusFilter(tab)}
-              className={`px-3 py-1.5 rounded text-xs tracking-widest transition-colors ${
-                statusFilter === tab
-                  ? tab === "PENDING"
-                    ? "bg-[var(--geass-crimson)] text-white font-bold"
-                    : tab === "ACTIVE" || tab === "APPROVED"
-                    ? "bg-emerald-600 text-white font-bold"
-                    : "bg-[var(--accent-primary)] text-black font-bold"
-                  : "border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              key={filter}
+              type="button"
+              onClick={() => setStatusFilter(filter)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                statusFilter === filter
+                  ? "bg-amber-500 text-black font-bold"
+                  : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200"
               }`}
             >
-              {tab === "PENDING" ? `PENDING (${pendingCount})` : tab}
+              {filter}
             </button>
           ))}
         </div>
-
-        <div className="relative max-w-xs w-full">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
-          <input
-            type="text"
-            placeholder="Search ambassadors..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="h-9 w-full pl-9 pr-3 rounded bg-[var(--bg-primary)] border border-[var(--border)] text-xs text-[var(--text-primary)] focus:border-[var(--accent-primary)] focus:outline-none"
-          />
-        </div>
       </div>
 
-      {/* AMBASSADOR TABLE */}
+      {/* TABLE */}
       {loading ? (
-        <div className="py-16 flex flex-col items-center justify-center">
-          <Loader2 className="h-8 w-8 text-[var(--accent-primary)] animate-spin mb-3" />
-          <span className="text-xs text-[var(--text-muted)] uppercase">LOADING AMBASSADORS...</span>
+        <div className="py-20 flex flex-col items-center justify-center text-zinc-400">
+          <Loader2 className="h-8 w-8 text-amber-500 animate-spin mb-3" />
+          <p className="text-xs">Loading campus ambassadors...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="p-10 rounded border border-[var(--border)] bg-[var(--surface)] text-center text-xs text-[var(--text-muted)]">
-          NO AMBASSADORS MATCHING CRITERIA.
+        <div className="p-12 text-center rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 text-sm">
+          No campus ambassador applications match the criteria.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded border border-[var(--border)] bg-[var(--surface)]">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-[var(--border)] text-[10px] uppercase text-[var(--text-muted)] tracking-wider">
-                <th className="py-3 px-4">Ambassador</th>
-                <th className="py-3 px-4">Institution & City</th>
-                <th className="py-3 px-4">Referral Code</th>
-                <th className="py-3 px-4 text-center">Referrals</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--border)]/40">
-              {filtered.map((a) => {
-                const isLoading = actionLoadingId === a.id;
-                return (
-                  <tr key={a.id} className="hover:bg-white/[0.02]">
-                    <td className="py-3.5 px-4">
-                      <div className="font-bold text-[var(--text-primary)]">{a.fullName}</div>
-                      <div className="text-[10px] text-[var(--text-muted)]">{a.email} • {a.phone}</div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <div className="text-[var(--text-secondary)]">{a.college}</div>
-                      <div className="text-[10px] text-[var(--text-muted)] flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        <span>{a.city || "India"}</span>
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-4 font-mono font-bold text-[var(--accent-primary)]">
-                      {a.operativeCode}
-                    </td>
-                    <td className="py-3.5 px-4 text-center font-bold">
-                      {a.referralCount || 0}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase ${
-                          a.status === "ACTIVE" || a.status === "APPROVED"
-                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                            : a.status === "PENDING"
-                            ? "bg-amber-500/10 text-amber-400 border border-amber-500/30"
-                            : "bg-red-500/10 text-red-400 border border-red-500/30"
-                        }`}
-                      >
-                        {a.status}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      {a.status === "PENDING" ? (
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleUpdateStatus(a.id, "APPROVED")}
-                            disabled={isLoading}
-                            className="px-2.5 py-1 rounded text-[10px] font-bold uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/30"
-                          >
-                            APPROVE
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleUpdateStatus(a.id, "REJECTED")}
-                            disabled={isLoading}
-                            className="px-2.5 py-1 rounded text-[10px] font-bold uppercase bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20"
-                          >
-                            REJECT
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleUpdateStatus(a.id, a.status === "REJECTED" ? "ACTIVE" : "REJECTED")
-                          }
-                          disabled={isLoading}
-                          className="text-[10px] text-[var(--text-muted)] hover:text-white underline"
+        <div className="w-full overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-zinc-900 border-b border-zinc-800 text-zinc-400 uppercase text-[11px] font-semibold tracking-wider">
+                <tr>
+                  <th className="py-3.5 px-4">Student</th>
+                  <th className="py-3.5 px-4">College & City</th>
+                  <th className="py-3.5 px-4">Contact</th>
+                  <th className="py-3.5 px-4">Referral Code</th>
+                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4 text-right">Decision</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-800/60 text-zinc-300">
+                {filtered.map((amb) => {
+                  const isPending = amb.status === "PENDING";
+                  const isApproved = amb.status === "APPROVED" || amb.status === "ACTIVE";
+                  const isRejected = amb.status === "REJECTED";
+                  const isProcessing = actionLoadingId === amb.id;
+
+                  return (
+                    <tr key={amb.id} className="hover:bg-zinc-800/30 transition-colors">
+                      <td className="py-3.5 px-4">
+                        <div className="font-semibold text-zinc-100">{amb.fullName}</div>
+                        <div className="text-[11px] text-zinc-400">{amb.email}</div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <div className="text-zinc-200">{amb.college}</div>
+                        <div className="text-[11px] text-zinc-500">{amb.city || "N/A"}</div>
+                      </td>
+                      <td className="py-3.5 px-4 text-zinc-300 font-mono">
+                        {amb.phone || "N/A"}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                          {amb.operativeCode || "N/A"}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
+                            isApproved
+                              ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                              : isRejected
+                              ? "bg-red-500/15 text-red-400 border border-red-500/30"
+                              : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                          }`}
                         >
-                          {a.status === "REJECTED" ? "RE-ENABLE" : "REVOKE"}
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                          {amb.status}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        {isProcessing ? (
+                          <Loader2 className="h-4 w-4 text-amber-500 animate-spin ml-auto" />
+                        ) : (
+                          <div className="flex items-center justify-end gap-2">
+                            {!isApproved && (
+                              <button
+                                type="button"
+                                onClick={() => handleUpdateStatus(amb.id, "APPROVED")}
+                                className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-[11px] flex items-center gap-1 shadow-sm transition-colors"
+                              >
+                                <Check className="h-3 w-3" />
+                                Approve
+                              </button>
+                            )}
+                            {!isRejected && (
+                              <button
+                                type="button"
+                                onClick={() => handleUpdateStatus(amb.id, "REJECTED")}
+                                className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-red-900/60 text-zinc-300 hover:text-red-300 font-medium text-[11px] flex items-center gap-1 border border-zinc-700 transition-colors"
+                              >
+                                <X className="h-3 w-3" />
+                                Reject
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

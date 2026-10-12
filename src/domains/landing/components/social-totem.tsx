@@ -36,7 +36,7 @@ function renderInstagram(cx: number, cy: number) {
   );
 }
 
-function renderYouTube(cx: number, cy: number) {
+function renderWhatsApp(cx: number, cy: number) {
   return (
     <svg
       x={cx - 16}
@@ -47,7 +47,7 @@ function renderYouTube(cx: number, cy: number) {
       fill="url(#goldEmbossGrad)"
       className="overflow-visible"
     >
-      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24m4.52 11.59c-.25-.12-1.47-.72-1.7-.81-.23-.09-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.06 0 1.21.88 2.39 1 2.56.12.17 1.74 2.66 4.21 3.73.59.25 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.13-.22-.19-.47-.32" />
     </svg>
   );
 }
@@ -88,28 +88,28 @@ const WAYPOINTS: Waypoint[] = [
   {
     id: "instagram",
     name: "INSTAGRAM",
-    handle: "@techsrijan",
-    href: "https://www.instagram.com/techsrijan_mmmut/",
+    handle: "@techsrijan_mmmut",
+    href: "https://www.instagram.com/techsrijan_mmmut",
     cy: 110,
     glowColor: "rgba(255, 180, 50, 0.95)",
     neonColor: "#ff9900",
     renderIcon: renderInstagram,
   },
   {
-    id: "youtube",
-    name: "YOUTUBE",
-    handle: "@techsrijan",
-    href: "https://www.youtube.com/@techSrijanMMMUT",
+    id: "whatsapp",
+    name: "WHATSAPP",
+    handle: "TechSrijan Channel",
+    href: "https://whatsapp.com/channel/0029VbBGctj1Hsq0KeSlRl0G",
     cy: 250,
-    glowColor: "rgba(255, 60, 45, 0.95)",
-    neonColor: "#ff2a4b",
-    renderIcon: renderYouTube,
+    glowColor: "rgba(37, 211, 102, 0.95)",
+    neonColor: "#25D366",
+    renderIcon: renderWhatsApp,
   },
   {
     id: "linkedin",
     name: "LINKEDIN",
-    handle: "Techsrijan",
-    href: "https://www.linkedin.com/company/techsrijan/",
+    handle: "techsrijan-mmmut",
+    href: "https://www.linkedin.com/company/techsrijan-mmmut/",
     cy: 390,
     glowColor: "rgba(50, 180, 255, 0.95)",
     neonColor: "#00b4d8",
@@ -118,8 +118,8 @@ const WAYPOINTS: Waypoint[] = [
   {
     id: "x",
     name: "X",
-    handle: "@techsrijan",
-    href: "https://x.com/techsrijan_",
+    handle: "@TechSrijan_Fest",
+    href: "https://x.com/TechSrijan_Fest",
     cy: 530,
     glowColor: "rgba(255, 220, 80, 0.95)",
     neonColor: "#ffd60a",

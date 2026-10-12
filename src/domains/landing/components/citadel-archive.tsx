@@ -13,40 +13,80 @@ interface CitadelArchiveProps {
 const FEATURED_DIRECTIVES = [
   {
     id: "01",
-    title: "CODE//FORGE",
-    meta: "25 SEP · 10:30 · CSE BLOCK",
-    category: "TECHNOLOGY",
+    title: "CODING & ALGORITHMS",
+    meta: "MANTRASTRA · CODE ZILLA · INCOGNITO",
+    category: "SOFTWARE",
     link: "/events",
   },
   {
     id: "02",
-    title: "CIRCUIT//BREAK",
-    meta: "25 SEP · 14:00 · TECH ARENA",
-    category: "COMPETITION",
+    title: "ROBOTICS & COMBAT",
+    meta: "ROBOKIRTI · ROBOSOCCER · HYDRORACER",
+    category: "ROBOTICS",
     link: "/events",
   },
   {
     id: "03",
-    title: "DESIGN//SHIFT",
-    meta: "26 SEP · 11:00 · DESIGN DOME",
-    category: "CREATIVE",
+    title: "INNOVATION & CIRCUITS",
+    meta: "SCIENCE EXHIBITION · BRAINS & BRAWN",
+    category: "RESEARCH",
     link: "/events",
   },
   {
     id: "04",
-    title: "ROBOT//ASCENT",
-    meta: "27 SEP · 15:30 · CENTRAL ARENA",
-    category: "ROBOTICS",
+    title: "ARENA & COSPLAY",
+    meta: "VAIL · MR & MRS TECHSRIJAN · SHERLOCKED",
+    category: "FLAGSHIP",
     link: "/events",
   },
 ];
 
-const ALLIANCE_NODES = [
-  { id: "A1", label: "ALLIANCE I", x: 50, y: 18, roman: "I", tier: "APEX PATRON" },
-  { id: "A2", label: "ALLIANCE II", x: 22, y: 44, roman: "II", tier: "ORBITAL NODE" },
-  { id: "A3", label: "ALLIANCE III", x: 50, y: 46, roman: "III", tier: "NUCLEUS" },
-  { id: "A4", label: "ALLIANCE IV", x: 78, y: 44, roman: "IV", tier: "ORBITAL NODE" },
-  { id: "A5", label: "ALLIANCE V", x: 50, y: 76, roman: "V", tier: "FOUNDATION" },
+const SPONSORS_SHOWCASE = [
+  {
+    id: "nova",
+    name: "NOVA SYSTEMS",
+    tier: "TITLE SPONSOR",
+    tagline: "Apex Strategic Patron",
+    image: "/images/sponsors/cp-1.webp",
+    accent: "#FFE600",
+    glow: "rgba(255, 230, 0, 0.9)",
+  },
+  {
+    id: "aether",
+    name: "AETHER ENERGY",
+    tier: "GOLD SPONSOR",
+    tagline: "Energy Syndicate Partner",
+    image: "/images/sponsors/cp-2.webp",
+    accent: "#F59E0B",
+    glow: "rgba(245, 158, 11, 0.9)",
+  },
+  {
+    id: "quantum",
+    name: "QUANTUM WORKS",
+    tier: "SILVER SPONSOR",
+    tagline: "High-Compute Architecture Partner",
+    image: "/images/sponsors/cp-6.webp",
+    accent: "#38BDF8",
+    glow: "rgba(56, 189, 248, 0.9)",
+  },
+  {
+    id: "gridline",
+    name: "GRIDLINE MEDIA",
+    tier: "ASSOCIATE SPONSOR",
+    tagline: "Digital & Broadcast Syndicate",
+    image: "/images/sponsors/cp-5.webp",
+    accent: "#EF4444",
+    glow: "rgba(239, 68, 68, 0.9)",
+  },
+  {
+    id: "skyward",
+    name: "SKYWARD LABS",
+    tier: "SUPPORTING SPONSOR",
+    tagline: "Innovation & Labs Patron",
+    image: "/images/sponsors/cp-4.webp",
+    accent: "#06B6D4",
+    glow: "rgba(6, 182, 212, 0.9)",
+  },
 ];
 
 const TRANSMISSIONS = [
@@ -96,12 +136,25 @@ const smoothstep = (min: number, max: number, value: number) => {
 export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
   const [activeQuoteIndex, setActiveQuoteIndex] = useState(0);
   const [hoveredEvent, setHoveredEvent] = useState<string | null>(null);
-  const [hoveredAlliance, setHoveredAlliance] = useState<string | null>(null);
+  const [activeSponsorIndex, setActiveSponsorIndex] = useState(0);
+  const [isSponsorPaused, setIsSponsorPaused] = useState(false);
   const [mouseTilt, setMouseTilt] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
   const [activeMobileCard, setActiveMobileCard] = useState(0);
   const mobileTrackRef = useRef<HTMLDivElement>(null);
   const isPausedRef = useRef(false);
+
+  // Active sponsor computed
+  const activeSponsor = SPONSORS_SHOWCASE[activeSponsorIndex];
+
+  // Sponsors auto-carousel (3.5s cycle with smooth fade transition)
+  useEffect(() => {
+    if (isSponsorPaused) return;
+    const timer = setInterval(() => {
+      setActiveSponsorIndex((prev) => (prev + 1) % SPONSORS_SHOWCASE.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [isSponsorPaused]);
 
   // Check mobile viewport
   useEffect(() => {
@@ -235,8 +288,8 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
           {/* Top Arrakis HUD Tab Selector */}
           <div className="flex items-center justify-center gap-1.5 p-1 rounded-full border border-[#d4a843]/30 bg-black/80 backdrop-blur-md z-30 mb-2 shadow-[0_4px_20px_rgba(0,0,0,0.85)]">
             {[
-              { label: "DIRECTIVES", idx: 0 },
-              { label: "ALLIANCES", idx: 1 },
+              { label: "EVENTS", idx: 0 },
+              { label: "SPONSORS", idx: 1 },
               { label: "VOICES", idx: 2 },
             ].map((tab) => (
               <button
@@ -290,7 +343,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                 msOverflowStyle: "none",
               }}
             >
-              {/* ─── MOBILE CARD 1: FEATURED DIRECTIVES ─── */}
+              {/* ─── MOBILE CARD 1: FEATURED EVENTS ─── */}
               <div className="archive-card pointer-events-auto relative w-[78vw] max-w-[285px] h-[48vh] max-h-[385px] min-h-[330px] shrink-0 snap-center transition-transform duration-300">
                 <div className="absolute inset-[8%] bg-gradient-to-b from-black/70 via-[#1a120c]/75 to-black/85 backdrop-blur-[3px] rounded-2xl pointer-events-none z-0" />
                 <img
@@ -299,26 +352,18 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                   className="archive-frame pointer-events-none absolute inset-0 w-full h-full object-fill z-20 select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)]"
                   loading="eager"
                 />
-                <div className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[16%] pb-[18%] px-[13%] pointer-events-auto text-[#F0EAE1]">
-                  {/* Header info */}
+                <div className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[17%] pb-[18%] px-[13%] pointer-events-auto text-[#F0EAE1]">
+                  {/* Header info without dummy labels */}
                   <div className="flex-shrink-0">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[7.5px] font-mono tracking-[0.2em] text-[#d4a843] uppercase">
-                        CITADEL INDEX
-                      </span>
-                      <span className="text-[7.5px] font-mono tracking-widest text-[#d4a843]/60">
-                        04 DIRECTIVES
-                      </span>
-                    </div>
-                    <h3 className="text-[12px] sm:text-[13px] font-montserrat font-bold tracking-[0.14em] uppercase text-[#F0EAE1] mt-0.5 leading-none">
-                      FEATURED DIRECTIVES
+                    <h3 className="text-[13px] sm:text-[14px] font-montserrat font-black tracking-[0.14em] uppercase text-[#F0EAE1] leading-tight">
+                      FEATURED EVENTS
                     </h3>
                     <p className="text-[7.5px] sm:text-[8px] font-mono text-[#c4b79b] mt-0.5 leading-tight truncate">
                       Choose your route into Techsrijan’27.
                     </p>
                   </div>
 
-                  {/* 4 Compact Event Rows */}
+                  {/* 4 Categorized Event Rows */}
                   <div className="flex-1 flex flex-col justify-evenly py-0.5 gap-0.5 min-h-0">
                     {FEATURED_DIRECTIVES.map((ev) => (
                       <Link
@@ -344,7 +389,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                     ))}
                   </div>
 
-                  {/* Bottom Action — EXPLORE ALL EVENTS is guaranteed fully visible inside safe area */}
+                  {/* Bottom Action */}
                   <div className="flex-shrink-0">
                     <Link
                       href="/events"
@@ -357,8 +402,12 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                 </div>
               </div>
 
-              {/* ─── MOBILE CARD 2: THE ALLIANCES ─── */}
-              <div className="archive-card pointer-events-auto relative w-[78vw] max-w-[285px] h-[48vh] max-h-[385px] min-h-[330px] shrink-0 snap-center transition-transform duration-300">
+              {/* ─── MOBILE CARD 2: THE SPONSORS ─── */}
+              <div
+                className="archive-card pointer-events-auto relative w-[78vw] max-w-[285px] h-[48vh] max-h-[385px] min-h-[330px] shrink-0 snap-center transition-transform duration-300"
+                onTouchStart={() => setIsSponsorPaused(true)}
+                onTouchEnd={() => setIsSponsorPaused(false)}
+              >
                 <div className="absolute inset-[8%] bg-gradient-to-b from-black/70 via-[#1a120c]/75 to-black/85 backdrop-blur-[3px] rounded-2xl pointer-events-none z-0" />
                 <img
                   src="/images/citadel-frame.webp"
@@ -367,64 +416,89 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                   loading="eager"
                 />
                 <div className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[16%] pb-[18%] px-[13%] pointer-events-auto text-[#F0EAE1]">
-                  <div className="flex-shrink-0">
+                  <div className="flex-shrink-0 text-center">
                     <span className="text-[7.5px] font-mono tracking-[0.2em] text-[#d4a843] uppercase block">
-                      CITADEL ARCHIVE
+                      OFFICIAL PATRONS
                     </span>
                     <h3 className="text-[12px] sm:text-[13px] font-montserrat font-bold tracking-[0.14em] uppercase text-[#F0EAE1] mt-0.5 leading-none">
-                      THE ALLIANCES
+                      OUR SPONSORS
                     </h3>
                     <p className="text-[7.5px] sm:text-[8px] font-mono text-[#c4b79b] mt-0.5 leading-tight truncate">
-                      Those who power the awakening.
+                      Powering the awakening.
                     </p>
                   </div>
 
-                  {/* Constellation / Orbital Arrangement */}
-                  <div className="relative my-auto w-full h-[70px] sm:h-[78px] flex items-center justify-center">
-                    <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
-                      <circle cx="50%" cy="46%" r="38%" fill="none" stroke="#d4a843" strokeWidth="1" strokeDasharray="3 3" />
-                      <circle cx="50%" cy="46%" r="20%" fill="none" stroke="#d4a843" strokeWidth="0.8" />
-                      <line x1="50%" y1="18%" x2="22%" y2="44%" stroke="#d4a843" strokeWidth="0.8" />
-                      <line x1="50%" y1="18%" x2="78%" y2="44%" stroke="#d4a843" strokeWidth="0.8" />
-                      <line x1="22%" y1="44%" x2="50%" y2="46%" stroke="#d4a843" strokeWidth="0.8" />
-                      <line x1="78%" y1="44%" x2="50%" y2="46%" stroke="#d4a843" strokeWidth="0.8" />
-                      <line x1="50%" y1="46%" x2="50%" y2="76%" stroke="#d4a843" strokeWidth="0.8" />
-                    </svg>
+                  {/* Sponsor Circle & Tier Showcase with Smooth Fade Animation */}
+                  <div className="relative my-auto w-full flex-1 flex flex-col items-center justify-center py-1">
+                    <div
+                      key={activeSponsor.id}
+                      className="flex flex-col items-center text-center animate-sponsor-fade transition-all duration-500 w-full"
+                    >
+                      {/* Sponsor Tier Badge */}
+                      <div
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[7.5px] font-mono font-bold tracking-[0.15em] uppercase mb-1 shadow-sm"
+                        style={{
+                          borderColor: `${activeSponsor.accent}70`,
+                          backgroundColor: `${activeSponsor.accent}15`,
+                          color: activeSponsor.accent,
+                          boxShadow: `0 0 8px ${activeSponsor.accent}25`,
+                        }}
+                      >
+                        <span className="w-1 h-1 rounded-full animate-ping" style={{ backgroundColor: activeSponsor.accent }} />
+                        <span>{activeSponsor.tier}</span>
+                      </div>
 
-                    {ALLIANCE_NODES.map((node) => {
-                      const isHover = hoveredAlliance === node.id;
-                      return (
+                      {/* Sponsor Circle */}
+                      <div className="relative my-1">
                         <div
-                          key={node.id}
-                          onClick={() => setHoveredAlliance(node.id)}
-                          className="group absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer flex flex-col items-center"
+                          className="absolute -inset-1.5 rounded-full blur-md opacity-50 transition-opacity duration-500"
                           style={{
-                            left: `${node.x}%`,
-                            top: `${node.y}%`,
-                            zIndex: isHover ? 30 : 15,
+                            background: `radial-gradient(circle, ${activeSponsor.glow} 0%, transparent 70%)`,
+                          }}
+                        />
+                        <div
+                          className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full p-[2px]"
+                          style={{
+                            background: `linear-gradient(135deg, ${activeSponsor.accent}, #d4a843, ${activeSponsor.accent}40)`,
+                            boxShadow: `0 0 12px ${activeSponsor.glow}`,
                           }}
                         >
-                          <div
-                            className="w-4.5 h-4.5 rounded-full border border-[#d4a843] bg-[#2a1b12]/90 flex items-center justify-center text-[#d4a843] transition-all"
-                            style={{
-                              boxShadow: isHover
-                                ? "0 0 10px rgba(212, 168, 67, 0.8)"
-                                : "0 0 5px rgba(212, 168, 67, 0.3)",
-                            }}
-                          >
-                            <span className="text-[9px] font-bebas font-bold">
-                              {node.roman}
-                            </span>
+                          <div className="w-full h-full rounded-full bg-gradient-to-b from-[#1c120c] to-[#0a0604] flex items-center justify-center overflow-hidden p-2 border border-black/80">
+                            <img
+                              src={activeSponsor.image}
+                              alt={activeSponsor.name}
+                              className="w-full h-full object-contain filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]"
+                              loading="eager"
+                            />
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
+                      </div>
 
-                  <div className="text-center font-mono text-[7px] tracking-widest text-[#d4a843] uppercase min-h-[10px] flex-shrink-0">
-                    {hoveredAlliance
-                      ? `${ALLIANCE_NODES.find((n) => n.id === hoveredAlliance)?.label}`
-                      : "◈ 5 STRATEGIC SYNDICATES"}
+                      {/* Sponsor Name & Tagline */}
+                      <h4 className="text-[11px] sm:text-[12px] font-montserrat font-bold tracking-[0.12em] text-[#F0EAE1] mt-1 leading-none">
+                        {activeSponsor.name}
+                      </h4>
+                      <p className="text-[7px] font-mono text-[#a89b88] tracking-wider mt-0.5 truncate max-w-[170px]">
+                        {activeSponsor.tagline}
+                      </p>
+                    </div>
+
+                    {/* Dots Carousel Indicator */}
+                    <div className="flex items-center gap-1.5 mt-2">
+                      {SPONSORS_SHOWCASE.map((sp, idx) => (
+                        <button
+                          key={sp.id}
+                          type="button"
+                          onClick={() => setActiveSponsorIndex(idx)}
+                          className={`transition-all duration-300 rounded-full ${
+                            idx === activeSponsorIndex
+                              ? "w-3.5 h-1 bg-[#d4a843] shadow-[0_0_6px_rgba(212,168,67,0.8)]"
+                              : "w-1 h-1 bg-[#d4a843]/30 hover:bg-[#d4a843]/60"
+                          }`}
+                          aria-label={`Show ${sp.name}`}
+                        />
+                      ))}
+                    </div>
                   </div>
 
                   <div className="flex-shrink-0">
@@ -432,7 +506,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                       href="/sponsors"
                       className="group flex items-center justify-center gap-1.5 w-full py-1 px-2.5 rounded border border-[#d4a843]/40 bg-[#d4a843]/15 hover:bg-[#d4a843]/30 text-[#F0EAE1] font-mono text-[8px] tracking-[0.2em] uppercase transition-all"
                     >
-                      <span>VIEW ALL ALLIANCES</span>
+                      <span>VIEW ALL SPONSORS</span>
                       <ArrowRight className="h-2.5 w-2.5 text-[#d4a843]" />
                     </Link>
                   </div>
@@ -572,18 +646,10 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                 transform: "translateZ(24px)",
               }}
             >
-              {/* Header info */}
+              {/* Header info without dummy labels */}
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-mono tracking-[0.25em] text-[#d4a843] uppercase">
-                    CITADEL INDEX
-                  </span>
-                  <span className="text-[9px] font-mono tracking-widest text-[#d4a843]/60">
-                    04 DIRECTIVES
-                  </span>
-                </div>
-                <h3 className="text-base sm:text-lg lg:text-xl font-montserrat font-black tracking-[0.16em] uppercase text-[#F0EAE1] mt-0.5 leading-tight text-shadow-gold">
-                  FEATURED DIRECTIVES
+                <h3 className="text-base sm:text-lg lg:text-xl font-montserrat font-black tracking-[0.16em] uppercase text-[#F0EAE1] leading-tight text-shadow-gold">
+                  FEATURED EVENTS
                 </h3>
                 <p className="text-[10px] sm:text-[11px] font-mono text-[#c4b79b] mt-0.5 tracking-wide">
                   Choose your route into Techsrijan’27.
@@ -656,7 +722,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
             }}
           >
             {/* ───────────────────────────────────────────────────────────── */}
-            {/* BOX 1 (TOP): THE ALLIANCES                                   */}
+            {/* BOX 1 (TOP): OUR SPONSORS                                     */}
             {/* ───────────────────────────────────────────────────────────── */}
             <div
               className="archive-card pointer-events-auto transition-transform duration-300 relative flex-1 w-full"
@@ -667,6 +733,8 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                 transformStyle: "preserve-3d",
                 opacity: frameAlpha,
               }}
+              onMouseEnter={() => setIsSponsorPaused(true)}
+              onMouseLeave={() => setIsSponsorPaused(false)}
             >
               {/* Desert-ambience backing */}
               <div className="absolute inset-[8%] bg-gradient-to-b from-black/60 via-[#1a120c]/65 to-black/80 backdrop-blur-[3px] rounded-2xl pointer-events-none z-0" />
@@ -681,89 +749,95 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
 
               {/* Content */}
               <div
-                className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[20%] pb-[17%] px-[15%] pointer-events-auto text-[#F0EAE1]"
+                className="archive-content relative z-10 w-full h-full flex flex-col justify-between pt-[19%] pb-[16%] px-[14%] pointer-events-auto text-[#F0EAE1]"
                 style={{
                   transform: "translateZ(18px)",
                 }}
               >
                 {/* Header */}
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 text-center">
                   <span className="text-[8px] font-mono tracking-[0.25em] text-[#d4a843] uppercase block">
-                    CITADEL ARCHIVE
+                    OFFICIAL PATRONS
                   </span>
                   <h3 className="text-sm sm:text-base font-montserrat font-bold tracking-[0.16em] uppercase text-[#F0EAE1] mt-0.5 leading-tight">
-                    THE ALLIANCES
+                    OUR SPONSORS
                   </h3>
-                  <p className="text-[8px] sm:text-[9px] font-mono text-[#c4b79b] tracking-wide">
-                    Those who power the awakening.
+                  <p className="text-[8px] sm:text-[9px] font-mono text-[#c4b79b] tracking-wide mt-0.5">
+                    Powering the awakening.
                   </p>
                 </div>
 
-                {/* Constellation / Orbital Arrangement */}
-                <div className="relative my-auto w-full h-[70px] sm:h-[85px] flex items-center justify-center">
-                  <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
-                    <circle
-                      cx="50%"
-                      cy="46%"
-                      r="38%"
-                      fill="none"
-                      stroke="#d4a843"
-                      strokeWidth="1"
-                      strokeDasharray="3 3"
-                    />
-                    <circle
-                      cx="50%"
-                      cy="46%"
-                      r="20%"
-                      fill="none"
-                      stroke="#d4a843"
-                      strokeWidth="0.8"
-                    />
-                    <line x1="50%" y1="18%" x2="22%" y2="44%" stroke="#d4a843" strokeWidth="0.8" />
-                    <line x1="50%" y1="18%" x2="78%" y2="44%" stroke="#d4a843" strokeWidth="0.8" />
-                    <line x1="22%" y1="44%" x2="50%" y2="46%" stroke="#d4a843" strokeWidth="0.8" />
-                    <line x1="78%" y1="44%" x2="50%" y2="46%" stroke="#d4a843" strokeWidth="0.8" />
-                    <line x1="50%" y1="46%" x2="50%" y2="76%" stroke="#d4a843" strokeWidth="0.8" />
-                  </svg>
+                {/* Center Sponsor Circle with Smooth Fade Transition */}
+                <div className="relative my-auto w-full flex-1 flex flex-col items-center justify-center py-1 overflow-hidden">
+                  <div
+                    key={activeSponsor.id}
+                    className="flex flex-col items-center text-center animate-sponsor-fade transition-all duration-500 w-full"
+                  >
+                    {/* Sponsor Tier Badge */}
+                    <div
+                      className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[8px] font-mono font-bold tracking-[0.18em] uppercase mb-1 shadow-sm"
+                      style={{
+                        borderColor: `${activeSponsor.accent}80`,
+                        backgroundColor: `${activeSponsor.accent}15`,
+                        color: activeSponsor.accent,
+                        boxShadow: `0 0 10px ${activeSponsor.accent}30`,
+                      }}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ backgroundColor: activeSponsor.accent }} />
+                      <span>{activeSponsor.tier}</span>
+                    </div>
 
-                  {ALLIANCE_NODES.map((node) => {
-                    const isHover = hoveredAlliance === node.id;
-                    return (
+                    {/* Sponsor Circle */}
+                    <div className="relative group cursor-pointer my-1">
                       <div
-                        key={node.id}
-                        onMouseEnter={() => setHoveredAlliance(node.id)}
-                        onMouseLeave={() => setHoveredAlliance(null)}
-                        className="group absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer flex flex-col items-center"
+                        className="absolute -inset-2 rounded-full blur-md opacity-60 transition-opacity duration-500"
                         style={{
-                          left: `${node.x}%`,
-                          top: `${node.y}%`,
-                          zIndex: isHover ? 30 : 15,
+                          background: `radial-gradient(circle, ${activeSponsor.glow} 0%, transparent 70%)`,
+                        }}
+                      />
+                      <div
+                        className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-full p-[2px] transition-transform duration-300 group-hover:scale-105"
+                        style={{
+                          background: `linear-gradient(135deg, ${activeSponsor.accent}, #d4a843, ${activeSponsor.accent}40)`,
+                          boxShadow: `0 0 16px ${activeSponsor.glow}`,
                         }}
                       >
-                        <div
-                          className="w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-full border border-[#d4a843] bg-[#2a1b12]/90 flex items-center justify-center text-[#d4a843] transition-all duration-300 shadow-[0_0_8px_rgba(212,168,67,0.3)] group-hover:scale-115 group-hover:border-[#ffd685] group-hover:bg-[#3d2719]"
-                          style={{
-                            boxShadow: isHover
-                              ? "0 0 14px rgba(212, 168, 67, 0.8), inset 0 0 6px rgba(212, 168, 67, 0.5)"
-                              : "0 0 6px rgba(212, 168, 67, 0.3)",
-                          }}
-                        >
-                          <span className="text-[10px] sm:text-[11px] font-bebas font-bold tracking-tight">
-                            {node.roman}
-                          </span>
+                        <div className="w-full h-full rounded-full bg-gradient-to-b from-[#1c120c] to-[#0a0604] flex items-center justify-center overflow-hidden p-2.5 border border-black/80">
+                          <img
+                            src={activeSponsor.image}
+                            alt={activeSponsor.name}
+                            className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] transition-transform duration-300 group-hover:scale-110"
+                            loading="eager"
+                          />
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
 
-                {/* Dynamic status info */}
-                <div className="text-center font-mono text-[7px] sm:text-[8px] tracking-widest text-[#d4a843] uppercase min-h-[12px] flex-shrink-0">
-                  {hoveredAlliance
-                    ? `${ALLIANCE_NODES.find((n) => n.id === hoveredAlliance)?.label} · ${
-                        ALLIANCE_NODES.find((n) => n.id === hoveredAlliance)?.tier
-                      }`
-                    : "◈ 5 STRATEGIC SYNDICATES"}
+                    {/* Sponsor Name & Tagline */}
+                    <h4 className="text-[12px] sm:text-[13px] font-montserrat font-extrabold tracking-[0.14em] text-[#F0EAE1] mt-1 leading-none">
+                      {activeSponsor.name}
+                    </h4>
+                    <p className="text-[7.5px] sm:text-[8px] font-mono text-[#a89b88] tracking-wider mt-0.5 truncate max-w-[200px]">
+                      {activeSponsor.tagline}
+                    </p>
+                  </div>
+
+                  {/* Dots Indicator */}
+                  <div className="flex items-center gap-1.5 mt-2">
+                    {SPONSORS_SHOWCASE.map((sp, idx) => (
+                      <button
+                        key={sp.id}
+                        type="button"
+                        onClick={() => setActiveSponsorIndex(idx)}
+                        className={`transition-all duration-300 rounded-full ${
+                          idx === activeSponsorIndex
+                            ? "w-4 h-1 bg-[#d4a843] shadow-[0_0_8px_rgba(212,168,67,0.8)]"
+                            : "w-1.5 h-1 bg-[#d4a843]/30 hover:bg-[#d4a843]/60"
+                        }`}
+                        aria-label={`Show ${sp.name}`}
+                      />
+                    ))}
+                  </div>
                 </div>
 
                 {/* Bottom Action */}
@@ -772,7 +846,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                     href="/sponsors"
                     className="group flex items-center justify-center gap-1.5 w-full py-1 px-2 rounded border border-[#d4a843]/40 bg-[#d4a843]/10 hover:bg-[#d4a843]/25 hover:border-[#d4a843] text-[#F0EAE1] font-mono text-[8px] sm:text-[9px] tracking-[0.2em] uppercase transition-all duration-200"
                   >
-                    <span>VIEW ALL ALLIANCES</span>
+                    <span>VIEW ALL SPONSORS</span>
                     <ArrowRight className="h-2.5 w-2.5 text-[#d4a843] group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
@@ -893,6 +967,22 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
           </div>
         </div>
       )}
+      {/* Smooth Keyframe Animation for Sponsor Fade */}
+      <style>{`
+        @keyframes sponsorFadeIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.92);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        .animate-sponsor-fade {
+          animation: sponsorFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+      `}</style>
     </div>
   );
 }

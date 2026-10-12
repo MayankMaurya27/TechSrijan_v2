@@ -35,6 +35,18 @@ export class ApiError extends Error {
   }
 }
 
+const getApiBaseUrl = (): string => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && !envUrl.includes("localhost") && !envUrl.includes("127.0.0.1")) {
+    return envUrl.replace(/\/$/, "");
+  }
+  // If running in browser on production domain, directly communicate with live backend
+  if (typeof window !== "undefined" && window.location.hostname.includes("techsrijan.org")) {
+    return "https://techsrijan-backend.onrender.com";
+  }
+  return "";
+};
+
 class ApiClient {
   private getAuthHeader(): Record<string, string> {
     if (typeof window === "undefined") return {};
@@ -43,7 +55,10 @@ class ApiClient {
   }
 
   async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const res = await fetch(endpoint, {
+    const baseUrl = getApiBaseUrl();
+    const url = endpoint.startsWith("http") ? endpoint : `${baseUrl}${endpoint}`;
+
+    const res = await fetch(url, {
       ...options,
       headers: {
         "Content-Type": "application/json",
@@ -52,11 +67,15 @@ class ApiClient {
       },
     });
 
-    const data: ApiResponse<T> = await res.json().catch(() => ({
-      success: false,
-      error: { code: "PARSE_ERROR", message: "Failed to parse JSON response" },
-      meta: { timestamp: new Date().toISOString() },
-    }));
+    let data: ApiResponse<T>;
+    try {
+      data = await res.json();
+    } catch {
+      const statusMsg = !res.ok
+        ? `Server responded with HTTP ${res.status} (${res.statusText || "Error"})`
+        : "Failed to parse JSON response";
+      throw new ApiError(statusMsg, `HTTP_${res.status}`);
+    }
 
     if (!res.ok || !data.success) {
       const errorMessage =
@@ -99,6 +118,22 @@ class ApiClient {
       turnstileToken?: string;
     }) =>
       this.request<AuthResponse>("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }).then((res) => {
+        if (typeof window !== "undefined" && res.token) {
+          localStorage.setItem("ts27_token", res.token);
+          localStorage.setItem("ts27_user_profile", JSON.stringify(res.user));
+        }
+        return res;
+      }),
+
+    loginAdmin: (body: {
+      identifier: string;
+      password: string;
+      turnstileToken?: string;
+    }) =>
+      this.request<AuthResponse>("/api/auth/admin-login", {
         method: "POST",
         body: JSON.stringify(body),
       }).then((res) => {

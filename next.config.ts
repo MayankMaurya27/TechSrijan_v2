@@ -24,12 +24,20 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["qrcode", "lucide-react"],
   },
   async rewrites() {
-    const backendUrl =
+    let backendUrl =
       process.env.BACKEND_API_URL ||
       process.env.NEXT_PUBLIC_API_URL ||
       (process.env.NODE_ENV === "production"
         ? "https://techsrijan-backend.onrender.com"
         : "http://localhost:4000");
+
+    // Guard: Prevent Vercel edge proxy from resolving localhost/private IPs in production
+    if (
+      process.env.NODE_ENV === "production" &&
+      (backendUrl.includes("localhost") || backendUrl.includes("127.0.0.1"))
+    ) {
+      backendUrl = "https://techsrijan-backend.onrender.com";
+    }
 
     return [
       {

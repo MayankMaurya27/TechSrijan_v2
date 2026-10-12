@@ -21,6 +21,11 @@ interface AuthContextType {
     password: string;
     turnstileToken?: string;
   }) => Promise<SafeUser>;
+  loginAdmin: (credentials: {
+    identifier: string;
+    password: string;
+    turnstileToken?: string;
+  }) => Promise<SafeUser>;
   register: (data: {
     email: string;
     password: string;
@@ -110,6 +115,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const loginAdmin = async (credentials: {
+    identifier: string;
+    password: string;
+    turnstileToken?: string;
+  }): Promise<SafeUser> => {
+    setIsLoading(true);
+    try {
+      const res = await api.auth.loginAdmin(credentials);
+      setUser(res.user);
+      setToken(res.token);
+      return res.user;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const register = async (data: {
     email: string;
     password: string;
@@ -145,6 +166,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     isAuthenticated: Boolean(user && token),
     login,
+    loginAdmin,
     register,
     logout,
     refreshUser,

@@ -38,7 +38,7 @@ export interface PaymentItem {
 }
 
 export function AdminPortal() {
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user, logout, isLoading: isAuthLoading } = useAuth();
   const [payments, setPayments] = useState<PaymentItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
@@ -211,23 +211,12 @@ export function AdminPortal() {
     );
   }
 
-  if (!user || !isAdmin) {
-    return (
-      <div className="min-h-screen pt-32 px-6 flex flex-col items-center justify-center font-mono text-center max-w-lg mx-auto">
-        <ShieldAlert className="w-14 h-14 text-[var(--geass-crimson)] mb-4 animate-pulse" />
-        <h1 className="text-2xl font-black uppercase tracking-tight text-[var(--geass-crimson)] mb-2">
-          SECURITY RESTRICTION · LEVEL 4 CLEARANCE
-        </h1>
-        <p className="text-xs text-[var(--text-secondary)] mb-6 leading-relaxed">
-          Access to High Command Ledger and payment reconciliation is restricted to authorized High Command personnel (ADMIN / SUPER_ADMIN / BOSS).
-        </p>
-        <Link href="/">
-          <Button variant="outline" size="default">
-            <span>RETURN TO BATTLEFRONT</span>
-          </Button>
-        </Link>
-      </div>
-    );
+  if (!user) {
+    return <AdminSignInView />;
+  }
+
+  if (!isAdmin) {
+    return <NonAdminRestrictedView user={user} onLogout={logout} />;
   }
 
   return (
@@ -559,6 +548,167 @@ export function AdminPortal() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function AdminSignInView() {
+  const { loginAdmin } = useAuth();
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!identifier.trim() || !password) {
+      setError("Please provide both administrator identifier and passphrase.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await loginAdmin({
+        identifier: identifier.trim(),
+        password,
+      });
+    } catch (err: any) {
+      setError(err?.message || "Authentication failed. High Command administrative clearance required.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen pt-32 pb-20 px-6 flex flex-col items-center justify-center font-mono">
+      <div className="w-full max-w-md mx-auto border border-[var(--border)] bg-[var(--surface)] p-8 rounded-lg shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--geass-crimson)] via-[var(--accent-primary)] to-[var(--geass-crimson)]" />
+
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2.5 rounded bg-[var(--geass-crimson)]/10 border border-[var(--geass-crimson)]/30 text-[var(--geass-crimson)]">
+            <ShieldAlert className="w-6 h-6 animate-pulse" />
+          </div>
+          <div>
+            <span className="text-[10px] tracking-[0.3em] uppercase text-[var(--accent-primary)] font-semibold block">
+              RESTRICTED APEX TERMINAL
+            </span>
+            <h1 className="text-xl font-black uppercase text-[var(--text-primary)] tracking-tight">
+              ADMIN COMMAND PORTAL
+            </h1>
+          </div>
+        </div>
+
+        <p className="text-xs text-[var(--text-muted)] mb-6 leading-relaxed">
+          Authorized personnel only. Authenticate using your university administrator roll number or official directorate email.
+        </p>
+
+        {error && (
+          <div className="mb-6 p-3.5 rounded border border-[var(--geass-crimson)]/50 bg-[var(--geass-crimson)]/10 text-xs text-[var(--geass-crimson)] flex items-start gap-2.5">
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-[10px] tracking-widest uppercase text-[var(--text-secondary)] mb-2 font-semibold">
+              OFFICIAL IDENTIFIER (ROLL NO / EMAIL)
+            </label>
+            <input
+              type="text"
+              required
+              autoComplete="username"
+              placeholder="e.g. 2027DIR001 or admin@techsrijan.org"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              className="h-11 w-full rounded border border-[var(--border)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)]/50 focus:border-[var(--accent-primary)] focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[10px] tracking-widest uppercase text-[var(--text-secondary)] mb-2 font-semibold">
+              PASSPHRASE
+            </label>
+            <input
+              type="password"
+              required
+              autoComplete="current-password"
+              placeholder="••••••••••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="h-11 w-full rounded border border-[var(--border)] bg-[var(--bg-primary)] px-3 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)]/50 focus:border-[var(--accent-primary)] focus:outline-none"
+            />
+          </div>
+
+          <Button
+            type="submit"
+            variant="default"
+            disabled={loading}
+            className="w-full h-11 mt-2 text-xs font-bold tracking-wider uppercase bg-[var(--geass-crimson)] hover:bg-[var(--geass-crimson)]/90 text-white"
+          >
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>AUTHENTICATING CLEARANCE...</span>
+              </span>
+            ) : (
+              <span>AUTHENTICATE & ENTER PORTAL</span>
+            )}
+          </Button>
+        </form>
+
+        <div className="mt-8 pt-6 border-t border-[var(--border)] flex flex-col gap-2 text-center">
+          <div className="text-[10px] text-[var(--text-muted)]">
+            Student attendee or participant?
+          </div>
+          <Link
+            href="/"
+            className="text-xs text-[var(--accent-primary)] hover:underline inline-flex items-center justify-center gap-1"
+          >
+            <span>Return to Public Battlefront</span>
+            <ExternalLink className="w-3 h-3" />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NonAdminRestrictedView({
+  user,
+  onLogout,
+}: {
+  user: any;
+  onLogout: () => void;
+}) {
+  return (
+    <div className="min-h-screen pt-32 px-6 flex flex-col items-center justify-center font-mono text-center max-w-lg mx-auto">
+      <ShieldAlert className="w-14 h-14 text-[var(--geass-crimson)] mb-4 animate-pulse" />
+      <h1 className="text-2xl font-black uppercase tracking-tight text-[var(--geass-crimson)] mb-2">
+        INSUFFICIENT CLEARANCE · LEVEL 4 REQUIRED
+      </h1>
+      <p className="text-xs text-[var(--text-secondary)] mb-3 leading-relaxed">
+        You are currently signed in as <strong className="text-[var(--text-primary)]">{user.email}</strong> with role tier <strong className="text-[var(--accent-primary)]">[{user.role}]</strong>.
+      </p>
+      <p className="text-xs text-[var(--text-muted)] mb-6 leading-relaxed">
+        Access to High Command Ledger and payment reconciliation is restricted exclusively to authorized administrators (ADMIN / SUPER_ADMIN / BOSS).
+      </p>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <Button
+          variant="default"
+          size="default"
+          onClick={onLogout}
+          className="bg-[var(--geass-crimson)] hover:bg-[var(--geass-crimson)]/90 text-white text-xs"
+        >
+          <span>SWITCH TO ADMIN CREDENTIALS</span>
+        </Button>
+        <Link href="/">
+          <Button variant="outline" size="default" className="text-xs">
+            <span>RETURN TO BATTLEFRONT</span>
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 }

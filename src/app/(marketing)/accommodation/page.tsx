@@ -241,8 +241,8 @@ export default function AccommodationPage() {
     }
 
     const isMobile = window.innerWidth < 768;
-    const pinEndDistance = isMobile ? "+=80%" : "+=115%";
-    const scrubSpeed = isMobile ? 0.35 : 0.45;
+    const pinEndDistance = isMobile ? "+=55%" : "+=95%";
+    const scrubSpeed = isMobile ? 0.2 : 0.35;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -364,24 +364,22 @@ export default function AccommodationPage() {
         0.1
       );
 
-      // Form Panel emerges directly and overlaps with cards fading out (ZERO BLACK SCREEN GAP!)
+      // Form Panel emerges directly with clean opacity, scale and subtle vertical drift (NO BROKEN/CLIPPED TEXT!)
       tl.fromTo(
         formPanelRef.current,
         {
           opacity: 0,
-          clipPath: "polygon(0 25%, 100% 25%, 100% 75%, 0 75%)",
-          scale: 0.94,
-          y: 24,
+          scale: 0.96,
+          y: 18,
         },
         {
           opacity: 1,
-          clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
           scale: 1,
           y: 0,
           ease: "power2.out",
           duration: 0.45,
         },
-        0.2
+        0.18
       );
 
       if (formFieldsRef.current) {
@@ -399,7 +397,7 @@ export default function AccommodationPage() {
             ease: "power2.out",
             duration: 0.3,
           },
-          0.32
+          0.30
         );
       }
     }, scrollWrapperRef);
@@ -422,12 +420,12 @@ export default function AccommodationPage() {
   const scrollToStageProgress = useCallback((targetProgress: number) => {
     const triggerTop = scrollWrapperRef.current?.offsetTop || 0;
     const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-    const totalDistance = window.innerHeight * (isMobile ? 0.8 : 1.15);
+    const totalDistance = window.innerHeight * (isMobile ? 0.55 : 0.95);
     const targetScroll = triggerTop + totalDistance * Math.max(0, Math.min(1, targetProgress));
 
     const lenis = window.__lenis;
     if (lenis) {
-      lenis.scrollTo(targetScroll, { duration: 0.8 });
+      lenis.scrollTo(targetScroll, { duration: 0.6 });
     } else {
       window.scrollTo({
         top: targetScroll,
@@ -782,12 +780,12 @@ export default function AccommodationPage() {
               })}
             </div>
 
-            {/* CENTER COLUMN: DYNAMIC CHARACTER STAGE */}
+            {/* CENTER COLUMN: DYNAMIC CHARACTER STAGE (Sticks firmly to bottom with zero gap) */}
             <div
               ref={centerCharacterRef}
               onMouseEnter={() => setIsCharHovered(true)}
               onMouseLeave={() => setIsCharHovered(false)}
-              className="absolute inset-0 flex items-end justify-center pointer-events-none lg:pointer-events-auto lg:relative lg:w-[40%] h-full z-10 will-change-transform cursor-pointer group bottom-0 sm:bottom-0 lg:bottom-1 xl:bottom-2"
+              className="absolute inset-x-0 bottom-0 flex items-end justify-center pointer-events-none lg:pointer-events-auto z-10 will-change-transform cursor-pointer group"
             >
               {/* Restrained Dynamic Outline Rim Glow */}
               <div
@@ -802,10 +800,10 @@ export default function AccommodationPage() {
                 }`}
               />
 
-              {/* Character Stage Wrapper */}
+              {/* Character Stage Wrapper - Anchored firmly to bottom */}
               <div
                 ref={charImageWrapRef}
-                className="relative w-[210px] sm:w-[310px] lg:w-[450px] xl:w-[520px] 2xl:w-[580px] h-[260px] sm:h-[380px] lg:h-[490px] xl:h-[550px] 2xl:h-[620px] max-h-[62vh] select-none flex items-end justify-center will-change-transform"
+                className="relative w-[230px] sm:w-[330px] lg:w-[490px] xl:w-[560px] 2xl:w-[620px] h-[290px] sm:h-[410px] lg:h-[570px] xl:h-[640px] 2xl:h-[700px] select-none flex items-end justify-center will-change-transform translate-y-3 sm:translate-y-4 lg:translate-y-6 xl:translate-y-8"
               >
                 {/* 1. DEFAULT STATE: NORMAL CENTERED LELOUCH CHARACTER CUTOUT */}
                 <div

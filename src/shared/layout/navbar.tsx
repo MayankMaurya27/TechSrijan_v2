@@ -13,9 +13,6 @@ const THEME_CYCLE = [
   "geass-moon",
 ] as const;
 
-// Mathematically calibrated pill path (width: 1020, height: 52, radius: 24, safe insets: 2px)
-const PILL_PATH =
-  "M 26,2 L 994,2 A 24,24 0 0 1 1018,26 A 24,24 0 0 1 994,50 L 26,50 A 24,24 0 0 1 2,26 A 24,24 0 0 1 26,2 Z";
 
 const THEME_CONFIG = {
   "arrakis-day": {
@@ -268,112 +265,53 @@ export function Navbar() {
           </div>
 
           {/* Desktop Center: Anti-Collision Flexible Pill */}
-          <div className="flex-1 flex items-center justify-center min-w-0 max-w-[1020px] pointer-events-auto z-10 mx-auto">
-            <div className="group/navbar relative w-full max-w-[980px]">
+          <div className="flex-1 flex items-center justify-center min-w-0 pointer-events-auto z-10 mx-auto px-2">
+            <div
+              className="group/navbar relative w-fit max-w-full rounded-full border bg-[#0d0906]/92 backdrop-blur-2xl transition-all duration-500 shadow-2xl"
+              style={{
+                borderColor: currentThemeConfig.frameStroke,
+                boxShadow: `0 0 18px ${currentThemeConfig.laserStrokeAura}33, 0 10px 30px rgba(0,0,0,0.9)`,
+              }}
+            >
+              {/* Dynamic Normalized Traveling Laser Border (Zero Distortion on any width) */}
               <svg
-                className="absolute inset-0 w-full h-[48px] xl:h-[52px] pointer-events-none -z-10 transition-all duration-500 group-hover/navbar:brightness-115 overflow-visible"
-                style={{ filter: currentThemeConfig.ambientChassisGlow, overflow: "visible" }}
-                viewBox="0 0 1020 52"
-                preserveAspectRatio="none"
+                className="absolute -inset-[1px] w-[calc(100%+2px)] h-[calc(100%+2px)] pointer-events-none rounded-full overflow-visible z-0"
+                style={{ filter: currentThemeConfig.ambientChassisGlow }}
               >
-                <defs>
-                  <linearGradient id="hud-bg-fill" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#100b07" stopOpacity="0.95" />
-                    <stop offset="50%" stopColor="#080604" stopOpacity="0.98" />
-                    <stop offset="100%" stopColor="#130d07" stopOpacity="0.96" />
-                  </linearGradient>
-
-                  {/* High-Impact Radiant Neon Edge Halo */}
-                  <filter id="neon-subtle-aura" x="-100%" y="-200%" width="300%" height="500%">
-                    <feGaussianBlur stdDeviation="5" result="blur1" />
-                    <feGaussianBlur stdDeviation="10" result="blur2" />
-                    <feMerge>
-                      <feMergeNode in="blur2" />
-                      <feMergeNode in="blur1" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-
-                  {/* Crisp Laser Beam Glow */}
-                  <filter id="neon-crisp-beam" x="-100%" y="-200%" width="300%" height="500%">
-                    <feGaussianBlur stdDeviation="2.5" result="blurCore" />
-                    <feGaussianBlur stdDeviation="6" result="blurMid" />
-                    <feMerge>
-                      <feMergeNode in="blurMid" />
-                      <feMergeNode in="blurCore" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-                </defs>
-
-                {/* Smooth Pill Background Fill */}
-                <path
-                  d={PILL_PATH}
-                  fill="url(#hud-bg-fill)"
-                />
-
-                {/* Continuous Base Chassis Border (Crisp, Dark & Subtle like Image 2) */}
-                <path
-                  d={PILL_PATH}
+                <rect
+                  x="1"
+                  y="1"
+                  width="calc(100% - 2px)"
+                  height="calc(100% - 2px)"
+                  rx="9999"
+                  ry="9999"
+                  pathLength="100"
                   fill="none"
                   stroke={currentThemeConfig.laserStrokeAura}
-                  strokeWidth="1.5"
-                  strokeOpacity="0.35"
-                  vectorEffect="non-scaling-stroke"
-                />
-                <path
-                  d={PILL_PATH}
-                  fill="none"
-                  stroke={currentThemeConfig.frameStroke}
-                  strokeWidth="1.2"
-                  vectorEffect="non-scaling-stroke"
-                />
-
-                {/* Flowing Radiant Outer Aura */}
-                <path
-                  d={PILL_PATH}
-                  fill="none"
-                  stroke={currentThemeConfig.laserStrokeAura}
-                  strokeWidth="5.5"
-                  strokeOpacity="0.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  vectorEffect="non-scaling-stroke"
-                  filter="url(#neon-subtle-aura)"
-                  className="animate-neon-border"
-                />
-
-                {/* Flowing Saturated Mid Beam */}
-                <path
-                  d={PILL_PATH}
-                  fill="none"
-                  stroke={currentThemeConfig.laserStrokeMid}
                   strokeWidth="3"
-                  strokeOpacity="0.95"
+                  strokeOpacity="0.5"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
-                  vectorEffect="non-scaling-stroke"
-                  filter="url(#neon-crisp-beam)"
-                  className="animate-neon-border"
+                  className="animate-neon-rect-travel"
                 />
-
-                {/* Flowing Hot Theme Core Filament */}
-                <path
-                  d={PILL_PATH}
+                <rect
+                  x="1"
+                  y="1"
+                  width="calc(100% - 2px)"
+                  height="calc(100% - 2px)"
+                  rx="9999"
+                  ry="9999"
+                  pathLength="100"
                   fill="none"
                   stroke={currentThemeConfig.laserStrokeCore}
                   strokeWidth="1.8"
-                  strokeOpacity="1"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
-                  vectorEffect="non-scaling-stroke"
-                  className="animate-neon-border"
+                  className="animate-neon-rect-travel"
                 />
               </svg>
 
               {/* Links and Theme Changer inside the Smooth Pill Navbar */}
-              <div className="relative flex h-[48px] xl:h-[52px] items-center justify-center px-8 lg:px-9 xl:px-10">
-                <nav className="flex items-center gap-1.5 lg:gap-2 xl:gap-2.5 font-sans text-[11px] lg:text-[11.5px] xl:text-[12px] 2xl:text-[12.5px] tracking-[0.13em] xl:tracking-[0.15em] text-[#d6c7b2]">
+              <div className="relative z-10 flex h-[46px] xl:h-[50px] items-center justify-center px-5 lg:px-6 xl:px-7">
+                <nav className="flex items-center gap-1 xl:gap-2 font-sans text-[11px] xl:text-[12px] 2xl:text-[12.5px] tracking-[0.13em] xl:tracking-[0.15em] text-[#d6c7b2]">
                   {NAV_LINKS.map((item, index) => {
                     const isActive = pathname === item.href;
                     return (
@@ -385,7 +323,7 @@ export function Navbar() {
                         )}
                         <Link
                           href={item.href}
-                          className={`px-1.5 lg:px-2 xl:px-2.5 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-300 relative group whitespace-nowrap ${
+                          className={`px-1.5 xl:px-2 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-300 relative group whitespace-nowrap ${
                             isActive ? "text-[var(--accent-primary,#d4a843)] font-semibold" : ""
                           }`}
                         >
@@ -405,11 +343,11 @@ export function Navbar() {
                     |
                   </span>
 
-                  {/* Theme Orb Button (Symmetrically Positioned Inside Nav with Safe Margins) */}
+                  {/* Theme Orb Button (Symmetrically Positioned with Safe Inset Clearance) */}
                   <button
                     type="button"
                     onClick={toggleTheme}
-                    className="flex items-center justify-center h-6 w-6 xl:h-6.5 xl:w-6.5 rounded-full border border-[rgba(212,168,67,0.45)] bg-black/75 shadow-[0_0_12px_rgba(212,168,67,0.25)] hover:border-[var(--accent-primary,#d4a843)] hover:scale-110 transition-all duration-300 active:scale-95 cursor-pointer flex-shrink-0 ml-1"
+                    className="flex items-center justify-center h-6 w-6 xl:h-6.5 xl:w-6.5 rounded-full border border-[rgba(212,168,67,0.45)] bg-black/75 shadow-[0_0_12px_rgba(212,168,67,0.25)] hover:border-[var(--accent-primary,#d4a843)] hover:scale-110 transition-all duration-300 active:scale-95 cursor-pointer flex-shrink-0 ml-1.5 xl:ml-2"
                     title={`Active Theme: ${currentThemeConfig.title} (Click to cycle)`}
                     aria-label={`Cycle Theme: Currently ${currentThemeConfig.label}`}
                   >

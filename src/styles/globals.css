@@ -719,6 +719,20 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
   animation: neonBorderTravel 4s linear infinite;
 }
 
+@keyframes neonRectTravel {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -100;
+  }
+}
+
+.animate-neon-rect-travel {
+  stroke-dasharray: 18 32 18 32;
+  animation: neonRectTravel 6s linear infinite;
+}
+
 .clip-mecha-btn {
   clip-path: polygon(7px 0, calc(100% - 7px) 0, 100% 7px, 100% calc(100% - 7px), calc(100% - 7px) 100%, 7px 100%, 0 calc(100% - 7px), 0 7px);
 }

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme, useAuth } from "@/core";
 import { useAuthModal } from "@/domains/auth";
-import { Menu, X, Home, Calendar, Code2, Hotel, Layers, Award, Handshake } from "lucide-react";
+import { Menu, X, Home, Calendar, Code2, Hotel, Layers, Award, Handshake, Compass } from "lucide-react";
 
 const THEME_CYCLE = [
   "arrakis-day",
@@ -481,13 +481,13 @@ export function Navbar() {
             <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium">Events</span>
           </Link>
           <Link
-            href="/ambassador"
+            href="/about"
             className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${
-              pathname === "/ambassador" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+              pathname === "/about" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
             }`}
           >
-            <Award className="h-4 w-4" />
-            <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium truncate max-w-[70px]">Ambassador</span>
+            <Compass className="h-4 w-4" />
+            <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium">About</span>
           </Link>
           <Link
             href="/sponsors"

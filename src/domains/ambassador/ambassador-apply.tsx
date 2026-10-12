@@ -7,7 +7,7 @@ import { useAmbassadorTheme } from "./ambassador-theme";
 
 export function AmbassadorApply() {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const isInView = useInView(ref, { once: true, amount: 0.05, margin: "0px 0px -50px 0px" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const t = useAmbassadorTheme();
 
@@ -37,10 +37,10 @@ export function AmbassadorApply() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Deep ambient theme glows */}
         <div
-          className={`absolute top-1/4 -left-32 w-[600px] h-[600px] ${t.applyAtmosphereClass} blur-[160px] rounded-full transition-colors duration-500`}
+          className={`hidden sm:block absolute top-1/4 -left-32 w-[600px] h-[600px] ${t.applyAtmosphereClass} blur-[160px] rounded-full transition-colors duration-500`}
         />
         <div
-          className={`absolute bottom-0 right-0 w-[500px] h-[500px] ${t.applyAtmosphereClass} blur-[150px] rounded-full transition-colors duration-500`}
+          className={`hidden sm:block absolute bottom-0 right-0 w-[500px] h-[500px] ${t.applyAtmosphereClass} blur-[150px] rounded-full transition-colors duration-500`}
         />
 
         {/* Subtle noise / grunge texture */}
@@ -109,7 +109,7 @@ export function AmbassadorApply() {
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="lg:col-span-7 flex flex-col justify-between"
           >
             <div>
@@ -275,7 +275,7 @@ export function AmbassadorApply() {
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
             className="lg:col-span-5 pt-2"
           >
             {/* Top Accent Dash */}

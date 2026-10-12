@@ -110,7 +110,7 @@ const TARGET_COLLEGES = [
 export function AmbassadorColleges() {
   const t = useAmbassadorTheme();
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const isInView = useInView(ref, { once: true, amount: 0.05, margin: "0px 0px -50px 0px" });
   const [showAll, setShowAll] = useState(false);
 
   const tierLabels = {
@@ -136,7 +136,7 @@ export function AmbassadorColleges() {
       className="relative pt-6 sm:pt-8 lg:pt-10 pb-8 sm:pb-10 lg:pb-12 bg-black overflow-hidden select-none"
     >
       {/* Ambient Theme glow */}
-      <div className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] ${t.collegesAtmosphereClass} blur-[150px] rounded-full pointer-events-none transition-colors duration-500`} />
+      <div className={`hidden sm:block absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] ${t.collegesAtmosphereClass} blur-[150px] rounded-full pointer-events-none transition-colors duration-500`} />
 
       <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
         
@@ -146,7 +146,7 @@ export function AmbassadorColleges() {
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           className="text-center mb-8 sm:mb-10"
         >
           <h2 className="font-bebas text-5xl sm:text-6xl lg:text-7xl tracking-wider uppercase text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
@@ -165,7 +165,7 @@ export function AmbassadorColleges() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.2 }}
+          transition={{ duration: 0.45, delay: 0.05 }}
           className="flex flex-wrap justify-center gap-8 sm:gap-12 mb-10 sm:mb-12"
         >
           {[
@@ -193,7 +193,7 @@ export function AmbassadorColleges() {
                 key={college.name}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.04 * i + 0.15 }}
+                transition={{ duration: 0.4, delay: Math.min(0.02 * i, 0.12), ease: "easeOut" }}
                 className={`group relative p-5 rounded-lg border ${t.collegesCardBorder} bg-gradient-to-br from-[#140406]/90 via-[#0B0203]/95 to-black/95 ${t.collegesCardHoverBorder} ${t.collegesCardHoverShadow} transition-all duration-300 flex flex-col justify-between`}
               >
                 <div>

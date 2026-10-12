@@ -439,6 +439,15 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
               )}
             </div>
 
+            {user?.isOnboarded && regMode === "idle" && (
+              <div className="mb-2 px-3 py-1.5 rounded-lg bg-emerald-950/40 border border-emerald-500/30 flex items-center gap-2 text-[10px] font-mono text-emerald-300">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                <span>
+                  Fast Registration active · Onboarded as {user.name} ({user.collegeName || user.city || "Verified"})
+                </span>
+              </div>
+            )}
+
             {/* Modal Actions Footer */}
             <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-3 flex-shrink-0">
               <button
@@ -488,7 +497,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                         {isSubmitting ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         ) : (
-                          <span>Register Solo</span>
+                          <span>{user?.isOnboarded ? "⚡ 1-Click Register" : "Register Solo"}</span>
                         )}
                       </button>
                     )}

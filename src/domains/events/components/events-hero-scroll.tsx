@@ -15,11 +15,13 @@ if (typeof window !== "undefined") {
 interface EventsHeroScrollProps {
   onScrollProgress?: (progress: number) => void;
   onClubSelect?: (clubId: ClubId) => void;
+  onCategorySelect?: (categoryId: string) => void;
 }
 
 export function EventsHeroScroll({
   onScrollProgress,
   onClubSelect,
+  onCategorySelect,
 }: EventsHeroScrollProps) {
   // Container & Stage Refs
   const scrollWrapperRef = useRef<HTMLDivElement>(null);
@@ -50,6 +52,7 @@ export function EventsHeroScroll({
   const throttledSeekTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isPrimedRef = useRef(false);
   const lastPaintedTimeRef = useRef(-1);
+  const lastProgressStateRef = useRef(0);
 
   // Detect mobile viewport (< 768px or touch device)
   useEffect(() => {
@@ -210,29 +213,27 @@ export function EventsHeroScroll({
     };
   }, [primeMobileVideo]);
 
-  // ─── Smooth Hardware Video Scrubber (Frame-by-Frame Precision) ─────────────
+  // ─── Smooth Hardware Video Scrubber (Universal 28ms throttle) ─────────────
   const attemptSeek = useCallback(() => {
     const video = videoRef.current;
     if (!video || !video.duration || isSeekingRef.current) return;
 
-    // Mobile hardware decoder throttle: 16ms (matches 60 FPS)
-    if (isMobileRef.current) {
-      const now = performance.now();
-      const elapsed = now - lastSeekTimeRef.current;
-      if (elapsed < 16) {
-        if (!throttledSeekTimerRef.current) {
-          throttledSeekTimerRef.current = setTimeout(() => {
-            throttledSeekTimerRef.current = null;
-            attemptSeek();
-          }, 16 - elapsed);
-        }
-        return;
+    // Universal hardware decoder throttle: 28ms to prevent compositor queue choke
+    const now = performance.now();
+    const elapsed = now - lastSeekTimeRef.current;
+    if (elapsed < 28) {
+      if (!throttledSeekTimerRef.current) {
+        throttledSeekTimerRef.current = setTimeout(() => {
+          throttledSeekTimerRef.current = null;
+          attemptSeek();
+        }, 28 - elapsed);
       }
+      return;
     }
 
     const maxDuration = Math.max(0, video.duration - 0.05);
     const target = Math.max(0, Math.min(maxDuration, targetTimeRef.current));
-    const minDelta = 0.01;
+    const minDelta = 0.02;
 
     if (Math.abs(video.currentTime - target) > minDelta) {
       isSeekingRef.current = true;
@@ -241,13 +242,13 @@ export function EventsHeroScroll({
       // Direct currentTime seek on All-Intra media (zero latency, exact frame precision)
       video.currentTime = target;
 
-      // Watchdog: If mobile browser drops seeked callback, unblock after 80ms
+      // Watchdog: If browser drops seeked callback, unblock after 75ms
       if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
       seekWatchdogRef.current = setTimeout(() => {
         isSeekingRef.current = false;
         renderFrameToCanvas(true);
         attemptSeek();
-      }, 80);
+      }, 75);
     }
   }, [renderFrameToCanvas]);
 
@@ -274,7 +275,7 @@ export function EventsHeroScroll({
     if (video && video.duration) {
       const maxDuration = Math.max(0, video.duration - 0.05);
       const target = Math.max(0, Math.min(maxDuration, targetTimeRef.current));
-      const minDelta = 0.01;
+      const minDelta = 0.02;
       if (Math.abs(video.currentTime - target) > minDelta) {
         attemptSeek();
       }
@@ -327,8 +328,11 @@ export function EventsHeroScroll({
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const p = self.progress;
-            setScrollProgress(p);
-            if (onScrollProgress) onScrollProgress(p);
+            if (Math.abs(p - lastProgressStateRef.current) >= 0.003) {
+              lastProgressStateRef.current = p;
+              setScrollProgress(p);
+              if (onScrollProgress) onScrollProgress(p);
+            }
 
             // Synchronize video scrubber time
             const video = videoRef.current;
@@ -598,6 +602,7 @@ export function EventsHeroScroll({
           <ArenaSpatialCards
             isVisible={scrollProgress >= 0.28}
             onClubSelect={onClubSelect}
+            onCategorySelect={onCategorySelect}
             onExploreEvents={scrollToOurEvents}
           />
         </div>

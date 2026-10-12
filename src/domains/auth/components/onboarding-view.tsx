@@ -35,6 +35,9 @@ export function OnboardingView() {
         email: user.email || prev.email,
         phone: user.mobile || prev.phone,
         college: user.collegeName || prev.college,
+        city: user.city || prev.city,
+        course: user.branch || prev.course,
+        year: user.courseYear ? String(user.courseYear) : prev.year,
         bankAccountNumber: user.bankAccountNumber || prev.bankAccountNumber,
         bankIfsc: user.bankIfsc || prev.bankIfsc,
       }));

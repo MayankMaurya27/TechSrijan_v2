@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { signJwt } from "@/lib/jwt";
 import type { SafeUser } from "@/lib/types";
 
 export async function GET(req: NextRequest) {
@@ -70,48 +69,45 @@ export async function GET(req: NextRequest) {
     const email = (googleUser.email || "").toLowerCase().trim();
     const name = googleUser.name || email.split("@")[0] || "Participant";
     const image = googleUser.picture || null;
-    const isMmmutStudent = email.endsWith("@mmmut.ac.in");
 
-    // 3. Assemble SafeUser profile
-    const safeUser: SafeUser = {
-      id: crypto.randomUUID(),
-      email,
-      name,
-      collegeName: isMmmutStudent
-        ? "Madan Mohan Malaviya University of Technology, Gorakhpur"
-        : "",
-      mobile: "",
-      gender: "OTHER",
-      role: "STUDENT",
-      club: null,
-      isMmmutStudent,
-      rollNumber: null,
-      isOnboarded: false,
-      totalPoints: 0,
-      image,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    // 3. Persist user and obtain official session clearance from backend PostgreSQL
+    let backendUrl =
+      process.env.BACKEND_API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      (process.env.NODE_ENV === "production"
+        ? "https://techsrijan-backend.onrender.com"
+        : "http://localhost:4000");
 
-    // 4. Issue standard Session JWT (HS256) matching backend specification
-    const jwtSecret =
-      process.env.JWT_SECRET ||
-      "techsrijan27_production_master_jwt_secret_key_minimum_32_characters_long_for_security";
+    if (
+      process.env.NODE_ENV === "production" &&
+      (backendUrl.includes("localhost") || backendUrl.includes("127.0.0.1"))
+    ) {
+      backendUrl = "https://techsrijan-backend.onrender.com";
+    }
 
-    const sessionPayload = {
-      id: safeUser.id,
-      email: safeUser.email,
-      name: safeUser.name,
-      role: safeUser.role,
-      club: safeUser.club,
-      isMmmutStudent: safeUser.isMmmutStudent,
-      rollNumber: safeUser.rollNumber,
-      isOnboarded: safeUser.isOnboarded,
-    };
+    const backendEndpoint = `${backendUrl.replace(/\/$/, "")}/api/auth/oauth`;
 
-    const token = signJwt(sessionPayload, jwtSecret, 7 * 86400);
+    const backendRes = await fetch(backendEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        name,
+        image,
+        provider: "google",
+      }),
+    });
 
-    // 5. Build redirect response with secure session cookies
+    if (!backendRes.ok) {
+      const errBody = await backendRes.json().catch(() => null);
+      throw new Error(errBody?.error?.message || `Backend authentication failed (status ${backendRes.status}).`);
+    }
+
+    const backendJson = await backendRes.json();
+    const safeUser: SafeUser = backendJson.data.user;
+    const token: string = backendJson.data.token;
+
+    // 4. Build redirect response with secure session cookies
     const callbackTarget = `${origin}/auth/callback?provider=google&token=${encodeURIComponent(
       token
     )}&user=${encodeURIComponent(JSON.stringify(safeUser))}`;

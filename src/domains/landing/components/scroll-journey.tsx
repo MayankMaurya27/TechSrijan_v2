@@ -172,19 +172,17 @@ export function ScrollJourney({
     if (!video || !video.duration) return;
     if (isSeekingRef.current) return;
 
-    // Mobile hardware decoder optimization: 16ms throttle (targets 60 FPS)
-    if (isMobileRef.current) {
-      const now = performance.now();
-      const elapsed = now - lastSeekTimeRef.current;
-      if (elapsed < 16) {
-        if (!throttledSeekTimerRef.current) {
-          throttledSeekTimerRef.current = setTimeout(() => {
-            throttledSeekTimerRef.current = null;
-            attemptSeek();
-          }, 16 - elapsed);
-        }
-        return;
+    // Universal hardware decoder protection: throttle to ~35 FPS (28ms) to avoid decoder pipeline congestion
+    const now = performance.now();
+    const elapsed = now - lastSeekTimeRef.current;
+    if (elapsed < 28) {
+      if (!throttledSeekTimerRef.current) {
+        throttledSeekTimerRef.current = setTimeout(() => {
+          throttledSeekTimerRef.current = null;
+          attemptSeek();
+        }, 28 - elapsed);
       }
+      return;
     }
 
     // Desktop: clamp to 3.65s (Image 2) so Image 3 (end plaza) is never reached!
@@ -193,22 +191,22 @@ export function ScrollJourney({
       ? Math.max(0, video.duration - 0.05)
       : Math.min(3.65, Math.max(0, video.duration - 0.05));
     const target = Math.max(0, Math.min(maxSafe, targetTimeRef.current));
-    const minDelta = 0.01;
+    const minDelta = 0.02;
 
     if (Math.abs(video.currentTime - target) > minDelta) {
       isSeekingRef.current = true;
       lastSeekTimeRef.current = performance.now();
 
-      // Direct currentTime seek on All-Intra media (zero latency, exact frame precision)
+      // Direct currentTime seek on All-Intra media
       video.currentTime = target;
 
-      // Watchdog: If browser drops `seeked` event, unlock after 80ms
+      // Watchdog: If browser drops `seeked` event, unlock after 70ms
       if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
       seekWatchdogRef.current = setTimeout(() => {
         isSeekingRef.current = false;
         paintCanvas(true);
         attemptSeek();
-      }, 80);
+      }, 70);
     }
   }, [paintCanvas]);
 
@@ -288,7 +286,10 @@ export function ScrollJourney({
         }
 
         const progress = Math.max(0, Math.min(1, -rect.top / totalDist));
-        setScrollProgress(progress);
+        if (Math.abs(progress - prevProgressRef.current) >= 0.003 || progress < 0.002 || progress > 0.998) {
+          prevProgressRef.current = progress;
+          setScrollProgress(progress);
+        }
 
         // Manage landing loop playback to free mobile GPU decoder
         if (progress > 0.005) {
@@ -403,7 +404,7 @@ export function ScrollJourney({
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-[250vh] sm:min-h-[340vh] md:min-h-[440vh] bg-black"
+      className="relative w-full min-h-[220vh] sm:min-h-[280vh] md:min-h-[320vh] bg-black"
     >
       {/* Sticky Fullscreen Video Window with dynamic viewport support */}
       <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden select-none bg-black">
@@ -490,11 +491,12 @@ export function ScrollJourney({
           }}
         />
 
-        {/* Layer 3: TechSrijan Main Landing Hero Title */}
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }}>
-          <HeroTitle scrollProgress={scrollProgress} />
-        </div>
-
+        {/* Layer 3: TechSrijan Main Landing Hero Title (Mounted only while in hero fold to conserve WebGL/CPU) */}
+        {scrollProgress < 0.14 && (
+          <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }}>
+            <HeroTitle scrollProgress={scrollProgress} />
+          </div>
+        )}
 
         {/* Layer 3.8: Cinematic Solar Gate Flash & Flare (Natural Volumetric Illumination) */}
         {totalFlashIntensity > 0.001 && (
@@ -516,30 +518,30 @@ export function ScrollJourney({
               }}
             />
 
-            {/* Desktop only: Multi-pass heavy blur bloom to avoid mobile GPU stall */}
+            {/* Desktop only: Optimized fill-rate blooms */}
             {!isMobile && (
               <>
-                {/* 2. Intense center portal gateway solar bloom (Deep volumetric spherical core) */}
+                {/* 2. Intense center portal gateway solar bloom */}
                 <div
-                  className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[88vw] h-[80vh] max-w-[1150px] rounded-full blur-[44px]"
+                  className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[88vw] h-[80vh] max-w-[1150px] rounded-full blur-[18px]"
                   style={{
                     background:
-                      "radial-gradient(circle at center, rgba(255, 255, 255, 1.0) 0%, rgba(255, 235, 160, 0.85) 28%, rgba(250, 165, 50, 0.45) 62%, transparent 100%)",
+                      "radial-gradient(circle at center, rgba(255, 255, 255, 0.98) 0%, rgba(255, 235, 160, 0.80) 28%, rgba(250, 165, 50, 0.35) 62%, transparent 95%)",
                   }}
                 />
 
                 {/* 2.5. Blinding white-hot gateway epicenter surge */}
                 <div
-                  className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[48vw] h-[48vh] max-w-[580px] rounded-full blur-[26px]"
+                  className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[48vw] h-[48vh] max-w-[580px] rounded-full blur-[14px]"
                   style={{
                     background:
                       "radial-gradient(circle at center, rgba(255, 255, 255, 0.98) 0%, rgba(255, 245, 205, 0.65) 45%, transparent 80%)",
                   }}
                 />
 
-                {/* 3. Soft broad horizontal atmospheric light halo (Extremely feathered, zero line artifact) */}
+                {/* 3. Soft broad horizontal atmospheric light halo */}
                 <div
-                  className="absolute top-[46%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] h-[240px] max-h-[38vh] blur-[52px]"
+                  className="absolute top-[46%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] h-[240px] max-h-[38vh] blur-[20px]"
                   style={{
                     background:
                       "radial-gradient(ellipse 90% 70% at center, rgba(255, 252, 235, 0.85) 0%, rgba(255, 215, 120, 0.45) 45%, rgba(240, 140, 40, 0.18) 75%, transparent 100%)",
@@ -548,7 +550,7 @@ export function ScrollJourney({
 
                 {/* 4. Broad vertical volumetric sunlight pouring down through the portal opening */}
                 <div
-                  className="absolute top-0 left-1/2 -translate-x-1/2 w-[360px] sm:w-[520px] h-full blur-[36px] opacity-85"
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-[360px] sm:w-[520px] h-full blur-[18px] opacity-85"
                   style={{
                     background:
                       "linear-gradient(180deg, rgba(255, 252, 230, 0.88) 0%, rgba(255, 215, 110, 0.50) 40%, rgba(240, 140, 35, 0.20) 75%, transparent 95%)",
@@ -559,10 +561,12 @@ export function ScrollJourney({
           </div>
         )}
 
-        {/* Layer 5: Citadel Archive (Monumental 3D information slabs revealing systems of the citadel) */}
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
-          <CitadelArchive scrollProgress={scrollProgress} />
-        </div>
+        {/* Layer 5: Citadel Archive (Mounted when entering arrival phase) */}
+        {scrollProgress > 0.65 && (
+          <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
+            <CitadelArchive scrollProgress={scrollProgress} />
+          </div>
+        )}
 
         {/* Layer 5.5: Citadel Waypoint Totem (Arrakis Social Directive Spire on the far right flank) */}
         {!isMobile && (

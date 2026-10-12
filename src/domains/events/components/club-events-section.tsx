@@ -673,10 +673,12 @@ function StackCardItem({
               }}
               className="w-full h-full object-cover select-none"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20">
-              <span className="font-mono text-[9px] uppercase tracking-wider text-white font-medium">
+            <div className="absolute top-2 left-2 right-2 flex items-center justify-between pointer-events-none">
+              <span className="px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-white/20 font-mono text-[9px] uppercase tracking-wider text-white font-medium">
                 {event.category}
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-white/20 font-mono text-[9px] uppercase tracking-wider text-amber-300/90 font-medium">
+                {event.clubName}
               </span>
             </div>
           </div>
@@ -746,8 +748,8 @@ function StackCardItem({
             <span className="px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-white/20 font-mono text-[9px] uppercase tracking-wider text-white font-semibold">
               {event.category}
             </span>
-            <span className="px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-white/20 font-mono text-[9px] uppercase tracking-wider text-white/70">
-              {event.venue}
+            <span className="px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md border border-white/20 font-mono text-[9px] uppercase tracking-wider text-amber-300/90 font-semibold">
+              {event.clubName}
             </span>
           </div>
         </div>
@@ -778,13 +780,69 @@ function StackCardItem({
   );
 }
 
-// ─── Stark Monochrome Club Tab Button ────────────────────────────────────────
-function ClubTab({
-  club,
+// ─── Stark Monochrome Category Tab Button ────────────────────────────────────────
+export type EventCategoryKey =
+  | "ALL"
+  | "TECHNICAL"
+  | "ROBOTICS"
+  | "GAMING"
+  | "MANAGEMENT"
+  | "CULTURAL";
+
+export interface CategoryTabItem {
+  id: EventCategoryKey;
+  label: string;
+  tagline: string;
+  glowColor: string;
+}
+
+export const CATEGORY_TABS: CategoryTabItem[] = [
+  {
+    id: "ALL",
+    label: "ALL ARENAS",
+    tagline: "The complete dossier of TechSrijan XXVII championships across all domains.",
+    glowColor: "rgba(255, 255, 255, 0.4)",
+  },
+  {
+    id: "TECHNICAL",
+    label: "TECHNICAL & CODE",
+    tagline: "Competitive programming, blind algorithms, system architecture & web engineering.",
+    glowColor: "rgba(56, 189, 248, 0.5)",
+  },
+  {
+    id: "ROBOTICS",
+    label: "ROBOTICS & COMBAT",
+    tagline: "Battle-tested machines — RoboWars, laser strike skirmishes & autonomous drones.",
+    glowColor: "rgba(234, 179, 8, 0.5)",
+  },
+  {
+    id: "GAMING",
+    label: "GAMING & ESPORTS",
+    tagline: "High-octane competitive LAN showdowns, tactical FPS & gaming battles.",
+    glowColor: "rgba(220, 38, 38, 0.5)",
+  },
+  {
+    id: "MANAGEMENT",
+    label: "MANAGEMENT & STRATEGY",
+    tagline: "Venture pitch conclaves, strategic turnarounds & corporate leadership.",
+    glowColor: "rgba(59, 130, 246, 0.5)",
+  },
+  {
+    id: "CULTURAL",
+    label: "CULTURAL & FLAGSHIP",
+    tagline: "Vail cosplay spectacle, talent show trials & personality pageants.",
+    glowColor: "rgba(168, 85, 247, 0.5)",
+  },
+];
+
+function CategoryTab({
+  tab,
+  count,
   isActive,
   onClick,
 }: {
-  club: (typeof CLUBS)[number];
+  tab: CategoryTabItem;
+  count: number;
   isActive: boolean;
   onClick: () => void;
 }) {
@@ -804,35 +862,31 @@ function ClubTab({
       }}
     >
       <div
-        className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full p-0.5 flex items-center justify-center border flex-shrink-0 ${
-          isActive ? "border-black/30 bg-black/10" : "border-white/20 bg-black/40"
+        className={`w-2 h-2 rounded-full flex-shrink-0 transition-colors ${
+          isActive ? "bg-black" : "bg-white/40"
         }`}
-      >
-        <img
-          src={club.logo}
-          alt=""
-          className="w-full h-full object-contain rounded-full"
-        />
-      </div>
-      <span>{club.shortName}</span>
+      />
+      <span>{tab.label}</span>
       <span className={`ml-0.5 font-normal ${isActive ? "text-black/70" : "text-neutral-500"}`}>
-        {club.eventCount}
+        {count}
       </span>
     </button>
   );
 }
 
 // ─── Main Component ───────────────────────────────────────────────────────────
-interface ClubEventsSectionProps {
+export interface ClubEventsSectionProps {
   activeClubId?: ClubId | null;
+  activeCategoryId?: EventCategoryKey | string | null;
   onReturnToArena?: () => void;
 }
 
 export function ClubEventsSection({
   activeClubId: propActiveClubId,
+  activeCategoryId: propActiveCategoryId,
   onReturnToArena,
 }: ClubEventsSectionProps) {
-  const [activeClubId, setActiveClubId] = useState<ClubId>("tsc");
+  const [activeCategory, setActiveCategory] = useState<EventCategoryKey>("ALL");
   const [eventsList, setEventsList] = useState<DetailedEvent[]>(ALL_EVENTS);
   const [activeEventModal, setActiveEventModal] = useState<DetailedEvent | null>(null);
   const [viewMode, setViewMode] = useState<"stack" | "grid">("stack");
@@ -844,25 +898,67 @@ export function ClubEventsSection({
       try {
         const liveEvents = await api.events.list();
         if (liveEvents && liveEvents.length > 0) {
-          setEventsList((prev) => {
-            return prev.map((staticEv) => {
-              const matched = liveEvents.find(
-                (le) =>
-                  le.slug === staticEv.id ||
-                  le.title.toLowerCase().includes(staticEv.name.toLowerCase()) ||
-                  staticEv.name.toLowerCase().includes(le.title.toLowerCase())
-              );
-              if (matched) {
-                return {
-                  ...staticEv,
-                  id: matched.id,
-                  prizePool: `₹${matched.prizePool.toLocaleString("en-IN")}`,
-                  venue: matched.venue || staticEv.venue,
-                };
-              }
-              return staticEv;
-            });
+          const clubIdMap: Record<string, ClubId> = {
+            TSC: "tsc",
+            RC: "robotics",
+            IEEE: "ieee-stb",
+            SAE: "sae",
+            RESO: "mmmut-reso",
+          };
+
+          const clubNameMap: Record<string, string> = {
+            TSC: "TechSrijan Core",
+            RC: "Robotics Club",
+            IEEE: "IEEE-STB MMMUT",
+            SAE: "SAE Collegiate Club",
+            RESO: "MMMUT RESO",
+          };
+
+          const mappedLive: DetailedEvent[] = liveEvents.map((be) => {
+            const matchedStatic = ALL_EVENTS.find(
+              (se) =>
+                se.id === be.slug ||
+                se.name.toLowerCase() === be.title.toLowerCase() ||
+                se.name.toLowerCase().includes(be.title.toLowerCase()) ||
+                be.title.toLowerCase().includes(se.name.toLowerCase())
+            );
+
+            const clubId = clubIdMap[be.organizingClub] || (matchedStatic?.clubId ?? "tsc");
+            const clubName = clubNameMap[be.organizingClub] || (matchedStatic?.clubName ?? "TechSrijan Core");
+
+            return {
+              id: be.id,
+              clubId,
+              clubName,
+              name: be.title,
+              category: be.category.toUpperCase(),
+              tagline: matchedStatic?.tagline || `Championship arena in ${be.category.toLowerCase()}.`,
+              description:
+                matchedStatic?.description ||
+                be.rulesText ||
+                `${be.title} organized by ${clubName}. Compete for glory and a prize pool of ₹${be.prizePool.toLocaleString("en-IN")}.`,
+              prizePool: `₹${be.prizePool.toLocaleString("en-IN")}`,
+              teamSize:
+                be.maxTeamSize > 1
+                  ? be.minTeamSize === be.maxTeamSize
+                    ? `Teams of ${be.maxTeamSize}`
+                    : `${be.minTeamSize} to ${be.maxTeamSize} Members`
+                  : "Solo (1)",
+              venue: be.venue || matchedStatic?.venue || "Main Campus Complex",
+              date: matchedStatic?.date || "Festival Days",
+              image: matchedStatic?.image || "/images/events/tsc-vail.jpg",
+              rounds: matchedStatic?.rounds || [
+                { title: "STAGE 1: QUALIFIER", desc: "Preliminary competitive screening." },
+                { title: "STAGE 2: GRAND FINALS", desc: "Championship showdown before jury." },
+              ],
+              rules: matchedStatic?.rules || (be.rulesText ? [be.rulesText] : ["Standard TechSrijan tournament rules apply."]),
+            };
           });
+
+          const liveNames = new Set(mappedLive.map((e) => e.name.toLowerCase()));
+          const remainingStatic = ALL_EVENTS.filter((se) => !liveNames.has(se.name.toLowerCase()));
+
+          setEventsList([...mappedLive, ...remainingStatic]);
         }
       } catch (err) {
         console.warn("Could not fetch live events from backend, using catalog fallback:", err);
@@ -889,21 +985,80 @@ export function ClubEventsSection({
 
   // Sync with prop when clicked from arena cards
   useEffect(() => {
-    if (propActiveClubId) {
-      setActiveClubId(propActiveClubId);
+    if (propActiveCategoryId) {
+      setActiveCategory(propActiveCategoryId as EventCategoryKey);
       setActiveIndex(0);
+    } else if (propActiveClubId) {
+      const clubToCategory: Record<string, EventCategoryKey> = {
+        tsc: "CULTURAL",
+        "mmmut-reso": "TECHNICAL",
+        "ieee-stb": "TECHNICAL",
+        robotics: "ROBOTICS",
+        sae: "MANAGEMENT",
+      };
+      const mapped = clubToCategory[propActiveClubId];
+      if (mapped) {
+        setActiveCategory(mapped);
+        setActiveIndex(0);
+      }
     }
-  }, [propActiveClubId]);
+  }, [propActiveCategoryId, propActiveClubId]);
 
-  const activeClub = CLUBS.find((c) => c.id === activeClubId) || CLUBS[0];
-  const filteredEvents = eventsList.filter((e) => e.clubId === activeClubId);
+  const getCategoryCount = (catKey: EventCategoryKey) => {
+    if (catKey === "ALL") return eventsList.length;
+    return eventsList.filter((e) => {
+      const c = e.category.toUpperCase();
+      if (catKey === "TECHNICAL") {
+        return c === "TECHNICAL" || c.includes("CODE") || c.includes("PROGRAMMING") || c.includes("INNOVATION") || c.includes("ACCESSIBILITY") || c.includes("RELAY");
+      }
+      if (catKey === "ROBOTICS") {
+        return c === "ROBOTICS" || c.includes("ROBOT") || c.includes("DRONE") || c.includes("HARDWARE") || c.includes("SPORTS") || c.includes("FORENSICS");
+      }
+      if (catKey === "GAMING") {
+        return c === "GAMING" || c.includes("GAMING") || c.includes("ESPORTS") || c.includes("VALORANT") || c.includes("STRIKE");
+      }
+      if (catKey === "MANAGEMENT") {
+        return c === "MANAGEMENT" || c.includes("MANAGEMENT") || c.includes("VENTURE") || c.includes("STRATEGY") || c.includes("PRODUCT");
+      }
+      if (catKey === "CULTURAL") {
+        return c === "CULTURAL" || c.includes("COSPLAY") || c.includes("PERSONALITY") || c.includes("TALENT") || c.includes("CIVIL") || c.includes("DESIGN");
+      }
+      return c === catKey;
+    }).length;
+  };
 
-  // Reset circle index when switching clubs
-  const handleTabClick = (clubId: ClubId) => {
-    setActiveClubId(clubId);
+  const filteredEvents =
+    activeCategory === "ALL"
+      ? eventsList
+      : eventsList.filter((e) => {
+          const c = e.category.toUpperCase();
+          if (activeCategory === "TECHNICAL") {
+            return c === "TECHNICAL" || c.includes("CODE") || c.includes("PROGRAMMING") || c.includes("INNOVATION") || c.includes("ACCESSIBILITY") || c.includes("RELAY");
+          }
+          if (activeCategory === "ROBOTICS") {
+            return c === "ROBOTICS" || c.includes("ROBOT") || c.includes("DRONE") || c.includes("HARDWARE") || c.includes("SPORTS") || c.includes("FORENSICS");
+          }
+          if (activeCategory === "GAMING") {
+            return c === "GAMING" || c.includes("GAMING") || c.includes("ESPORTS") || c.includes("VALORANT") || c.includes("STRIKE");
+          }
+          if (activeCategory === "MANAGEMENT") {
+            return c === "MANAGEMENT" || c.includes("MANAGEMENT") || c.includes("VENTURE") || c.includes("STRATEGY") || c.includes("PRODUCT");
+          }
+          if (activeCategory === "CULTURAL") {
+            return c === "CULTURAL" || c.includes("COSPLAY") || c.includes("PERSONALITY") || c.includes("TALENT") || c.includes("CIVIL") || c.includes("DESIGN");
+          }
+          return c === activeCategory;
+        });
+
+  const activeCategoryTab =
+    CATEGORY_TABS.find((t) => t.id === activeCategory) || CATEGORY_TABS[0];
+
+  // Reset circle index when switching categories
+  const handleTabClick = (catId: EventCategoryKey) => {
+    setActiveCategory(catId);
     setActiveIndex(0);
     setTimeout(() => {
-      const activeBtn = tabsRef.current?.querySelector(`[data-clubid="${clubId}"]`);
+      const activeBtn = tabsRef.current?.querySelector(`[data-catid="${catId}"]`);
       activeBtn?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     }, 50);
   };
@@ -975,7 +1130,7 @@ export function ClubEventsSection({
       className="relative w-full bg-[#030406] overflow-x-clip text-white min-h-screen"
     >
       {/* ── Interactive Cosmic Particle Field (Micro Stardust, Cyber Sparks, Floating Bokeh Orbs & Shockwaves) ── */}
-      <InteractiveDossierParticles activeClubGlow={activeClub.glowColor} />
+      <InteractiveDossierParticles activeClubGlow={activeCategoryTab.glowColor} />
 
       {/* Streaming Rays Background SVG (Monochrome) */}
       <StreamingRays />
@@ -1012,24 +1167,25 @@ export function ClubEventsSection({
           transition={{ duration: 0.7, delay: 0.15 }}
           className="mt-2 font-sans italic text-sm sm:text-base text-neutral-300 max-w-2xl mx-auto leading-relaxed"
         >
-          &ldquo;A dynamic lineup of technical, creative, and high-energy competitions designed to challenge, engage, and inspire.&rdquo;
+          &ldquo;A dynamic lineup of technical, creative, and high-energy competitions divided by event disciplines.&rdquo;
         </motion.p>
       </div>
 
-      {/* ── Club Filter Tabs Bar ────────────────────────────────────────────── */}
+      {/* ── Category Filter Tabs Bar ────────────────────────────────────────── */}
       <div className="relative z-10 bg-black/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3">
         <div className="flex items-center justify-between gap-3 max-w-6xl mx-auto">
-          {/* Club Tabs */}
+          {/* Category Tabs */}
           <div
             ref={tabsRef}
             className="flex items-center gap-2 sm:gap-2.5 overflow-x-auto scrollbar-none pb-0.5 flex-1"
           >
-            {CLUBS.map((club) => (
-              <div key={club.id} data-clubid={club.id}>
-                <ClubTab
-                  club={club}
-                  isActive={activeClubId === club.id}
-                  onClick={() => handleTabClick(club.id)}
+            {CATEGORY_TABS.map((tab) => (
+              <div key={tab.id} data-catid={tab.id}>
+                <CategoryTab
+                  tab={tab}
+                  count={getCategoryCount(tab.id)}
+                  isActive={activeCategory === tab.id}
+                  onClick={() => handleTabClick(tab.id)}
                 />
               </div>
             ))}
@@ -1083,34 +1239,30 @@ export function ClubEventsSection({
         </div>
       </div>
 
-      {/* ── Active Club Eyebrow & Subtitle ───────────────────────────────────── */}
+      {/* ── Active Category Eyebrow & Subtitle ───────────────────────────────────── */}
       <div className="relative z-10 px-4 sm:px-8 pt-6 sm:pt-8 pb-4 max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="flex items-center gap-3.5 sm:gap-4.5">
-          {/* Active Club Seal Crest */}
+          {/* Active Category Shield Seal */}
           <div
-            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full p-1 bg-black/70 border border-white/25 flex-shrink-0 flex items-center justify-center transition-transform duration-300 hover:scale-105"
+            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full p-1 bg-black/80 border border-white/25 flex-shrink-0 flex items-center justify-center transition-transform duration-300 hover:scale-105 font-mono text-white text-xs sm:text-sm font-black tracking-widest uppercase"
             style={{
-              boxShadow: `0 0 24px ${activeClub.glowColor || "rgba(255,255,255,0.25)"}`,
+              boxShadow: `0 0 24px ${activeCategoryTab.glowColor || "rgba(255,255,255,0.25)"}`,
             }}
           >
-            <img
-              src={activeClub.logo}
-              alt={activeClub.fullName}
-              className="w-full h-full object-contain rounded-full drop-shadow-md"
-            />
+            {activeCategoryTab.id.slice(0, 3)}
           </div>
           <div>
             <div className="inline-flex items-center gap-2 mb-1.5">
               <div className="w-4 h-[1px] bg-white" />
               <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.3em] text-white/80 uppercase">
-                {activeClub.eventCount} Competitions
+                {filteredEvents.length} Competitions
               </span>
             </div>
             <h3 className="font-montserrat font-bold text-2xl sm:text-4xl tracking-tight text-white uppercase">
-              {activeClub.fullName}
+              {activeCategoryTab.label}
             </h3>
             <p className="mt-1 font-sans text-xs sm:text-sm text-neutral-400 max-w-xl leading-relaxed">
-              {activeClub.tagline}
+              {activeCategoryTab.tagline}
             </p>
           </div>
         </div>

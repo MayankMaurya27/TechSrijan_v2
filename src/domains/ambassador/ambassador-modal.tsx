@@ -15,6 +15,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useAmbassadorTheme } from "./ambassador-theme";
+import { useAuth } from "@/core";
 import { api } from "@/lib/api";
 
 const GORAKHPUR_COLLEGES = [
@@ -54,6 +55,7 @@ interface AmbassadorModalProps {
 
 export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
   const t = useAmbassadorTheme();
+  const { user } = useAuth();
   const [step, setStep] = useState<1 | 2>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -79,6 +81,35 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Prefill details from authenticated user profile and bypass Step 1 if already onboarded
+  useEffect(() => {
+    if (user && isOpen) {
+      setFormData((prev) => ({
+        ...prev,
+        fullName: user.name || prev.fullName,
+        email: user.email || prev.email,
+        phone: user.mobile || prev.phone,
+        college: user.collegeName || prev.college,
+        city: user.city || prev.city || "Gorakhpur",
+        branch: user.branch || prev.branch,
+        rollNo: user.rollNumber || prev.rollNo,
+        courseYear: user.courseYear
+          ? user.courseYear === 1
+            ? "B.Tech - 1st Year"
+            : user.courseYear === 2
+            ? "B.Tech - 2nd Year"
+            : user.courseYear === 3
+            ? "B.Tech - 3rd Year"
+            : "B.Tech - Final Year"
+          : prev.courseYear,
+      }));
+
+      if (user.isOnboarded && user.name && user.email && user.mobile && user.collegeName) {
+        setStep(2);
+      }
+    }
+  }, [user, isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -527,6 +558,24 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                           boxShadow: `0 0 8px ${t.accent}`,
                         }}
                       />
+
+                      {user?.isOnboarded && (
+                        <div className="mb-4 px-3.5 py-2 rounded-lg bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between gap-2 text-xs font-mono text-emerald-300">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                            <span>
+                              Identity Verified: <strong>{formData.fullName}</strong> · {formData.college} ({formData.city})
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setStep(1)}
+                            className="text-[11px] underline text-emerald-400 hover:text-white shrink-0 cursor-pointer"
+                          >
+                            Edit Info
+                          </button>
+                        </div>
+                      )}
 
                       {/* 2-Column Form Grid */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 sm:gap-y-3.5">

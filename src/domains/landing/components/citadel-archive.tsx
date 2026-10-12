@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { isMobileDevice } from "@/core";
+import { api } from "@/lib/api";
 
 
 interface CitadelArchiveProps {
@@ -144,17 +145,88 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
   const mobileTrackRef = useRef<HTMLDivElement>(null);
   const isPausedRef = useRef(false);
 
+  // Dynamic Backend Sourced Events and Sponsors with Curated Baseline Fallbacks
+  const [eventsList, setEventsList] = useState(FEATURED_DIRECTIVES);
+  const [sponsorsList, setSponsorsList] = useState(SPONSORS_SHOWCASE);
+
+  useEffect(() => {
+    // 1. Fetch live events and map into Featured Directives
+    api.events
+      .list()
+      .then((res) => {
+        if (res && res.length > 0) {
+          const codingEvs = res.filter((e) => e.category === "TECHNICAL").map((e) => e.title);
+          const roboEvs = res.filter((e) => e.category === "ROBOTICS").map((e) => e.title);
+          const gamingEvs = res.filter((e) => e.category === "GAMING").map((e) => e.title);
+          const mgmtEvs = res.filter((e) => e.category === "MANAGEMENT" || e.category === "WORKSHOP").map((e) => e.title);
+
+          const updatedDirectives = [
+            {
+              id: "01",
+              title: "TECHNICAL & CODING",
+              meta: (codingEvs.length > 0 ? codingEvs.slice(0, 3).join(" · ") : "MANTRASTRA · CODE ZILLA · ALGOSTRIKE").toUpperCase(),
+              category: "TECHNICAL",
+              link: "/events",
+            },
+            {
+              id: "02",
+              title: "ROBOTICS & COMBAT",
+              meta: (roboEvs.length > 0 ? roboEvs.slice(0, 3).join(" · ") : "ROBOKIRTI · ROBOWARS · DRONE LEAGUE").toUpperCase(),
+              category: "ROBOTICS",
+              link: "/events",
+            },
+            {
+              id: "03",
+              title: "GAMING & ARENA",
+              meta: (gamingEvs.length > 0 ? gamingEvs.slice(0, 3).join(" · ") : "VALORANT CLASH · BGMI ARENA").toUpperCase(),
+              category: "GAMING",
+              link: "/events",
+            },
+            {
+              id: "04",
+              title: "MANAGEMENT & INNOVATION",
+              meta: (mgmtEvs.length > 0 ? mgmtEvs.slice(0, 3).join(" · ") : "BIZ CONCLAVE · SCIENCE EXHIBITION").toUpperCase(),
+              category: "MANAGEMENT",
+              link: "/events",
+            },
+          ];
+          setEventsList(updatedDirectives);
+        }
+      })
+      .catch(() => {});
+
+    // 2. Fetch live sponsors and map into Sponsors Showcase
+    api.sponsors
+      .list()
+      .then((res) => {
+        if (res && res.length > 0) {
+          const accents = ["#FFE600", "#F59E0B", "#38BDF8", "#EF4444", "#06B6D4"];
+          const mapped = res.map((s, idx) => ({
+            id: s.id,
+            name: s.name.toUpperCase(),
+            tier: s.category ? `${s.category.replace(/_/g, " ")} SPONSOR` : "OFFICIAL SPONSOR",
+            tagline: s.websiteUrl ? s.websiteUrl.replace(/^https?:\/\//, "") : "Strategic Citadel Partner",
+            image: s.logoUrl || `/images/sponsors/cp-${(idx % 6) + 1}.webp`,
+            accent: accents[idx % accents.length],
+            glow: "rgba(245, 158, 11, 0.9)",
+          }));
+          setSponsorsList(mapped);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Active sponsor computed
-  const activeSponsor = SPONSORS_SHOWCASE[activeSponsorIndex];
+  const activeSponsor = sponsorsList[activeSponsorIndex] || sponsorsList[0];
 
   // Sponsors auto-carousel (3.5s cycle with smooth fade transition)
   useEffect(() => {
-    if (isSponsorPaused) return;
+    if (isSponsorPaused || sponsorsList.length === 0) return;
     const timer = setInterval(() => {
-      setActiveSponsorIndex((prev) => (prev + 1) % SPONSORS_SHOWCASE.length);
+      setActiveSponsorIndex((prev) => (prev + 1) % sponsorsList.length);
     }, 3500);
     return () => clearInterval(timer);
-  }, [isSponsorPaused]);
+  }, [isSponsorPaused, sponsorsList.length]);
 
   // Check mobile viewport
   useEffect(() => {
@@ -365,7 +437,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
 
                   {/* 4 Categorized Event Rows */}
                   <div className="flex-1 flex flex-col justify-evenly py-0.5 gap-0.5 min-h-0">
-                    {FEATURED_DIRECTIVES.map((ev) => (
+                    {eventsList.map((ev) => (
                       <Link
                         key={ev.id}
                         href={ev.link}
@@ -485,7 +557,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
 
                     {/* Dots Carousel Indicator */}
                     <div className="flex items-center gap-1.5 mt-2">
-                      {SPONSORS_SHOWCASE.map((sp, idx) => (
+                      {sponsorsList.map((sp, idx) => (
                         <button
                           key={sp.id}
                           type="button"
@@ -658,7 +730,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
 
               {/* 4 Compact Event Rows — evenly distributed across safe height */}
               <div className="flex-1 flex flex-col justify-evenly py-2 gap-1.5 sm:gap-2">
-                {FEATURED_DIRECTIVES.map((ev) => {
+                {eventsList.map((ev) => {
                   const isHover = hoveredEvent === ev.id;
                   return (
                     <Link
@@ -824,7 +896,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
 
                   {/* Dots Indicator */}
                   <div className="flex items-center gap-1.5 mt-2">
-                    {SPONSORS_SHOWCASE.map((sp, idx) => (
+                    {sponsorsList.map((sp, idx) => (
                       <button
                         key={sp.id}
                         type="button"

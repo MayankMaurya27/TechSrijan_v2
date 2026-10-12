@@ -144,6 +144,24 @@ class ApiClient {
         return res;
       }),
 
+    oauthLogin: (body: {
+      email: string;
+      name?: string;
+      image?: string | null;
+      provider: "google" | "mmmut";
+      rollNumber?: string | null;
+    }) =>
+      this.request<AuthResponse>("/api/auth/oauth", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }).then((res) => {
+        if (typeof window !== "undefined" && res.token) {
+          localStorage.setItem("ts27_token", res.token);
+          localStorage.setItem("ts27_user_profile", JSON.stringify(res.user));
+        }
+        return res;
+      }),
+
     logout: () => {
       if (typeof window !== "undefined") {
         localStorage.removeItem("ts27_token");

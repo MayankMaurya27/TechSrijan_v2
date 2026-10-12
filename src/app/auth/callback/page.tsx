@@ -4,6 +4,7 @@ import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/core";
 import { ShieldCheck, AlertCircle, Loader2, ArrowRight } from "lucide-react";
+import { api } from "@/lib/api";
 import type { SafeUser } from "@/lib/types";
 
 function AuthCallbackContent() {
@@ -75,46 +76,47 @@ function AuthCallbackContent() {
 
         // Case 2: MMMUT SSO return (with roll number or return from mmmut.xyz)
         if (provider === "mmmut" || rollNumber) {
-          const studentRoll = rollNumber || "MMMUT_STUDENT";
-          const mmmutEmail = `${studentRoll.toLowerCase()}@mmmut.ac.in`;
+          const studentRoll = rollNumber || searchParams.get("urollno") || searchParams.get("roll");
+          const emailParam = searchParams.get("email");
+          const nameParam = searchParams.get("name");
 
-          const fallbackUser: SafeUser = {
-            id: crypto.randomUUID(),
-            email: mmmutEmail,
-            name: `Student (${studentRoll.toUpperCase()})`,
-            collegeName: "Madan Mohan Malaviya University of Technology, Gorakhpur",
-            mobile: "",
-            gender: "OTHER",
-            role: "STUDENT",
-            club: null,
-            isMmmutStudent: true,
-            rollNumber: studentRoll.toUpperCase(),
-            isOnboarded: false,
-            totalPoints: 0,
-            image: null,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
+          const studentEmail = (
+            emailParam ||
+            (studentRoll ? `${studentRoll.toLowerCase()}@mmmut.ac.in` : "")
+          ).toLowerCase().trim();
 
-          // Generate or fetch token
-          const existingToken = localStorage.getItem("ts27_token");
-          if (!existingToken) {
-            // Encode basic session token
-            localStorage.setItem("ts27_token", `mmmut_session_${Date.now()}`);
+          if (!studentEmail && !studentRoll) {
+            throw new Error("No student identifier received from MMMUT authentication portal.");
           }
-          localStorage.setItem("ts27_user_profile", JSON.stringify(fallbackUser));
-          setUserName(fallbackUser.name);
+
+          const studentName =
+            nameParam ||
+            (studentRoll ? `Student (${studentRoll.toUpperCase()})` : "MMMUT Student");
+
+          // Persist user and obtain official session clearance directly from backend PostgreSQL
+          const authRes = await api.auth.oauthLogin({
+            email: studentEmail || `${studentRoll?.toLowerCase()}@mmmut.ac.in`,
+            name: studentName,
+            rollNumber: studentRoll ? studentRoll.toUpperCase() : null,
+            provider: "mmmut",
+          });
+
+          const loggedInUser = authRes.user;
+          setUserName(loggedInUser.name);
 
           window.dispatchEvent(new Event("storage"));
           await refreshUser();
 
           const savedReturnUrl = localStorage.getItem("ts27_auth_return_url");
           if (savedReturnUrl) localStorage.removeItem("ts27_auth_return_url");
-          const destination = fallbackUser && !fallbackUser.isOnboarded ? "/onboarding" : (savedReturnUrl || "/profile");
+          const destination =
+            loggedInUser && !loggedInUser.isOnboarded
+              ? "/onboarding"
+              : savedReturnUrl || "/profile";
 
           setRedirectPath(destination);
           setStatus("success");
-          setStatusText(`MMMUT Campus Directive Authorized: Welcome, ${fallbackUser.name}!`);
+          setStatusText(`MMMUT Campus Directive Authorized: Welcome, ${loggedInUser.name}!`);
 
           setTimeout(() => {
             router.replace(destination);

@@ -405,14 +405,6 @@ export function SignInRouteModal({
                   <span>Sign In via mmmut.xyz</span>
                   <span>→</span>
                 </button>
-
-                <button
-                  type="button"
-                  onClick={handleMmmutSelect}
-                  className="font-mono text-[11px] text-[#caa462]/75 hover:text-[#caa462] transition-colors underline underline-offset-4 cursor-pointer"
-                >
-                  Or enter credentials directly
-                </button>
               </div>
             </div>
 
@@ -485,14 +477,6 @@ export function SignInRouteModal({
                     />
                   </svg>
                   <span>Continue with Google</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleExternalSelect}
-                  className="font-mono text-[11px] text-[#caa462]/75 hover:text-[#caa462] transition-colors underline underline-offset-4 cursor-pointer"
-                >
-                  Or enter email &amp; password
                 </button>
               </div>
             </div>

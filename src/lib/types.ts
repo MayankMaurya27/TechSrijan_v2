@@ -50,6 +50,7 @@ export interface SafeUser {
   isMmmutStudent: boolean;
   userType?: "MMMUT" | "EXTERNAL";
   rollNumber?: string | null;
+  city?: string | null;
   branch?: string | null;
   courseYear?: number | null;
   bankAccountNumber?: string | null;

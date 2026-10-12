@@ -151,6 +151,8 @@ export interface Sponsor {
   pieceImg: string;
   pieceName: string;
   logoType: "nova" | "aether" | "quantum" | "gridline" | "skyward" | "custom";
+  logoUrl?: string | null;
+  websiteUrl?: string | null;
   customLogoText?: string;
   accent: string;
   borderGlow: string;
@@ -366,7 +368,28 @@ function GeassBirdSigil({ className = "w-5 h-5", style }: { className?: string; 
 }
 
 // Logo graphics matching Image 1
-function SponsorLogoGraphic({ type, className = "w-8 h-8" }: { type: Sponsor["logoType"]; className?: string }) {
+function SponsorLogoGraphic({
+  type,
+  logoUrl,
+  className = "w-8 h-8",
+}: {
+  type: Sponsor["logoType"];
+  logoUrl?: string | null;
+  className?: string;
+}) {
+  if (logoUrl) {
+    return (
+      <img
+        src={logoUrl}
+        alt="Sponsor Logo"
+        className={`${className} object-contain rounded-full`}
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).style.display = "none";
+        }}
+      />
+    );
+  }
+
   switch (type) {
     case "nova":
       return (
@@ -484,7 +507,6 @@ export function SponsorsPageView() {
       .list()
       .then((backendSponsors) => {
         if (backendSponsors && backendSponsors.length > 0) {
-          const roles: Sponsor["role"][] = ["KING", "QUEEN", "ROOK", "BISHOP", "KNIGHT", "PAWN"];
           const mapped: Sponsor[] = backendSponsors.map((bs, idx) => {
             const pieceIdx = (idx % 6) + 1;
             const tierName =
@@ -498,18 +520,58 @@ export function SponsorsPageView() {
                 ? "Supporting Partner"
                 : "Strategic Partner";
 
+            const role: Sponsor["role"] =
+              bs.category === "TITLE"
+                ? "KING"
+                : bs.category === "POWERED_BY"
+                ? "QUEEN"
+                : bs.category === "ASSOCIATE"
+                ? "ROOK"
+                : idx % 2 === 0
+                ? "KNIGHT"
+                : "PAWN";
+
+            const accent =
+              bs.category === "TITLE"
+                ? "#FFE600"
+                : bs.category === "POWERED_BY"
+                ? "#F59E0B"
+                : bs.category === "ASSOCIATE"
+                ? "#EF4444"
+                : "#38BDF8";
+
+            const borderGlow =
+              bs.category === "TITLE"
+                ? "rgba(255, 230, 0, 1)"
+                : bs.category === "POWERED_BY"
+                ? "rgba(245, 158, 11, 0.95)"
+                : bs.category === "ASSOCIATE"
+                ? "rgba(239, 68, 68, 0.95)"
+                : "rgba(56, 189, 248, 0.95)";
+
+            const rankWeight =
+              bs.category === "TITLE"
+                ? 5
+                : bs.category === "POWERED_BY"
+                ? 4
+                : bs.category === "ASSOCIATE"
+                ? 3
+                : 2;
+
             return {
               id: bs.id,
               name: bs.name.toUpperCase(),
               tier: tierName as Sponsor["tier"],
-              role: roles[idx % roles.length],
+              role,
               pieceImg: `/images/sponsors/cp-${pieceIdx}.webp`,
-              pieceName: roles[idx % roles.length],
+              pieceName: role,
               logoType: "custom" as const,
+              logoUrl: bs.logoUrl || null,
+              websiteUrl: bs.websiteUrl || null,
               customLogoText: bs.name,
-              accent: "#F59E0B",
-              borderGlow: "rgba(245, 158, 11, 0.95)",
-              rankWeight: 5 - (idx % 5),
+              accent,
+              borderGlow,
+              rankWeight,
             };
           });
           setSponsors(mapped);
@@ -1046,6 +1108,7 @@ export function SponsorsPageView() {
                       >
                         <SponsorLogoGraphic
                           type={sponsor.logoType}
+                          logoUrl={sponsor.logoUrl}
                           className={
                             isKing
                               ? "w-4 h-4 xs:w-5 xs:h-5 sm:w-9 sm:h-9"

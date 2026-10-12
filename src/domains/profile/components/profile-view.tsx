@@ -50,22 +50,22 @@ export interface UserProfileData {
 }
 
 const DEFAULT_PROFILE: UserProfileData = {
-  fullName: "Aarav Sharma",
-  email: "aarav.sharma@gmail.com",
-  phone: "+91 98765 43210",
-  college: "MMMUT Gorakhpur",
-  course: "B.Tech · Computer Science",
-  year: "2nd year",
-  city: "Gorakhpur, Uttar Pradesh",
-  participantId: "TS27-EXT-4891",
-  isProfileComplete: true,
-  accommodationBooked: true,
-  bookingRef: "TS27-RES-482910",
-  hallName: "Subhash Bhavan · Boys Wing B",
-  roomBed: "Bed #24",
-  duration: "3 Nights (Full Fest)",
-  eventPoints: 550,
-  rankTier: "Silver Vanguard · Tier II",
+  fullName: "Attendee",
+  email: "attendee@techsrijan.org",
+  phone: "Not Provided",
+  college: "Institution Not Specified",
+  course: "Engineering / Technology",
+  year: "1st year",
+  city: "Not Specified",
+  participantId: "TS27-GUEST",
+  isProfileComplete: false,
+  accommodationBooked: false,
+  bookingRef: "N/A",
+  hallName: "Not Reserved",
+  roomBed: "No Allocation",
+  duration: "None",
+  eventPoints: 0,
+  rankTier: "Bronze Legion · Tier I",
   registeredEventsCount: 0,
 };
 
@@ -118,14 +118,17 @@ export function ProfileView() {
                   ? "Reservation Hold Active"
                   : "Allocation Pending";
 
+          const courseStr = u.branch || (u.role === "STUDENT" ? "Undergraduate / Participant" : u.role);
+          const yearStr = u.courseYear ? `${u.courseYear}${u.courseYear === 1 ? "st" : u.courseYear === 2 ? "nd" : u.courseYear === 3 ? "rd" : "th"} year` : (u.rollNumber ? `Roll: ${u.rollNumber}` : "1st year");
+
           const merged: UserProfileData = {
             fullName: u.name || DEFAULT_PROFILE.fullName,
             email: u.email || DEFAULT_PROFILE.email,
             phone: u.mobile || DEFAULT_PROFILE.phone,
             college: u.collegeName || DEFAULT_PROFILE.college,
-            course: u.role === "STUDENT" ? "Undergraduate / Participant" : u.role,
-            year: u.rollNumber ? `Roll: ${u.rollNumber}` : "Registered Attendee",
-            city: DEFAULT_PROFILE.city,
+            course: courseStr,
+            year: yearStr,
+            city: u.city || DEFAULT_PROFILE.city,
             participantId:
               u.rollNumber || (u.id ? `TS27-${u.id.slice(0, 8).toUpperCase()}` : "TS27-USER"),
             isProfileComplete: u.isOnboarded,
@@ -180,10 +183,15 @@ export function ProfileView() {
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.user.onboard({
+      const yearMatch = editForm.year.match(/\d+/);
+      const courseYearNum = yearMatch ? parseInt(yearMatch[0], 10) : undefined;
+      await api.user.updateProfile({
+        name: editForm.fullName,
+        mobile: editForm.phone,
         collegeName: editForm.college,
         city: editForm.city,
         branch: editForm.course,
+        courseYear: courseYearNum,
       });
       await refreshUser();
     } catch (err) {

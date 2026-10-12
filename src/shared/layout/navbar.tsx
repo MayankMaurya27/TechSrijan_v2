@@ -110,7 +110,7 @@ export function Navbar() {
           - Pure floating overlay (no extra height or width)
           ========================================================= */}
       <header
-        className={`lg:hidden fixed top-2.5 sm:top-3 inset-x-0 z-50 pointer-events-none select-none px-3 sm:px-5 transition-all duration-700 ease-out ${
+        className={`xl:hidden fixed top-2.5 sm:top-3 inset-x-0 z-50 pointer-events-none select-none px-3 sm:px-5 transition-all duration-700 ease-out ${
           isVisible
             ? "opacity-100 translate-y-0 visible"
             : "opacity-0 -translate-y-8 invisible"
@@ -236,15 +236,15 @@ export function Navbar() {
           - Pure floating overlay (no extra height or width)
           ========================================================= */}
       <header
-        className={`hidden lg:block fixed top-2.5 sm:top-3 inset-x-0 z-50 pointer-events-none select-none px-6 md:px-8 xl:px-10 transition-all duration-700 ease-out ${
+        className={`hidden xl:block fixed top-2.5 sm:top-3 inset-x-0 z-50 pointer-events-none select-none px-4 md:px-6 xl:px-8 transition-all duration-700 ease-out ${
           isVisible
             ? "opacity-100 translate-y-0 visible"
             : "opacity-0 -translate-y-8 invisible"
         }`}
       >
-        <div className="w-full relative flex items-center justify-between min-h-[48px] xl:min-h-[52px]">
+        <div className="w-full relative flex items-center justify-between min-h-[48px] xl:min-h-[52px] gap-3">
           {/* Desktop Left Corner: TechSrijan Logo */}
-          <div className="flex items-center flex-shrink-0 pointer-events-auto z-10">
+          <div className="flex items-center flex-shrink-0 min-w-[130px] pointer-events-auto z-20">
             <Link
               href="/"
               className="group relative flex items-center transition-transform duration-300 hover:scale-105 active:scale-95 py-0.5"
@@ -267,9 +267,9 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Center: Exactly Centered in Overall Screen Width with Proportional Width */}
-          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 pointer-events-auto z-0">
-            <div className="group/navbar relative w-[940px] lg:w-[1000px] xl:w-[1080px] 2xl:w-[1140px]">
+          {/* Desktop Center: Anti-Collision Flexible Pill */}
+          <div className="flex-1 flex items-center justify-center min-w-0 max-w-[1020px] pointer-events-auto z-10 mx-auto">
+            <div className="group/navbar relative w-full max-w-[980px]">
               <svg
                 className="absolute inset-0 w-full h-[48px] xl:h-[52px] pointer-events-none -z-10 transition-all duration-500 group-hover/navbar:brightness-115 overflow-visible"
                 style={{ filter: currentThemeConfig.ambientChassisGlow, overflow: "visible" }}
@@ -469,7 +469,7 @@ export function Navbar() {
       {/* =========================================================
           MOBILE BOTTOM NAVIGATION DOCK (Events, Ambassador, Sponsorship, Stay)
           ========================================================= */}
-      <div className="lg:hidden fixed bottom-3 inset-x-3 z-50 pointer-events-auto">
+      <div className="xl:hidden fixed bottom-3 inset-x-3 z-50 pointer-events-auto">
         <nav className="grid grid-cols-4 w-full items-center py-1.5 px-1 rounded-2xl border border-[rgba(212,168,67,0.35)] bg-[#070503]/92 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,0,0,0.9)]">
           <Link
             href="/events"

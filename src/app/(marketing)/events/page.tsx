@@ -7,16 +7,16 @@ import type { ClubId } from "@/domains/events";
 
 export default function EventsPage() {
   const { setTheme } = useTheme();
-  const [activeClubId, setActiveClubId] = useState<ClubId | null>(null);
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
 
   // Automatically enforce the dark black & white monochrome theme on the events page
   useEffect(() => {
     setTheme("giedi-prime");
   }, [setTheme]);
 
-  // Handle club selection from arena cards
-  const handleClubSelect = (clubId: ClubId) => {
-    setActiveClubId(clubId);
+  // Handle category selection from arena cards
+  const handleCategorySelect = (categoryId: string) => {
+    setActiveCategoryId(categoryId);
   };
 
   const handleReturnToArena = () => {
@@ -31,11 +31,11 @@ export default function EventsPage() {
   return (
     <div className="relative min-h-screen bg-black text-white selection:bg-white selection:text-black">
       {/* 1. Video Scrubber + Arena Spatial Cards + Stay-style Transition */}
-      <EventsHeroScroll onClubSelect={handleClubSelect} />
+      <EventsHeroScroll onCategorySelect={handleCategorySelect} />
 
       {/* 2. Our Events Section — Dedicated, Full-Height, Zero Truncation, Uncut 3D Orbit */}
       <ClubEventsSection
-        activeClubId={activeClubId}
+        activeCategoryId={activeCategoryId}
         onReturnToArena={handleReturnToArena}
       />
     </div>

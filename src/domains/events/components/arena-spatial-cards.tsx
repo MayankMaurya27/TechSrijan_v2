@@ -90,6 +90,7 @@ export const CLUBS: Club[] = [
 export interface ArenaSpatialCardsProps {
   isVisible: boolean;
   onClubSelect?: (clubId: ClubId) => void;
+  onCategorySelect?: (categoryId: string) => void;
   onExploreEvents?: () => void;
   leftCardsRef?: React.RefObject<HTMLDivElement | null>;
   centerCardRef?: React.RefObject<HTMLDivElement | null>;
@@ -216,12 +217,21 @@ function ClubCard({
 export function ArenaSpatialCards({
   isVisible,
   onClubSelect,
+  onCategorySelect,
   onExploreEvents,
   leftCardsRef,
   centerCardRef,
   rightCardsRef,
 }: ArenaSpatialCardsProps) {
   const handleClubClick = (club: Club) => {
+    const categoryMap: Record<string, string> = {
+      tsc: "CULTURAL",
+      "mmmut-reso": "TECHNICAL",
+      "ieee-stb": "TECHNICAL",
+      robotics: "ROBOTICS",
+      sae: "MANAGEMENT",
+    };
+    if (onCategorySelect) onCategorySelect(categoryMap[club.id] || "ALL");
     if (onClubSelect) onClubSelect(club.id);
     if (onExploreEvents) onExploreEvents();
   };

@@ -55,7 +55,7 @@ export function AdminStayView() {
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-zinc-100">Accommodation & Stay</h2>
           <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-            Higher & Boss Admin: Monitor campus hostel capacity and guest bookings.
+            Monitor campus hostel capacity and guest bookings.
           </p>
         </div>
 

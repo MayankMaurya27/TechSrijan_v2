@@ -219,6 +219,8 @@ export interface BackendEvent {
   maxCapacity?: number | null;
   currentRegistrations: number;
   isOpen: boolean;
+  attendanceOpen?: boolean;
+  winnersOpen?: boolean;
   rulesText?: string | null;
   participationPoints: number;
   firstPlacePoints: number;

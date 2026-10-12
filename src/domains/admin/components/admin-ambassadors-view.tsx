@@ -84,7 +84,7 @@ export function AdminAmbassadorsView() {
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-zinc-100">Campus Ambassadors</h2>
           <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-            Higher & Boss Admin: Review, approve, or reject student ambassador applications.
+            Review, approve, or reject student ambassador applications.
           </p>
         </div>
 

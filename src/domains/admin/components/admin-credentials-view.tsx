@@ -37,7 +37,7 @@ export function AdminCredentialsView() {
     name: "",
     username: "",
     password: "",
-    adminType: "CLUB_ADMIN" as "CLUB_ADMIN" | "HIGHER_ADMIN",
+    adminType: "CLUB_ADMIN" as "CLUB_ADMIN" | "SUPER_ADMIN" | "HIGHER_ADMIN",
     club: "TSC" as "TSC" | "RC" | "IEEE" | "SAE" | "RESO",
   });
   const [createLoading, setCreateLoading] = useState(false);
@@ -264,14 +264,12 @@ export function AdminCredentialsView() {
                       <td className="py-3.5 px-4">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
-                            isBoss
-                              ? "bg-red-500/15 text-red-400 border border-red-500/30"
-                              : isHigher
+                            isBoss || isHigher
                               ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
                               : "bg-blue-500/15 text-blue-400 border border-blue-500/30"
                           }`}
                         >
-                          {isBoss ? "Boss Admin" : isHigher ? "Higher Admin" : "Club Admin"}
+                          {isBoss || isHigher ? "Super Admin" : "Club Admin"}
                         </span>
                       </td>
                       <td className="py-3.5 px-4">
@@ -380,14 +378,14 @@ export function AdminCredentialsView() {
                   onChange={(e) =>
                     setCreateForm({
                       ...createForm,
-                      adminType: e.target.value as "CLUB_ADMIN" | "HIGHER_ADMIN",
+                      adminType: e.target.value as "CLUB_ADMIN" | "SUPER_ADMIN" | "HIGHER_ADMIN",
                     })
                   }
                   className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
                 >
                   <option value="CLUB_ADMIN">Club Admin (Manage own club events only)</option>
-                  <option value="HIGHER_ADMIN">
-                    Higher Admin (All events, sponsors, ambassadors, stay)
+                  <option value="SUPER_ADMIN">
+                    Super Admin (All events, sponsors, ambassadors, stay)
                   </option>
                 </select>
               </div>

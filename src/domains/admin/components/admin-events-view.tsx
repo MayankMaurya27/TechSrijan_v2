@@ -29,22 +29,16 @@ const CATEGORIES = ["TECHNICAL", "GAMING", "MANAGEMENT", "WORKSHOP", "ROBOTICS"]
 
 export function AdminEventsView() {
   const { user } = useAuth();
-  const isHigherOrBoss = user?.role === "SUPER_ADMIN" || user?.role === "BOSS";
+  const isSuperAdmin = user?.role === "SUPER_ADMIN" || user?.role === "BOSS";
   const userClub = user?.club || "TSC";
 
   const [events, setEvents] = useState<BackendEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Settings for attendance & winner permissions
-  const [settings, setSettings] = useState<{ attendanceOpen: boolean; winnersOpen: boolean }>({
-    attendanceOpen: false,
-    winnersOpen: false,
-  });
-
   // Filters
   const [search, setSearch] = useState("");
-  const [clubFilter, setClubFilter] = useState<string>(isHigherOrBoss ? "ALL" : userClub);
+  const [clubFilter, setClubFilter] = useState<string>(isSuperAdmin ? "ALL" : userClub);
 
   // Selected event & roster
   const [selectedEvent, setSelectedEvent] = useState<BackendEvent | null>(null);
@@ -72,25 +66,18 @@ export function AdminEventsView() {
     registrationFee: 0,
     maxCapacity: "",
     isOpen: true,
+    attendanceOpen: false,
+    winnersOpen: false,
     rulesText: "",
   });
   const [savingEvent, setSavingEvent] = useState(false);
 
-  const fetchEventsAndSettings = async () => {
+  const fetchEvents = async () => {
     setLoading(true);
     setError(null);
     try {
-      const [eventsData, settingsData] = await Promise.all([
-        api.admin.events.list(),
-        api.admin.settings.get().catch(() => ({ attendanceOpen: false, winnersOpen: false })),
-      ]);
+      const eventsData = await api.admin.events.list();
       setEvents(Array.isArray(eventsData) ? eventsData : []);
-      if (settingsData) {
-        setSettings({
-          attendanceOpen: Boolean(settingsData.attendanceOpen),
-          winnersOpen: Boolean(settingsData.winnersOpen),
-        });
-      }
     } catch (err: any) {
       console.error("Failed to load events:", err);
       setError(err?.message || "Failed to load events list.");
@@ -100,17 +87,17 @@ export function AdminEventsView() {
   };
 
   useEffect(() => {
-    fetchEventsAndSettings();
+    fetchEvents();
   }, []);
 
   // Filter events based on role and selection
   const filteredEvents = events.filter((ev) => {
     // If club admin, only show own club
-    if (!isHigherOrBoss && ev.organizingClub !== userClub) {
+    if (!isSuperAdmin && ev.organizingClub !== userClub) {
       return false;
     }
-    // If higher admin filtered by club
-    if (isHigherOrBoss && clubFilter !== "ALL" && ev.organizingClub !== clubFilter) {
+    // If super admin filtered by club
+    if (isSuperAdmin && clubFilter !== "ALL" && ev.organizingClub !== clubFilter) {
       return false;
     }
     const q = search.toLowerCase().trim();
@@ -143,7 +130,7 @@ export function AdminEventsView() {
       title: "",
       slug: "",
       category: "TECHNICAL",
-      organizingClub: isHigherOrBoss ? "TSC" : (userClub as any),
+      organizingClub: isSuperAdmin ? "TSC" : (userClub as any),
       venue: "",
       prizePool: 0,
       minTeamSize: 1,
@@ -151,6 +138,8 @@ export function AdminEventsView() {
       registrationFee: 0,
       maxCapacity: "",
       isOpen: true,
+      attendanceOpen: false,
+      winnersOpen: false,
       rulesText: "",
     });
   };
@@ -170,6 +159,8 @@ export function AdminEventsView() {
       registrationFee: ev.registrationFee || 0,
       maxCapacity: ev.maxCapacity ? String(ev.maxCapacity) : "",
       isOpen: ev.isOpen !== false,
+      attendanceOpen: Boolean(ev.attendanceOpen),
+      winnersOpen: Boolean(ev.winnersOpen),
       rulesText: ev.rulesText || "",
     });
   };
@@ -194,7 +185,7 @@ export function AdminEventsView() {
         title: eventForm.title.trim(),
         slug,
         category: eventForm.category,
-        organizingClub: isHigherOrBoss ? eventForm.organizingClub : userClub,
+        organizingClub: isSuperAdmin ? eventForm.organizingClub : userClub,
         venue: eventForm.venue.trim() || undefined,
         prizePool: Number(eventForm.prizePool) || 0,
         minTeamSize: Number(eventForm.minTeamSize) || 1,
@@ -205,6 +196,11 @@ export function AdminEventsView() {
         rulesText: eventForm.rulesText.trim() || undefined,
       };
 
+      if (isSuperAdmin) {
+        payload.attendanceOpen = Boolean(eventForm.attendanceOpen);
+        payload.winnersOpen = Boolean(eventForm.winnersOpen);
+      }
+
       if (modalMode === "create") {
         await api.admin.events.create(payload);
         alert("Event created successfully.");
@@ -214,7 +210,7 @@ export function AdminEventsView() {
       }
 
       setModalMode(null);
-      fetchEventsAndSettings();
+      fetchEvents();
     } catch (err: any) {
       alert(`Operation failed: ${err?.message || "Unknown error"}`);
     } finally {
@@ -239,14 +235,46 @@ export function AdminEventsView() {
     }
   };
 
-  // Attendance check
-  const canMarkAttendance = isHigherOrBoss || settings.attendanceOpen;
-  const canDeclareWinners = isHigherOrBoss || settings.winnersOpen;
+  const handleToggleAttendance = async (event: BackendEvent) => {
+    if (!isSuperAdmin) return;
+    const nextVal = !Boolean(event.attendanceOpen);
+    try {
+      await api.admin.events.update(event.id, { attendanceOpen: nextVal });
+      setEvents((prev) =>
+        prev.map((e) => (e.id === event.id ? { ...e, attendanceOpen: nextVal } : e))
+      );
+      if (selectedEvent?.id === event.id) {
+        setSelectedEvent((prev) => (prev ? { ...prev, attendanceOpen: nextVal } : prev));
+      }
+    } catch (err: any) {
+      alert(`Failed to update attendance toggle: ${err?.message || "Unknown error"}`);
+    }
+  };
+
+  const handleToggleWinners = async (event: BackendEvent) => {
+    if (!isSuperAdmin) return;
+    const nextVal = !Boolean(event.winnersOpen);
+    try {
+      await api.admin.events.update(event.id, { winnersOpen: nextVal });
+      setEvents((prev) =>
+        prev.map((e) => (e.id === event.id ? { ...e, winnersOpen: nextVal } : e))
+      );
+      if (selectedEvent?.id === event.id) {
+        setSelectedEvent((prev) => (prev ? { ...prev, winnersOpen: nextVal } : prev));
+      }
+    } catch (err: any) {
+      alert(`Failed to update winner declaration toggle: ${err?.message || "Unknown error"}`);
+    }
+  };
+
+  // Attendance check per event
+  const canMarkAttendance = isSuperAdmin || Boolean(selectedEvent?.attendanceOpen);
+  const canDeclareWinners = isSuperAdmin || Boolean(selectedEvent?.winnersOpen);
 
   const handleMarkAttendance = async (registrationId: string, currentStatus: boolean) => {
     if (!selectedEvent) return;
     if (!canMarkAttendance) {
-      alert("Attendance marking is currently locked by Higher Administration.");
+      alert("Attendance marking is locked for this event.");
       return;
     }
 
@@ -272,7 +300,7 @@ export function AdminEventsView() {
   const handleDeclarePodium = async () => {
     if (!selectedEvent) return;
     if (!canDeclareWinners) {
-      alert("Declaring winners is currently locked by Higher Administration.");
+      alert("Winner declaration is locked for this event.");
       return;
     }
 
@@ -305,11 +333,11 @@ export function AdminEventsView() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
           <h2 className="text-xl sm:text-2xl font-bold text-zinc-100">
-            {isHigherOrBoss ? "Events Management (All Clubs)" : `Events Management · ${userClub}`}
+            {isSuperAdmin ? "Events Management" : `Events Management · ${userClub}`}
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-            {isHigherOrBoss
-              ? "Create, edit, or delete events across any club, manage participant rosters, and set winners."
+            {isSuperAdmin
+              ? "Manage festival events, participant rosters, attendance, and winners."
               : `Create and edit events for ${userClub}, monitor registered participants, and record attendance.`}
           </p>
         </div>
@@ -318,7 +346,7 @@ export function AdminEventsView() {
           <Button
             variant="outline"
             size="sm"
-            onClick={fetchEventsAndSettings}
+            onClick={fetchEvents}
             disabled={loading}
             className="text-xs border-zinc-700 hover:bg-zinc-800 text-zinc-200"
           >
@@ -337,55 +365,10 @@ export function AdminEventsView() {
         </div>
       </div>
 
-      {/* STATUS NOTICES FOR CLUB ADMIN */}
-      {!isHigherOrBoss && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div
-            className={`p-3 rounded-lg border flex items-center justify-between ${
-              settings.attendanceOpen
-                ? "bg-emerald-950/20 border-emerald-800/40 text-emerald-300"
-                : "bg-zinc-900 border-zinc-800 text-zinc-400"
-            }`}
-          >
-            <span className="flex items-center gap-2">
-              {settings.attendanceOpen ? (
-                <Unlock className="h-4 w-4 text-emerald-400" />
-              ) : (
-                <Lock className="h-4 w-4 text-zinc-500" />
-              )}
-              <span>Attendance Marking:</span>
-            </span>
-            <span className="font-semibold">
-              {settings.attendanceOpen ? "Unlocked by Higher Admin" : "Locked by Higher Admin"}
-            </span>
-          </div>
-
-          <div
-            className={`p-3 rounded-lg border flex items-center justify-between ${
-              settings.winnersOpen
-                ? "bg-amber-950/20 border-amber-800/40 text-amber-300"
-                : "bg-zinc-900 border-zinc-800 text-zinc-400"
-            }`}
-          >
-            <span className="flex items-center gap-2">
-              {settings.winnersOpen ? (
-                <Unlock className="h-4 w-4 text-amber-400" />
-              ) : (
-                <Lock className="h-4 w-4 text-zinc-500" />
-              )}
-              <span>Winner Declaration:</span>
-            </span>
-            <span className="font-semibold">
-              {settings.winnersOpen ? "Unlocked by Higher Admin" : "Locked by Higher Admin"}
-            </span>
-          </div>
-        </div>
-      )}
-
       {error && (
         <div className="p-4 rounded-lg bg-red-950/40 border border-red-800/60 text-red-300 text-xs flex items-center justify-between">
           <span>{error}</span>
-          <Button variant="outline" size="sm" onClick={fetchEventsAndSettings} className="text-xs">
+          <Button variant="outline" size="sm" onClick={fetchEvents} className="text-xs">
             Retry
           </Button>
         </div>
@@ -404,7 +387,7 @@ export function AdminEventsView() {
           />
         </div>
 
-        {isHigherOrBoss && (
+        {isSuperAdmin && (
           <select
             value={clubFilter}
             onChange={(e) => setClubFilter(e.target.value)}
@@ -472,6 +455,85 @@ export function AdminEventsView() {
                       </span>
                     </div>
                   </div>
+
+                  {/* PER-EVENT CONTROLS */}
+                  {isSuperAdmin ? (
+                    <div className="flex items-center gap-2 mb-4 pt-2.5 border-t border-zinc-800/60">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleAttendance(ev);
+                        }}
+                        className={`flex-1 py-1 px-2 rounded border flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-[10px] font-semibold ${
+                          ev.attendanceOpen
+                            ? "bg-emerald-950/40 border-emerald-700/50 text-emerald-400 hover:bg-emerald-900/50"
+                            : "bg-zinc-950/40 border-zinc-800 text-zinc-500 hover:text-zinc-300"
+                        }`}
+                        title="Click to toggle attendance marking for this event"
+                      >
+                        {ev.attendanceOpen ? (
+                          <Unlock className="h-3 w-3 text-emerald-400" />
+                        ) : (
+                          <Lock className="h-3 w-3 text-zinc-500" />
+                        )}
+                        <span>Attendance: {ev.attendanceOpen ? "Open" : "Locked"}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleWinners(ev);
+                        }}
+                        className={`flex-1 py-1 px-2 rounded border flex items-center justify-center gap-1.5 transition-colors cursor-pointer text-[10px] font-semibold ${
+                          ev.winnersOpen
+                            ? "bg-amber-950/40 border-amber-700/50 text-amber-400 hover:bg-amber-900/50"
+                            : "bg-zinc-950/40 border-zinc-800 text-zinc-500 hover:text-zinc-300"
+                        }`}
+                        title="Click to toggle winner declaration for this event"
+                      >
+                        {ev.winnersOpen ? (
+                          <Unlock className="h-3 w-3 text-amber-400" />
+                        ) : (
+                          <Lock className="h-3 w-3 text-zinc-500" />
+                        )}
+                        <span>Winners: {ev.winnersOpen ? "Open" : "Locked"}</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 mb-4 pt-2.5 border-t border-zinc-800/60 text-[10px] font-semibold">
+                      <span
+                        className={`flex-1 py-1 px-2 rounded border flex items-center justify-center gap-1.5 ${
+                          ev.attendanceOpen
+                            ? "bg-emerald-950/30 border-emerald-800/40 text-emerald-400"
+                            : "bg-zinc-900 border-zinc-800 text-zinc-500"
+                        }`}
+                      >
+                        {ev.attendanceOpen ? (
+                          <Unlock className="h-3 w-3 text-emerald-400" />
+                        ) : (
+                          <Lock className="h-3 w-3 text-zinc-500" />
+                        )}
+                        <span>Attendance: {ev.attendanceOpen ? "Open" : "Locked"}</span>
+                      </span>
+
+                      <span
+                        className={`flex-1 py-1 px-2 rounded border flex items-center justify-center gap-1.5 ${
+                          ev.winnersOpen
+                            ? "bg-amber-950/30 border-amber-800/40 text-amber-400"
+                            : "bg-zinc-900 border-zinc-800 text-zinc-500"
+                        }`}
+                      >
+                        {ev.winnersOpen ? (
+                          <Unlock className="h-3 w-3 text-amber-400" />
+                        ) : (
+                          <Lock className="h-3 w-3 text-zinc-500" />
+                        )}
+                        <span>Winners: {ev.winnersOpen ? "Open" : "Locked"}</span>
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-3 border-t border-zinc-800/80 flex items-center justify-between gap-2">
@@ -519,16 +581,67 @@ export function AdminEventsView() {
         <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/70 p-6 space-y-6 shadow-sm">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
             <div>
-              <span className="text-xs text-amber-400 font-semibold uppercase tracking-wider">
-                Event Roster
-              </span>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs text-amber-400 font-semibold uppercase tracking-wider">
+                  Event Roster
+                </span>
+                <span className="text-zinc-600">·</span>
+                <span
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
+                    selectedEvent.attendanceOpen
+                      ? "bg-emerald-950/40 border-emerald-700/50 text-emerald-400"
+                      : "bg-zinc-900 border-zinc-800 text-zinc-500"
+                  }`}
+                >
+                  Attendance: {selectedEvent.attendanceOpen ? "Open" : "Locked"}
+                </span>
+                <span
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${
+                    selectedEvent.winnersOpen
+                      ? "bg-amber-950/40 border-amber-700/50 text-amber-400"
+                      : "bg-zinc-900 border-zinc-800 text-zinc-500"
+                  }`}
+                >
+                  Winners: {selectedEvent.winnersOpen ? "Open" : "Locked"}
+                </span>
+              </div>
               <h3 className="text-lg font-bold text-zinc-100 mt-0.5">
                 {selectedEvent.title} — {participants.length} Participant
                 {participants.length === 1 ? "" : "s"}
               </h3>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5">
+              {isSuperAdmin && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleToggleAttendance(selectedEvent)}
+                    className="text-xs border-zinc-700 hover:bg-zinc-800 text-zinc-200"
+                  >
+                    {selectedEvent.attendanceOpen ? (
+                      <Unlock className="mr-1.5 h-3.5 w-3.5 text-emerald-400" />
+                    ) : (
+                      <Lock className="mr-1.5 h-3.5 w-3.5 text-zinc-400" />
+                    )}
+                    Attendance: {selectedEvent.attendanceOpen ? "Open" : "Locked"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleToggleWinners(selectedEvent)}
+                    className="text-xs border-zinc-700 hover:bg-zinc-800 text-zinc-200"
+                  >
+                    {selectedEvent.winnersOpen ? (
+                      <Unlock className="mr-1.5 h-3.5 w-3.5 text-amber-400" />
+                    ) : (
+                      <Lock className="mr-1.5 h-3.5 w-3.5 text-zinc-400" />
+                    )}
+                    Winners: {selectedEvent.winnersOpen ? "Open" : "Locked"}
+                  </Button>
+                </>
+              )}
               <Button
                 size="sm"
                 onClick={() => setPodiumModalOpen(true)}
@@ -540,7 +653,7 @@ export function AdminEventsView() {
                 }`}
                 title={
                   !canDeclareWinners
-                    ? "Winner declaration is locked by Higher Administration"
+                    ? "Winner declaration is locked for this event"
                     : "Declare winners"
                 }
               >
@@ -608,7 +721,7 @@ export function AdminEventsView() {
                             }`}
                             title={
                               !canMarkAttendance
-                                ? "Attendance marking locked by Higher Administration"
+                                ? "Attendance marking is locked for this event"
                                 : attended
                                 ? "Click to mark Absent"
                                 : "Click to mark Present"
@@ -688,7 +801,7 @@ export function AdminEventsView() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-zinc-300 font-medium mb-1">Organizing Club</label>
-                  {isHigherOrBoss ? (
+                  {isSuperAdmin ? (
                     <select
                       value={eventForm.organizingClub}
                       onChange={(e) =>
@@ -807,17 +920,59 @@ export function AdminEventsView() {
                 />
               </div>
 
-              <div className="flex items-center gap-2 pt-1">
-                <input
-                  type="checkbox"
-                  id="eventIsOpen"
-                  checked={eventForm.isOpen}
-                  onChange={(e) => setEventForm({ ...eventForm, isOpen: e.target.checked })}
-                  className="h-4 w-4 rounded border-zinc-800 text-amber-500 focus:ring-amber-500"
-                />
-                <label htmlFor="eventIsOpen" className="text-zinc-300 font-medium cursor-pointer">
-                  Open for participant registrations
-                </label>
+              <div className="flex flex-col gap-2 pt-1">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="eventIsOpen"
+                    checked={eventForm.isOpen}
+                    onChange={(e) => setEventForm({ ...eventForm, isOpen: e.target.checked })}
+                    className="h-4 w-4 rounded border-zinc-800 text-amber-500 focus:ring-amber-500"
+                  />
+                  <label htmlFor="eventIsOpen" className="text-zinc-300 font-medium cursor-pointer">
+                    Open for participant registrations
+                  </label>
+                </div>
+
+                {isSuperAdmin && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-zinc-800/60">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="eventAttendanceOpen"
+                        checked={eventForm.attendanceOpen}
+                        onChange={(e) =>
+                          setEventForm({ ...eventForm, attendanceOpen: e.target.checked })
+                        }
+                        className="h-4 w-4 rounded border-zinc-800 text-emerald-500 focus:ring-emerald-500"
+                      />
+                      <label
+                        htmlFor="eventAttendanceOpen"
+                        className="text-zinc-300 font-medium cursor-pointer"
+                      >
+                        Open attendance marking
+                      </label>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="eventWinnersOpen"
+                        checked={eventForm.winnersOpen}
+                        onChange={(e) =>
+                          setEventForm({ ...eventForm, winnersOpen: e.target.checked })
+                        }
+                        className="h-4 w-4 rounded border-zinc-800 text-amber-500 focus:ring-amber-500"
+                      />
+                      <label
+                        htmlFor="eventWinnersOpen"
+                        className="text-zinc-300 font-medium cursor-pointer"
+                      >
+                        Open winner declaration
+                      </label>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-800">

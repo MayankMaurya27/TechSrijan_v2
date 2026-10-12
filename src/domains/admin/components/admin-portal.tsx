@@ -7,7 +7,6 @@ import {
   Users,
   Handshake,
   KeyRound,
-  Sliders,
   LogOut,
   Loader2,
   AlertCircle,
@@ -20,7 +19,6 @@ import { AdminEventsView } from "./admin-events-view";
 import { AdminStayView } from "./admin-stay-view";
 import { AdminAmbassadorsView } from "./admin-ambassadors-view";
 import { AdminSponsorsView } from "./admin-sponsors-view";
-import { AdminTogglesView } from "./admin-toggles-view";
 import { AdminCredentialsView } from "./admin-credentials-view";
 
 export type AdminTab =
@@ -28,7 +26,6 @@ export type AdminTab =
   | "sponsors"
   | "ambassadors"
   | "stay"
-  | "toggles"
   | "credentials";
 
 interface AdminPortalProps {
@@ -89,10 +86,8 @@ export function AdminPortal({ initialTab = "events" }: AdminPortalProps) {
           <div className="px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-right">
             <div className="text-xs font-semibold text-zinc-200">{user.name}</div>
             <div className="text-[10px] text-zinc-400 font-medium">
-              {isBossAdmin ? (
-                <span className="text-red-400 font-semibold">Boss Admin</span>
-              ) : isHigherAdmin ? (
-                <span className="text-amber-400 font-semibold">Higher Admin</span>
+              {isBossAdmin || isHigherAdmin ? (
+                <span className="text-amber-400 font-semibold">Super Admin</span>
               ) : (
                 <span className="text-blue-400 font-semibold">
                   Club Admin ({user.club || "Club"})
@@ -141,12 +136,6 @@ export function AdminPortal({ initialTab = "events" }: AdminPortalProps) {
             active={activeTab === "stay"}
             onClick={() => setActiveTab("stay")}
           />
-          <TabButton
-            icon={Sliders}
-            label="Permissions & Toggles"
-            active={activeTab === "toggles"}
-            onClick={() => setActiveTab("toggles")}
-          />
           {isBossAdmin && (
             <TabButton
               icon={KeyRound}
@@ -164,7 +153,6 @@ export function AdminPortal({ initialTab = "events" }: AdminPortalProps) {
         {activeTab === "sponsors" && !isClubAdmin && <AdminSponsorsView />}
         {activeTab === "ambassadors" && !isClubAdmin && <AdminAmbassadorsView />}
         {activeTab === "stay" && !isClubAdmin && <AdminStayView />}
-        {activeTab === "toggles" && !isClubAdmin && <AdminTogglesView />}
         {activeTab === "credentials" && isBossAdmin && <AdminCredentialsView />}
       </main>
     </div>

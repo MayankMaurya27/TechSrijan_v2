@@ -41,7 +41,11 @@ const nextConfig: NextConfig = {
 
     return [
       {
-        source: "/api/:path*",
+        source: "/api/auth/callback/google",
+        destination: "/api/auth/callback/google",
+      },
+      {
+        source: "/api/:path((?!auth/callback/google).*)",
         destination: `${backendUrl}/api/:path*`,
       },
     ];

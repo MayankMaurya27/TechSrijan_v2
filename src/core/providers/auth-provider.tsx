@@ -69,11 +69,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return meData.profile;
       }
       return null;
-    } catch (err) {
-      console.warn("Session token validation failed, clearing session:", err);
-      api.auth.logout();
-      setUser(null);
-      setToken(null);
+    } catch (err: any) {
+      console.warn("Session token validation attempt failed:", err);
+      // Only purge credentials if token is explicitly rejected (HTTP 401 Unauthorized or expired)
+      if (
+        err?.code === "HTTP_401" ||
+        err?.message?.toLowerCase().includes("unauthorized") ||
+        err?.message?.toLowerCase().includes("expired")
+      ) {
+        api.auth.logout();
+        setUser(null);
+        setToken(null);
+        return null;
+      }
+
+      // On network errors or cold-starts, preserve valid cached user session
+      const cachedProfile = localStorage.getItem("ts27_user_profile");
+      if (cachedProfile) {
+        try {
+          const parsed = JSON.parse(cachedProfile);
+          setUser(parsed);
+          setToken(currentToken);
+          return parsed;
+        } catch {
+          // ignore parse error
+        }
+      }
       return null;
     } finally {
       setIsLoading(false);

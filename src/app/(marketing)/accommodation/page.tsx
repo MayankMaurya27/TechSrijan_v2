@@ -241,8 +241,8 @@ export default function AccommodationPage() {
     }
 
     const isMobile = window.innerWidth < 768;
-    const pinEndDistance = isMobile ? "+=55%" : "+=95%";
-    const scrubSpeed = isMobile ? 0.2 : 0.35;
+    const pinEndDistance = isMobile ? "+=55%" : "+=145%";
+    const scrubSpeed = isMobile ? 0.2 : 0.45;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -276,7 +276,7 @@ export default function AccommodationPage() {
           opacity: 0,
           scale: 0.94,
           ease: "power2.inOut",
-          duration: 0.32,
+          duration: 0.35,
         },
         0.05
       );
@@ -288,7 +288,7 @@ export default function AccommodationPage() {
           opacity: 0,
           scale: 0.94,
           ease: "power2.inOut",
-          duration: 0.32,
+          duration: 0.35,
         },
         0.05
       );
@@ -301,7 +301,7 @@ export default function AccommodationPage() {
           opacity: 0,
           scale: 0.96,
           ease: "power2.inOut",
-          duration: 0.28,
+          duration: 0.3,
         },
         0.05
       );
@@ -322,7 +322,7 @@ export default function AccommodationPage() {
           y: 35,
           opacity: 0,
           ease: "power2.in",
-          duration: 0.22,
+          duration: 0.25,
         },
         0.05
       );
@@ -335,7 +335,7 @@ export default function AccommodationPage() {
           y: 35,
           opacity: 0,
           ease: "power2.inOut",
-          duration: 0.32,
+          duration: 0.35,
         },
         0.05
       );
@@ -346,7 +346,7 @@ export default function AccommodationPage() {
         {
           opacity: 0.7,
           ease: "power2.inOut",
-          duration: 0.35,
+          duration: 0.4,
         },
         0.2
       );
@@ -359,18 +359,18 @@ export default function AccommodationPage() {
           y: "106vh",
           opacity: 0.9,
           ease: "power1.inOut",
-          duration: 0.32,
+          duration: 0.35,
         },
         0.1
       );
 
-      // Form Panel emerges directly with clean opacity, scale and subtle vertical drift (NO BROKEN/CLIPPED TEXT!)
+      // Form Panel emerges directly with ALL elements appearing together at once (no ghost fields)
       tl.fromTo(
         formPanelRef.current,
         {
           opacity: 0,
           scale: 0.96,
-          y: 18,
+          y: 20,
         },
         {
           opacity: 1,
@@ -379,27 +379,8 @@ export default function AccommodationPage() {
           ease: "power2.out",
           duration: 0.45,
         },
-        0.18
+        0.22
       );
-
-      if (formFieldsRef.current) {
-        const fieldElements = formFieldsRef.current.children;
-        tl.fromTo(
-          fieldElements,
-          {
-            opacity: 0,
-            y: 14,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.015,
-            ease: "power2.out",
-            duration: 0.3,
-          },
-          0.30
-        );
-      }
     }, scrollWrapperRef);
 
     // Refresh ScrollTrigger after DOM has fully settled
@@ -420,12 +401,12 @@ export default function AccommodationPage() {
   const scrollToStageProgress = useCallback((targetProgress: number) => {
     const triggerTop = scrollWrapperRef.current?.offsetTop || 0;
     const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-    const totalDistance = window.innerHeight * (isMobile ? 0.55 : 0.95);
+    const totalDistance = window.innerHeight * (isMobile ? 0.55 : 1.45);
     const targetScroll = triggerTop + totalDistance * Math.max(0, Math.min(1, targetProgress));
 
     const lenis = window.__lenis;
     if (lenis) {
-      lenis.scrollTo(targetScroll, { duration: 0.6 });
+      lenis.scrollTo(targetScroll, { duration: isMobile ? 0.6 : 0.85 });
     } else {
       window.scrollTo({
         top: targetScroll,
@@ -785,7 +766,7 @@ export default function AccommodationPage() {
               ref={centerCharacterRef}
               onMouseEnter={() => setIsCharHovered(true)}
               onMouseLeave={() => setIsCharHovered(false)}
-              className="absolute inset-x-0 bottom-0 flex items-end justify-center pointer-events-none lg:pointer-events-auto z-10 will-change-transform cursor-pointer group"
+              className="absolute inset-x-0 -bottom-3 sm:-bottom-4 lg:-bottom-6 xl:-bottom-7 flex items-end justify-center pointer-events-none lg:pointer-events-auto z-10 will-change-transform cursor-pointer group"
             >
               {/* Restrained Dynamic Outline Rim Glow */}
               <div
@@ -800,10 +781,10 @@ export default function AccommodationPage() {
                 }`}
               />
 
-              {/* Character Stage Wrapper - Anchored firmly to bottom */}
+              {/* Character Stage Wrapper - Optimum dimensions & flush bottom anchor */}
               <div
                 ref={charImageWrapRef}
-                className="relative w-[230px] sm:w-[330px] lg:w-[490px] xl:w-[560px] 2xl:w-[620px] h-[290px] sm:h-[410px] lg:h-[570px] xl:h-[640px] 2xl:h-[700px] select-none flex items-end justify-center will-change-transform translate-y-3 sm:translate-y-4 lg:translate-y-6 xl:translate-y-8"
+                className="relative w-[190px] sm:w-[260px] md:w-[310px] lg:w-[360px] xl:w-[410px] 2xl:w-[450px] h-[240px] sm:h-[330px] md:h-[390px] lg:h-[440px] xl:h-[490px] 2xl:h-[530px] select-none flex items-end justify-center will-change-transform translate-y-4 sm:translate-y-5 lg:translate-y-7 xl:translate-y-8"
               >
                 {/* 1. DEFAULT STATE: NORMAL CENTERED LELOUCH CHARACTER CUTOUT */}
                 <div

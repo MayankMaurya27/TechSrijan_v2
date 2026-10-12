@@ -6,11 +6,7 @@ import { getMediaVideoUrl } from "@/shared/utils/cloudinary-video";
 
 import dynamic from "next/dynamic";
 import { HeroTitle } from "./hero-title";
-const Paul3D = dynamic(
-  () => import("./paul-3d").then((m) => m.Paul3D),
-  { ssr: false }
-);
-import { SocialConstellation } from "./social-constellation";
+import { SocialTotem } from "./social-totem";
 import { CitadelArchive } from "./citadel-archive";
 
 
@@ -563,20 +559,15 @@ export function ScrollJourney({
           </div>
         )}
 
-        {/* Layer 4: Paul Atreides 3D Model (Materializes as the gate opens, visual anchor in lower-left foreground) */}
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 22 }}>
-          <Paul3D scrollProgress={scrollProgress} />
-        </div>
-
         {/* Layer 5: Citadel Archive (Monumental 3D information slabs revealing systems of the citadel) */}
         <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
           <CitadelArchive scrollProgress={scrollProgress} />
         </div>
 
-        {/* Layer 5.5: Celestial Social Constellation Hologram (Anchored on the far right end) */}
+        {/* Layer 5.5: Citadel Waypoint Totem (Arrakis Social Directive Spire on the far right flank) */}
         {!isMobile && (
           <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 28 }}>
-            <SocialConstellation scrollProgress={scrollProgress} />
+            <SocialTotem scrollProgress={scrollProgress} />
           </div>
         )}
       </div>

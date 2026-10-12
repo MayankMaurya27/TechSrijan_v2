@@ -49,6 +49,7 @@ export function AdminCredentialsView() {
     name: "",
     username: "",
     password: "",
+    adminType: "CLUB_ADMIN" as "CLUB_ADMIN" | "SUPER_ADMIN",
     club: "TSC" as "TSC" | "RC" | "IEEE" | "SAE" | "RESO",
   });
   const [editLoading, setEditLoading] = useState(false);
@@ -115,6 +116,7 @@ export function AdminCredentialsView() {
       name: admin.name || "",
       username: admin.rollNumber || admin.email || "",
       password: "",
+      adminType: admin.role === "ADMIN" ? "CLUB_ADMIN" : "SUPER_ADMIN",
       club: (admin.club as any) || "TSC",
     });
     setEditModalOpen(true);
@@ -139,8 +141,13 @@ export function AdminCredentialsView() {
       if (editForm.password.trim()) {
         payload.password = editForm.password;
       }
-      if (editingAdmin.role === "ADMIN" && editForm.club) {
-        payload.club = editForm.club;
+      if (editingAdmin.role !== "BOSS") {
+        payload.adminType = editForm.adminType;
+        if (editForm.adminType === "CLUB_ADMIN") {
+          payload.club = editForm.club;
+        } else {
+          payload.club = null;
+        }
       }
 
       await api.admin.credentials.update(editingAdmin.id, payload);
@@ -500,27 +507,54 @@ export function AdminCredentialsView() {
                 />
               </div>
 
-              {editingAdmin.role === "ADMIN" && (
-                <div>
-                  <label className="block text-zinc-300 font-medium mb-1.5">
-                    Assigned Club
-                  </label>
-                  <select
-                    value={editForm.club}
-                    onChange={(e) =>
-                      setEditForm({
-                        ...editForm,
-                        club: e.target.value as any,
-                      })
-                    }
-                    className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
-                  >
-                    <option value="TSC">TSC</option>
-                    <option value="RC">RC</option>
-                    <option value="IEEE">IEEE</option>
-                    <option value="SAE">SAE</option>
-                    <option value="RESO">RESO</option>
-                  </select>
+              {editingAdmin.role !== "BOSS" ? (
+                <>
+                  <div>
+                    <label className="block text-zinc-300 font-medium mb-1.5">Role</label>
+                    <select
+                      value={editForm.adminType}
+                      onChange={(e) =>
+                        setEditForm({
+                          ...editForm,
+                          adminType: e.target.value as "CLUB_ADMIN" | "SUPER_ADMIN",
+                        })
+                      }
+                      className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
+                    >
+                      <option value="CLUB_ADMIN">Club Admin (Manage own club events only)</option>
+                      <option value="SUPER_ADMIN">
+                        Super Admin (All events, sponsors, ambassadors, stay)
+                      </option>
+                    </select>
+                  </div>
+
+                  {editForm.adminType === "CLUB_ADMIN" && (
+                    <div>
+                      <label className="block text-zinc-300 font-medium mb-1.5">
+                        Assigned Club
+                      </label>
+                      <select
+                        value={editForm.club}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            club: e.target.value as any,
+                          })
+                        }
+                        className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
+                      >
+                        <option value="TSC">TSC</option>
+                        <option value="RC">RC</option>
+                        <option value="IEEE">IEEE</option>
+                        <option value="SAE">SAE</option>
+                        <option value="RESO">RESO</option>
+                      </select>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-400">
+                  <span className="font-semibold text-amber-400">Master Root Account:</span> Full festival access and root credentials control.
                 </div>
               )}
 

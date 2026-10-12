@@ -9,9 +9,11 @@ export async function GET(req: NextRequest) {
     (rawHost.includes("localhost") || rawHost.includes("127.0.0.1") ? "http" : "https");
   const origin = `${rawProto}://${rawHost}`;
 
-  const clientId =
+  const rawClientId =
     getServerEnv("GOOGLE_CLIENT_ID") ||
     getServerEnv("NEXT_PUBLIC_GOOGLE_CLIENT_ID");
+
+  const clientId = rawClientId?.trim().replace(/^https?:\/\//i, "").replace(/\/+$/, "");
 
   if (!clientId) {
     console.error("[Google OAuth] GOOGLE_CLIENT_ID is not configured in .env or .env.local");

@@ -18,10 +18,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${origin}/signin?error=${encodeURIComponent(error || "Google authorization was cancelled.")}`);
   }
 
-  const clientId =
+  const rawClientId =
     getServerEnv("GOOGLE_CLIENT_ID") ||
     getServerEnv("NEXT_PUBLIC_GOOGLE_CLIENT_ID");
-  const clientSecret = getServerEnv("GOOGLE_CLIENT_SECRET");
+  const clientId = rawClientId?.trim().replace(/^https?:\/\//i, "").replace(/\/+$/, "");
+  const clientSecret = getServerEnv("GOOGLE_CLIENT_SECRET")?.trim();
 
   if (!clientId || !clientSecret) {
     console.error("Missing Google OAuth credentials in environment variables.");

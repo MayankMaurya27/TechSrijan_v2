@@ -78,8 +78,14 @@ class ApiClient {
     }
 
     if (!res.ok || !data.success) {
-      const errorMessage =
+      let errorMessage =
         data.error?.message || `Request failed with status ${res.status}`;
+      if (Array.isArray(data.error?.details) && data.error.details.length > 0) {
+        const detailsStr = data.error.details
+          .map((d: any) => `${d.path ? `${d.path}: ` : ""}${d.message}`)
+          .join("; ");
+        errorMessage = `${errorMessage} (${detailsStr})`;
+      }
       throw new ApiError(errorMessage, data.error?.code, data.error?.details);
     }
 

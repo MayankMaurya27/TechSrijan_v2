@@ -71,12 +71,13 @@ export function AdminCredentialsView() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!createForm.name.trim() || !createForm.email.trim() || !createForm.password) {
-      alert("Please fill in name, email, and password.");
+    const rawId = createForm.email.trim();
+    if (!createForm.name.trim() || !rawId || !createForm.password) {
+      alert("Please fill in name, email or roll number, and password.");
       return;
     }
-    if (createForm.password.length < 8) {
-      alert("Password must be at least 8 characters long.");
+    if (createForm.password.length < 6) {
+      alert("Password must be at least 6 characters long.");
       return;
     }
 
@@ -84,7 +85,9 @@ export function AdminCredentialsView() {
     try {
       const payload: any = {
         name: createForm.name.trim(),
-        email: createForm.email.trim().toLowerCase(),
+        email: rawId.includes("@") ? rawId.toLowerCase() : undefined,
+        identifier: !rawId.includes("@") ? rawId : undefined,
+        rollNumber: !rawId.includes("@") ? rawId : undefined,
         password: createForm.password,
         adminType: createForm.adminType,
       };
@@ -344,12 +347,12 @@ export function AdminCredentialsView() {
 
               <div>
                 <label className="block text-zinc-300 font-medium mb-1.5">
-                  Email / Official Roll Number
+                  Email or Official Roll Number *
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   required
-                  placeholder="e.g. clubadmin@techsrijan.org"
+                  placeholder="e.g. admin@techsrijan.org or 2027DIR001"
                   value={createForm.email}
                   onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
                   className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 placeholder-zinc-500 focus:border-amber-500 focus:outline-none"
@@ -358,12 +361,12 @@ export function AdminCredentialsView() {
 
               <div>
                 <label className="block text-zinc-300 font-medium mb-1.5">
-                  Password (min 8 chars)
+                  Password (min 6 chars) *
                 </label>
                 <input
                   type="password"
                   required
-                  minLength={8}
+                  minLength={6}
                   placeholder="••••••••••••"
                   value={createForm.password}
                   onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}

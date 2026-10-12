@@ -887,7 +887,7 @@ export function SponsorsPageView() {
             - Tight neon glow with white-hot core and controlled spread
             - Responsive swipe / horizontal scroll on mobile
             ======================================================== */}
-        <div className="relative z-20 w-full px-1.5 xs:px-2 sm:px-6 lg:px-10 pb-6 sm:pb-16 md:pb-20 lg:pb-24 -translate-y-2 sm:-translate-y-4 md:-translate-y-6">
+        <div className="relative z-20 w-full px-1.5 xs:px-2 sm:px-6 lg:px-10 pb-8 sm:pb-16 md:pb-20 lg:pb-24 -translate-y-5 xs:-translate-y-6 sm:-translate-y-4 md:-translate-y-6">
           {/* Subtle Base Dais Shadow */}
           <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[90%] sm:w-[70%] max-w-3xl h-[20px] sm:h-[24px] rounded-[50%] bg-black/80 blur-md pointer-events-none" />
 

@@ -22,9 +22,9 @@ export const metadata: Metadata = {
     url: "/ambassador",
     images: [
       {
-        url: "/images/redmoon2.png",
-        width: 1672,
-        height: 941,
+        url: "/images/og-ambassador.jpg",
+        width: 1200,
+        height: 630,
         alt: "TechSrijan'27 Campus Ambassador",
       },
     ],

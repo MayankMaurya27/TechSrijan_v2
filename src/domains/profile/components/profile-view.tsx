@@ -25,7 +25,8 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/core";
 import { api } from "@/lib/api";
-import { useAuthModal } from "@/domains/auth";
+import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 export interface UserProfileData {
   fullName: string;
@@ -225,9 +226,9 @@ export function ProfileView() {
           ======================================================== */}
       <div className="fixed inset-0 z-0 pointer-events-none select-none overflow-hidden">
         <picture className="w-full h-full">
-          <source srcSet="/images/profile/profileland.webp" type="image/webp" />
+          <source srcSet={getOptimizedImageUrl("/images/profile/profileland.webp", 1920)} type="image/webp" />
           <img
-            src="/images/profile/profileland.webp"
+            src={getOptimizedImageUrl("/images/profile/profileland.webp", 1920)}
             alt="TechSrijan Citadel Desert"
             className="w-full h-full object-cover object-[78%_center] md:object-center brightness-[1.02] contrast-[1.14]"
             draggable={false}

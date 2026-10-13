@@ -50,7 +50,18 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-
+  // public/ media is revalidated on every visit by default. Filenames are reused when assets
+  // are replaced, so cap at 1 day (+1 week stale-while-revalidate) rather than `immutable`.
+  async headers() {
+    return [
+      {
+        source: "/:all*(webp|png|jpg|jpeg|svg|mp4)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

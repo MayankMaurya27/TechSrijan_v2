@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
-import * as THREE from "three";
-import gsap from "gsap";
-import { useTheme, normalizeTheme, type CanonicalTheme } from "@/core";
+// three.js and gsap are imported dynamically (after load/idle, or on interaction) to keep them off the critical path
+import type * as THREE from "three";
+import { useTheme, normalizeTheme, whenIdleAfterLoad, type CanonicalTheme } from "@/core";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 interface TechSrijan3DLogoProps {
   scrollProgress: number;
@@ -17,7 +18,6 @@ const LOGO_THEMES: Record<
   CanonicalTheme,
   {
     imageSrcWebp: string;
-    imageSrcPng: string;
     particleGrad: [string, string, string];
     specularGradient: string;
     shockwaveBorder: string;
@@ -28,7 +28,6 @@ const LOGO_THEMES: Record<
   // Arrakis Solar Day - Imperial Sand Gold & Radiant Solar Amber
   "arrakis-day": {
     imageSrcWebp: "/hero-logo-arrakis-day.webp",
-    imageSrcPng: "/hero-logo-arrakis-day.png",
     particleGrad: [
       "rgba(255, 245, 215, 1)",
       "rgba(245, 158, 11, 0.85)",
@@ -45,7 +44,6 @@ const LOGO_THEMES: Record<
   // Geass Moon - The Iconic Piercing Crimson & Sakuradite Core
   "geass-moon": {
     imageSrcWebp: "/hero-logo-geass-moon.webp",
-    imageSrcPng: "/hero-logo-geass-moon.png",
     particleGrad: [
       "rgba(255, 215, 220, 1)",
       "rgba(255, 30, 39, 0.85)",
@@ -62,7 +60,6 @@ const LOGO_THEMES: Record<
   // Krelln Night - Moonlit Dust & Stark Monochromatic Silver / Grey
   "krelln-night": {
     imageSrcWebp: "/hero-logo-krelln-night.webp",
-    imageSrcPng: "/hero-logo-krelln-night.png",
     particleGrad: [
       "rgba(255, 255, 255, 1)",
       "rgba(215, 220, 228, 0.85)",
@@ -158,129 +155,146 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
     pTexture.needsUpdate = true;
   }, [currentTheme, activeConf]);
 
-  // Three.js Ember Particles System
+  // Three.js Ember Particles System (loaded once the page is idle so it never delays the logo paint)
   useEffect(() => {
     const canvas = particlesCanvasRef.current;
     if (!canvas) return;
 
-    const width = canvas.parentElement?.clientWidth || window.innerWidth;
-    const height = canvas.parentElement?.clientHeight || 450;
+    let disposed = false;
+    let stopParticles: (() => void) | undefined;
+    // WebGL setup is a ~400ms main-thread task on mid-range phones: keep it well clear of startup
+    const cancelIdle = whenIdleAfterLoad(() => {
+      import("three").then((THREE) => {
+        if (!disposed) stopParticles = startParticles(THREE);
+      });
+    }, 3000);
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.z = 5;
+    const startParticles = (THREE: typeof import("three")) => {
+      const width = canvas.parentElement?.clientWidth || window.innerWidth;
+      const height = canvas.parentElement?.clientHeight || 450;
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      alpha: true,
-      antialias: true,
-      powerPreference: "high-performance",
-    });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      camera.position.z = 5;
 
-    // Create soft glowing circle sprite for particles
-    const spriteCanvas = document.createElement("canvas");
-    spriteCanvas.width = 32;
-    spriteCanvas.height = 32;
-    spriteCanvasRef.current = spriteCanvas;
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: "high-performance",
+      });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-    const sCtx = spriteCanvas.getContext("2d");
-    if (sCtx) {
-      const [c0, c1, c2] = activeConf.particleGrad;
-      const grad = sCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
-      grad.addColorStop(0, c0);
-      grad.addColorStop(0.28, c1);
-      grad.addColorStop(0.65, c2);
-      grad.addColorStop(1, "rgba(0, 0, 0, 0)");
-      sCtx.fillStyle = grad;
-      sCtx.fillRect(0, 0, 32, 32);
-    }
-    const particleTexture = new THREE.CanvasTexture(spriteCanvas);
-    particleTextureRef.current = particleTexture;
+      // Create soft glowing circle sprite for particles
+      const spriteCanvas = document.createElement("canvas");
+      spriteCanvas.width = 32;
+      spriteCanvas.height = 32;
+      spriteCanvasRef.current = spriteCanvas;
 
-    // Particle geometries
-    const particleCount = 45;
-    const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const velocities = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount; i++) {
-      positions[i * 3 + 0] = (Math.random() - 0.5) * 6.5;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 2.2;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 1.8;
-
-      velocities[i * 3 + 0] = (Math.random() - 0.5) * 0.003;
-      velocities[i * 3 + 1] = Math.random() * 0.005 + 0.002; // drift upward
-      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
-    }
-
-    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-
-    const material = new THREE.PointsMaterial({
-      size: 0.12,
-      map: particleTexture,
-      transparent: true,
-      opacity: 0.75,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    });
-
-    const points = new THREE.Points(geometry, material);
-    scene.add(points);
-
-    let isRunning = true;
-    let startTime = performance.now();
-
-    const animateParticles = () => {
-      if (!isRunning) return;
-      requestAnimationFrame(animateParticles);
-
-      // Skip GPU computation & render when logo is scrolled out of view or tab is hidden
-      if (scrollProgressRef.current > 0.15 || document.hidden) {
-        return;
+      const sCtx = spriteCanvas.getContext("2d");
+      if (sCtx) {
+        const [c0, c1, c2] = activeConf.particleGrad;
+        const grad = sCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+        grad.addColorStop(0, c0);
+        grad.addColorStop(0.28, c1);
+        grad.addColorStop(0.65, c2);
+        grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+        sCtx.fillStyle = grad;
+        sCtx.fillRect(0, 0, 32, 32);
       }
+      const particleTexture = new THREE.CanvasTexture(spriteCanvas);
+      particleTextureRef.current = particleTexture;
 
-      const elapsed = (performance.now() - startTime) * 0.001;
-      const posAttr = geometry.attributes.position as THREE.BufferAttribute;
-      const pos = posAttr.array as Float32Array;
+      // Particle geometries
+      const particleCount = 45;
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(particleCount * 3);
+      const velocities = new Float32Array(particleCount * 3);
 
       for (let i = 0; i < particleCount; i++) {
-        const idx = i * 3;
-        pos[idx + 0] += velocities[idx + 0] + Math.sin(elapsed + i) * 0.0008;
-        pos[idx + 1] += velocities[idx + 1];
-        pos[idx + 2] += velocities[idx + 2];
+        positions[i * 3 + 0] = (Math.random() - 0.5) * 6.5;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 2.2;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 1.8;
 
-        // Reset if floated above top
-        if (pos[idx + 1] > 1.4) {
-          pos[idx + 1] = -1.3;
-          pos[idx + 0] = (Math.random() - 0.5) * 6.5;
-        }
+        velocities[i * 3 + 0] = (Math.random() - 0.5) * 0.003;
+        velocities[i * 3 + 1] = Math.random() * 0.005 + 0.002; // drift upward
+        velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
       }
-      posAttr.needsUpdate = true;
-      renderer.render(scene, camera);
+
+      geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+      const material = new THREE.PointsMaterial({
+        size: 0.12,
+        map: particleTexture,
+        transparent: true,
+        opacity: 0.75,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+
+      const points = new THREE.Points(geometry, material);
+      scene.add(points);
+
+      let isRunning = true;
+      let startTime = performance.now();
+
+      const animateParticles = () => {
+        if (!isRunning) return;
+        requestAnimationFrame(animateParticles);
+
+        // Skip GPU computation & render when logo is scrolled out of view or tab is hidden
+        if (scrollProgressRef.current > 0.15 || document.hidden) {
+          return;
+        }
+
+        const elapsed = (performance.now() - startTime) * 0.001;
+        const posAttr = geometry.attributes.position as THREE.BufferAttribute;
+        const pos = posAttr.array as Float32Array;
+
+        for (let i = 0; i < particleCount; i++) {
+          const idx = i * 3;
+          pos[idx + 0] += velocities[idx + 0] + Math.sin(elapsed + i) * 0.0008;
+          pos[idx + 1] += velocities[idx + 1];
+          pos[idx + 2] += velocities[idx + 2];
+
+          // Reset if floated above top
+          if (pos[idx + 1] > 1.4) {
+            pos[idx + 1] = -1.3;
+            pos[idx + 0] = (Math.random() - 0.5) * 6.5;
+          }
+        }
+        posAttr.needsUpdate = true;
+        renderer.render(scene, camera);
+      };
+
+      animateParticles();
+
+      const handleResize = () => {
+        if (!canvas.parentElement) return;
+        const w = canvas.parentElement.clientWidth || window.innerWidth;
+        const h = canvas.parentElement.clientHeight || 450;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      };
+
+      window.addEventListener("resize", handleResize);
+
+      return () => {
+        isRunning = false;
+        window.removeEventListener("resize", handleResize);
+        geometry.dispose();
+        material.dispose();
+        particleTexture.dispose();
+        renderer.dispose();
+      };
     };
-
-    animateParticles();
-
-    const handleResize = () => {
-      if (!canvas.parentElement) return;
-      const w = canvas.parentElement.clientWidth || window.innerWidth;
-      const h = canvas.parentElement.clientHeight || 450;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-
-    window.addEventListener("resize", handleResize);
 
     return () => {
-      isRunning = false;
-      window.removeEventListener("resize", handleResize);
-      geometry.dispose();
-      material.dispose();
-      particleTexture.dispose();
-      renderer.dispose();
+      disposed = true;
+      cancelIdle();
+      stopParticles?.();
     };
   }, []);
 
@@ -346,20 +360,27 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
     target.lightX = -20;
     target.lightY = 50;
 
-    gsap.to(target, {
-      lightX: 120,
-      duration: 1.8,
-      ease: "power2.inOut",
-      onComplete: () => {
-        gsap.to(target, {
-          lightOpacity: 0.45,
-          lightX: 50,
-          lightY: 50,
-          duration: 0.8,
-          ease: "power2.out",
-        });
-      },
+    let cancelled = false;
+    import("gsap").then(({ gsap }) => {
+      if (cancelled) return;
+      gsap.to(target, {
+        lightX: 120,
+        duration: 1.8,
+        ease: "power2.inOut",
+        onComplete: () => {
+          gsap.to(target, {
+            lightOpacity: 0.45,
+            lightX: 50,
+            lightY: 50,
+            duration: 0.8,
+            ease: "power2.out",
+          });
+        },
+      });
     });
+    return () => {
+      cancelled = true;
+    };
   }, [hasEntered]);
 
   // Pointer movement tracking
@@ -407,19 +428,22 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
       setShockwaves((prev) => prev.filter((sw) => sw.id !== newId));
     }, 900);
 
-    if (cardRef.current) {
-      gsap.killTweensOf(cardRef.current);
-      gsap.timeline()
-        .to(cardRef.current, {
-          scale: 0.97,
-          duration: 0.08,
-          ease: "power2.out",
-        })
-        .to(cardRef.current, {
-          scale: 1.0,
-          duration: 0.6,
-          ease: "elastic.out(1.1, 0.4)",
-        });
+    const card = cardRef.current;
+    if (card) {
+      import("gsap").then(({ gsap }) => {
+        gsap.killTweensOf(card);
+        gsap.timeline()
+          .to(card, {
+            scale: 0.97,
+            duration: 0.08,
+            ease: "power2.out",
+          })
+          .to(card, {
+            scale: 1.0,
+            duration: 0.6,
+            ease: "elastic.out(1.1, 0.4)",
+          });
+      });
     }
 
     targetTiltRef.current.lightOpacity = 1.0;
@@ -463,46 +487,39 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
           willChange: "transform",
         }}
       >
-        {/* Layer 1: The Stacked Dynamic Themed Emblem with Smooth Crossfade Transitions */}
+        {/* Layer 1: Themed emblem. Visibility comes from CSS on html[data-theme] (set before first paint by the
+            inline head script), so the server HTML already shows the right logo. Inactive logos are display:none,
+            and lazy images that are display:none are never fetched, so only the active theme downloads. */}
         <div className="relative w-full flex justify-center">
           {ALL_THEMES.map((tKey) => {
             const conf = LOGO_THEMES[tKey];
-            const isActive = currentTheme === tKey;
             return (
-              <div
-                key={tKey}
-                className={`w-full flex justify-center transition-all duration-700 ease-out ${
-                  isActive
-                    ? "opacity-100 z-10 relative scale-100"
-                    : "opacity-0 pointer-events-none absolute inset-0 z-0 scale-[0.985]"
-                }`}
-              >
-                <picture className="w-full flex justify-center">
-                  <source srcSet={conf.imageSrcWebp} type="image/webp" />
-                  <Image
-                    src={conf.imageSrcWebp}
-                    alt="TechSrijan '27 — The Awakening Begins — Coming Soon"
-                    width={2172}
-                    height={724}
-                    priority={isActive}
-                    quality={90}
-                    className="w-full h-auto object-contain"
-                    style={{
-                      imageRendering: "-webkit-optimize-contrast",
-                      filter: `drop-shadow(0 3px 8px rgba(0,0,0,0.75)) ${conf.dropGlow}`,
-                    }}
-                  />
-                </picture>
+              <div key={tKey} data-logo-theme={tKey} className="hero-logo-theme w-full justify-center">
+                <Image
+                  src={conf.imageSrcWebp}
+                  alt="TechSrijan '27 — The Awakening Begins — Coming Soon"
+                  width={2172}
+                  height={724}
+                  fetchPriority="high"
+                  sizes="(max-width: 640px) 94vw, 1024px"
+                  quality={75}
+                  className="w-full h-auto object-contain"
+                  style={{
+                    imageRendering: "-webkit-optimize-contrast",
+                    filter: `drop-shadow(0 3px 8px rgba(0,0,0,0.75)) ${conf.dropGlow}`,
+                  }}
+                />
               </div>
             );
           })}
 
-          {/* Layer 2: Interactive Specular Sheen (Gleams across the metallic bevels in theme colors) */}
+          {/* Layer 2: Interactive Specular Sheen (Gleams across the metallic bevels in theme colors).
+              Mask is only applied once the sheen is visible, so the server HTML doesn't fetch a (possibly wrong-theme) mask. */}
           <div
             className="absolute inset-0 pointer-events-none overflow-hidden z-20"
             style={{
-              maskImage: `url(${activeConf.imageSrcWebp})`,
-              WebkitMaskImage: `url(${activeConf.imageSrcWebp})`,
+              maskImage: specularPos.opacity > 0.001 ? `url(${getOptimizedImageUrl(activeConf.imageSrcWebp, 750, 75)})` : "none",
+              WebkitMaskImage: specularPos.opacity > 0.001 ? `url(${getOptimizedImageUrl(activeConf.imageSrcWebp, 750, 75)})` : "none",
               maskSize: "contain",
               WebkitMaskSize: "contain",
               maskRepeat: "no-repeat",

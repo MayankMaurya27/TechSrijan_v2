@@ -1175,9 +1175,9 @@ export function SponsorsPageView() {
         {/* Background Citadel Atmosphere (No chess pieces, subtle dark fog & spires) */}
         <div className="absolute inset-0 pointer-events-none opacity-25 select-none">
           <picture className="w-full h-full">
-            <source srcSet="/images/sponsors/spons_land.webp" type="image/webp" />
+            <source srcSet={getOptimizedImageUrl("/images/sponsors/spons_land.webp", 1920)} type="image/webp" />
             <img
-              src="/images/sponsors/spons_land.webp"
+              src={getOptimizedImageUrl("/images/sponsors/spons_land.webp", 1920)}
               alt=""
               className="w-full h-full object-cover object-bottom"
               draggable={false}

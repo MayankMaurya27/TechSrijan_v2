@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/core";
 import { api } from "@/lib/api";
 import { AlertCircle } from "lucide-react";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 export function OnboardingView() {
   const { user, refreshUser } = useAuth();
@@ -85,9 +86,9 @@ export function OnboardingView() {
           ======================================================== */}
       <div className="fixed inset-0 z-0 pointer-events-none select-none overflow-hidden">
         <picture className="w-full h-full">
-          <source srcSet="/images/auth/onboarding_bg.webp" type="image/webp" />
+          <source srcSet={getOptimizedImageUrl("/images/auth/onboarding_bg.webp", 1920)} type="image/webp" />
           <img
-            src="/images/auth/onboarding_bg.webp"
+            src={getOptimizedImageUrl("/images/auth/onboarding_bg.webp", 1920)}
             alt="TechSrijan Imperial Landscape"
             className="w-full h-full object-cover object-[72%_center] md:object-center brightness-[1.03] contrast-[1.12]"
             draggable={false}
@@ -189,9 +190,9 @@ export function OnboardingView() {
           />
 
           <picture className="w-full h-full flex items-end justify-center">
-            <source srcSet="/images/auth/robosign_flipped.webp" type="image/webp" />
+            <source srcSet={getOptimizedImageUrl("/images/auth/robosign_flipped.webp", 1024)} type="image/webp" />
             <img
-              src="/images/auth/robosign_flipped.webp"
+              src={getOptimizedImageUrl("/images/auth/robosign_flipped.webp", 1024)}
               alt="Knightmare Vanguard Guardian"
               className="w-full h-full object-contain object-bottom drop-shadow-[0_15px_45px_rgba(0,0,0,0.95)]"
               draggable={false}

@@ -6,6 +6,7 @@ import { useAuth } from "@/core";
 import { ShieldCheck, AlertCircle, Loader2, ArrowRight } from "lucide-react";
 import { api } from "@/lib/api";
 import type { SafeUser } from "@/lib/types";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 function AuthCallbackContent() {
   const router = useRouter();
@@ -150,9 +151,9 @@ function AuthCallbackContent() {
       {/* Background Starfield / Red Moon Atmosphere */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <picture className="w-full h-full">
-          <source srcSet="/images/redmoon1.webp" type="image/webp" />
+          <source srcSet={getOptimizedImageUrl("/images/redmoon1.webp", 1920)} type="image/webp" />
           <img
-            src="/images/redmoon1.webp"
+            src={getOptimizedImageUrl("/images/redmoon1.webp", 1920)}
             alt="Atmosphere"
             className="w-full h-full object-cover object-center opacity-30 filter brightness-75 contrast-125"
           />

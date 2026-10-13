@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Space_Grotesk, Cinzel, Playfair_Display, Bebas_Neue, Geist, Montserrat } from "next/font/google";
+import { JetBrains_Mono, Cinzel, Playfair_Display, Bebas_Neue, Geist, Montserrat } from "next/font/google";
 import { ThemeProvider, LenisProvider, AuthProvider, cn } from "@/core";
-import { AmbientParticles, TwinSunsRays, Navbar, SwordCursor, TechSrijanPreloader, PageTransitionLoader } from "@/shared";
+import { AmbientParticles, TwinSunsRays, Navbar, SwordCursor, TechSrijanPreloader } from "@/shared";
 
 import "@/styles/globals.css";
-import { AuthModalProvider, SignInRouteModal } from "@/domains/auth";
+// Direct file imports (not the @/domains/auth barrel) so framer-motion-heavy auth views stay out of the root bundle
+import { AuthModalProvider } from "@/domains/auth/context/auth-modal-context";
+import { LazySignInRouteModal } from "@/domains/auth/components/lazy-sign-in-route-modal";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -21,22 +23,22 @@ const geist = Geist({
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 
+// Used for a single glyph: keep off the critical path
 const cinzel = Cinzel({
   subsets: ["latin"],
   variable: "--font-serif",
   display: "swap",
-  weight: ["400", "600", "700", "800"],
+  preload: false,
 });
 
+// Stays preloaded: it renders hero copy (chancery fallback) and a late swap re-lays out the page (measured ~600ms TBT on /events)
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-editorial",
   display: "swap",
-  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 const bebasNeue = Bebas_Neue({
@@ -148,15 +150,13 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="arrakis-day" suppressHydrationWarning className={cn(jetbrainsMono.variable, cinzel.variable, playfairDisplay.variable, bebasNeue.variable, montserrat.variable, geist.variable, "font-sans")}>
       <head>
-        <link rel="preload" href="/hero-logo-arrakis-day.webp" as="image" type="image/webp" />
-        <link rel="preload" href="/images/citadel-frame.webp" as="image" type="image/webp" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('techsrijan-theme')||localStorage.getItem('imperium-theme');if(s){s=s.trim().toLowerCase();var t='arrakis-day';if(s==='geass-moon'||s==='giedi-prime'||s==='geass')t='geass-moon';else if(s==='krelln-night'||s==='kelln-night'||s==='krelln')t='krelln-night';document.documentElement.setAttribute('data-theme',t);}}catch(e){}try{document.documentElement.setAttribute('data-intro-played','true');sessionStorage.setItem('techsrijan_intro_video_played','true');}catch(e){}})();`,
+            __html: `(function(){try{var s=localStorage.getItem('techsrijan-theme')||localStorage.getItem('imperium-theme');if(s){s=s.trim().toLowerCase();var t='arrakis-day';if(s==='geass-moon'||s==='giedi-prime'||s==='geass')t='geass-moon';else if(s==='krelln-night'||s==='kelln-night'||s==='krelln')t='krelln-night';document.documentElement.setAttribute('data-theme',t);}}catch(e){}try{document.documentElement.setAttribute('data-intro-played','true');sessionStorage.setItem('techsrijan_intro_video_played','true');}catch(e){}try{if(sessionStorage.getItem('techsrijan_site_booted'))document.documentElement.setAttribute('data-booted','');}catch(e){}})();`,
           }}
         />
         <script
@@ -169,7 +169,6 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <TechSrijanPreloader />
-            <PageTransitionLoader />
             <AuthModalProvider>
               <LenisProvider>
                 <SwordCursor />
@@ -180,7 +179,7 @@ export default function RootLayout({
                 <main className="relative z-10 flex min-h-screen flex-col">
                   {children}
                 </main>
-                <SignInRouteModal />
+                <LazySignInRouteModal />
               </LenisProvider>
             </AuthModalProvider>
           </AuthProvider>

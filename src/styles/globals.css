@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
 @import "./tw-animate.css";
 @import "./stack-cards.css";
@@ -474,6 +473,21 @@ textarea {
 
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+/* Hero logo: show only the active theme's emblem (hidden ones are lazy + display:none, so never fetched) */
+.hero-logo-theme {
+  display: none;
+}
+html[data-theme="arrakis-day"] .hero-logo-theme[data-logo-theme="arrakis-day"],
+html[data-theme="geass-moon"] .hero-logo-theme[data-logo-theme="geass-moon"],
+html[data-theme="krelln-night"] .hero-logo-theme[data-logo-theme="krelln-night"] {
+  display: flex;
+}
+
+/* Boot preloader already played this session: hide the server-rendered overlay before hydration */
+html[data-booted] .ts-boot-loader {
+  display: none;
 }
 
 .film-grain {

@@ -7,10 +7,15 @@ import { ArenaSpatialCards } from "./arena-spatial-cards";
 import type { ClubId } from "./arena-spatial-cards";
 import { getMediaVideoUrl } from "@/shared/utils/cloudinary-video";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
+import { whenIdleAfterLoad } from "@/core";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
+
+// Max speed the scrubbed video may move at when catching up to a fast scroll (× real time).
+// 3 → the ~5s walk-in takes ≥1.7s on a hard flick instead of skipping. Lower = more cinematic, more lag.
+const MAX_CATCHUP_RATE = 3;
 
 interface EventsHeroScrollProps {
   onScrollProgress?: (progress: number) => void;
@@ -46,7 +51,9 @@ export function EventsHeroScroll({
 
   // Decoder priming & throttle refs (proven from landing page mobile optimization)
   const isSeekingRef = useRef(false);
-  const targetTimeRef = useRef(0);
+  const targetTimeRef = useRef(0); // time currently being shown/seeked (chases scrollTargetRef)
+  const scrollTargetRef = useRef(0); // time the scroll position maps to
+  const catchUpRafRef = useRef(0);
   const seekWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSeekTimeRef = useRef(0);
   const throttledSeekTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -195,18 +202,24 @@ export function EventsHeroScroll({
   }, []);
 
   useEffect(() => {
-    // Attempt non-gesture priming for mobile/desktop
-    const v = videoRef.current;
-    if (v && v.paused) {
-      v.play()
-        .then(() => v.pause())
-        .catch(() => {});
-    }
+    // The scrub video is preload="none" so it doesn't compete with first paint. Start downloading it
+    // (and attempt non-gesture priming) once the page has loaded and gone idle; a gesture starts it sooner.
+    const cancelIdle = whenIdleAfterLoad(() => {
+      const v = videoRef.current;
+      if (!v) return;
+      v.preload = "auto";
+      if (v.paused) {
+        v.play()
+          .then(() => v.pause())
+          .catch(() => {});
+      }
+    });
 
     window.addEventListener("touchstart", primeMobileVideo, { passive: true, once: true });
     window.addEventListener("pointerdown", primeMobileVideo, { passive: true, once: true });
     window.addEventListener("wheel", primeMobileVideo, { passive: true, once: true });
     return () => {
+      cancelIdle();
       window.removeEventListener("touchstart", primeMobileVideo);
       window.removeEventListener("pointerdown", primeMobileVideo);
       window.removeEventListener("wheel", primeMobileVideo);
@@ -252,6 +265,32 @@ export function EventsHeroScroll({
     }
   }, [renderFrameToCanvas]);
 
+  // ─── Rate-limited catch-up ──────────────────────────────────────────────────
+  // Scroll only sets where the video *should* be (scrollTargetRef). The shown time chases it at up to
+  // MAX_CATCHUP_RATE× real time, so a fast flick plays the walk-in quickly instead of jumping past it.
+  const startCatchUp = useCallback(() => {
+    if (catchUpRafRef.current) return;
+    let last = performance.now();
+    const step = (now: number) => {
+      const video = videoRef.current;
+      if (!video || !video.duration) {
+        catchUpRafRef.current = 0;
+        return;
+      }
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      const goal = Math.max(0, Math.min(video.duration - 0.05, scrollTargetRef.current));
+      const maxStep = dt * MAX_CATCHUP_RATE;
+      targetTimeRef.current += Math.max(-maxStep, Math.min(maxStep, goal - targetTimeRef.current));
+      attemptSeek();
+      catchUpRafRef.current =
+        Math.abs(goal - targetTimeRef.current) > 0.001 ? requestAnimationFrame(step) : 0;
+    };
+    catchUpRafRef.current = requestAnimationFrame(step);
+  }, [attemptSeek]);
+
+  useEffect(() => () => cancelAnimationFrame(catchUpRafRef.current), []);
+
   const handleLoadedMetadata = useCallback(() => {
     setIsVideoLoaded(true);
     syncCanvasSize();
@@ -259,8 +298,9 @@ export function EventsHeroScroll({
     if (video) {
       video.currentTime = 0.01;
       renderFrameToCanvas(true);
+      startCatchUp(); // user may have scrolled before the video finished loading
     }
-  }, [renderFrameToCanvas, syncCanvasSize]);
+  }, [renderFrameToCanvas, syncCanvasSize, startCatchUp]);
 
   const handleSeeked = useCallback(() => {
     if (seekWatchdogRef.current) {
@@ -334,41 +374,38 @@ export function EventsHeroScroll({
               if (onScrollProgress) onScrollProgress(p);
             }
 
-            // Synchronize video scrubber time
-            const video = videoRef.current;
-            if (video && video.duration) {
-              let target = 0;
+            // Map scroll progress to a video time; the catch-up loop moves the shown frame there smoothly
+            let target = 0;
 
-              if (isMobileViewport) {
-                // Mobile Video (6.0s 9:16 portrait):
-                // 0.0s - 2.0s: Character close-up portrait (p: 0.00 - 0.22)
-                // 2.0s - 4.8s: Walks into arena, raises sword (p: 0.22 - 0.42)
-                // 4.8s - 5.4s: Arena amphitheatre wide view (p: 0.42 - 1.00)
-                if (p <= 0.22) {
-                  const norm = p / 0.22;
-                  target = norm * 2.0;
-                } else if (p <= 0.42) {
-                  const norm = (p - 0.22) / 0.20;
-                  target = 2.0 + norm * 2.8;
-                } else {
-                  target = 4.8 + Math.min(0.6, (p - 0.42) * 1.0);
-                }
+            if (isMobileViewport) {
+              // Mobile Video (6.0s 9:16 portrait):
+              // 0.0s - 2.0s: Character close-up portrait (p: 0.00 - 0.22)
+              // 2.0s - 4.8s: Walks into arena, raises sword (p: 0.22 - 0.42)
+              // 4.8s - 5.4s: Arena amphitheatre wide view (p: 0.42 - 1.00)
+              if (p <= 0.22) {
+                const norm = p / 0.22;
+                target = norm * 2.0;
+              } else if (p <= 0.42) {
+                const norm = (p - 0.22) / 0.20;
+                target = 2.0 + norm * 2.8;
               } else {
-                // Desktop Video (5.04s 16:9 landscape):
-                if (p <= 0.25) {
-                  const norm = p / 0.25;
-                  target = norm * 3.5;
-                } else if (p <= 0.45) {
-                  const norm = (p - 0.25) / 0.20;
-                  target = 3.5 + norm * 1.54;
-                } else {
-                  target = 5.04;
-                }
+                target = 4.8 + Math.min(0.6, (p - 0.42) * 1.0);
               }
-
-              targetTimeRef.current = Math.max(0, Math.min(video.duration - 0.05, target));
-              attemptSeek();
+            } else {
+              // Desktop Video (5.04s 16:9 landscape):
+              if (p <= 0.25) {
+                const norm = p / 0.25;
+                target = norm * 3.5;
+              } else if (p <= 0.45) {
+                const norm = (p - 0.25) / 0.20;
+                target = 3.5 + norm * 1.54;
+              } else {
+                target = 5.04;
+              }
             }
+
+            scrollTargetRef.current = target;
+            startCatchUp();
           },
         },
       });
@@ -432,7 +469,7 @@ export function EventsHeroScroll({
       }
       ctx.revert();
     };
-  }, [attemptSeek, onScrollProgress]);
+  }, [startCatchUp, onScrollProgress]);
 
   // Poster URLs tailored to device aspect ratio with Cloudinary CDN optimization
   const heroPoster = getOptimizedImageUrl(
@@ -503,7 +540,7 @@ export function EventsHeroScroll({
             poster={heroPoster}
             playsInline
             muted
-            preload="auto"
+            preload="none"
             crossOrigin="anonymous"
             onLoadedMetadata={handleLoadedMetadata}
             onSeeked={handleSeeked}

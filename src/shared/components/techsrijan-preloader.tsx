@@ -2,24 +2,13 @@
 
 import { useEffect, useState, useRef } from "react";
 
-// Core assets to pre-cache in memory so pages reveal with zero missing images or layout pops
-const CRITICAL_GLOBAL_ASSETS = [
-  "/hero-logo-arrakis-day.webp",
-  "/hero-logo-geass-moon.webp",
-  "/hero-logo-krelln-night.webp",
-  "/images/citadel-frame.webp",
-  "/club-logos/techrijan-logo.png",
-  "/club-logos/reso-logo.png",
-  "/club-logos/ieee-logo.png",
-  "/club-logos/robotics-logo.png",
-  "/club-logos/sae-logo-white.png",
-];
-
 export function TechSrijanPreloader() {
   const [progress, setProgress] = useState(0);
   const [statusText, setStatusText] = useState("INITIALIZING NEURAL INTERFACE...");
   const [isDone, setIsDone] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  // Rendered in the server HTML so it covers the page from first paint (no page-then-overlay flash).
+  // Returning visitors: the inline <head> script sets html[data-booted], which hides it via CSS before hydration.
+  const [isMounted, setIsMounted] = useState(true);
   const startTimeRef = useRef(Date.now());
 
   useEffect(() => {
@@ -30,14 +19,9 @@ export function TechSrijanPreloader() {
       return;
     }
 
-    // First time entering the site: mount and initiate the boot sequence
-    setIsMounted(true);
+    // First time entering the site: initiate the boot sequence
     document.body.style.overflow = "hidden";
 
-    const assetsToLoad = [...CRITICAL_GLOBAL_ASSETS];
-
-    let loadedCount = 0;
-    const totalCount = assetsToLoad.length;
     let targetProgress = 20;
 
     // 1. Font readiness check
@@ -47,20 +31,9 @@ export function TechSrijanPreloader() {
       }).catch(() => {});
     }
 
-    // 2. Pre-cache initial global assets into memory
-    assetsToLoad.forEach((src) => {
-      const img = new Image();
-      img.onload = img.onerror = () => {
-        loadedCount++;
-        const pct = Math.round(40 + (loadedCount / totalCount) * 55);
-        targetProgress = Math.max(targetProgress, pct);
-      };
-      img.src = src;
-    });
-
-    // 3. Document ready state check
+    // 2. Document ready state check (pages load their own images; pre-fetching here only duplicated them)
     if (document.readyState === "complete") {
-      targetProgress = Math.max(targetProgress, 60);
+      targetProgress = Math.max(targetProgress, 90);
     } else {
       window.addEventListener(
         "load",
@@ -71,7 +44,7 @@ export function TechSrijanPreloader() {
       );
     }
 
-    // 4. Smooth progress animation ticker
+    // 3. Smooth progress animation ticker
     const minDisplayTime = 950; // Premium cinematic entry rhythm for initial landing
     const maxSafetyTimeout = 1800; // Safety cap: never stall the user beyond 1.8s
 
@@ -139,7 +112,7 @@ export function TechSrijanPreloader() {
   return (
     <div
       aria-hidden={isDone}
-      className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#030406] select-none transition-all duration-500 ease-out ${
+      className={`ts-boot-loader fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#030406] select-none transition-all duration-500 ease-out ${
         isDone ? "opacity-0 scale-[1.02] pointer-events-none" : "opacity-100 scale-100 pointer-events-auto"
       }`}
     >

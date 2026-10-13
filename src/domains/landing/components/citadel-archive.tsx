@@ -5,6 +5,9 @@ import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { isMobileDevice } from "@/core";
 import { api } from "@/lib/api";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
+
+const CITADEL_FRAME = getOptimizedImageUrl("/images/citadel-frame.webp", 700);
 
 
 interface CitadelArchiveProps {
@@ -48,7 +51,7 @@ const SPONSORS_SHOWCASE = [
     name: "NOVA SYSTEMS",
     tier: "TITLE SPONSOR",
     tagline: "Apex Strategic Patron",
-    image: "/images/sponsors/cp-1.webp",
+    image: getOptimizedImageUrl("/images/sponsors/cp-1.webp", 400),
     accent: "#FFE600",
     glow: "rgba(255, 230, 0, 0.9)",
   },
@@ -57,7 +60,7 @@ const SPONSORS_SHOWCASE = [
     name: "AETHER ENERGY",
     tier: "GOLD SPONSOR",
     tagline: "Energy Syndicate Partner",
-    image: "/images/sponsors/cp-2.webp",
+    image: getOptimizedImageUrl("/images/sponsors/cp-2.webp", 400),
     accent: "#F59E0B",
     glow: "rgba(245, 158, 11, 0.9)",
   },
@@ -66,7 +69,7 @@ const SPONSORS_SHOWCASE = [
     name: "QUANTUM WORKS",
     tier: "SILVER SPONSOR",
     tagline: "High-Compute Architecture Partner",
-    image: "/images/sponsors/cp-6.webp",
+    image: getOptimizedImageUrl("/images/sponsors/cp-6.webp", 400),
     accent: "#38BDF8",
     glow: "rgba(56, 189, 248, 0.9)",
   },
@@ -75,7 +78,7 @@ const SPONSORS_SHOWCASE = [
     name: "GRIDLINE MEDIA",
     tier: "ASSOCIATE SPONSOR",
     tagline: "Digital & Broadcast Syndicate",
-    image: "/images/sponsors/cp-5.webp",
+    image: getOptimizedImageUrl("/images/sponsors/cp-5.webp", 400),
     accent: "#EF4444",
     glow: "rgba(239, 68, 68, 0.9)",
   },
@@ -84,7 +87,7 @@ const SPONSORS_SHOWCASE = [
     name: "SKYWARD LABS",
     tier: "SUPPORTING SPONSOR",
     tagline: "Innovation & Labs Patron",
-    image: "/images/sponsors/cp-4.webp",
+    image: getOptimizedImageUrl("/images/sponsors/cp-4.webp", 400),
     accent: "#06B6D4",
     glow: "rgba(6, 182, 212, 0.9)",
   },
@@ -206,7 +209,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
             name: s.name.toUpperCase(),
             tier: s.category ? `${s.category.replace(/_/g, " ")} SPONSOR` : "OFFICIAL SPONSOR",
             tagline: s.websiteUrl ? s.websiteUrl.replace(/^https?:\/\//, "") : "Strategic Citadel Partner",
-            image: s.logoUrl || `/images/sponsors/cp-${(idx % 6) + 1}.webp`,
+            image: getOptimizedImageUrl(s.logoUrl || `/images/sponsors/cp-${(idx % 6) + 1}.webp`, 400),
             accent: accents[idx % accents.length],
             glow: "rgba(245, 158, 11, 0.9)",
           }));
@@ -419,7 +422,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
               <div className="archive-card pointer-events-auto relative w-[78vw] max-w-[285px] h-[48vh] max-h-[385px] min-h-[330px] shrink-0 snap-center transition-transform duration-300">
                 <div className="absolute inset-[8%] bg-gradient-to-b from-black/70 via-[#1a120c]/75 to-black/85 backdrop-blur-[3px] rounded-2xl pointer-events-none z-0" />
                 <img
-                  src="/images/citadel-frame.webp"
+                  src={CITADEL_FRAME}
                   alt=""
                   className="archive-frame pointer-events-none absolute inset-0 w-full h-full object-fill z-20 select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)]"
                   loading="eager"
@@ -482,7 +485,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
               >
                 <div className="absolute inset-[8%] bg-gradient-to-b from-black/70 via-[#1a120c]/75 to-black/85 backdrop-blur-[3px] rounded-2xl pointer-events-none z-0" />
                 <img
-                  src="/images/citadel-frame.webp"
+                  src={CITADEL_FRAME}
                   alt=""
                   className="archive-frame pointer-events-none absolute inset-0 w-full h-full object-fill z-20 select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)]"
                   loading="eager"
@@ -597,7 +600,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
               >
                 <div className="absolute inset-[8%] bg-gradient-to-b from-black/70 via-[#1a120c]/75 to-black/85 backdrop-blur-[3px] rounded-2xl pointer-events-none z-0" />
                 <img
-                  src="/images/citadel-frame.webp"
+                  src={CITADEL_FRAME}
                   alt=""
                   className="archive-frame pointer-events-none absolute inset-0 w-full h-full object-fill z-20 select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)]"
                   loading="eager"
@@ -705,7 +708,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
 
             {/* Asset 3 Architectural Frame */}
             <img
-              src="/images/citadel-frame.webp"
+              src={CITADEL_FRAME}
               alt=""
               className="archive-frame pointer-events-none absolute inset-0 w-full h-full object-fill z-20 select-none drop-shadow-[0_15px_35px_rgba(0,0,0,0.9)]"
               loading="eager"
@@ -813,7 +816,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
 
               {/* Asset 3 Architectural Frame */}
               <img
-                src="/images/citadel-frame.webp"
+                src={CITADEL_FRAME}
                 alt=""
                 className="archive-frame pointer-events-none absolute inset-0 w-full h-full object-fill z-20 select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)]"
                 loading="eager"
@@ -949,7 +952,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
 
               {/* Asset 3 Architectural Frame */}
               <img
-                src="/images/citadel-frame.webp"
+                src={CITADEL_FRAME}
                 alt=""
                 className="archive-frame pointer-events-none absolute inset-0 w-full h-full object-fill z-20 select-none drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)]"
                 loading="eager"

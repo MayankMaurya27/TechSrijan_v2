@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuthModal } from "../context/auth-modal-context";
 import { useAuth } from "@/core";
 import { AlertCircle, Loader2, ArrowLeft } from "lucide-react";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 interface SignInRouteModalProps {
   isOpen?: boolean;
@@ -213,9 +214,9 @@ export function SignInRouteModal({
       <div className="absolute -top-10 sm:-top-14 md:-top-16 left-1/2 -translate-x-1/2 w-44 sm:w-56 md:w-64 pointer-events-none z-30 flex items-center justify-center">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 sm:w-40 h-14 sm:h-18 bg-red-600/35 blur-xl rounded-full pointer-events-none" />
         <picture className="relative w-full h-auto">
-          <source srcSet="/images/auth/eye_asset.webp" type="image/webp" />
+          <source srcSet={getOptimizedImageUrl("/images/auth/eye_asset.webp", 1200)} type="image/webp" />
           <img
-            src="/images/auth/eye_asset.webp"
+            src={getOptimizedImageUrl("/images/auth/eye_asset.webp", 1200)}
             alt="TechSrijan All-Seeing Eye Crest"
             className="w-full h-auto object-contain drop-shadow-[0_4px_25px_rgba(220,38,38,0.85)]"
             draggable={false}

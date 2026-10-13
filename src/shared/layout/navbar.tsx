@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme, useAuth } from "@/core";
-import { useAuthModal } from "@/domains/auth";
+import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
 import { Menu, X, Home, Calendar, Code2, Hotel, Layers, Award, Handshake, Compass } from "lucide-react";
 
 const THEME_CYCLE = [

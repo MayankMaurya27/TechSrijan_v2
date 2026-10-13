@@ -20,7 +20,7 @@ import {
 import type { DetailedEvent } from "./club-events-section";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 import { useAuth } from "@/core";
-import { useAuthModal } from "@/domains/auth";
+import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
 import { api } from "@/lib/api";
 
 interface EventDetailModalProps {

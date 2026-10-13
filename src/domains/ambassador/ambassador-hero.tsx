@@ -9,6 +9,7 @@ import {
   useSpring,
 } from "framer-motion";
 import { useAmbassadorTheme } from "./ambassador-theme";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 export function AmbassadorHero() {
   const t = useAmbassadorTheme();
@@ -143,9 +144,9 @@ export function AmbassadorHero() {
           style={{ scale: desertScale, y: desertY }}
         >
           <picture className="w-full h-full">
-            <source srcSet="/images/ambassador-desert-bg.webp" type="image/webp" />
+            <source srcSet={getOptimizedImageUrl("/images/ambassador-desert-bg.webp", 1920)} type="image/webp" />
             <img
-              src="/images/ambassador-desert-bg.webp"
+              src={getOptimizedImageUrl("/images/ambassador-desert-bg.webp", 1920)}
               alt="TechSrijan Arrakis Crimson Dunes"
               className="w-full h-full object-cover object-bottom"
               draggable={false}
@@ -206,9 +207,9 @@ export function AmbassadorHero() {
 
             {/* High-Resolution Celestial Texture */}
             <picture className="w-full h-full pointer-events-none">
-              <source srcSet={t.moonImageWebp} type="image/webp" />
+              <source srcSet={getOptimizedImageUrl(t.moonImageWebp, 900)} type="image/webp" />
               <img
-                src={t.moonImageWebp}
+                src={getOptimizedImageUrl(t.moonImageWebp, 900)}
                 alt="TechSrijan Celestial Body"
                 className="w-full h-full object-contain rounded-full transition-all duration-500"
                 style={{
@@ -270,9 +271,9 @@ export function AmbassadorHero() {
 
             {/* Character Cutout showing 70-80% with Centered Head & Theme-Matching Outspread Aura */}
             <picture className="w-full h-auto flex justify-center">
-              <source srcSet={t.characterImageWebp} type="image/webp" />
+              <source srcSet={getOptimizedImageUrl(t.characterImageWebp, 900)} type="image/webp" />
               <img
-                src={t.characterImage}
+                src={getOptimizedImageUrl(t.characterImageWebp, 900)}
                 alt="TechSrijan Campus Ambassador Hero"
                 className={`w-full h-auto max-h-[50vh] sm:max-h-[55vh] lg:max-h-[61vh] object-contain object-bottom ${t.characterDropShadow} transition-all duration-700`}
                 draggable={false}

@@ -7,6 +7,7 @@ import { GUESTS_LIST } from "../data/guests-data";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { useGuestsTheme } from "../data/guests-theme";
 import { cn } from "@/core";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 export function GuestsView() {
   const theme = useGuestsTheme();
@@ -65,9 +66,9 @@ export function GuestsView() {
         className="pointer-events-none fixed inset-0 z-0 select-none overflow-hidden"
       >
         <picture className="w-full h-full">
-          <source srcSet="/images/guests/guests-bg.webp" type="image/webp" />
+          <source srcSet={getOptimizedImageUrl("/images/guests/guests-bg.webp", 1920)} type="image/webp" />
           <img
-            src="/images/guests/guests-bg.webp"
+            src={getOptimizedImageUrl("/images/guests/guests-bg.webp", 1920)}
             alt=""
             className="w-full h-full object-cover object-center brightness-[1.08] contrast-[1.10]"
           />

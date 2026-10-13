@@ -23,6 +23,7 @@ import {
 import { About3DScene } from "./about-3d-scene";
 import { TechSrijanLogoScrollReveal } from "./techsrijan-logo-scroll-reveal";
 import { useAboutTheme } from "../data/about-theme";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 /* Social Icon SVGs */
 function IconInstagram({ className }: { className?: string }) {
@@ -140,9 +141,9 @@ export function AboutView() {
         className="pointer-events-none fixed inset-0 z-0 select-none overflow-hidden"
       >
         <picture className="w-full h-full">
-          <source srcSet="/images/about/about-bg.webp" type="image/webp" />
+          <source srcSet={getOptimizedImageUrl("/images/about/about-bg.webp", 1920)} type="image/webp" />
           <img
-            src="/images/about/about-bg.webp"
+            src={getOptimizedImageUrl("/images/about/about-bg.webp", 1920)}
             alt=""
             className="w-full h-full object-cover object-center brightness-[0.82] contrast-[1.18]"
           />

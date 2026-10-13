@@ -1,15 +1,9 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import dynamic from "next/dynamic";
-
-
-
-const TechSrijan3DLogo = dynamic(
-  () => import("./techsrijan-3d-logo").then((m) => m.TechSrijan3DLogo),
-  { ssr: false }
-);
-
+// Server-rendered so the hero emblem (the LCP element) is in the initial HTML;
+// its heavy three.js / gsap parts load lazily inside the component.
+import { TechSrijan3DLogo } from "./techsrijan-3d-logo";
 
 const SESSION_KEY = "techsrijan_intro_video_played";
 

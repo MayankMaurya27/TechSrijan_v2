@@ -1,22 +1,36 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { isMobileDevice } from "@/core";
+import { isMobileDevice, whenIdleAfterLoad } from "@/core";
 import { getMediaVideoUrl } from "@/shared/utils/cloudinary-video";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 import dynamic from "next/dynamic";
 import { HeroTitle } from "./hero-title";
-import { SocialTotem } from "./social-totem";
-import { CitadelArchive } from "./citadel-archive";
+
+// Scenes revealed at ~76%+ scroll: kept out of the initial bundle and HTML, chunks prefetched on idle
+const loadArchive = () => import("./citadel-archive").then((m) => m.CitadelArchive);
+const CitadelArchive = dynamic(loadArchive, { ssr: false });
+const SocialTotem = dynamic(() => import("./social-totem").then((m) => m.SocialTotem), { ssr: false });
+
+const POSTER_HD = getOptimizedImageUrl("/scrolling-hd-poster.jpg", 1920);
+// Max speed the scrubbed video may move at when catching up to a fast scroll (× real time).
+// Lower = more cinematic, more lag behind the scroll.
+const MAX_CATCHUP_RATE = 3;
+
+const POSTER_MOBILE = getOptimizedImageUrl("/scrolling-mobile-poster.jpg", 720);
 
 
 interface ScrollJourneyProps {
   landingSrc?: string;
+  /** Portrait 720×1280 crop of the landing loop for < 1024px screens (~300 KB vs ~1 MB) */
+  landingMobileSrc?: string;
   scrollSrc?: string;
 }
 
 export function ScrollJourney({
   landingSrc = "/landing-bg.mp4",
+  landingMobileSrc = "/landing-bg-mobile.mp4",
   scrollSrc,
 }: ScrollJourneyProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,7 +41,9 @@ export function ScrollJourney({
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [scrollProgress, setScrollProgress] = useState(0);
-  const targetTimeRef = useRef(0);
+  const targetTimeRef = useRef(0); // time currently being shown/seeked (chases scrollTargetRef)
+  const scrollTargetRef = useRef(0); // time the scroll position maps to
+  const catchUpRafRef = useRef(0);
   const isSeekingRef = useRef(false);
   const seekWatchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSeekTimeRef = useRef(0);
@@ -55,12 +71,43 @@ export function ScrollJourney({
     scrollSrc || (isMobile ? "/scrolling-mobile.mp4" : "/scrolling-hd.mp4")
   );
   const activeLandingSrc = getMediaVideoUrl(landingSrc);
+  const activeLandingMobileSrc = getMediaVideoUrl(landingMobileSrc);
 
   useEffect(() => {
     const mobile = checkIsMobile();
     setIsMobile(mobile);
     isMobileRef.current = mobile;
   }, [checkIsMobile]);
+
+  // Totem mounts once the page is idle (or the user scrolls 30%), then stays mounted.
+  // The archive mounts past 65% scroll; its chunk is prefetched here so that mount is instant.
+  const [deferredReady, setDeferredReady] = useState(false);
+  useEffect(
+    () =>
+      whenIdleAfterLoad(() => {
+        setDeferredReady(true);
+        void loadArchive();
+      }),
+    []
+  );
+  useEffect(() => {
+    if (scrollProgress > 0.3) setDeferredReady(true);
+  }, [scrollProgress]);
+
+  // The ambient landing loop (1.6 MB) only gets its src once the page has loaded, so it never competes with
+  // the hero emblem. The poster layer underneath shows the identical first frame, so the hand-off is invisible.
+  const [landingReady, setLandingReady] = useState(false);
+  useEffect(() => whenIdleAfterLoad(() => setLandingReady(true)), []);
+
+  // The scroll-scrub video (2–3 MB) is preload="none" and starts downloading once the landing loop can play
+  // through, or on first scroll. isMobile is resolved by then, so phones never fetch the HD file.
+  const startScrollVideo = useCallback(() => {
+    const v = scrollVideoRef.current;
+    if (v && v.preload !== "auto") {
+      v.preload = "auto";
+      v.load();
+    }
+  }, []);
 
   // ─── Canvas Frame Painting (Mobile Only) ────────────────────────
   const paintCanvas = useCallback((force = false) => {
@@ -128,7 +175,8 @@ export function ScrollJourney({
     syncCanvasSize();
 
     const poster = new Image();
-    poster.src = "/scrolling-mobile-poster.jpg";
+    poster.crossOrigin = "anonymous";
+    poster.src = POSTER_MOBILE;
     poster.onload = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -210,6 +258,27 @@ export function ScrollJourney({
     }
   }, [paintCanvas]);
 
+  // ─── Rate-limited catch-up ──────────────────────────────────────
+  // Scroll only sets where the video *should* be (scrollTargetRef). The shown time chases it at up to
+  // MAX_CATCHUP_RATE× real time, so a fast flick plays the flight quickly instead of jumping past it.
+  const startCatchUp = useCallback(() => {
+    if (catchUpRafRef.current) return;
+    let last = performance.now();
+    const step = (now: number) => {
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      const goal = scrollTargetRef.current;
+      const maxStep = dt * MAX_CATCHUP_RATE;
+      targetTimeRef.current += Math.max(-maxStep, Math.min(maxStep, goal - targetTimeRef.current));
+      attemptSeek();
+      catchUpRafRef.current =
+        Math.abs(goal - targetTimeRef.current) > 0.001 ? requestAnimationFrame(step) : 0;
+    };
+    catchUpRafRef.current = requestAnimationFrame(step);
+  }, [attemptSeek]);
+
+  useEffect(() => () => cancelAnimationFrame(catchUpRafRef.current), []);
+
   const handleSeeked = useCallback(() => {
     if (seekWatchdogRef.current) {
       clearTimeout(seekWatchdogRef.current);
@@ -249,6 +318,7 @@ export function ScrollJourney({
     const resetToTop = () => {
       setScrollProgress(0);
       targetTimeRef.current = 0;
+      scrollTargetRef.current = 0;
       if (scrollVideoRef.current) scrollVideoRef.current.currentTime = 0;
       if (landingVideoRef.current) {
         landingVideoRef.current.currentTime = 0;
@@ -302,6 +372,9 @@ export function ScrollJourney({
           }
         }
 
+        // User is scrolling before the idle preload kicked in: start the scrub video now
+        if (progress > 0) startScrollVideo();
+
         // Calculate target video timestamp
         const video = scrollVideoRef.current;
         if (video && video.duration) {
@@ -310,16 +383,16 @@ export function ScrollJourney({
             const maxDuration = Math.max(0, video.duration - 0.05);
             const arrivalProgress = 0.80;
             const scaled = Math.min(1, progress / arrivalProgress);
-            targetTimeRef.current = Math.min(maxDuration, scaled * maxDuration);
+            scrollTargetRef.current = Math.min(maxDuration, scaled * maxDuration);
           } else {
             // Desktop/laptop: park precisely at 3.42s (Image 2 - open citadel avenue)
             // so Image 3 (end plaza) never appears!
             const image2Time = Math.min(3.42, Math.max(0, video.duration - 0.05));
             const arrivalProgress = 0.82;
             const scaled = Math.min(1, progress / arrivalProgress);
-            targetTimeRef.current = Math.min(image2Time, scaled * image2Time);
+            scrollTargetRef.current = Math.min(image2Time, scaled * image2Time);
           }
-          attemptSeek();
+          startCatchUp();
         }
 
         ticking = false;
@@ -339,7 +412,10 @@ export function ScrollJourney({
       if (seekWatchdogRef.current) clearTimeout(seekWatchdogRef.current);
       if (throttledSeekTimerRef.current) clearTimeout(throttledSeekTimerRef.current);
     };
-  }, [attemptSeek, primeMobileVideo]);
+  }, [startCatchUp, primeMobileVideo, startScrollVideo]);
+
+  // Once the lazily-loaded scrub video knows its duration, re-run the scroll math so it seeks to the current position
+  const syncToScroll = useCallback(() => window.dispatchEvent(new Event("scroll")), []);
 
   // Trigger a blinding temporal solar burst on desktop as the user traverses the gate portal
   useEffect(() => {
@@ -408,16 +484,15 @@ export function ScrollJourney({
     >
       {/* Sticky Fullscreen Video Window with dynamic viewport support */}
       <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden select-none bg-black">
-        {/* Layer 0: Static baseline poster (never pitch black) */}
+        {/* Layer 0: Static baseline poster (never pitch black). Chosen by CSS breakpoint (matches isMobile's
+            1024px cut) so the server HTML is right for each device; display:none backgrounds are never fetched. */}
         <div
-          className="absolute inset-0 h-full w-full pointer-events-none"
-          style={{
-            backgroundImage: isMobile
-              ? "url('/scrolling-mobile-poster.jpg')"
-              : "url('/scrolling-hd-poster.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
+          className="absolute inset-0 h-full w-full pointer-events-none bg-cover bg-center lg:hidden"
+          style={{ backgroundImage: `url('${POSTER_MOBILE}')` }}
+        />
+        <div
+          className="absolute inset-0 h-full w-full pointer-events-none bg-cover bg-center hidden lg:block"
+          style={{ backgroundImage: `url('${POSTER_HD}')` }}
         />
 
         {/* === MOBILE PATH: Hardware Canvas (immune to browser seek blanking) === */}
@@ -434,11 +509,11 @@ export function ScrollJourney({
           <video
             ref={scrollVideoRef}
             src={activeScrollSrc}
-            poster="/scrolling-hd-poster.jpg"
             playsInline
             muted
-            preload="auto"
+            preload="none"
             onSeeked={handleSeeked}
+            onLoadedMetadata={syncToScroll}
             className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none transition-opacity duration-150"
             style={{
               opacity: scrollVideoOpacity,
@@ -454,13 +529,11 @@ export function ScrollJourney({
             src={activeScrollSrc}
             playsInline
             muted
-            preload="auto"
+            preload="none"
             crossOrigin="anonymous"
             onSeeked={handleSeeked}
             onLoadedData={() => paintCanvas(true)}
-            onLoadedMetadata={() => {
-              if (targetTimeRef.current > 0) attemptSeek();
-            }}
+            onLoadedMetadata={syncToScroll}
             className="pointer-events-none"
             style={{
               position: "absolute",
@@ -474,22 +547,30 @@ export function ScrollJourney({
           />
         )}
 
-        {/* Layer 1.2: Ambient Landing Background Loop */}
+        {/* Layer 1.2: Ambient Landing Background Loop. The browser picks the <source> by media query before any
+            JS runs; if the mobile file fails to load it falls through to the desktop one. */}
         <video
           ref={landingVideoRef}
-          src={activeLandingSrc}
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
+          onCanPlayThrough={startScrollVideo}
           className="absolute inset-0 h-full w-full object-cover object-center pointer-events-none transition-opacity duration-300"
           style={{
             opacity: landingOpacity,
             visibility: scrollProgress > 0.12 ? "hidden" : "visible",
             zIndex: 2,
           }}
-        />
+        >
+          {landingReady && (
+            <>
+              <source media="(max-width: 1023px)" src={activeLandingMobileSrc} type="video/mp4" />
+              <source src={activeLandingSrc} type="video/mp4" />
+            </>
+          )}
+        </video>
 
         {/* Layer 3: TechSrijan Main Landing Hero Title (Mounted only while in hero fold to conserve WebGL/CPU) */}
         {scrollProgress < 0.14 && (
@@ -561,7 +642,7 @@ export function ScrollJourney({
           </div>
         )}
 
-        {/* Layer 5: Citadel Archive (Mounted when entering arrival phase) */}
+        {/* Layer 5: Citadel Archive (Mounted when entering arrival phase; its code is prefetched on idle) */}
         {scrollProgress > 0.65 && (
           <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 25 }}>
             <CitadelArchive scrollProgress={scrollProgress} />
@@ -571,7 +652,7 @@ export function ScrollJourney({
         {/* Layer 5.5: Citadel Waypoint Totem (Arrakis Social Directive Spire on the far right flank) */}
         {!isMobile && (
           <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 28 }}>
-            <SocialTotem scrollProgress={scrollProgress} />
+            {deferredReady && <SocialTotem scrollProgress={scrollProgress} />}
           </div>
         )}
       </div>

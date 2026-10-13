@@ -156,6 +156,7 @@ async function main() {
     "scrolling-hd.mp4",
     "scrolling-mobile.mp4",
     "landing-bg.mp4",
+    "landing-bg-mobile.mp4",
     "event_video_desktop.mp4",
     "event_video_mobile.mp4",
   ];
@@ -171,6 +172,7 @@ async function main() {
         resource_type: "video",
         public_id: publicId,
         overwrite: true,
+        invalidate: true, // purge CDN copies of the old file
       });
       console.log(`  ✓ ${vid} ➔ ${res.secure_url}`);
     } catch (err) {

@@ -149,7 +149,6 @@ export function TechSrijanLogoScrollReveal() {
                   }`}
                 >
                   <picture className="w-full h-full relative">
-                    <source srcSet={conf.imageSrcWebp} type="image/webp" />
                     <Image
                       src={conf.imageSrcWebp}
                       alt="TechSrijan '27 Official Emblem"

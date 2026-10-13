@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ChevronDown, ArrowRight } from "lucide-react";
+import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 // ─── Club registry ────────────────────────────────────────────────────────────
 export type ClubId =
@@ -33,8 +34,8 @@ export const CLUBS: Club[] = [
     tagline: "The cultural vanguard — cosplay, science exhibitions & flagship campus events.",
     eventCount: 4,
     color: "crimson",
-    logo: "/club-logos/techrijan-logo.png",
-    watermarkLogo: "/club-logos/techrijan-logo.png",
+    logo: getOptimizedImageUrl("/club-logos/techrijan-logo.png", 320),
+    watermarkLogo: getOptimizedImageUrl("/club-logos/techrijan-logo.png", 320),
     glowColor: "rgba(220, 38, 38, 0.5)",
   },
   {
@@ -45,8 +46,8 @@ export const CLUBS: Club[] = [
     tagline: "Resonance — the premier coding arena powering Mantrastra & beyond.",
     eventCount: 1,
     color: "amber",
-    logo: "/club-logos/reso-logo.png",
-    watermarkLogo: "/club-logos/reso-logo.png",
+    logo: getOptimizedImageUrl("/club-logos/reso-logo.png", 320),
+    watermarkLogo: getOptimizedImageUrl("/club-logos/reso-logo.png", 320),
     glowColor: "rgba(56, 189, 248, 0.5)",
   },
   {
@@ -57,8 +58,8 @@ export const CLUBS: Club[] = [
     tagline: "Technical excellence across robotics, software, hardware & innovation.",
     eventCount: 8,
     color: "blue",
-    logo: "/club-logos/ieee-logo.png",
-    watermarkLogo: "/club-logos/ieee-logo.png",
+    logo: getOptimizedImageUrl("/club-logos/ieee-logo.png", 320),
+    watermarkLogo: getOptimizedImageUrl("/club-logos/ieee-logo.png", 320),
     glowColor: "rgba(59, 130, 246, 0.5)",
   },
   {
@@ -69,8 +70,8 @@ export const CLUBS: Club[] = [
     tagline: "Battle-tested machines — RoboWar, Laser Strike, CTF & arena combat.",
     eventCount: 6,
     color: "emerald",
-    logo: "/club-logos/robotics-logo.png",
-    watermarkLogo: "/club-logos/robotics-logo.png",
+    logo: getOptimizedImageUrl("/club-logos/robotics-logo.png", 320),
+    watermarkLogo: getOptimizedImageUrl("/club-logos/robotics-logo.png", 320),
     glowColor: "rgba(234, 179, 8, 0.5)",
   },
   {
@@ -81,8 +82,8 @@ export const CLUBS: Club[] = [
     tagline: "Engineering design mastery — CAD, bridge-building & precision challenges.",
     eventCount: 4,
     color: "violet",
-    logo: "/club-logos/sae-logo-white.png",
-    watermarkLogo: "/club-logos/sae-logo-white.png",
+    logo: getOptimizedImageUrl("/club-logos/sae-logo-white.png", 320),
+    watermarkLogo: getOptimizedImageUrl("/club-logos/sae-logo-white.png", 320),
     glowColor: "rgba(168, 85, 247, 0.5)",
   },
 ];
@@ -120,6 +121,8 @@ function ClubCard({
           {/* ── Background Hologram Watermark ── */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden rounded-[12px] sm:rounded-[22px] z-0">
             <img
+              loading="lazy"
+              decoding="async"
               src={club.watermarkLogo || club.logo}
               alt=""
               aria-hidden="true"
@@ -162,6 +165,8 @@ function ClubCard({
                   className="w-full h-full rounded-full p-0.5 sm:p-1 flex items-center justify-center border border-white/20 group-hover:border-white/50 transition-colors duration-300 bg-black/70 backdrop-blur-sm shadow-[inset_0_0_12px_rgba(0,0,0,0.9)]"
                 >
                   <img
+                    loading="lazy"
+                    decoding="async"
                     src={club.logo}
                     alt={`${club.shortName} Logo`}
                     className="w-full h-full object-contain rounded-full drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] transition-transform duration-300 group-hover:scale-105"
@@ -205,7 +210,9 @@ function ClubCard({
 
         {/* Real Event Frame Overlay */}
         <img
-          src="/real-event.webp"
+          loading="lazy"
+          decoding="async"
+          src={getOptimizedImageUrl("/real-event.webp", 1024)}
           alt={club.shortName}
           className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-[0_12px_36px_rgba(0,0,0,0.95)] transition-all duration-300 group-hover:drop-shadow-[0_0_36px_rgba(255,255,255,0.35)] group-hover:scale-[1.02] z-20"
         />
@@ -337,6 +344,8 @@ export function ArenaSpatialCards({
                   style={{ boxShadow: `0 0 12px ${club.glowColor}` }}
                 >
                   <img
+                    loading="lazy"
+                    decoding="async"
                     src={club.logo}
                     alt={club.shortName}
                     className="w-full h-full object-contain rounded-full"
@@ -368,6 +377,8 @@ export function ArenaSpatialCards({
                   style={{ boxShadow: `0 0 12px ${club.glowColor}` }}
                 >
                   <img
+                    loading="lazy"
+                    decoding="async"
                     src={club.logo}
                     alt={club.shortName}
                     className="w-full h-full object-contain rounded-full"
@@ -399,6 +410,8 @@ export function ArenaSpatialCards({
                 style={{ boxShadow: `0 0 12px ${CLUBS[4].glowColor}` }}
               >
                 <img
+                  loading="lazy"
+                  decoding="async"
                   src={CLUBS[4].logo}
                   alt={CLUBS[4].shortName}
                   className="w-full h-full object-contain rounded-full"

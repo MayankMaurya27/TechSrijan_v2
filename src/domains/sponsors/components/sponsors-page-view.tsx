@@ -157,67 +157,52 @@ export interface Sponsor {
   rankWeight: number; // 5 = King, 4 = Queen, 3 = Rook, 2 = Knight/Bishop, 1 = Pawn
 }
 
-// Default 5 sponsors matching Image 1 exactly in symmetrical pedestal order
-const INITIAL_SPONSORS: Sponsor[] = [
+// Baseline sponsors mirroring DB seed until dynamic database fetch populates
+const BASELINE_SPONSORS: Sponsor[] = [
   {
-    id: "sp-gridline",
-    name: "GRIDLINE MEDIA",
-    tier: "Associate Partner",
-    role: "KNIGHT",
-    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-5.webp", 400),
-    pieceName: "Knight",
-    logoType: "gridline",
-    accent: "#EF4444",
-    borderGlow: "rgba(239, 68, 68, 0.95)",
-    rankWeight: 2,
-  },
-  {
-    id: "sp-aether",
-    name: "AETHER ENERGY",
-    tier: "Gold Partner",
-    role: "QUEEN",
-    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-2.webp", 400),
-    pieceName: "Queen",
-    logoType: "aether",
-    accent: "#F59E0B",
-    borderGlow: "rgba(245, 158, 11, 0.95)",
-    rankWeight: 4,
-  },
-  {
-    id: "sp-nova",
-    name: "NOVA SYSTEMS",
+    id: "sp-imperium",
+    name: "IMPERIUM TECHNOLOGIES",
     tier: "Title Partner",
     role: "KING",
     pieceImg: getOptimizedImageUrl("/images/sponsors/cp-1.webp", 400),
     pieceName: "King",
-    logoType: "nova",
+    logoType: "custom",
+    logoUrl: "https://techsrijan.org/images/sponsors/1-city.webp",
+    websiteUrl: "https://techsrijan.org",
+    customLogoText: "Imperium Technologies",
     accent: "#FFE600",
     borderGlow: "rgba(255, 230, 0, 1)",
     rankWeight: 5,
   },
   {
-    id: "sp-quantum",
-    name: "QUANTUM WORKS",
-    tier: "Silver Partner",
-    role: "ROOK",
-    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-6.webp", 400),
-    pieceName: "Rook",
-    logoType: "quantum",
-    accent: "#38BDF8",
-    borderGlow: "rgba(56, 189, 248, 0.95)",
-    rankWeight: 3,
+    id: "sp-robokriti",
+    name: "ROBOKRITI ROBOTICS",
+    tier: "Gold Partner",
+    role: "QUEEN",
+    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-2.webp", 400),
+    pieceName: "Queen",
+    logoType: "custom",
+    logoUrl: "https://techsrijan.org/images/sponsors/2-mech.webp",
+    websiteUrl: "https://techsrijan.org",
+    customLogoText: "RoboKriti Robotics",
+    accent: "#F59E0B",
+    borderGlow: "rgba(245, 158, 11, 0.95)",
+    rankWeight: 4,
   },
   {
-    id: "sp-skyward",
-    name: "SKYWARD LABS",
-    tier: "Supporting Partner",
-    role: "PAWN",
-    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-4.webp", 400),
-    pieceName: "Pawn",
-    logoType: "skyward",
-    accent: "#06B6D4",
-    borderGlow: "rgba(6, 182, 212, 0.95)",
-    rankWeight: 1,
+    id: "sp-purvanchal",
+    name: "PURVANCHAL TECH NEXUS",
+    tier: "Associate Partner",
+    role: "ROOK",
+    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-5.webp", 400),
+    pieceName: "Rook",
+    logoType: "custom",
+    logoUrl: "https://techsrijan.org/images/sponsors/3-sigil.webp",
+    websiteUrl: "https://techsrijan.org",
+    customLogoText: "Purvanchal Tech Nexus",
+    accent: "#EF4444",
+    borderGlow: "rgba(239, 68, 68, 0.95)",
+    rankWeight: 3,
   },
 ];
 
@@ -431,8 +416,8 @@ export function SponsorsPageView() {
   const heroRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [sponsors, setSponsors] = useState<Sponsor[]>(INITIAL_SPONSORS);
-  const [activeSponsor, setActiveSponsor] = useState<string>("sp-nova");
+  const [sponsors, setSponsors] = useState<Sponsor[]>(BASELINE_SPONSORS);
+  const [activeSponsor, setActiveSponsor] = useState<string>("sp-imperium");
 
 
   // Mouse Parallax Springs
@@ -551,7 +536,7 @@ export function SponsorsPageView() {
               name: bs.name.toUpperCase(),
               tier: tierName as Sponsor["tier"],
               role,
-              pieceImg: `/images/sponsors/cp-${pieceIdx}.webp`,
+              pieceImg: getOptimizedImageUrl(`/images/sponsors/cp-${pieceIdx}.webp`, 400),
               pieceName: role,
               logoType: "custom" as const,
               logoUrl: bs.logoUrl || null,
@@ -566,8 +551,8 @@ export function SponsorsPageView() {
           if (mapped[0]) setActiveSponsor(mapped[0].id);
         }
       })
-      .catch(() => {
-        // Retain default visually curated sponsors if offline or error
+      .catch((err) => {
+        console.warn("Could not fetch DB sponsors, using baseline:", err);
       });
 
     return () => clearTimeout(timer);

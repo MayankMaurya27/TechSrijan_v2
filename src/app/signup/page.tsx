@@ -3,9 +3,10 @@ import Link from "next/link";
 import { SignInRouteModal } from "@/domains/auth";
 
 export const metadata: Metadata = {
-  title: "Account Access · Sign In / Sign Up | TechSrijan'27",
+  title: "Sign In / Sign Up",
   description:
     "Choose your sign-in route for TechSrijan'27. Access MMMUT student portal or sign in with Google.",
+  robots: { index: false, follow: true },
 };
 
 export default function SignUpPage() {

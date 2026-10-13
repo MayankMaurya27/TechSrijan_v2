@@ -497,7 +497,7 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
               <div key={tKey} data-logo-theme={tKey} className="hero-logo-theme w-full justify-center">
                 <Image
                   src={conf.imageSrcWebp}
-                  alt="TechSrijan '27 — The Awakening Begins — Coming Soon"
+                  alt="TechSrijan'27 — The Awakening Begins — techfest of MMMUT Gorakhpur"
                   width={2172}
                   height={724}
                   fetchPriority="high"

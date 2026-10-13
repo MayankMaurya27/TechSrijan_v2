@@ -918,7 +918,7 @@ export function AboutView() {
                 </div>
                 <div className="flex justify-between py-1.5">
                   <span className="text-neutral-400">Official Portal</span>
-                  <span className="text-white">techsrijan.mmmut.ac.in</span>
+                  <span className="text-white">techsrijan.org</span>
                 </div>
               </div>
 

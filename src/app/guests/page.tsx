@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { GuestsView } from "@/domains/guests/components/guests-view";
 
 export const metadata: Metadata = {
-  title: "Keynote Guests of Honour — Dr. Kiran Bedi & Prof. H. C. Verma | TechSrijan'27",
+  title: "Guests of Honour — Dr. Kiran Bedi & Prof. H. C. Verma",
   description:
     "Meet the distinguished keynote dignitaries of TechSrijan '27 at MMMUT Gorakhpur. Featuring Chief Guest of Honour Dr. Kiran Bedi (First Woman IPS Officer, former Lt. Governor of Puducherry, Ramon Magsaysay Laureate) and Previous Edition Luminary Prof. Harish Chandra Verma (Padma Shri, Author of Concepts of Physics).",
   keywords: [
@@ -15,6 +15,9 @@ export const metadata: Metadata = {
     "Dr Kiran Bedi IPS",
     "MMMUT Gorakhpur Technical Fest",
   ],
+  alternates: {
+    canonical: "/guests",
+  },
   openGraph: {
     title: "Keynote Guests of Honour — TechSrijan '27 | MMMUT Gorakhpur",
     description:

@@ -9,7 +9,7 @@ import {
 
 
 export const metadata: Metadata = {
-  title: "Campus Ambassador Program | TechSrijan'27 MMMUT Gorakhpur",
+  title: "Campus Ambassador Program — MMMUT Gorakhpur Techfest",
   description:
     "Join the Campus Ambassador Program for TechSrijan'27, the flagship technical fest of MMMUT Gorakhpur. Represent your campus, earn exclusive perks, cash rewards, LORs, and lead Eastern UP's biggest tech festival.",
   alternates: {

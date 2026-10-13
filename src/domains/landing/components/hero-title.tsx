@@ -126,7 +126,7 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
         <div className="relative w-full max-w-[94vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-center items-center pointer-events-auto">
           {/* Hidden Accessible H1 for SEO & Screen Readers */}
           <h1 className="sr-only">
-            TechSrijan &apos;27 — The Awakening Begins — Coming Soon
+            TechSrijan&apos;27 — Annual Techfest of MMMUT Gorakhpur, 25–27 December 2026
           </h1>
 
           <TechSrijan3DLogo scrollProgress={scrollProgress} hasEntered={hasEntered} />

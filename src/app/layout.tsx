@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Cinzel, Playfair_Display, Bebas_Neue, Geist, Montserrat } from "next/font/google";
 import { ThemeProvider, LenisProvider, AuthProvider, cn } from "@/core";
+import { SITE_URL } from "@/core/site";
 import { AmbientParticles, TwinSunsRays, Navbar, SwordCursor, TechSrijanPreloader } from "@/shared";
 
 import "@/styles/globals.css";
@@ -54,92 +55,128 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const DESCRIPTION =
+  "TechSrijan'27 is the annual techfest of MMMUT (Madan Mohan Malaviya University of Technology), Gorakhpur — 25–27 December 2026. Robotics, coding, hackathons, design and management events by the Technical Sub Council with MMMUT RESO, SAE MMMUT, IEEE MMMUT and the Robotics Club.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://techsrijan.mmmut.ac.in"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "TechSrijan'27 — IMPERIUM: REQUIEM | MMMUT",
+    default: "TechSrijan'27 — Techfest of MMMUT Gorakhpur | 25–27 Dec 2026",
     template: "%s | TechSrijan'27",
   },
-  description: "Annual Technical Fest of Madan Mohan Malaviya University of Technology, Gorakhpur. Starts 25 Dec. Conducted by Technical Sub Council (TSC) MMMUT — MMMUT RESO, SAE MMMUT, IEEE MMMUT, RC (Robotics Club) MMMUT.",
+  description: DESCRIPTION,
+  applicationName: "TechSrijan",
   keywords: [
-    "TechSrijan'27",
     "TechSrijan",
+    "TechSrijan'27",
     "TechSrijan 2026",
+    "TechSrijan MMMUT",
+    "MMMUT techfest",
+    "techfest MMMUT",
+    "MMMUT tech fest",
+    "Gorakhpur techfest",
+    "techfest in Gorakhpur",
+    "technical fest Gorakhpur",
+    "tech fest Uttar Pradesh",
+    "MMMUT Gorakhpur",
+    "Madan Mohan Malaviya University of Technology",
     "TSC MMMUT",
     "Technical Sub Council",
-    "MMMUT Gorakhpur",
-    "Technical Fest",
     "MMMUT RESO",
     "SAE MMMUT",
     "IEEE MMMUT",
     "Robotics Club MMMUT",
     "Imperium Requiem",
   ],
-  authors: [{ name: "Technical Sub Council (TSC) MMMUT", url: "https://techsrijan.mmmut.ac.in" }],
+  authors: [{ name: "Technical Sub Council (TSC) MMMUT", url: SITE_URL }],
   creator: "Technical Sub Council (TSC) MMMUT",
   publisher: "Madan Mohan Malaviya University of Technology, Gorakhpur",
+  category: "education",
   openGraph: {
-    title: "TechSrijan'27 — IMPERIUM: REQUIEM | MMMUT",
-    description: "Annual Technical Fest of MMMUT Gorakhpur. Starts 25 Dec. Conducted by Technical Sub Council (TSC) MMMUT.",
-    url: "https://techsrijan.mmmut.ac.in",
+    title: "TechSrijan'27 — Techfest of MMMUT Gorakhpur",
+    description: DESCRIPTION,
+    url: "/",
     siteName: "TechSrijan'27",
     locale: "en_IN",
     type: "website",
-    images: [
-      {
-        url: "/images/TS LOGO NEW.png",
-        width: 1200,
-        height: 630,
-        alt: "TechSrijan'27 — Imperium Requiem",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "TechSrijan'27 — IMPERIUM: REQUIEM",
-    description: "Annual Technical Fest of MMMUT Gorakhpur. Starts 25 Dec. Conducted by Technical Sub Council (TSC) MMMUT.",
-    creator: "@techsrijan_mmmut",
-    images: ["/images/TS LOGO NEW.png"],
+    title: "TechSrijan'27 — Techfest of MMMUT Gorakhpur",
+    description: DESCRIPTION,
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
   },
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION && {
+    verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION },
+  }),
 };
+
+const ORG_ID = `${SITE_URL}/#organization`;
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "Event",
-  name: "TechSrijan'27 — IMPERIUM: REQUIEM",
-  alternateName: "TechSrijan 2026",
-  startDate: "2026-12-25T09:00:00+05:30",
-  endDate: "2026-12-27T22:00:00+05:30",
-  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-  eventStatus: "https://schema.org/EventScheduled",
-  location: {
-    "@type": "Place",
-    name: "Madan Mohan Malaviya University of Technology",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "Deoria Road, Singhariya, Kunraghat",
-      addressLocality: "Gorakhpur",
-      postalCode: "273010",
-      addressRegion: "Uttar Pradesh",
-      addressCountry: "IN",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: "TechSrijan",
+      alternateName: ["TechSrijan'27", "TechSrijan MMMUT", "MMMUT Techfest"],
+      inLanguage: "en-IN",
+      publisher: { "@id": ORG_ID },
     },
-  },
-  description: "Annual Technical Fest of Madan Mohan Malaviya University of Technology, Gorakhpur. Conducted by Technical Sub Council (TSC) MMMUT, involving MMMUT RESO, SAE MMMUT, IEEE MMMUT, and RC (Robotics Club) MMMUT. Starts 25 Dec.",
-  organizer: {
-    "@type": "Organization",
-    name: "Technical Sub Council (TSC) MMMUT",
-    url: "https://techsrijan.mmmut.ac.in",
-    subOrganization: [
-      { "@type": "Organization", "name": "MMMUT RESO" },
-      { "@type": "Organization", "name": "SAE MMMUT" },
-      { "@type": "Organization", "name": "IEEE MMMUT" },
-      { "@type": "Organization", "name": "RC (Robotics Club) MMMUT" },
-    ],
-  },
+    {
+      "@type": "Organization",
+      "@id": ORG_ID,
+      name: "Technical Sub Council (TSC) MMMUT",
+      alternateName: "TechSrijan",
+      url: SITE_URL,
+      logo: `${SITE_URL}/icon.png`,
+      email: "techsrijan@mmmut.ac.in",
+      parentOrganization: {
+        "@type": "CollegeOrUniversity",
+        name: "Madan Mohan Malaviya University of Technology",
+        alternateName: "MMMUT",
+        url: "https://www.mmmut.ac.in",
+      },
+      subOrganization: [
+        { "@type": "Organization", name: "MMMUT RESO" },
+        { "@type": "Organization", name: "SAE MMMUT" },
+        { "@type": "Organization", name: "IEEE MMMUT" },
+        { "@type": "Organization", name: "RC (Robotics Club) MMMUT" },
+      ],
+    },
+    {
+      "@type": "Event",
+      "@id": `${SITE_URL}/#event`,
+      name: "TechSrijan'27 — Imperium: Requiem",
+      alternateName: ["TechSrijan 2026", "MMMUT Techfest 2026"],
+      description: DESCRIPTION,
+      url: SITE_URL,
+      image: [`${SITE_URL}/opengraph-image.jpg`],
+      startDate: "2026-12-25T09:00:00+05:30",
+      endDate: "2026-12-27T22:00:00+05:30",
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      eventStatus: "https://schema.org/EventScheduled",
+      location: {
+        "@type": "Place",
+        name: "Madan Mohan Malaviya University of Technology",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Deoria Road, Singhariya, Kunraghat",
+          addressLocality: "Gorakhpur",
+          postalCode: "273010",
+          addressRegion: "Uttar Pradesh",
+          addressCountry: "IN",
+        },
+      },
+      organizer: { "@id": ORG_ID },
+    },
+  ],
 };
 
 export default function RootLayout({

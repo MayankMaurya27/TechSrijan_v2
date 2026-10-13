@@ -1,16 +1,16 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/core/site";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://techsrijan.mmmut.ac.in";
-
   return {
     rules: [
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/student", "/dashboard"],
+        disallow: ["/admin", "/student", "/dashboard", "/profile", "/onboarding", "/auth", "/api"],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

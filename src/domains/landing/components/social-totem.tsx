@@ -195,7 +195,7 @@ interface TotemThemeConfig {
 const TOTEM_THEMES: Record<CanonicalTheme, TotemThemeConfig> = {
   "arrakis-day": {
     id: "arrakis-day",
-    outerFilterGlow: "drop-shadow(0 0 18px rgba(212, 168, 67, 0.32))",
+    outerFilterGlow: "",
     spireBody: {
       stop0: "#2c1d13",
       stop30: "#100905",
@@ -273,7 +273,7 @@ const TOTEM_THEMES: Record<CanonicalTheme, TotemThemeConfig> = {
   },
   "geass-moon": {
     id: "geass-moon",
-    outerFilterGlow: "drop-shadow(0 0 24px rgba(204, 0, 10, 0.55))",
+    outerFilterGlow: "",
     spireBody: {
       stop0: "#240205",
       stop30: "#0d0102",
@@ -351,7 +351,7 @@ const TOTEM_THEMES: Record<CanonicalTheme, TotemThemeConfig> = {
   },
   "krelln-night": {
     id: "krelln-night",
-    outerFilterGlow: "drop-shadow(0 0 20px rgba(148, 163, 184, 0.40))",
+    outerFilterGlow: "",
     spireBody: {
       stop0: "#161c24",
       stop30: "#090c10",

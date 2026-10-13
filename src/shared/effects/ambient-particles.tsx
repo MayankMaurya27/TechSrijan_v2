@@ -15,14 +15,7 @@ interface Particle {
 
 export function AmbientParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { theme } = useTheme();
-
-  let particleColor = "196, 125, 72";
-  if (theme === "krelln-night" || theme === "kelln-night") {
-    particleColor = "119, 130, 146";
-  } else if (theme === "geass-moon" || theme === "giedi-prime") {
-    particleColor = "255, 30, 39";
-  }
+  const particleColor = "196, 125, 72";
 
   const particleColorRef = useRef(particleColor);
   particleColorRef.current = particleColor;

@@ -115,7 +115,7 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
     };
   }, [themeContext?.resolvedTheme]);
 
-  const activeConf = LOGO_THEMES[currentTheme] || LOGO_THEMES["arrakis-day"];
+  const activeConf = LOGO_THEMES["arrakis-day"];
 
   // Mouse & interactive 3D physics
   const [tilt, setTilt] = useState({ rotX: 0, rotY: 0, translateZ: 0 });

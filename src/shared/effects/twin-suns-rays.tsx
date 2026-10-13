@@ -71,19 +71,9 @@ export function TwinSunsRays() {
       const sunX = width * 0.82 + (mouseX - width / 2) * 0.08;
       const sunY = height * 0.12 + (mouseY - height / 2) * 0.06;
 
-      let primaryColor = "196, 125, 72";
-      let secondaryColor = "240, 234, 225";
-      let glowAlpha = 0.14;
-
-      if (theme === "krelln-night") {
-        primaryColor = "119, 130, 146";
-        secondaryColor = "215, 219, 226";
-        glowAlpha = 0.10;
-      } else if (theme === "geass-moon" || theme === "giedi-prime") {
-        primaryColor = "200, 0, 20";
-        secondaryColor = "255, 30, 39";
-        glowAlpha = 0.13;
-      }
+      const primaryColor = "196, 125, 72";
+      const secondaryColor = "240, 234, 225";
+      const glowAlpha = 0.14;
 
       const sunGlow = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, width * 0.7);
       sunGlow.addColorStop(0, `rgba(${secondaryColor}, ${glowAlpha})`);

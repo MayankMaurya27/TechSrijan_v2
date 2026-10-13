@@ -171,7 +171,7 @@ export function Navbar() {
                 alt="TechSrijan Logo"
                 className="h-9 sm:h-9.5 w-auto object-contain brightness-110 group-hover:brightness-125 transition-all duration-300"
                 style={{
-                  filter: `drop-shadow(0 0 6px ${currentThemeConfig.laserStrokeAura})`,
+                  filter: "drop-shadow(0 0 6px rgba(245, 158, 11, 0.45))",
                 }}
               />
             </Link>
@@ -346,14 +346,14 @@ export function Navbar() {
               <div className="relative flex items-center">
                 <div
                   className="absolute -inset-1 rounded-full blur-md opacity-35 group-hover:opacity-75 transition-opacity duration-500 pointer-events-none"
-                  style={{ backgroundColor: currentThemeConfig.laserStrokeAura }}
+                  style={{ backgroundColor: "rgba(245, 158, 11, 0.45)" }}
                 />
                 <img
                   src="/images/TS LOGO NEW.png"
                   alt="TechSrijan Logo"
                   className="relative h-9.5 xl:h-10.5 2xl:h-11 w-auto object-contain brightness-110 group-hover:brightness-125 transition-all duration-300"
                   style={{
-                    filter: `drop-shadow(0 0 6px ${currentThemeConfig.laserStrokeAura})`,
+                    filter: "drop-shadow(0 0 6px rgba(245, 158, 11, 0.45))",
                   }}
                 />
               </div>
@@ -365,14 +365,14 @@ export function Navbar() {
             <div
               className="group/navbar relative w-fit max-w-full rounded-full border bg-[#0d0906]/92 backdrop-blur-2xl transition-all duration-500 shadow-2xl"
               style={{
-                borderColor: currentThemeConfig.frameStroke,
-                boxShadow: `0 0 18px ${currentThemeConfig.laserStrokeAura}33, 0 10px 30px rgba(0,0,0,0.9)`,
+                borderColor: "rgba(245, 158, 11, 0.45)",
+                boxShadow: "0 0 18px rgba(245, 158, 11, 0.2), 0 10px 30px rgba(0,0,0,0.9)",
               }}
             >
-              {/* Dynamic Normalized Traveling Laser Border (Zero Distortion on any width) */}
+              {/* Dynamic Normalized Traveling Laser Border (Constant Imperial Gold) */}
               <svg
                 className="absolute -inset-[1px] w-[calc(100%+2px)] h-[calc(100%+2px)] pointer-events-none rounded-full overflow-visible z-0"
-                style={{ filter: currentThemeConfig.ambientChassisGlow }}
+                style={{ filter: "drop-shadow(0 0 10px rgba(245, 158, 11, 0.5)) drop-shadow(0 0 24px rgba(217, 119, 6, 0.35))" }}
               >
                 <rect
                   x="1"
@@ -383,7 +383,7 @@ export function Navbar() {
                   ry="9999"
                   pathLength="100"
                   fill="none"
-                  stroke={currentThemeConfig.laserStrokeAura}
+                  stroke="#F59E0B"
                   strokeWidth="3"
                   strokeOpacity="0.5"
                   strokeLinecap="round"
@@ -398,7 +398,7 @@ export function Navbar() {
                   ry="9999"
                   pathLength="100"
                   fill="none"
-                  stroke={currentThemeConfig.laserStrokeCore}
+                  stroke="#F59E0B"
                   strokeWidth="1.8"
                   strokeLinecap="round"
                   className="animate-neon-rect-travel"
@@ -419,13 +419,13 @@ export function Navbar() {
                         )}
                         <Link
                           href={item.href}
-                          className={`px-1.5 xl:px-2 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-300 relative group whitespace-nowrap ${
-                            isActive ? "text-[var(--accent-primary,#d4a843)] font-semibold" : ""
+                          className={`px-1.5 xl:px-2 py-0.5 uppercase font-medium hover:text-[#d4a843] transition-all duration-300 relative group whitespace-nowrap ${
+                            isActive ? "text-[#d4a843] font-semibold" : ""
                           }`}
                         >
                           <span>{item.label}</span>
                           <span
-                            className={`absolute bottom-0 left-0 h-[1.5px] bg-[var(--accent-primary,#d4a843)] transition-all duration-300 ${
+                            className={`absolute bottom-0 left-0 h-[1.5px] bg-[#d4a843] transition-all duration-300 ${
                               isActive ? "w-full" : "w-0 group-hover:w-full"
                             }`}
                           />

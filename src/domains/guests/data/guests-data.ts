@@ -40,111 +40,6 @@ export interface GuestData {
 
 export const GUESTS_LIST: GuestData[] = [
   {
-    id: "dr-kiran-bedi",
-    name: "Dr. Kiran Bedi",
-    hindiName: "डॉ. किरण बेदी",
-    edition: "TECHSRIJAN '27",
-    editionBadge: "THIS YEAR'S CHIEF GUEST OF HONOUR",
-    designation: "First Woman IPS Officer of India · 24th Lt. Governor of Puducherry · Ramon Magsaysay Laureate",
-    honorificTitle: "APEX KEYNOTE DIGNITARY",
-    primaryRole: "First Woman Officer in the Indian Police Service (1972)",
-    secondaryRole: "24th Lieutenant Governor of Puducherry (2016–2021)",
-    accolades: [
-      "First Woman Officer in the Indian Police Service (1972)",
-      "24th Lieutenant Governor of Puducherry (2016–2021)",
-      "Ramon Magsaysay Award Laureate for Government Service (1994)",
-      "United Nations Civilian Police Adviser (Department of Peace Operations)",
-      "President's Police Medal for Gallantry (1979)",
-      "Ph.D. in Social Sciences, Indian Institute of Technology (IIT) Delhi (1993)",
-      "Founder, India Vision Foundation & Navjyoti India Foundation",
-      "Asian Lawn Tennis Champion (1972) & All India Hardcourt Champion",
-      "Author of 'Fearless Governance' & 'I Dare!'",
-    ],
-    keynoteTitle: "Fearless Governance, Radical Integrity & Engineering the Soul of a Nation",
-    keynoteSubtitle: "Bridging Ethical Conviction, Administrative Courage and Cutting-Edge Engineering for Viksit Bharat",
-    bioParagraphs: [
-      "A monumental titan in the history of Indian public service, Dr. Kiran Bedi etched her name into national history in 1972 by breaking formidable gender barriers to become the first woman officer in the elite Indian Police Service (IPS). Across a stellar career spanning more than three and a half decades, she redefined law enforcement, administrative integrity, and systemic institutional accountability.",
-      "Dr. Bedi earned international renown as the Inspector General of Prisons at Tihar Jail, Delhi—one of the largest prison complexes in the world. Confronted by systemic overcrowding and inhumanity, she transformed the penitentiary into an oasis of human rehabilitation through literacy programs, spiritual meditation, vocational industries, and restorative justice. Her radical humanitarian leadership was crowned with Asia's highest honor, the Ramon Magsaysay Award for Government Service in 1994.",
-      "As the 24th Lieutenant Governor of Puducherry (2016–2021), Dr. Bedi championed 'Fearless Governance', pioneering direct public open-house hearings, zero-tolerance anti-corruption protocols, transparent financial administration, and water conservation missions. Holding a Ph.D. from IIT Delhi, she embodies the supreme synthesis of academic rigor, fearless ethics, and indefatigable commitment to the welfare of the Indian republic.",
-      "At TechSrijan '27, Dr. Kiran Bedi addresses over 25,000+ expected technocrats, roboticists, and software architects gathered at MMMUT Gorakhpur, challenging the nation's youth to engineer systems anchored in moral courage, radical transparency, and purposeful nation-building.",
-    ],
-    quote:
-      "Leadership is neither about the luxury of rank nor the vanity of title; it is the moral courage to take responsibility where others retreat in fear. When India's young engineers unite uncompromising integrity with technological intellect, no fortress of complacency can resist their resolve.",
-    quoteContext: "Keynote Address Directive · TechSrijan '27 Inaugural Convocation",
-    pillars: [
-      {
-        title: "Fearless Governance & Radical Accountability",
-        description:
-          "Dismantling bureaucratic inertia through transparent public audits, real-time civic interfaces, and fearless adherence to the rule of law.",
-      },
-      {
-        title: "The Courage of Conviction in Systemic Reform",
-        description:
-          "Transforming entrenched, obsolete institutions from within by replacing status-quo fatalism with compassionate and unyielding ethical standards.",
-      },
-      {
-        title: "Engineering for Human Dignity & Social Equity",
-        description:
-          "Directing state-of-the-art computational and technological architectures to uplift marginalized citizens, prison reformees, and underserved rural populations.",
-      },
-      {
-        title: "The Crucible of Character: Integrity Precedes Code",
-        description:
-          "Inculcating supreme self-discipline, mental resilience, and lifelong public duty into India's emerging generation of technical leaders.",
-      },
-    ],
-    careerMilestones: [
-      {
-        year: "1972",
-        title: "First Woman in Indian Police Service",
-        detail: "Shattered historic gender ceilings by joining the IPS, setting a precedent that inspired millions of Indian women.",
-      },
-      {
-        year: "1979",
-        title: "President's Police Medal for Gallantry",
-        detail: "Awarded the highest national gallantry honors for extraordinary courage during violent communal riots in Delhi.",
-      },
-      {
-        year: "1993",
-        title: "Doctorate (Ph.D.) from IIT Delhi",
-        detail: "Completed her doctoral thesis in Social Sciences at IIT Delhi, studying drug abuse and domestic violence trends.",
-      },
-      {
-        year: "1994",
-        title: "Ramon Magsaysay Award Laureate",
-        detail: "Honored with Asia's Nobel equivalent for revolutionary humanitarian and educational transformation of Tihar Jail.",
-      },
-      {
-        year: "2003",
-        title: "United Nations Police Adviser",
-        detail: "Appointed Civilian Police Adviser in the UN Department of Peace Operations, directing peacekeeping missions globally.",
-      },
-      {
-        year: "2016–21",
-        title: "24th Lt. Governor of Puducherry",
-        detail: "Instituted direct open-house grievance redressal, fiscal prudence, and 'Water Rich Puducherry' sustainability drives.",
-      },
-      {
-        year: "2027",
-        title: "Chief Guest of Honour · TechSrijan '27",
-        detail: "Delivering the Apex Keynote address to 25,000+ expected national student delegates at MMMUT Gorakhpur.",
-      },
-    ],
-    primaryImage: "/images/guests/kiran-bedi-real.webp",
-    primaryImageCaption: "Dr. Kiran Bedi in formal keynote address attire",
-    galleryImages: [
-      {
-        url: "/images/guests/kiran-bedi-real.webp",
-        caption: "Official Portrait of Dr. Kiran Bedi",
-        label: "Dignitary Portrait",
-      },
-    ],
-    backgroundImage: "/images/guests/guest-bg-kiran-bedi.webp",
-    accentColor: "#D4A843",
-    glowColor: "rgba(212, 168, 67, 0.45)",
-    isCurrentEdition: true,
-  },
-  {
     id: "prof-hc-verma",
     name: "Prof. Harish Chandra Verma",
     hindiName: "प्रो. हरीश चंद्र वर्मा",
@@ -251,6 +146,105 @@ export const GUESTS_LIST: GuestData[] = [
     backgroundImage: "/images/guests/guest-bg-hc-verma.webp",
     accentColor: "#79C7E3",
     glowColor: "rgba(121, 199, 227, 0.45)",
+    isCurrentEdition: false,
+  },
+  {
+    id: "prof-poonam-tandon",
+    name: "Prof. Poonam Tandon",
+    hindiName: "प्रो. पूनम टंडन",
+    edition: "NOTABLE KEYNOTE DIGNITARY",
+    editionBadge: "FORMER VICE-CHANCELLOR · DDU GORAKHPUR UNIVERSITY",
+    designation: "Former Vice-Chancellor, DDU Gorakhpur University · Senior Professor of Physics, University of Lucknow · Honorary Colonel Commandant",
+    honorificTitle: "DISTINGUISHED ACADEMIC DIGNITARY",
+    primaryRole: "Former Vice-Chancellor, Deen Dayal Upadhyaya Gorakhpur University (2023–2026)",
+    secondaryRole: "Senior Professor of Physics, Department of Physics, University of Lucknow",
+    accolades: [
+      "Former Vice-Chancellor, Deen Dayal Upadhyaya Gorakhpur University (2023–2026)",
+      "Honorary Rank of Colonel Commandant, conferred by the Ministry of Defence",
+      "Senior Professor of Physics, Department of Physics, University of Lucknow",
+      "Distinguished Molecular Spectroscopist with 250+ International Research Publications",
+      "Former Dean of Students Welfare (DSW) & Director, IQAC, University of Lucknow",
+      "Lead Architect of NAAC A++ Institutional Accreditation Frameworks",
+      "Ph.D. in Physics from University of Lucknow & Recipient of Major National Research Grants",
+      "Champion of Higher Education Modernization, NEP Implementation & Women in STEM",
+    ],
+    keynoteTitle: "Empowering Future Technocrats: Bridging Fundamental Physics, Research Rigor & Institutional Excellence",
+    keynoteSubtitle: "Transforming Higher Technical Education through Interdisciplinary Innovation, Character Building, and Purvanchal's Youth",
+    bioParagraphs: [
+      "A distinguished academician, eminent physicist, and visionary higher-education administrator, Prof. Poonam Tandon served as the Vice-Chancellor of Deen Dayal Upadhyaya (DDU) Gorakhpur University from 2023 to 2026. A Senior Professor of Physics at the University of Lucknow with over three decades of teaching and research excellence, she is widely revered for transforming university governance, academic standards, and research ecosystems across Uttar Pradesh.",
+      "In the realm of physical sciences, Prof. Tandon is an internationally recognized molecular spectroscopist. Her extensive research spanning vibrational spectroscopy, crystal structure prediction, and bioactive pharmaceutical molecules has yielded over 250 peer-reviewed research papers in high-impact international journals and guided dozens of doctoral scholars and research fellows.",
+      "During her tenure as Vice-Chancellor of DDU Gorakhpur University, Prof. Tandon championed academic modernization, student-centric digital governance, National Education Policy (NEP) implementation, and holistic research infrastructure. In recognition of her exceptional leadership and contribution to youth development, she was conferred the prestigious honorary rank of Colonel Commandant by the Ministry of Defence.",
+      "Having shared a strong academic connection with the Gorakhpur higher education corridor and MMMUT, Prof. Poonam Tandon has been an inspiring presence for thousands of students and researchers, encouraging young engineering minds to cultivate relentless scientific curiosity, interdisciplinary research, and integrity in public service.",
+    ],
+    quote:
+      "Education in science and engineering is incomplete if it merely produces degree holders; its true triumph lies in igniting minds that question fearlessly, innovate ethically, and direct their scientific intellect toward national self-reliance and the upliftment of society.",
+    quoteContext: "Distinguished Keynote Address · Academic Leadership Conclave",
+    pillars: [
+      {
+        title: "Interdisciplinary Scientific Research",
+        description:
+          "Fostering rigorous research culture at the intersection of molecular spectroscopy, material physics, and modern engineering.",
+      },
+      {
+        title: "Institutional Governance & NEP Alignment",
+        description:
+          "Pioneering student-first digital administration, transparent evaluation, and holistic curriculum modernization.",
+      },
+      {
+        title: "Empowering Women in STEM",
+        description:
+          "Mentoring and championing the next generation of women researchers, scientists, and technology innovators.",
+      },
+      {
+        title: "Purvanchal Higher Education Renaissance",
+        description:
+          "Catalyzing regional academic potential to compete with elite national and global scientific institutions.",
+      },
+    ],
+    careerMilestones: [
+      {
+        year: "1992",
+        title: "Doctorate (Ph.D.) in Physics",
+        detail: "Completed doctoral research in molecular physics and spectroscopy at University of Lucknow.",
+      },
+      {
+        year: "2006+",
+        title: "Senior Professor of Physics",
+        detail: "Mentored doctoral researchers and published 250+ papers in top international journals.",
+      },
+      {
+        year: "2021",
+        title: "Dean of Students Welfare & IQAC",
+        detail: "Spearheaded student welfare initiatives and quality assurance frameworks at Lucknow University.",
+      },
+      {
+        year: "2023",
+        title: "Vice-Chancellor, DDU Gorakhpur",
+        detail: "Appointed Vice-Chancellor of Deen Dayal Upadhyaya Gorakhpur University by the Governor of UP.",
+      },
+      {
+        year: "2024",
+        title: "Colonel Commandant Rank",
+        detail: "Conferred the prestigious honorary rank of Colonel Commandant by the Ministry of Defence.",
+      },
+      {
+        year: "2026",
+        title: "Keynote Academic Dignitary",
+        detail: "Celebrated visionary leader gracing the academic dais in the Gorakhpur higher education corridor.",
+      },
+    ],
+    primaryImage: "/images/guests/poonam-tandon-clean.webp",
+    primaryImageCaption: "Prof. Poonam Tandon, Former Vice-Chancellor of DDU Gorakhpur University & Senior Professor of Physics",
+    galleryImages: [
+      {
+        url: "/images/guests/poonam-tandon-clean.webp",
+        caption: "Official Portrait of Prof. Poonam Tandon",
+        label: "Vice-Chancellor Portrait",
+      },
+    ],
+    backgroundImage: "/images/guests/guests-bg.webp",
+    accentColor: "#F59E0B",
+    glowColor: "rgba(245, 158, 11, 0.45)",
     isCurrentEdition: false,
   },
 ];

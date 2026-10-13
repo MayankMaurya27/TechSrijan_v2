@@ -4,6 +4,8 @@ import { useState, useMemo, useTransition, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Trophy, Users, Clock, MapPin, X, Copy, Check } from "lucide-react";
 import { Button } from "@/shared";
+import { useAuth } from "@/core";
+import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
 
 export interface EventDossier {
   id: string;
@@ -180,6 +182,9 @@ for (const ev of EVENTS_DATABASE) {
 }
 
 export function SpatialEventsGrid() {
+  const { isAuthenticated } = useAuth();
+  const { openAuthModal } = useAuthModal();
+
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [activeEvent, setActiveEvent] = useState<EventDossier | null>(null);
   const [regMode, setRegMode] = useState<"solo" | "team_create" | "team_join">("solo");
@@ -231,6 +236,10 @@ export function SpatialEventsGrid() {
 
   const handleCreateTeam = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      openAuthModal();
+      return;
+    }
     if (!teamName) return;
     const array = new Uint8Array(3);
     crypto.getRandomValues(array);
@@ -447,7 +456,16 @@ export function SpatialEventsGrid() {
                       <span>REGISTRATION FEE: </span>
                       <span className="font-bold text-[var(--accent-primary)]">{activeEvent.fee}</span>
                     </div>
-                    <Button size="lg" className="w-full sm:w-auto">
+                    <Button
+                      size="lg"
+                      className="w-full sm:w-auto"
+                      onClick={() => {
+                        if (!isAuthenticated) {
+                          openAuthModal();
+                          return;
+                        }
+                      }}
+                    >
                       CONFIRM REGISTRATION & PAY
                     </Button>
                   </div>
@@ -455,7 +473,13 @@ export function SpatialEventsGrid() {
                   <div>
                     <div className="flex items-center gap-3 mb-4 font-mono text-xs">
                       <button
-                        onClick={() => setRegMode("team_create")}
+                        onClick={() => {
+                          if (!isAuthenticated) {
+                            openAuthModal();
+                            return;
+                          }
+                          setRegMode("team_create");
+                        }}
                         className={`px-3 py-1.5 rounded transition-colors ${
                           regMode === "team_create"
                             ? "bg-[var(--accent-primary)] text-[var(--bg-primary)] font-bold"
@@ -465,7 +489,13 @@ export function SpatialEventsGrid() {
                         CREATE TEAM
                       </button>
                       <button
-                        onClick={() => setRegMode("team_join")}
+                        onClick={() => {
+                          if (!isAuthenticated) {
+                            openAuthModal();
+                            return;
+                          }
+                          setRegMode("team_join");
+                        }}
                         className={`px-3 py-1.5 rounded transition-colors ${
                           regMode === "team_join"
                             ? "bg-[var(--accent-primary)] text-[var(--bg-primary)] font-bold"
@@ -480,7 +510,6 @@ export function SpatialEventsGrid() {
                       <form onSubmit={handleCreateTeam} className="flex flex-col sm:flex-row gap-3">
                         <input
                           type="text"
-                          placeholder="Enter Team Name"
                           value={teamName}
                           onChange={(e) => setTeamName(e.target.value)}
                           className="h-11 flex-1 rounded border border-[var(--border)] bg-[var(--surface)] px-4 font-mono text-xs text-[var(--text-primary)] focus:border-[var(--accent-primary)] focus:outline-none"
@@ -494,12 +523,21 @@ export function SpatialEventsGrid() {
                       <div className="flex flex-col sm:flex-row gap-3">
                         <input
                           type="text"
-                          placeholder="Enter 8-Character Invite Code (e.g. TS-9A7B3X)"
                           value={inviteCode}
                           onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
                           className="h-11 flex-1 rounded border border-[var(--border)] bg-[var(--surface)] px-4 font-mono text-xs text-[var(--text-primary)] focus:border-[var(--accent-primary)] focus:outline-none uppercase"
                         />
-                        <Button size="default">JOIN TEAM</Button>
+                        <Button
+                          size="default"
+                          onClick={() => {
+                            if (!isAuthenticated) {
+                              openAuthModal();
+                              return;
+                            }
+                          }}
+                        >
+                          JOIN TEAM
+                        </Button>
                       </div>
                     )}
 

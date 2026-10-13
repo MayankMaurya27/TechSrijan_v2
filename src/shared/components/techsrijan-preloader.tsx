@@ -172,10 +172,10 @@ export function TechSrijanPreloader() {
             />
           </div>
 
-          {/* Micro Telemetry Footer */}
+          {/* Micro Footer */}
           <div className="flex items-center justify-between text-[8px] font-mono tracking-[0.25em] text-neutral-400 pt-1">
-            <span>[TSC // ARCHIVE_01]</span>
-            <span className="animate-pulse">VERIFIED PRODUCTION</span>
+            <span>TECHNICAL SUB COUNCIL</span>
+            <span className="animate-pulse">MMMUT GORAKHPUR</span>
           </div>
         </div>
       </div>

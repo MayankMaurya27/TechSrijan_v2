@@ -1,11 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme, useAuth } from "@/core";
 import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
-import { Menu, X, Home, Calendar, Code2, Hotel, Layers, Award, Handshake, Compass } from "lucide-react";
+import {
+  Menu,
+  X,
+  Home,
+  Calendar,
+  Code2,
+  Hotel,
+  Layers,
+  Award,
+  Handshake,
+  Compass,
+  ChevronDown,
+  User,
+  LogOut,
+  Shield,
+} from "lucide-react";
 
 const THEME_CYCLE = [
   "arrakis-day",
@@ -67,9 +82,11 @@ const NAV_LINKS = [
 export function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(true);
   const { theme, setTheme } = useTheme();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const { openAuthModal } = useAuthModal();
 
   const hasProfile = isAuthenticated || Boolean(user);
@@ -77,7 +94,22 @@ export function Navbar() {
   useEffect(() => {
     setIsVisible(true);
     setMobileMenuOpen(false);
+    setProfileDropdownOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+    if (profileDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [profileDropdownOpen]);
 
   if (
     pathname === "/signup" ||
@@ -201,29 +233,89 @@ export function Navbar() {
                   </Link>
                 );
               })}
-              <div className="pt-3 mt-1 border-t border-[rgba(212,168,67,0.2)] flex flex-col gap-2">
-                <button
-                  type="button"
-                  onClick={toggleTheme}
-                  className="flex items-center justify-between py-2 px-3 rounded-lg border border-[rgba(212,168,67,0.3)] bg-white/5 text-[#f8eed9] font-mono text-xs uppercase cursor-pointer"
-                >
-                  <span>Active Theme</span>
-                  <div className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${currentThemeConfig.orbClass}`} />
-                    <span className="font-semibold">{currentThemeConfig.label}</span>
+              {hasProfile ? (
+                <div className="pt-3 mt-1 border-t border-[rgba(212,168,67,0.2)] flex flex-col gap-2">
+                  <div className="px-3 py-2.5 bg-white/5 rounded-lg border border-white/5">
+                    <p className="font-mono text-[9px] text-neutral-400 uppercase tracking-wider">Signed in as</p>
+                    <p className="font-sans text-xs font-bold text-white truncate">{user?.name || "Participant"}</p>
+                    {user?.email && <p className="font-mono text-[10px] text-neutral-400 truncate mt-0.5">{user.email}</p>}
                   </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    openAuthModal();
-                  }}
-                  className="clip-mecha-btn block w-full py-2.5 font-mono font-bold text-xs tracking-[0.22em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.25)] to-[rgba(212,168,67,0.08)] border border-[var(--accent-primary,#d4a843)] text-center shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black transition-all cursor-pointer"
-                >
-                  SIGN IN ↗
-                </button>
-              </div>
+
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center justify-between py-2 px-3 rounded-lg border border-[rgba(212,168,67,0.3)] bg-[rgba(212,168,67,0.15)] text-[var(--accent-primary,#d4a843)] font-mono text-xs uppercase font-bold"
+                  >
+                    <div className="flex items-center gap-2">
+                      <User className="w-3.5 h-3.5" />
+                      <span>MY PROFILE</span>
+                    </div>
+                    <span>→</span>
+                  </Link>
+
+                  {(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN" || user?.role === "BOSS") && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-between py-2 px-3 rounded-lg border border-amber-500/40 bg-amber-950/40 text-amber-400 font-mono text-xs uppercase font-bold"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Shield className="w-3.5 h-3.5" />
+                        <span>ADMIN CONSOLE</span>
+                      </div>
+                      <span>→</span>
+                    </Link>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={toggleTheme}
+                    className="flex items-center justify-between py-2 px-3 rounded-lg border border-[rgba(212,168,67,0.3)] bg-white/5 text-[#f8eed9] font-mono text-xs uppercase cursor-pointer"
+                  >
+                    <span>Active Theme</span>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${currentThemeConfig.orbClass}`} />
+                      <span className="font-semibold">{currentThemeConfig.label}</span>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      logout();
+                    }}
+                    className="w-full py-2.5 font-mono font-bold text-xs tracking-[0.2em] uppercase text-red-400 hover:text-white bg-red-950/30 hover:bg-red-900/50 border border-red-800/50 rounded-lg text-center transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>LOG OUT</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="pt-3 mt-1 border-t border-[rgba(212,168,67,0.2)] flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={toggleTheme}
+                    className="flex items-center justify-between py-2 px-3 rounded-lg border border-[rgba(212,168,67,0.3)] bg-white/5 text-[#f8eed9] font-mono text-xs uppercase cursor-pointer"
+                  >
+                    <span>Active Theme</span>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${currentThemeConfig.orbClass}`} />
+                      <span className="font-semibold">{currentThemeConfig.label}</span>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openAuthModal();
+                    }}
+                    className="clip-mecha-btn block w-full py-2.5 font-mono font-bold text-xs tracking-[0.22em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.25)] to-[rgba(212,168,67,0.08)] border border-[var(--accent-primary,#d4a843)] text-center shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black transition-all cursor-pointer"
+                  >
+                    SIGN IN ↗
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -364,10 +456,10 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Desktop Right Corner: SIGN IN / PROFILE Button */}
-          <div className="flex items-center gap-1.5 flex-shrink-0 pointer-events-auto z-10">
-            {hasProfile || pathname === "/profile" ? (
-              <>
+          {/* Desktop Right Corner: SIGN IN / PROFILE Pill Dropdown */}
+          <div className="flex items-center gap-2 flex-shrink-0 pointer-events-auto z-10">
+            {hasProfile ? (
+              <div className="relative flex items-center gap-1.5" ref={dropdownRef}>
                 {(user?.role === "ADMIN" ||
                   user?.role === "SUPER_ADMIN" ||
                   user?.role === "BOSS") && (
@@ -378,20 +470,80 @@ export function Navbar() {
                     ADMIN
                   </Link>
                 )}
-                <Link
-                  href="/profile"
-                  className={`clip-mecha-btn relative px-3.5 xl:px-4 py-1.5 xl:py-2 font-mono font-bold text-[9.5px] xl:text-[10.5px] tracking-[0.2em] uppercase text-[#f8eed9] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1.5 group cursor-pointer ${
-                    pathname === "/profile"
+
+                {/* Profile Pill with Dropdown Trigger */}
+                <button
+                  type="button"
+                  onClick={() => setProfileDropdownOpen((prev) => !prev)}
+                  className={`clip-mecha-btn relative px-3 xl:px-3.5 py-1.5 xl:py-2 font-mono font-bold text-[9.5px] xl:text-[10px] tracking-[0.16em] uppercase text-[#f8eed9] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-2 cursor-pointer group ${
+                    profileDropdownOpen || pathname === "/profile"
                       ? "bg-[var(--accent-primary,#d4a843)] text-black shadow-[0_0_20px_var(--accent-primary,#d4a843)] border border-[var(--accent-primary,#d4a843)]"
-                      : "bg-gradient-to-r from-[rgba(212,168,67,0.22)] via-[rgba(212,168,67,0.1)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_25px_var(--accent-primary,#d4a843)]"
+                      : "bg-gradient-to-r from-[rgba(212,168,67,0.22)] via-[rgba(212,168,67,0.1)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black"
                   }`}
+                  aria-expanded={profileDropdownOpen}
                 >
-                  <span className="relative z-10">PROFILE</span>
-                  <span className="relative z-10 opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 transition-transform duration-300 text-[9px]">
-                    →
+                  <div
+                    className={`w-4 h-4 rounded-full border text-[8.5px] flex items-center justify-center font-bold transition-colors ${
+                      profileDropdownOpen || pathname === "/profile"
+                        ? "bg-black/20 border-black/40 text-black"
+                        : "bg-[var(--accent-primary,#d4a843)]/20 border-[var(--accent-primary,#d4a843)] text-[#f8eed9] group-hover:text-black group-hover:border-black/40"
+                    }`}
+                  >
+                    {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                  </div>
+                  <span className="relative z-10 max-w-[100px] truncate">
+                    {user?.name ? user.name.split(" ")[0] : "PROFILE"}
                   </span>
-                </Link>
-              </>
+                  <ChevronDown
+                    className={`w-3 h-3 transition-transform duration-200 ${
+                      profileDropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Dropdown Menu */}
+                {profileDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-[rgba(212,168,67,0.35)] bg-[#0d0906]/98 backdrop-blur-2xl p-2 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2">
+                    <div className="px-3 py-2 border-b border-white/10 mb-1">
+                      <p className="font-mono text-[9px] text-neutral-400 uppercase tracking-wider">Signed in as</p>
+                      <p className="font-sans text-xs font-bold text-white truncate">{user?.name || "Participant"}</p>
+                      {user?.email && <p className="font-mono text-[9.5px] text-neutral-400 truncate">{user.email}</p>}
+                    </div>
+
+                    <Link
+                      href="/profile"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-xs font-mono uppercase tracking-wider text-neutral-200 hover:text-white hover:bg-[rgba(212,168,67,0.18)] rounded-lg transition-colors"
+                    >
+                      <User className="w-3.5 h-3.5 text-[var(--accent-primary,#d4a843)]" />
+                      <span>My Profile</span>
+                    </Link>
+
+                    {(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN" || user?.role === "BOSS") && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 text-xs font-mono uppercase tracking-wider text-amber-400 hover:bg-amber-950/40 rounded-lg transition-colors"
+                      >
+                        <Shield className="w-3.5 h-3.5" />
+                        <span>Admin Console</span>
+                      </Link>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setProfileDropdownOpen(false);
+                        logout();
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-mono uppercase tracking-wider text-red-400 hover:text-red-300 hover:bg-red-950/40 rounded-lg transition-colors text-left cursor-pointer"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Log Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <button
                 type="button"

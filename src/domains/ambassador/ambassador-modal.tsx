@@ -371,7 +371,6 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             type="text"
                             value={formData.fullName}
                             onChange={(e) => handleChange("fullName", e.target.value)}
-                            placeholder="Enter your full name"
                             className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.fullName && (
@@ -390,7 +389,6 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             type="email"
                             value={formData.email}
                             onChange={(e) => handleChange("email", e.target.value)}
-                            placeholder="Enter your email address"
                             className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.email && (
@@ -409,7 +407,6 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             type="tel"
                             value={formData.phone}
                             onChange={(e) => handleChange("phone", e.target.value)}
-                            placeholder="Enter your mobile number"
                             className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.phone && (
@@ -429,7 +426,6 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             list="colleges-list"
                             value={formData.college}
                             onChange={(e) => handleChange("college", e.target.value)}
-                            placeholder="Enter your college or university name"
                             className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           <datalist id="colleges-list">
@@ -457,7 +453,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             >
                               {COURSE_YEAR_OPTIONS.map((opt) => (
                                 <option key={opt} value={opt} className="bg-[#121316] text-white">
-                                  {opt}
+                                   {opt}
                                 </option>
                               ))}
                             </select>
@@ -474,7 +470,6 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             type="text"
                             value={formData.city}
                             onChange={(e) => handleChange("city", e.target.value)}
-                            placeholder="Enter your city"
                             className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.city && (
@@ -588,7 +583,6 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             type="text"
                             value={formData.branch}
                             onChange={(e) => handleChange("branch", e.target.value)}
-                            placeholder="e.g. Computer Science, IT, ECE"
                             className={`w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.branch && (
@@ -607,7 +601,6 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             type="text"
                             value={formData.rollNo}
                             onChange={(e) => handleChange("rollNo", e.target.value)}
-                            placeholder="Enter your roll number"
                             className={`w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} transition-all font-sans`}
                           />
                         </div>
@@ -652,7 +645,6 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             type="url"
                             value={formData.socialLink}
                             onChange={(e) => handleChange("socialLink", e.target.value)}
-                            placeholder="LinkedIn or Instagram profile URL"
                             className={`w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} transition-all font-sans`}
                           />
                         </div>
@@ -667,7 +659,6 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                           rows={2}
                           value={formData.statement}
                           onChange={(e) => handleChange("statement", e.target.value)}
-                          placeholder="Tell us briefly how you plan to mobilize your campus..."
                           className={`w-full px-4 py-2 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans resize-none`}
                         />
                         {errors.statement && (
@@ -686,7 +677,6 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                           type="text"
                           value={formData.referralCode}
                           onChange={(e) => handleChange("referralCode", e.target.value)}
-                          placeholder="e.g. TS27-VANGUARD"
                           className={`w-full px-3.5 py-1.5 sm:py-2 bg-[#111215] border border-neutral-700/60 rounded-md text-xs sm:text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} font-mono uppercase`}
                         />
                       </div>

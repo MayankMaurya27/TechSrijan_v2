@@ -4,26 +4,36 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { AmbassadorModal } from "./ambassador-modal";
 import { useAmbassadorTheme } from "./ambassador-theme";
+import { useAuth } from "@/core";
+import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
 
 export function AmbassadorApply() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.05, margin: "0px 0px -50px 0px" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const t = useAmbassadorTheme();
+  const { isAuthenticated } = useAuth();
+  const { openAuthModal } = useAuthModal();
 
   // Global trigger listener
   useEffect(() => {
-    const handleOpen = () => setIsModalOpen(true);
+    const handleOpen = () => {
+      if (!isAuthenticated) {
+        openAuthModal();
+        return;
+      }
+      setIsModalOpen(true);
+    };
     window.addEventListener("open-ambassador-modal", handleOpen);
 
-    if (window.location.hash === "#apply") {
+    if (window.location.hash === "#apply" && isAuthenticated) {
       setIsModalOpen(true);
     }
 
     return () => {
       window.removeEventListener("open-ambassador-modal", handleOpen);
     };
-  }, []);
+  }, [isAuthenticated, openAuthModal]);
 
   return (
     <section
@@ -163,18 +173,38 @@ export function AmbassadorApply() {
 
               {/* Primary Chamfered Themed CTA Button */}
               <div className="mt-6 sm:mt-7">
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className={`group relative inline-flex items-center justify-center px-8 sm:px-11 py-3.5 sm:py-4 font-mono text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-white ${t.primaryBtnBg} ${t.primaryBtnHoverBg} transition-all duration-300 ${t.primaryBtnShadow} ${t.primaryBtnHoverShadow} active:scale-[0.98] border ${t.primaryBtnBorder}`}
-                  style={{
-                    clipPath:
-                      "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
-                  }}
-                >
-                  {/* Subtle diagonal light shimmer */}
-                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                  <span className="relative z-10">APPLY AS AMBASSADOR</span>
-                </button>
+                {!isAuthenticated ? (
+                  <div className="space-y-3">
+                    <button
+                      type="button"
+                      onClick={() => openAuthModal()}
+                      className={`group relative inline-flex items-center justify-center px-8 sm:px-11 py-3.5 sm:py-4 font-mono text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-white ${t.primaryBtnBg} ${t.primaryBtnHoverBg} transition-all duration-300 ${t.primaryBtnShadow} ${t.primaryBtnHoverShadow} active:scale-[0.98] border ${t.primaryBtnBorder}`}
+                      style={{
+                        clipPath:
+                          "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
+                      }}
+                    >
+                      <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                      <span className="relative z-10">SIGN IN TO APPLY AS AMBASSADOR</span>
+                    </button>
+                    <p className="text-[11px] font-mono text-amber-400/90 tracking-wider uppercase">
+                      Authentication required to verify campus ambassador candidacy
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(true)}
+                    className={`group relative inline-flex items-center justify-center px-8 sm:px-11 py-3.5 sm:py-4 font-mono text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-white ${t.primaryBtnBg} ${t.primaryBtnHoverBg} transition-all duration-300 ${t.primaryBtnShadow} ${t.primaryBtnHoverShadow} active:scale-[0.98] border ${t.primaryBtnBorder}`}
+                    style={{
+                      clipPath:
+                        "polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%)",
+                    }}
+                  >
+                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                    <span className="relative z-10">APPLY AS AMBASSADOR</span>
+                  </button>
+                )}
               </div>
 
               {/* Sub-caption below CTA */}

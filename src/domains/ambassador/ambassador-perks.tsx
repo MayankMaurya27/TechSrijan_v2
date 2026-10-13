@@ -3,6 +3,8 @@
 import { useRef, useState } from "react";
 import { motion, useInView, type Variants } from "framer-motion";
 import { useAmbassadorTheme } from "./ambassador-theme";
+import { useAuth } from "@/core";
+import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
 
 interface PerkItem {
   number: string;
@@ -177,6 +179,8 @@ const rowVariants: Variants = {
 
 export function AmbassadorPerks() {
   const t = useAmbassadorTheme();
+  const { isAuthenticated } = useAuth();
+  const { openAuthModal } = useAuthModal();
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.05, margin: "0px 0px -50px 0px" });
   const [activePerk, setActivePerk] = useState<number>(0);
@@ -273,6 +277,10 @@ export function AmbassadorPerks() {
                   href="#apply"
                   onClick={(e) => {
                     e.preventDefault();
+                    if (!isAuthenticated) {
+                      openAuthModal();
+                      return;
+                    }
                     window.dispatchEvent(new CustomEvent("open-ambassador-modal"));
                   }}
                   className={`group relative overflow-hidden inline-flex items-center justify-center px-7 py-3 font-mono text-xs sm:text-xs font-bold tracking-[0.2em] uppercase text-white ${t.primaryBtnBg} ${t.primaryBtnHoverBg} transition-all duration-300 ${t.primaryBtnShadow} ${t.primaryBtnHoverShadow} active:scale-[0.98] border ${t.primaryBtnBorder}`}

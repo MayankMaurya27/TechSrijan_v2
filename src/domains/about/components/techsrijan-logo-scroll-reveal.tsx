@@ -208,14 +208,8 @@ export function TechSrijanLogoScrollReveal() {
                 href="/events"
                 className={`inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-montserrat uppercase tracking-wider ${aboutTheme.primaryBtnClass} border ${aboutTheme.primaryBtnBorder} ${aboutTheme.primaryBtnShadow} transition-all duration-300 hover:scale-105 hover:brightness-125`}
               >
-                <span>Enter The Arena</span>
+                <span>Explore 25+ Events</span>
                 <ArrowUpRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/team"
-                className={`inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-montserrat font-semibold uppercase tracking-wider ${aboutTheme.secondaryBtnClass} backdrop-blur-xl transition-all`}
-              >
-                <span>Command Roster</span>
               </Link>
             </div>
           </div>

@@ -348,7 +348,6 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                     type="text"
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
-                    placeholder="Enter squad name (e.g. Apex Predators)"
                     required
                     className="w-full px-3 py-2 rounded-lg bg-black border border-white/20 text-xs text-white placeholder:text-neutral-600 focus:border-white focus:outline-none"
                   />
@@ -380,7 +379,6 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                     type="text"
                     value={teamCode}
                     onChange={(e) => setTeamCode(e.target.value.toUpperCase())}
-                    placeholder="Enter squad code (e.g. TS-A4B2)"
                     required
                     className="w-full px-3 py-2 rounded-lg bg-black border border-white/20 text-xs text-white placeholder:text-neutral-600 focus:border-white focus:outline-none uppercase font-mono tracking-widest"
                   />
@@ -474,14 +472,26 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                       <div className="flex items-center gap-1.5">
                         <button
                           type="button"
-                          onClick={() => setRegMode("create_squad")}
+                          onClick={() => {
+                            if (!isAuthenticated) {
+                              openAuthModal();
+                              return;
+                            }
+                            setRegMode("create_squad");
+                          }}
                           className="px-3.5 py-2 rounded-xl bg-white hover:bg-neutral-200 text-black font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(255,255,255,0.2)] active:scale-95 cursor-pointer"
                         >
                           Create Squad
                         </button>
                         <button
                           type="button"
-                          onClick={() => setRegMode("join_squad")}
+                          onClick={() => {
+                            if (!isAuthenticated) {
+                              openAuthModal();
+                              return;
+                            }
+                            setRegMode("join_squad");
+                          }}
                           className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer"
                         >
                           Join Squad

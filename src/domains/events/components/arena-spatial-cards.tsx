@@ -321,7 +321,7 @@ export function ArenaSpatialCards({
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-md mb-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
             <span className="font-mono text-[8px] tracking-[0.2em] uppercase text-white/80">
-              THE ARENA // 5 CHAPTERS
+              THE ARENA · 5 CHAPTERS
             </span>
           </div>
           <p className="font-mono text-[7.5px] tracking-[0.25em] text-white/50 uppercase">

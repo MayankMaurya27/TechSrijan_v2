@@ -3,9 +3,9 @@ import {
   AmbassadorHero,
   AmbassadorPerks,
   AmbassadorJourney,
-  AmbassadorColleges,
   AmbassadorApply,
 } from "@/domains/ambassador";
+import { FestFooter } from "@/shared/layout/fest-footer";
 
 
 export const metadata: Metadata = {
@@ -45,11 +45,11 @@ export default function AmbassadorPage() {
       {/* 4-Step CA Journey Timeline */}
       <AmbassadorJourney />
 
-      {/* Target Engineering Colleges: MMMUT, Gorakhpur, Eastern UP & Beyond */}
-      <AmbassadorColleges />
-
       {/* Interactive Application Form */}
       <AmbassadorApply />
+
+      {/* Standard Fest Footer */}
+      <FestFooter />
     </div>
   );
 }

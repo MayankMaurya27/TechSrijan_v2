@@ -10,9 +10,13 @@ import {
 } from "framer-motion";
 import { useAmbassadorTheme } from "./ambassador-theme";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
+import { useAuth } from "@/core";
+import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
 
 export function AmbassadorHero() {
   const t = useAmbassadorTheme();
+  const { isAuthenticated } = useAuth();
+  const { openAuthModal } = useAuthModal();
   const containerRef = useRef<HTMLDivElement>(null);
   // Phase sequence:
   // 1. "moon": Desert background appears, Moon descends smoothly from upward
@@ -494,6 +498,14 @@ export function AmbassadorHero() {
               {/* Primary Action: APPLY NOW */}
               <a
                 href="#apply"
+                onClick={(e) => {
+                  if (!isAuthenticated) {
+                    e.preventDefault();
+                    openAuthModal();
+                    return;
+                  }
+                  window.dispatchEvent(new CustomEvent("open-ambassador-modal"));
+                }}
                 className={`group relative overflow-hidden inline-flex items-center justify-center gap-2 w-full py-3 px-5 font-mono text-xs tracking-[0.24em] uppercase font-bold text-white ${t.primaryBtnBg} ${t.primaryBtnHoverBg} transition-all duration-300 ${t.primaryBtnShadow} ${t.primaryBtnHoverShadow} active:scale-[0.98] border ${t.primaryBtnBorder} rounded-[3px]`}
               >
                 <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
@@ -615,6 +627,14 @@ export function AmbassadorHero() {
             <div className="mt-4 flex gap-2.5">
               <a
                 href="#apply"
+                onClick={(e) => {
+                  if (!isAuthenticated) {
+                    e.preventDefault();
+                    openAuthModal();
+                    return;
+                  }
+                  window.dispatchEvent(new CustomEvent("open-ambassador-modal"));
+                }}
                 className={`flex-1 py-2.5 px-3 inline-flex items-center justify-center gap-1.5 font-mono text-[10px] sm:text-xs tracking-[0.16em] uppercase font-bold text-white ${t.primaryBtnBg} border ${t.primaryBtnBorder} ${t.primaryBtnShadow} active:scale-95 rounded-[3px] transition-all duration-300`}
               >
                 <span>APPLY NOW</span>

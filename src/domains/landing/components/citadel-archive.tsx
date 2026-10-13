@@ -345,13 +345,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
         <div className="absolute bottom-[6%] left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#d4a843]/25 to-transparent" />
 
         <div className="absolute top-[6.5%] left-8 text-[9px] font-mono tracking-[0.25em] text-[#d4a843]/45 hidden sm:block">
-          SEC // 07 · LAT 26.738°N · CITADEL NETWORK
-        </div>
-        <div className="absolute top-[6.5%] right-8 text-[9px] font-mono tracking-[0.25em] text-[#d4a843]/45 hidden sm:block">
-          SYS // ARCHIVE_V27 · SYNC: OPTIMAL
-        </div>
-        <div className="absolute bottom-[6.5%] right-8 text-[9px] font-mono tracking-[0.25em] text-[#d4a843]/35 hidden sm:block">
-          ◈ FREMEN PROTOCOL ACTIVE
+          VOICES FROM WITHIN · TECHSRIJAN ARCHIVE
         </div>
       </div>
 
@@ -609,7 +603,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                   <div className="flex-shrink-0">
                     <div className="flex items-center justify-between">
                       <span className="text-[7.5px] font-mono tracking-[0.2em] text-[#d4a843] uppercase">
-                        TRANSMISSION // 07
+                        TESTIMONIALS
                       </span>
                       <span className="text-[7.5px] font-mono tracking-widest text-[#d4a843]/60">
                         {TRANSMISSIONS[activeQuoteIndex].id} / 05
@@ -969,7 +963,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                 <div className="flex-shrink-0">
                   <div className="flex items-center justify-between">
                     <span className="text-[8px] font-mono tracking-[0.25em] text-[#d4a843] uppercase">
-                      TRANSMISSION // 07
+                      TESTIMONIALS
                     </span>
                     <span className="text-[8px] font-mono tracking-widest text-[#d4a843]/60">
                       {TRANSMISSIONS[activeQuoteIndex].id} / 05

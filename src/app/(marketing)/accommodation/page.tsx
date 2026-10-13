@@ -1138,7 +1138,6 @@ export default function AccommodationPage() {
                           type="text"
                           value={utrNumber}
                           onChange={(e) => setUtrNumber(e.target.value)}
-                          placeholder="e.g. 428901847291"
                           required
                           className="w-full px-3 py-1.5 rounded bg-black/60 border border-white/20 text-xs text-white placeholder:text-neutral-600 focus:border-[#E61924] focus:outline-none"
                         />
@@ -1272,7 +1271,6 @@ export default function AccommodationPage() {
                         type="text"
                         value={formData.fullName}
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                        placeholder="e.g. Lelouch Lamperouge"
                         className={`w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 ${
                           formErrors.fullName
                             ? "border-[#E61924] shadow-[0_0_12px_rgba(230,25,36,0.25)]"
@@ -1303,7 +1301,6 @@ export default function AccommodationPage() {
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="resident@institution.edu"
                         className={`w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 ${
                           formErrors.email
                             ? "border-[#E61924] shadow-[0_0_12px_rgba(230,25,36,0.25)]"
@@ -1334,7 +1331,6 @@ export default function AccommodationPage() {
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        placeholder="+91 9876543210"
                         className={`w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 ${
                           formErrors.phone
                             ? "border-[#E61924] shadow-[0_0_12px_rgba(230,25,36,0.25)]"
@@ -1365,7 +1361,6 @@ export default function AccommodationPage() {
                         type="text"
                         value={formData.college}
                         onChange={(e) => setFormData({ ...formData, college: e.target.value })}
-                        placeholder="e.g. MMMUT Gorakhpur / IIT / NIT"
                         className={`w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 ${
                           formErrors.college
                             ? "border-[#E61924] shadow-[0_0_12px_rgba(230,25,36,0.25)]"
@@ -1396,7 +1391,6 @@ export default function AccommodationPage() {
                         type="text"
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                        placeholder="e.g. Lucknow, Varanasi, Delhi"
                         className={`w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 ${
                           formErrors.city
                             ? "border-[#E61924] shadow-[0_0_12px_rgba(230,25,36,0.25)]"
@@ -1501,7 +1495,6 @@ export default function AccommodationPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, specialRequirements: e.target.value })
                         }
-                        placeholder="Dietary, room adjacency, early arrival..."
                         className="w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.18] focus:border-[#E61924] focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(230,25,36,0.18)] text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 resize-none"
                       />
                       <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 pointer-events-none group-focus-within:border-[#E61924]" />

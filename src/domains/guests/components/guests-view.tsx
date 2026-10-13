@@ -8,6 +8,7 @@ import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { useGuestsTheme } from "../data/guests-theme";
 import { cn } from "@/core";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
+import { FestFooter } from "@/shared/layout/fest-footer";
 
 export function GuestsView() {
   const theme = useGuestsTheme();
@@ -707,17 +708,8 @@ export function GuestsView() {
               theme.primaryBtnShadow
             )}
           >
-            <span>Explore 30+ Arena Events</span>
+            <span>Explore 25+ Events</span>
             <ArrowUpRight className="h-4 w-4" />
-          </Link>
-          <Link
-            href="/team"
-            className={cn(
-              "inline-flex items-center gap-2 rounded-full px-6 sm:px-7 py-3.5 font-montserrat text-xs font-medium transition-all backdrop-blur-xl shadow-lg",
-              theme.secondaryBtnClass
-            )}
-          >
-            <span>Command Roster</span>
           </Link>
           <Link
             href="/about"
@@ -730,6 +722,9 @@ export function GuestsView() {
           </Link>
         </div>
       </section>
+
+      {/* Reusable Conclave Footer */}
+      <FestFooter />
     </div>
   );
 }

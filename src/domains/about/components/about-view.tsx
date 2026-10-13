@@ -24,43 +24,7 @@ import { About3DScene } from "./about-3d-scene";
 import { TechSrijanLogoScrollReveal } from "./techsrijan-logo-scroll-reveal";
 import { useAboutTheme } from "../data/about-theme";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
-
-/* Social Icon SVGs */
-function IconInstagram({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-    </svg>
-  );
-}
-
-function IconLinkedin({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-      <rect x="2" y="9" width="4" height="12" />
-      <circle cx="4" cy="4" r="2" />
-    </svg>
-  );
-}
-
-function IconX({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
-
-function IconWhatsApp({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31c-.82-1.31-1.26-2.83-1.26-4.38 0-4.54 3.7-8.24 8.24-8.24m4.52 11.59c-.25-.12-1.47-.72-1.7-.81-.23-.09-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.06 0 1.21.88 2.39 1 2.56.12.17 1.74 2.66 4.21 3.73.59.25 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.13-.22-.19-.47-.32" />
-    </svg>
-  );
-}
+import { FestFooter } from "@/shared/layout/fest-footer";
 
 /* Stat Counter with smooth easing */
 function StatCounter({ target, suffix }: { target: number; suffix: string }) {
@@ -269,14 +233,8 @@ export function AboutView() {
                   href="/events"
                   className={`inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-montserrat uppercase tracking-wider ${theme.primaryBtnClass} border ${theme.primaryBtnBorder} ${theme.primaryBtnShadow} transition-all duration-300 hover:scale-105 hover:brightness-125`}
                 >
-                  <span>Explore 25+ Experiences</span>
+                  <span>Explore 25+ Events</span>
                   <ArrowUpRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/team"
-                  className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-montserrat font-semibold uppercase tracking-wider ${theme.secondaryBtnClass} transition-all backdrop-blur-xl`}
-                >
-                  <span>Command Roster</span>
                 </Link>
               </div>
             </div>
@@ -711,12 +669,6 @@ export function AboutView() {
                   <span>View All {activeHouse.shortName} Events</span>
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
-                <Link
-                  href="/team"
-                  className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-montserrat font-semibold uppercase tracking-wider ${theme.secondaryBtnClass} transition-colors`}
-                >
-                  <span>Meet Coordinators</span>
-                </Link>
               </div>
             </div>
           </div>
@@ -970,62 +922,16 @@ export function AboutView() {
                 href="/events"
                 className={`inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-montserrat font-bold uppercase tracking-wider ${theme.primaryBtnClass} border ${theme.primaryBtnBorder} ${theme.primaryBtnShadow} transition-all duration-300 hover:scale-105 hover:brightness-125`}
               >
-                <span>Register for Competitions</span>
+                <span>Explore 25+ Events</span>
                 <ArrowUpRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/team"
-                className={`inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-montserrat font-semibold uppercase tracking-wider ${theme.secondaryBtnClass} transition-all backdrop-blur-xl`}
-              >
-                <span>Meet The Council</span>
               </Link>
             </div>
           </div>
         </section>
-
-        {/* Clean Footer (Positioned Close to End of Page) */}
-        <footer className="pt-5 pb-1 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/[0.08] text-sm font-sans text-neutral-300">
-          <div>
-            Follow <span className="text-white font-medium">@techsrijan_mmmut</span> for live announcements and event schedules
-          </div>
-
-          <div className="flex items-center gap-3 sm:gap-3.5">
-            {[
-              {
-                icon: IconInstagram,
-                label: "Instagram",
-                href: "https://www.instagram.com/techsrijan_mmmut",
-              },
-              {
-                icon: IconWhatsApp,
-                label: "WhatsApp Channel",
-                href: "https://whatsapp.com/channel/0029VbBGctj1Hsq0KeSlRl0G",
-              },
-              {
-                icon: IconLinkedin,
-                label: "LinkedIn",
-                href: "https://www.linkedin.com/company/techsrijan-mmmut/",
-              },
-              {
-                icon: IconX,
-                label: "X",
-                href: "https://x.com/TechSrijan_Fest",
-              },
-            ].map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.label}
-                className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white/[0.08] hover:bg-white/[0.2] border border-white/[0.12] hover:border-white/[0.3] text-neutral-200 hover:text-white transition-all shadow-md hover:scale-110"
-              >
-                <social.icon className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
-              </a>
-            ))}
-          </div>
-        </footer>
       </div>
+
+      {/* Reusable Conclave Footer */}
+      <FestFooter />
     </div>
   );
 }

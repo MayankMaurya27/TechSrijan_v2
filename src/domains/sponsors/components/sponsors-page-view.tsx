@@ -21,10 +21,7 @@ import {
   Shield,
   Layers,
   PhoneCall,
-  Phone,
   Mail,
-  Copy,
-  Check,
   MapPin,
   Crown,
 } from "lucide-react";
@@ -32,6 +29,7 @@ import { SponsorsInquiryModal } from "./sponsors-inquiry-modal";
 import { useTheme, type CanonicalTheme } from "@/core";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 import { api } from "@/lib/api";
+import { FestFooter } from "@/shared/layout/fest-footer";
 
 
 export const SPONSOR_THEMES = {
@@ -300,25 +298,16 @@ const PARTNERSHIP_COLUMNS = [
 
 const CONTACTS = [
   {
-    name: "Aashish Tiwari",
-    role: "Lead Student Convenor",
-    dept: "Mechanical Engg, Third Year",
-    phone: "8917769294",
-    email: "aashish.techsrijan@mmmut.ac.in",
+    name: "Prakhar Dubey",
+    role: "President",
+    council: "Technical Sub Council",
+    dept: "Technical Sub Council (TSC) • MMMUT Gorakhpur",
   },
   {
-    name: "Navneet Yadav",
-    role: "Student Convenor",
-    dept: "Civil Engg, Third Year",
-    phone: "9415777241",
-    email: "navneet.techsrijan@mmmut.ac.in",
-  },
-  {
-    name: "Atul Dubey",
-    role: "Corporate Liaison & Convenor",
-    dept: "Management Studies, Final Year",
-    phone: "9120302180",
-    email: "atul.techsrijan@mmmut.ac.in",
+    name: "Siddhi Mishra",
+    role: "Joint Secretary",
+    council: "Technical Sub Council",
+    dept: "Technical Sub Council (TSC) • MMMUT Gorakhpur",
   },
 ];
 
@@ -488,9 +477,8 @@ export function SponsorsPageView() {
   // Robot Incoming Entrance Animation State
   const [robotSpawned, setRobotSpawned] = useState(false);
 
-  // Modal & Copy State
+  // Modal State
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
-  const [copiedPhone, setCopiedPhone] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -599,13 +587,6 @@ export function SponsorsPageView() {
     return () => window.removeEventListener("mousemove", handleMove);
   }, [mouseX, mouseY]);
 
-  const handleCopyPhone = (phone: string) => {
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(phone);
-    }
-    setCopiedPhone(phone);
-    setTimeout(() => setCopiedPhone(null), 2000);
-  };
 
   return (
     <div
@@ -1369,8 +1350,8 @@ export function SponsorsPageView() {
             </p>
           </div>
 
-          {/* 3 Convenor Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {/* Executive Liaisons Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
             {CONTACTS.map((c, i) => (
               <div
                 key={i}
@@ -1400,53 +1381,24 @@ export function SponsorsPageView() {
                   >
                     {c.name}
                   </h3>
-                  <p className="text-xs text-neutral-400 font-mono mt-0.5 mb-6">
+                  <p className="text-xs text-neutral-400 font-mono mt-1 mb-6">
                     {c.dept}
                   </p>
                 </div>
 
-                {/* Contact Methods */}
-                <div className="pt-4 border-t border-white/10 space-y-3">
-                  {/* Phone Row with Call & Copy */}
-                  <div className="flex items-center justify-between gap-2 bg-black/50 p-2.5 rounded-lg border border-white/5">
-                    <a
-                      href={`tel:${c.phone}`}
-                      className="flex items-center gap-2 text-xs font-mono font-bold transition-colors"
-                      style={{ color: t.accent }}
-                      title="Click to call"
-                    >
-                      <Phone className="w-3.5 h-3.5" />
-                      <span>+91 {c.phone}</span>
-                    </a>
-
-                    <button
-                      type="button"
-                      onClick={() => handleCopyPhone(c.phone)}
-                      className="px-2 py-1 rounded bg-white/5 hover:bg-white/15 text-neutral-300 hover:text-white text-[10px] font-mono flex items-center gap-1 transition-colors border border-white/10"
-                      title="Copy phone number"
-                    >
-                      {copiedPhone === c.phone ? (
-                        <>
-                          <Check className="w-3 h-3 text-emerald-400" />
-                          <span className="text-emerald-400">Copied</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3 h-3 text-neutral-400" />
-                          <span>Copy</span>
-                        </>
-                      )}
-                    </button>
+                {/* Institutional Channel */}
+                <div className="pt-4 border-t border-white/10 space-y-2">
+                  <div className="flex items-center justify-between text-xs font-mono text-neutral-400">
+                    <span className="text-[10px] uppercase tracking-wider text-neutral-500">Channel</span>
+                    <span className="text-neutral-300 font-medium text-[11px]">Official Directorate</span>
                   </div>
-
-                  {/* Email Row */}
                   <a
-                    href={`mailto:${c.email}`}
-                    className="flex items-center gap-2 text-xs font-mono text-neutral-400 hover:text-white transition-colors truncate px-1"
-                    title="Click to send email"
+                    href="mailto:techsrijan@mmmut.ac.in"
+                    className="flex items-center gap-2 text-xs font-mono text-neutral-300 hover:text-white transition-colors bg-black/40 p-2.5 rounded-lg border border-white/5"
+                    title="Send inquiry to Techsrijan Directorate"
                   >
                     <Mail className="w-3.5 h-3.5 shrink-0 transition-colors duration-500" style={{ color: t.gold }} />
-                    <span className="truncate">{c.email}</span>
+                    <span className="truncate">techsrijan@mmmut.ac.in</span>
                   </a>
                 </div>
               </div>
@@ -1505,6 +1457,9 @@ export function SponsorsPageView() {
           </div>
         </div>
       </section>
+
+      {/* Standard Fest Footer */}
+      <FestFooter />
 
       {/* ========================================================
           INQUIRY & CONTRACT INITIATION MODAL POPUP

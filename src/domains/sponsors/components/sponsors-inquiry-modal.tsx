@@ -233,7 +233,6 @@ export function SponsorsInquiryModal({
                         name="company_name"
                         value={formData.company_name}
                         onChange={handleInputChange}
-                        placeholder="e.g. Acme Corporation"
                         className={`w-full bg-black/60 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 rounded-lg focus:outline-none ${mt.inputFocus} transition-all`}
                       />
                     </div>
@@ -248,7 +247,6 @@ export function SponsorsInquiryModal({
                         name="contact_person"
                         value={formData.contact_person}
                         onChange={handleInputChange}
-                        placeholder="e.g. Jane Doe"
                         className={`w-full bg-black/60 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 rounded-lg focus:outline-none ${mt.inputFocus} transition-all`}
                       />
                     </div>
@@ -263,7 +261,6 @@ export function SponsorsInquiryModal({
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        placeholder="partner@company.com"
                         className={`w-full bg-black/60 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 rounded-lg focus:outline-none ${mt.inputFocus} transition-all`}
                       />
                     </div>
@@ -277,7 +274,6 @@ export function SponsorsInquiryModal({
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        placeholder="+91 98765 43210"
                         className={`w-full bg-black/60 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 rounded-lg focus:outline-none ${mt.inputFocus} transition-all`}
                       />
                     </div>
@@ -326,7 +322,6 @@ export function SponsorsInquiryModal({
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
-                      placeholder="Outline target demographics, product demo requirements, stage rights, or requested branding deliverables..."
                       className={`w-full bg-black/60 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 rounded-lg focus:outline-none ${mt.inputFocus} transition-all resize-none`}
                     />
                   </div>

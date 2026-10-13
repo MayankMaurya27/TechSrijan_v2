@@ -201,6 +201,12 @@ export default function RootLayout({
             __html: `if('scrollRestoration' in history){history.scrollRestoration='manual';}window.scrollTo(0,0);`,
           }}
         />
+        {/* Automatic Cloudinary -> Vercel Edge failover handler */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){if(typeof window==='undefined')return;window.addEventListener('error',function(e){var t=e.target;if(!t||!t.tagName)return;if(t.tagName==='IMG'){var src=t.src||'';if(src.indexOf('res.cloudinary.com')!==-1&&!t.getAttribute('data-cld-fallback')){t.setAttribute('data-cld-fallback','1');var m=src.match(/\\/techsrijan\\/(.+?)(?:\\?.*)?$/);if(m&&m[1]){t.src='/'+m[1];}}}if(t.tagName==='VIDEO'){var vSrc=t.src||t.currentSrc||'';if(vSrc.indexOf('res.cloudinary.com')!==-1&&!t.getAttribute('data-cld-fallback')){t.setAttribute('data-cld-fallback','1');var vm=vSrc.match(/\\/techsrijan\\/videos\\/(.+?\\.mp4)(?:\\?.*)?$/);if(vm&&vm[1]){t.src='/'+vm[1];if(typeof t.load==='function')t.load();}}}},true);})();`,
+          }}
+        />
       </head>
       <body className="antialiased min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans relative selection:bg-[var(--accent-primary)] selection:text-[var(--bg-primary)] overflow-x-hidden">
         <ThemeProvider>

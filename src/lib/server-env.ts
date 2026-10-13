@@ -12,10 +12,10 @@ import path from "path";
 export function getServerEnv(key: string): string | undefined {
   let val = process.env[key];
 
-  if (!val) {
+  if (!val && process.env.NODE_ENV !== "production") {
     try {
       for (const fileName of [".env.local", ".env"]) {
-        const filePath = path.join(process.cwd(), fileName);
+        const filePath = path.join(/*turbopackIgnore: true*/ process.cwd(), fileName);
         if (fs.existsSync(filePath)) {
           const fileContent = fs.readFileSync(filePath, "utf-8");
           const match = fileContent.match(new RegExp(`^${key}=(.*)$`, "m"));

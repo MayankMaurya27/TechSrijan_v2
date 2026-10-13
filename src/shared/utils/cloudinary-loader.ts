@@ -25,9 +25,8 @@ export default function cloudinaryLoader({
     return src;
   }
 
-  // Strip leading slash and extension for dynamic format negotiation
+  // Strip leading slash
   const cleanPath = src.startsWith("/") ? src.slice(1) : src;
-  const pathWithoutExt = cleanPath.replace(/\.[^/.]+$/, "");
 
   // Automated optimizations:
   // - w_${width}: Responsive downscaling matching screen DPR
@@ -41,7 +40,7 @@ export default function cloudinaryLoader({
     "c_limit",
   ].join(",");
 
-  return `https://res.cloudinary.com/${cloudName}/image/upload/${transforms}/techsrijan/${pathWithoutExt}`;
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${transforms}/techsrijan/${cleanPath}`;
 }
 
 export function getOptimizedImageUrl(src: string, width = 1200, quality = 85): string {

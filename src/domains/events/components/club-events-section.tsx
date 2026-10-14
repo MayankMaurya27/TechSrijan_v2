@@ -1036,9 +1036,14 @@ export function ClubEventsSection({
       setActiveCategory(targetCat);
       setActiveIndex(0);
       setTimeout(() => {
-        const activeBtn = tabsRef.current?.querySelector(`[data-catid="${targetCat}"]`);
-        activeBtn?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-      }, 50);
+        const activeBtn = tabsRef.current?.querySelector(`[data-catid="${targetCat}"]`) as HTMLElement;
+        if (activeBtn && tabsRef.current) {
+          const container = tabsRef.current;
+          const scrollLeft =
+            activeBtn.offsetLeft - container.offsetWidth / 2 + activeBtn.offsetWidth / 2;
+          container.scrollTo({ left: Math.max(0, scrollLeft), behavior: "smooth" });
+        }
+      }, 60);
     }
   }, [propActiveCategoryId, propActiveClubId]);
 
@@ -1096,9 +1101,14 @@ export function ClubEventsSection({
     setActiveCategory(catId);
     setActiveIndex(0);
     setTimeout(() => {
-      const activeBtn = tabsRef.current?.querySelector(`[data-catid="${catId}"]`);
-      activeBtn?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-    }, 50);
+      const activeBtn = tabsRef.current?.querySelector(`[data-catid="${catId}"]`) as HTMLElement;
+      if (activeBtn && tabsRef.current) {
+        const container = tabsRef.current;
+        const scrollLeft =
+          activeBtn.offsetLeft - container.offsetWidth / 2 + activeBtn.offsetWidth / 2;
+        container.scrollTo({ left: Math.max(0, scrollLeft), behavior: "smooth" });
+      }
+    }, 60);
   };
 
   // Next / Prev circular navigation
@@ -1173,8 +1183,11 @@ export function ClubEventsSection({
       {/* Subtle Monochrome Dune Noise / Grid */}
       <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
+      {/* Top Atmospheric Feather Blend from Arena Void */}
+      <div className="absolute top-0 inset-x-0 h-40 sm:h-56 bg-gradient-to-b from-[#030406] via-[#030406]/80 to-transparent pointer-events-none z-15" />
+
       {/* ── Section Header ─────────────────────────────────────────────────── */}
-      <div className="relative z-10 pt-8 sm:pt-12 pb-4 sm:pb-6 px-4 sm:px-8 text-center border-b border-white/10">
+      <div className="relative z-10 pt-14 sm:pt-20 pb-5 sm:pb-7 px-4 sm:px-8 text-center border-b border-white/10">
         {/* Dune ornament */}
         <div className="flex items-center justify-center mb-2 sm:mb-3">
           <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.4em] text-white/80 uppercase flex items-center gap-1.5">

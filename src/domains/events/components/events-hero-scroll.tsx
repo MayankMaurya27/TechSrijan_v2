@@ -41,6 +41,7 @@ export function EventsHeroScroll({
   const heroTextRef = useRef<HTMLDivElement>(null);
   const arenaHudRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const exitOverlayRef = useRef<HTMLDivElement>(null);
 
   // State
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -322,33 +323,28 @@ export function EventsHeroScroll({
     }
   }, [attemptSeek, renderFrameToCanvas]);
 
-  // Scroll directly into Our Events Dossier
+  // Scroll directly into Our Events Dossier with seamless cinematic transition
   const scrollToOurEvents = useCallback(() => {
     const target = document.getElementById("our-events-section");
     const lenis = (window as any).__lenis;
-
-    if (target) {
-      const scrollTop =
-        window.pageYOffset ||
-        document.documentElement.scrollTop ||
-        (lenis ? lenis.scroll : 0);
-      const targetTop = target.getBoundingClientRect().top + scrollTop;
-
-      if (lenis) {
-        lenis.scrollTo(targetTop, { duration: 0.85, offset: -20 });
-      } else {
-        window.scrollTo({ top: targetTop - 20, behavior: "smooth" });
-      }
-      return;
-    }
-
     const st = ScrollTrigger.getById("events-hero-scroll");
-    if (st) {
-      const targetScroll = st.end + window.innerHeight;
+
+    // The clean unpinned start of Our Events dossier is st.end (or target offset if fallback)
+    const destination = st
+      ? st.end
+      : target
+      ? target.getBoundingClientRect().top +
+        (window.pageYOffset || document.documentElement.scrollTop || (lenis ? lenis.scroll : 0))
+      : 0;
+
+    if (destination > 0) {
       if (lenis) {
-        lenis.scrollTo(targetScroll, { duration: 0.85 });
+        lenis.scrollTo(destination, {
+          duration: 1.25,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        });
       } else {
-        window.scrollTo({ top: targetScroll, behavior: "smooth" });
+        window.scrollTo({ top: destination, behavior: "smooth" });
       }
     }
   }, []);
@@ -474,6 +470,16 @@ export function EventsHeroScroll({
           0.90
         );
       }
+
+      // Smooth atmospheric curtain dissolve into Our Events dossier
+      if (exitOverlayRef.current) {
+        tl.fromTo(
+          exitOverlayRef.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.12, ease: "power2.inOut" },
+          0.88
+        );
+      }
     }, scrollWrapperRef);
 
     const refreshTimer = setTimeout(() => {
@@ -585,8 +591,17 @@ export function EventsHeroScroll({
             }}
           />
 
+          {/* Permanent Bottom Atmospheric Feather: Eliminates any hard cutoff of the arena amphitheatre floor */}
+          <div className="absolute bottom-0 inset-x-0 h-44 sm:h-72 bg-gradient-to-t from-[#030406] via-[#030406]/80 to-transparent pointer-events-none z-15" />
+
           {/* Top Navbar Protection */}
           <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-black/90 to-transparent pointer-events-none z-20" />
+
+          {/* Exit Dissolve Curtain: Fades the entire stage into deep void as user approaches dossier */}
+          <div
+            ref={exitOverlayRef}
+            className="absolute inset-0 bg-gradient-to-b from-black/40 via-[#030406]/85 to-[#030406] pointer-events-none z-25 opacity-0"
+          />
         </div>
 
         {/* =================================================================== */}
@@ -652,7 +667,9 @@ export function EventsHeroScroll({
         {/* =================================================================== */}
         <div
           ref={cardsContainerRef}
-          className="absolute inset-0 z-30 opacity-0 pointer-events-none"
+          className={`absolute inset-0 z-30 opacity-0 ${
+            scrollProgress >= 0.38 ? "pointer-events-auto" : "pointer-events-none"
+          }`}
         >
           <ArenaSpatialCards
             isVisible={scrollProgress >= 0.38}

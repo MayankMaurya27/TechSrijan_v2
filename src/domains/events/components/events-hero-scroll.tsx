@@ -325,19 +325,31 @@ export function EventsHeroScroll({
   // Scroll directly into Our Events Dossier
   const scrollToOurEvents = useCallback(() => {
     const target = document.getElementById("our-events-section");
+    const lenis = (window as any).__lenis;
+
     if (target) {
-      const lenis = (window as any).__lenis;
+      const scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        (lenis ? lenis.scroll : 0);
+      const targetTop = target.getBoundingClientRect().top + scrollTop;
+
       if (lenis) {
-        lenis.scrollTo(target, { duration: 1.1, offset: -20 });
+        lenis.scrollTo(targetTop, { duration: 0.85, offset: -20 });
       } else {
-        target.scrollIntoView({ behavior: "smooth" });
+        window.scrollTo({ top: targetTop - 20, behavior: "smooth" });
       }
       return;
     }
 
     const st = ScrollTrigger.getById("events-hero-scroll");
     if (st) {
-      window.scrollTo({ top: st.end, behavior: "smooth" });
+      const targetScroll = st.end + window.innerHeight;
+      if (lenis) {
+        lenis.scrollTo(targetScroll, { duration: 0.85 });
+      } else {
+        window.scrollTo({ top: targetScroll, behavior: "smooth" });
+      }
     }
   }, []);
 
@@ -361,10 +373,10 @@ export function EventsHeroScroll({
           id: "events-hero-scroll",
           trigger: scrollWrapperRef.current,
           start: "top top",
-          end: isMobileViewport ? "+=130%" : "+=150%",
+          end: isMobileViewport ? "+=240%" : "+=340%",
           pin: pinnedStageRef.current,
           scrub: isMobileViewport ? 0.35 : 0.6,
-          anticipatePin: 0,
+          anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const p = self.progress;
@@ -374,31 +386,31 @@ export function EventsHeroScroll({
               if (onScrollProgress) onScrollProgress(p);
             }
 
-            // Map scroll progress to a video time; the catch-up loop moves the shown frame there smoothly
+            // Map scroll progress to video time:
+            // The scroll scrub finishes first with the arena view and text arrival (p: 0.00 - 0.28)
             let target = 0;
 
             if (isMobileViewport) {
               // Mobile Video (6.0s 9:16 portrait):
-              // 0.0s - 2.0s: Character close-up portrait (p: 0.00 - 0.22)
-              // 2.0s - 4.8s: Walks into arena, raises sword (p: 0.22 - 0.42)
-              // 4.8s - 5.4s: Arena amphitheatre wide view (p: 0.42 - 1.00)
-              if (p <= 0.22) {
-                const norm = p / 0.22;
+              // 0.00 - 0.14: Character close-up portrait (0.0s - 2.0s)
+              // 0.14 - 0.28: Steps into arena, reaches amphitheatre view (2.0s - 5.4s)
+              // 0.28 - 1.00: Remains parked on majestic wide arena amphitheatre
+              if (p <= 0.14) {
+                const norm = p / 0.14;
                 target = norm * 2.0;
-              } else if (p <= 0.42) {
-                const norm = (p - 0.22) / 0.20;
-                target = 2.0 + norm * 2.8;
+              } else if (p <= 0.28) {
+                const norm = (p - 0.14) / 0.14;
+                target = 2.0 + norm * 3.4;
               } else {
-                target = 4.8 + Math.min(0.6, (p - 0.42) * 1.0);
+                target = 5.4;
               }
             } else {
               // Desktop Video (5.04s 16:9 landscape):
-              if (p <= 0.25) {
-                const norm = p / 0.25;
-                target = norm * 3.5;
-              } else if (p <= 0.45) {
-                const norm = (p - 0.25) / 0.20;
-                target = 3.5 + norm * 1.54;
+              // 0.00 - 0.28: Completes full entrance scrub to 5.04s
+              // 0.28 - 1.00: Remains parked on grand amphitheatre
+              if (p <= 0.28) {
+                const norm = p / 0.28;
+                target = norm * 5.04;
               } else {
                 target = 5.04;
               }
@@ -418,8 +430,8 @@ export function EventsHeroScroll({
           heroTextRef.current,
           {
             opacity: 0,
-            y: isMobileViewport ? -20 : -35,
-            scale: 0.96,
+            y: isMobileViewport ? -25 : -40,
+            scale: 0.95,
             ease: "power2.inOut",
             duration: 0.12,
           },
@@ -428,32 +440,38 @@ export function EventsHeroScroll({
       }
 
       // ─────────────────────────────────────────────────────────────────────────
-      // PHASE 2: 0.13 - 0.29 Horizon HUD (Clean Bridge between Hero and Cards)
+      // PHASE 2: 0.16 - 0.38 The Arena Text Arrival & Showcase
+      // Video completes scroll scrub -> "THE ARENA" text prominently appears
       // ─────────────────────────────────────────────────────────────────────────
       if (arenaHudRef.current) {
         tl.fromTo(
           arenaHudRef.current,
-          { opacity: 0, y: 20, scale: 0.94 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.07, ease: "power2.out" },
-          0.13
+          { opacity: 0, y: 35, scale: 0.92 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.08, ease: "power2.out" },
+          0.16
         );
         tl.to(
           arenaHudRef.current,
-          { opacity: 0, y: -20, scale: 1.04, duration: 0.07, ease: "power2.in" },
-          0.22
+          { opacity: 0, y: -25, scale: 1.04, duration: 0.07, ease: "power2.in" },
+          0.34
         );
       }
 
       // ─────────────────────────────────────────────────────────────────────────
-      // PHASE 3: 0.31 - 1.00 Arena Spatial Cards Entrance & Solid Dwell
-      // Stays visible and interactive all the way to 1.00, then smoothly unpins!
+      // PHASE 3: 0.42 - 0.90 All Club Cards Appear While Scrolling & Full Dwell
+      // Club cards enter and dwell across ample scroll distance before Our Events
       // ─────────────────────────────────────────────────────────────────────────
       if (cardsContainerRef.current) {
         tl.fromTo(
           cardsContainerRef.current,
-          { opacity: 0, y: isMobileViewport ? 25 : 40, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.12, ease: "power2.out" },
-          0.31
+          { opacity: 0, y: isMobileViewport ? 30 : 50, scale: 0.94, pointerEvents: "none" },
+          { opacity: 1, y: 0, scale: 1, pointerEvents: "auto", duration: 0.12, ease: "power2.out" },
+          0.42
+        );
+        tl.to(
+          cardsContainerRef.current,
+          { opacity: 0, y: isMobileViewport ? -20 : -35, scale: 0.97, pointerEvents: "none", duration: 0.10, ease: "power2.in" },
+          0.90
         );
       }
     }, scrollWrapperRef);
@@ -504,21 +522,21 @@ export function EventsHeroScroll({
             className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-[1]"
             style={{
               backgroundImage: `url('${heroPoster}')`,
-              opacity: scrollProgress < 0.26 ? 1 : 0,
+              opacity: scrollProgress < 0.16 ? 1 : 0,
             }}
           />
           <div
             className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-[1]"
             style={{
               backgroundImage: `url('${midPoster}')`,
-              opacity: scrollProgress >= 0.26 && scrollProgress < 0.45 ? 1 : 0,
+              opacity: scrollProgress >= 0.16 && scrollProgress < 0.28 ? 1 : 0,
             }}
           />
           <div
             className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-[1]"
             style={{
               backgroundImage: `url('${arenaPoster}')`,
-              opacity: scrollProgress >= 0.45 ? 1 : 0,
+              opacity: scrollProgress >= 0.28 ? 1 : 0,
             }}
           />
 
@@ -630,14 +648,14 @@ export function EventsHeroScroll({
 
         {/* =================================================================== */}
         {/* LAYER 3: 5 SPATIAL CLUB CARDS                                       */}
-        {/* Dwells until end of stage, then flows directly into Our Events!     */}
+        {/* Dwells through phase 3, then smoothly transitions into Our Events!  */}
         {/* =================================================================== */}
         <div
           ref={cardsContainerRef}
-          className="absolute inset-0 z-30 opacity-0 pointer-events-auto"
+          className="absolute inset-0 z-30 opacity-0 pointer-events-none"
         >
           <ArenaSpatialCards
-            isVisible={scrollProgress >= 0.28}
+            isVisible={scrollProgress >= 0.38}
             onClubSelect={onClubSelect}
             onCategorySelect={onCategorySelect}
             onExploreEvents={scrollToOurEvents}

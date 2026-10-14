@@ -21,6 +21,16 @@ export default function EventsPage() {
 
   const handleReturnToArena = () => {
     const lenis = (window as any).__lenis;
+    const st = (window as any).ScrollTrigger?.getById?.("events-hero-scroll");
+    if (st) {
+      const arenaScroll = st.start + (st.end - st.start) * 0.65;
+      if (lenis) {
+        lenis.scrollTo(arenaScroll, { duration: 1.0 });
+      } else {
+        window.scrollTo({ top: arenaScroll, behavior: "smooth" });
+      }
+      return;
+    }
     if (lenis) {
       lenis.scrollTo(0, { duration: 1.2 });
     } else {

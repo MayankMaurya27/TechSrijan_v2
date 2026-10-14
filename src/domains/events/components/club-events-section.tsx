@@ -549,30 +549,6 @@ export const ALL_EVENTS: DetailedEvent[] = [
   },
 ];
 
-// ─── Monochrome Streaming Rays ───────────────────────────────────────────────
-function StreamingRays() {
-  return (
-    <div className="s__rays">
-      <div className="a-rays">
-        <svg
-          className="a__scene"
-          width="400"
-          height="1200"
-          viewBox="0 0 400 1200"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M50 0 V1200" stroke="#ffffff" strokeOpacity="0.18" strokeDasharray="8 12" />
-          <path d="M110 0 V1200" stroke="#ffffff" strokeOpacity="0.25" strokeDasharray="14 18" />
-          <path d="M180 0 V1200" stroke="#ffffff" strokeOpacity="0.3" strokeDasharray="6 14" />
-          <path d="M240 0 V1200" stroke="#ffffff" strokeOpacity="0.22" strokeDasharray="20 25" />
-          <path d="M310 0 V1200" stroke="#ffffff" strokeOpacity="0.18" strokeDasharray="10 16" />
-          <path d="M370 0 V1200" stroke="#ffffff" strokeOpacity="0.15" strokeDasharray="12 20" />
-        </svg>
-      </div>
-    </div>
-  );
-}
 
 // ─── 3D Circular Loop Position Calculator ─────────────────────────────────────
 function getCircleCardTransform(
@@ -587,6 +563,7 @@ function getCircleCardTransform(
       zIndex: 50,
       opacity: 1,
       pointerEvents: "auto" as const,
+      visibility: "visible" as const,
       isFront: true,
       filter: "none",
     };
@@ -597,26 +574,80 @@ function getCircleCardTransform(
   if (diff > total / 2) diff -= total;
   if (diff < -total / 2) diff += total;
 
-  // Angular displacement along circular orbit
-  const angleStep = (2 * Math.PI) / total;
-  const phi = diff * angleStep;
+  const absDiff = Math.abs(diff);
+  const sign = Math.sign(diff);
+  const maxVisible = isMobile ? 2 : 3;
 
-  // Well-calibrated orbit radii so cards never get cut off by screen edges
-  const Rx = isMobile ? 120 : 260;
-  const Rz = isMobile ? 140 : 220;
+  // Off-screen / far cards are culled completely to prevent Z-fighting and visual collision
+  if (absDiff > maxVisible) {
+    const farX = sign * (isMobile ? 240 : 600);
+    return {
+      transform: `translate3d(calc(-50% + ${farX}px), -50%, -500px) scale(0.5)`,
+      zIndex: 0,
+      opacity: 0,
+      pointerEvents: "none" as const,
+      visibility: "hidden" as const,
+      isFront: false,
+      filter: "none",
+    };
+  }
 
-  const x = Math.sin(phi) * Rx;
-  const z = (Math.cos(phi) - 1) * Rz; // Front card is at Z = 0, side cards recede to Z < 0
-  const rotateY = -Math.sin(phi) * 26; // Gentle inward angle
-  const cosFactor = Math.cos(phi);
-  const scale = 0.78 + 0.22 * ((cosFactor + 1) / 2);
+  // Active / Front Center Card
+  if (absDiff === 0) {
+    return {
+      transform: "translate3d(-50%, -50%, 0px) rotateY(0deg) scale(1)",
+      zIndex: 50,
+      opacity: 1,
+      pointerEvents: "auto" as const,
+      visibility: "visible" as const,
+      isFront: true,
+      filter: "none",
+    };
+  }
 
-  // ALL cards remain visible in the orbit so no card is cut down
-  const opacity = Math.max(0.35, 0.4 + 0.6 * ((cosFactor + 1) / 2));
-  const zIndex = Math.round(((cosFactor + 1) / 2) * 50) + 1;
-  const isFront = Math.abs(diff) < 0.1;
-  // Disable blur filter on mobile to eliminate GPU render pass overhead and scroll lag
-  const blur = isMobile || isFront ? 0 : Math.min(2.5, Math.round((1 - cosFactor) * 2));
+  // Flanking cards with guaranteed Z-clearance so background cards NEVER penetrate or clip through front cards
+  let x = 0;
+  let z = 0;
+  let rotateY = 0;
+  let scale = 1;
+  let opacity = 1;
+  const zIndex = 50 - Math.round(absDiff * 10);
+
+  if (isMobile) {
+    if (absDiff === 1) {
+      x = sign * 140;
+      z = -120;
+      rotateY = -sign * 18;
+      scale = 0.85;
+      opacity = 0.7;
+    } else if (absDiff === 2) {
+      x = sign * 220;
+      z = -220;
+      rotateY = -sign * 28;
+      scale = 0.72;
+      opacity = 0.35;
+    }
+  } else {
+    if (absDiff === 1) {
+      x = sign * 270;
+      z = -150;
+      rotateY = -sign * 22;
+      scale = 0.88;
+      opacity = 0.75;
+    } else if (absDiff === 2) {
+      x = sign * 440;
+      z = -280;
+      rotateY = -sign * 34;
+      scale = 0.76;
+      opacity = 0.45;
+    } else if (absDiff === 3) {
+      x = sign * 580;
+      z = -400;
+      rotateY = -sign * 44;
+      scale = 0.65;
+      opacity = 0.18;
+    }
+  }
 
   return {
     transform: `translate3d(calc(-50% + ${x.toFixed(1)}px), -50%, ${z.toFixed(
@@ -625,8 +656,9 @@ function getCircleCardTransform(
     zIndex,
     opacity,
     pointerEvents: "auto" as const,
-    isFront,
-    filter: blur > 0 ? `blur(${blur}px)` : "none",
+    visibility: "visible" as const,
+    isFront: false,
+    filter: "none",
   };
 }
 
@@ -720,6 +752,7 @@ function StackCardItem({
         transform: circleStyle.transform,
         zIndex: circleStyle.zIndex,
         opacity: circleStyle.opacity,
+        visibility: circleStyle.visibility,
         pointerEvents: circleStyle.pointerEvents,
         filter: circleStyle.filter,
       }}
@@ -985,9 +1018,9 @@ export function ClubEventsSection({
 
   // Sync with prop when clicked from arena cards
   useEffect(() => {
+    let targetCat: EventCategoryKey | null = null;
     if (propActiveCategoryId) {
-      setActiveCategory(propActiveCategoryId as EventCategoryKey);
-      setActiveIndex(0);
+      targetCat = propActiveCategoryId as EventCategoryKey;
     } else if (propActiveClubId) {
       const clubToCategory: Record<string, EventCategoryKey> = {
         tsc: "CULTURAL",
@@ -996,11 +1029,16 @@ export function ClubEventsSection({
         robotics: "ROBOTICS",
         sae: "MANAGEMENT",
       };
-      const mapped = clubToCategory[propActiveClubId];
-      if (mapped) {
-        setActiveCategory(mapped);
-        setActiveIndex(0);
-      }
+      targetCat = clubToCategory[propActiveClubId] || null;
+    }
+
+    if (targetCat) {
+      setActiveCategory(targetCat);
+      setActiveIndex(0);
+      setTimeout(() => {
+        const activeBtn = tabsRef.current?.querySelector(`[data-catid="${targetCat}"]`);
+        activeBtn?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }, 50);
     }
   }, [propActiveCategoryId, propActiveClubId]);
 
@@ -1132,22 +1170,17 @@ export function ClubEventsSection({
       {/* ── Interactive Cosmic Particle Field (Micro Stardust, Cyber Sparks, Floating Bokeh Orbs & Shockwaves) ── */}
       <InteractiveDossierParticles activeClubGlow={activeCategoryTab.glowColor} />
 
-      {/* Streaming Rays Background SVG (Monochrome) */}
-      <StreamingRays />
-
       {/* Subtle Monochrome Dune Noise / Grid */}
       <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
       {/* ── Section Header ─────────────────────────────────────────────────── */}
       <div className="relative z-10 pt-8 sm:pt-12 pb-4 sm:pb-6 px-4 sm:px-8 text-center border-b border-white/10">
         {/* Dune ornament */}
-        <div className="flex items-center justify-center gap-3 sm:gap-4 mb-2 sm:mb-3">
-          <div className="h-[1px] w-12 sm:w-24 bg-gradient-to-r from-transparent to-white/40" />
+        <div className="flex items-center justify-center mb-2 sm:mb-3">
           <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.4em] text-white/80 uppercase flex items-center gap-1.5">
             <Sparkles className="w-3 h-3 text-white inline" />
             TechSrijan XXVII · Dossier
           </span>
-          <div className="h-[1px] w-12 sm:w-24 bg-gradient-to-l from-transparent to-white/40" />
         </div>
 
         <motion.h2

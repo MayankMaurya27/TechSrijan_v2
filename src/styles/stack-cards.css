@@ -106,6 +106,8 @@
   will-change: opacity, transform, filter;
   color: white;
   cursor: pointer;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @media (max-width: 640px) {

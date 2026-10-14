@@ -377,7 +377,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
           setEventsList(updatedDirectives);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
 
     // 2. Fetch live sponsors and map into Sponsors Showcase
     api.sponsors
@@ -397,7 +397,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
           setSponsorsList(mapped);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // Active sponsor computed
@@ -546,11 +546,10 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                 key={tab.idx}
                 type="button"
                 onClick={() => scrollToMobileCard(tab.idx)}
-                className={`px-3 py-1 rounded-full text-[9px] font-mono tracking-[0.16em] uppercase transition-all duration-300 ${
-                  activeMobileCard === tab.idx
+                className={`px-3 py-1 rounded-full text-[9px] font-mono tracking-[0.16em] uppercase transition-all duration-300 ${activeMobileCard === tab.idx
                     ? `${citadelTheme.mobileHudActiveBg} ${citadelTheme.mobileHudActiveText} font-bold ${citadelTheme.mobileHudActiveShadow}`
                     : "text-[#c4b79b]/70 hover:text-[#F0EAE1]"
-                }`}
+                  }`}
               >
                 0{tab.idx + 1} {tab.label}
               </button>
@@ -765,11 +764,10 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                           key={sp.id}
                           type="button"
                           onClick={() => setActiveSponsorIndex(idx)}
-                          className={`transition-all duration-300 rounded-full ${
-                            idx === activeSponsorIndex
+                          className={`transition-all duration-300 rounded-full ${idx === activeSponsorIndex
                               ? `w-3.5 h-1 ${citadelTheme.dotActive}`
                               : `w-1 h-1 ${citadelTheme.dotInactive}`
-                          }`}
+                            }`}
                           aria-label={`Show ${sp.name}`}
                         />
                       ))}
@@ -870,11 +868,10 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                           key={i}
                           type="button"
                           onClick={() => setActiveQuoteIndex(i)}
-                          className={`h-1 rounded-full transition-all duration-300 ${
-                            i === activeQuoteIndex
+                          className={`h-1 rounded-full transition-all duration-300 ${i === activeQuoteIndex
                               ? `w-3 ${citadelTheme.dotActive}`
                               : `w-1 ${citadelTheme.dotInactive}`
-                          }`}
+                            }`}
                           aria-label={`Go to transmission ${i + 1}`}
                         />
                       ))}
@@ -913,9 +910,8 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
           <div
             className="archive-card pointer-events-auto transition-transform duration-300 absolute left-[19%] lg:left-[21%] xl:left-[23%] top-0 h-full w-[35vw] max-w-[405px] min-w-[290px]"
             style={{
-              transform: `translate3d(0, ${emergeY}px, ${30 + emergeZ}px) rotateY(${
-                1.5 + mouseTilt.y * 0.4
-              }deg) rotateX(${0.5 + mouseTilt.x * 0.4}deg)`,
+              transform: `translate3d(0, ${emergeY}px, ${30 + emergeZ}px) rotateY(${1.5 + mouseTilt.y * 0.4
+                }deg) rotateX(${0.5 + mouseTilt.x * 0.4}deg)`,
               transformStyle: "preserve-3d",
               opacity: frameAlpha,
             }}
@@ -1039,9 +1035,8 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
             <div
               className="archive-card pointer-events-auto transition-transform duration-300 relative flex-1 w-full"
               style={{
-                transform: `translate3d(0, ${emergeY}px, ${24 + emergeZ}px) rotateY(${
-                  -1.5 + mouseTilt.y * 0.4
-                }deg) rotateX(${0.5 + mouseTilt.x * 0.4}deg)`,
+                transform: `translate3d(0, ${emergeY}px, ${24 + emergeZ}px) rotateY(${-1.5 + mouseTilt.y * 0.4
+                  }deg) rotateX(${0.5 + mouseTilt.x * 0.4}deg)`,
                 transformStyle: "preserve-3d",
                 opacity: frameAlpha,
               }}
@@ -1151,11 +1146,10 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                         key={sp.id}
                         type="button"
                         onClick={() => setActiveSponsorIndex(idx)}
-                        className={`transition-all duration-300 rounded-full ${
-                          idx === activeSponsorIndex
+                        className={`transition-all duration-300 rounded-full ${idx === activeSponsorIndex
                             ? `w-4 h-1 ${citadelTheme.dotActive}`
                             : `w-1.5 h-1 ${citadelTheme.dotInactive}`
-                        }`}
+                          }`}
                         aria-label={`Show ${sp.name}`}
                       />
                     ))}
@@ -1184,9 +1178,8 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
             <div
               className="archive-card pointer-events-auto transition-transform duration-300 relative flex-1 w-full"
               style={{
-                transform: `translate3d(0, ${emergeY}px, ${20 + emergeZ}px) rotateY(${
-                  -1.2 + mouseTilt.y * 0.4
-                }deg) rotateX(${-0.5 + mouseTilt.x * 0.4}deg)`,
+                transform: `translate3d(0, ${emergeY}px, ${20 + emergeZ}px) rotateY(${-1.2 + mouseTilt.y * 0.4
+                  }deg) rotateX(${-0.5 + mouseTilt.x * 0.4}deg)`,
                 transformStyle: "preserve-3d",
                 opacity: frameAlpha,
               }}
@@ -1282,11 +1275,10 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
                         key={i}
                         type="button"
                         onClick={() => setActiveQuoteIndex(i)}
-                        className={`h-1 rounded-full transition-all duration-300 ${
-                          i === activeQuoteIndex
+                        className={`h-1 rounded-full transition-all duration-300 ${i === activeQuoteIndex
                             ? `w-3.5 ${citadelTheme.dotActive}`
                             : `w-1 ${citadelTheme.dotInactive}`
-                        }`}
+                          }`}
                         aria-label={`Go to transmission ${i + 1}`}
                       />
                     ))}

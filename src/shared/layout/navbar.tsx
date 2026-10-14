@@ -143,11 +143,10 @@ export function Navbar() {
           - Pure floating overlay (no extra height or width)
           ========================================================= */}
       <header
-        className={`xl:hidden fixed top-2.5 sm:top-3 inset-x-0 z-50 pointer-events-none select-none px-3 sm:px-5 transition-all duration-700 ease-out ${
-          isVisible
+        className={`xl:hidden fixed top-2.5 sm:top-3 inset-x-0 z-50 pointer-events-none select-none px-3 sm:px-5 transition-all duration-700 ease-out ${isVisible
             ? "opacity-100 translate-y-0 visible"
             : "opacity-0 -translate-y-8 invisible"
-        }`}
+          }`}
       >
         <div className="w-full flex items-center justify-between">
           {/* Mobile Left: Hamburger + TechSrijan Logo */}
@@ -222,11 +221,10 @@ export function Navbar() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`py-2 px-3 rounded-lg uppercase font-medium flex items-center justify-between transition-colors ${
-                      isActive
+                    className={`py-2 px-3 rounded-lg uppercase font-medium flex items-center justify-between transition-colors ${isActive
                         ? "bg-[rgba(212,168,67,0.18)] text-[var(--accent-primary,#d4a843)] font-semibold border-l-2 border-[var(--accent-primary,#d4a843)]"
                         : "hover:bg-white/5 hover:text-[var(--accent-primary,#d4a843)]"
-                    }`}
+                      }`}
                   >
                     <span>{item.label}</span>
                     {isActive && <span className="text-[10px] font-mono text-[var(--accent-primary,#d4a843)]">●</span>}
@@ -329,11 +327,10 @@ export function Navbar() {
           - Pure floating overlay (no extra height or width)
           ========================================================= */}
       <header
-        className={`hidden xl:block fixed top-2.5 sm:top-3 inset-x-0 z-50 pointer-events-none select-none px-4 md:px-6 xl:px-8 transition-all duration-700 ease-out ${
-          isVisible
+        className={`hidden xl:block fixed top-2.5 sm:top-3 inset-x-0 z-50 pointer-events-none select-none px-4 md:px-6 xl:px-8 transition-all duration-700 ease-out ${isVisible
             ? "opacity-100 translate-y-0 visible"
             : "opacity-0 -translate-y-8 invisible"
-        }`}
+          }`}
       >
         <div className="w-full relative flex items-center justify-between min-h-[48px] xl:min-h-[52px] gap-3">
           {/* Desktop Left Corner: TechSrijan Logo */}
@@ -419,15 +416,13 @@ export function Navbar() {
                         )}
                         <Link
                           href={item.href}
-                          className={`px-1.5 xl:px-2 py-0.5 uppercase font-medium hover:text-[#d4a843] transition-all duration-300 relative group whitespace-nowrap ${
-                            isActive ? "text-[#d4a843] font-semibold" : ""
-                          }`}
+                          className={`px-1.5 xl:px-2 py-0.5 uppercase font-medium hover:text-[#d4a843] transition-all duration-300 relative group whitespace-nowrap ${isActive ? "text-[#d4a843] font-semibold" : ""
+                            }`}
                         >
                           <span>{item.label}</span>
                           <span
-                            className={`absolute bottom-0 left-0 h-[1.5px] bg-[#d4a843] transition-all duration-300 ${
-                              isActive ? "w-full" : "w-0 group-hover:w-full"
-                            }`}
+                            className={`absolute bottom-0 left-0 h-[1.5px] bg-[#d4a843] transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"
+                              }`}
                           />
                         </Link>
                       </div>
@@ -463,31 +458,29 @@ export function Navbar() {
                 {(user?.role === "ADMIN" ||
                   user?.role === "SUPER_ADMIN" ||
                   user?.role === "BOSS") && (
-                  <Link
-                    href="/admin"
-                    className="clip-mecha-btn px-2.5 xl:px-3 py-1.5 xl:py-2 font-mono text-[9px] xl:text-[9.5px] font-bold uppercase tracking-wider text-amber-400 bg-amber-950/50 border border-amber-500/50 hover:bg-amber-500 hover:text-black transition-all"
-                  >
-                    ADMIN
-                  </Link>
-                )}
+                    <Link
+                      href="/admin"
+                      className="clip-mecha-btn px-2.5 xl:px-3 py-1.5 xl:py-2 font-mono text-[9px] xl:text-[9.5px] font-bold uppercase tracking-wider text-amber-400 bg-amber-950/50 border border-amber-500/50 hover:bg-amber-500 hover:text-black transition-all"
+                    >
+                      ADMIN
+                    </Link>
+                  )}
 
                 {/* Profile Pill with Dropdown Trigger */}
                 <button
                   type="button"
                   onClick={() => setProfileDropdownOpen((prev) => !prev)}
-                  className={`clip-mecha-btn relative px-3 xl:px-3.5 py-1.5 xl:py-2 font-mono font-bold text-[9.5px] xl:text-[10px] tracking-[0.16em] uppercase text-[#f8eed9] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-2 cursor-pointer group ${
-                    profileDropdownOpen || pathname === "/profile"
+                  className={`clip-mecha-btn relative px-3 xl:px-3.5 py-1.5 xl:py-2 font-mono font-bold text-[9.5px] xl:text-[10px] tracking-[0.16em] uppercase text-[#f8eed9] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-2 cursor-pointer group ${profileDropdownOpen || pathname === "/profile"
                       ? "bg-[var(--accent-primary,#d4a843)] text-black shadow-[0_0_20px_var(--accent-primary,#d4a843)] border border-[var(--accent-primary,#d4a843)]"
                       : "bg-gradient-to-r from-[rgba(212,168,67,0.22)] via-[rgba(212,168,67,0.1)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black"
-                  }`}
+                    }`}
                   aria-expanded={profileDropdownOpen}
                 >
                   <div
-                    className={`w-4 h-4 rounded-full border text-[8.5px] flex items-center justify-center font-bold transition-colors ${
-                      profileDropdownOpen || pathname === "/profile"
+                    className={`w-4 h-4 rounded-full border text-[8.5px] flex items-center justify-center font-bold transition-colors ${profileDropdownOpen || pathname === "/profile"
                         ? "bg-black/20 border-black/40 text-black"
                         : "bg-[var(--accent-primary,#d4a843)]/20 border-[var(--accent-primary,#d4a843)] text-[#f8eed9] group-hover:text-black group-hover:border-black/40"
-                    }`}
+                      }`}
                   >
                     {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
                   </div>
@@ -495,9 +488,8 @@ export function Navbar() {
                     {user?.name ? user.name.split(" ")[0] : "PROFILE"}
                   </span>
                   <ChevronDown
-                    className={`w-3 h-3 transition-transform duration-200 ${
-                      profileDropdownOpen ? "rotate-180" : ""
-                    }`}
+                    className={`w-3 h-3 transition-transform duration-200 ${profileDropdownOpen ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -567,36 +559,32 @@ export function Navbar() {
         <nav className="grid grid-cols-4 w-full items-center py-1.5 px-1 rounded-2xl border border-[rgba(212,168,67,0.35)] bg-[#070503]/92 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,0,0,0.9)]">
           <Link
             href="/events"
-            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${
-              pathname === "/events" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
-            }`}
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/events" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+              }`}
           >
             <Calendar className="h-4 w-4" />
             <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium">Events</span>
           </Link>
           <Link
             href="/about"
-            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${
-              pathname === "/about" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
-            }`}
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/about" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+              }`}
           >
             <Compass className="h-4 w-4" />
             <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium">About</span>
           </Link>
           <Link
             href="/sponsors"
-            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${
-              pathname === "/sponsors" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
-            }`}
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/sponsors" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+              }`}
           >
             <Handshake className="h-4 w-4" />
             <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium truncate max-w-[70px]">Sponsors</span>
           </Link>
           <Link
             href="/accommodation"
-            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${
-              pathname === "/accommodation" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
-            }`}
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/accommodation" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+              }`}
           >
             <Hotel className="h-4 w-4" />
             <span className="font-mono text-[8.5px] tracking-[0.06em] uppercase font-medium">Stay</span>

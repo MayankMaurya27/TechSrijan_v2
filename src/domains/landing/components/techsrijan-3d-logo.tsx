@@ -115,7 +115,7 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
     };
   }, [themeContext?.resolvedTheme]);
 
-  const activeConf = LOGO_THEMES["arrakis-day"];
+  const activeConf = LOGO_THEMES[currentTheme] || LOGO_THEMES["arrakis-day"];
 
   // Mouse & interactive 3D physics
   const [tilt, setTilt] = useState({ rotX: 0, rotY: 0, translateZ: 0 });
@@ -468,7 +468,6 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
       style={{
         perspective: "1200px",
       }}
-      title="Interact with the 3D TechSrijan Emblem"
     >
       {/* Background 3D Ember Particles Canvas */}
       <canvas
@@ -514,12 +513,12 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
           })}
 
           {/* Layer 2: Interactive Specular Sheen (Gleams across the metallic bevels in theme colors).
-              Mask is only applied once the sheen is visible, so the server HTML doesn't fetch a (possibly wrong-theme) mask. */}
+              Mask uses the identical high-resolution emblem image so it tracks every bevel and contour with zero blur or ghosting. */}
           <div
             className="absolute inset-0 pointer-events-none overflow-hidden z-20"
             style={{
-              maskImage: specularPos.opacity > 0.001 ? `url(${getOptimizedImageUrl(activeConf.imageSrcWebp, 750, 75)})` : "none",
-              WebkitMaskImage: specularPos.opacity > 0.001 ? `url(${getOptimizedImageUrl(activeConf.imageSrcWebp, 750, 75)})` : "none",
+              maskImage: specularPos.opacity > 0.001 ? `url(${activeConf.imageSrcWebp}?v=tsfinal1)` : "none",
+              WebkitMaskImage: specularPos.opacity > 0.001 ? `url(${activeConf.imageSrcWebp}?v=tsfinal1)` : "none",
               maskSize: "contain",
               WebkitMaskSize: "contain",
               maskRepeat: "no-repeat",

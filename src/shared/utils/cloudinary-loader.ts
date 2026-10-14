@@ -40,7 +40,9 @@ export default function cloudinaryLoader({
     "c_limit",
   ].join(",");
 
-  return `https://res.cloudinary.com/${cloudName}/image/upload/${transforms}/techsrijan/${cleanPath}`;
+  const versionPrefix = cleanPath.startsWith("hero-logo") ? "v1791912581/" : "";
+
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${transforms}/${versionPrefix}techsrijan/${cleanPath}`;
 }
 
 export function getOptimizedImageUrl(src: string, width = 1200, quality = 85): string {

@@ -1002,6 +1002,7 @@ export function ClubEventsSection({
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
+  const stageContainerRef = useRef<HTMLDivElement>(null);
   const lastScrollTimeRef = useRef(0);
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
@@ -1126,30 +1127,64 @@ export function ClubEventsSection({
     setActiveIndex(0);
   };
 
-  // Scroll on cards listener: only rotate when user explicitly scrolls horizontally or holds Shift
-  const handleStageWheel = (e: React.WheelEvent) => {
+  // Native non-passive wheel listener on the card stage:
+  // When scrolling over the 3D cards, advance/rewind cards smoothly without scrolling the background page.
+  useEffect(() => {
+    const el = stageContainerRef.current;
+    if (!el || viewMode !== "stack") return;
+
+    const onWheel = (e: WheelEvent) => {
+      if (filteredEvents.length <= 1) return;
+
+      const primaryDelta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (Math.abs(primaryDelta) < 12) return;
+
+      // Prevent the page from scrolling away while user is interacting with the card deck
+      e.preventDefault();
+
+      const now = Date.now();
+      // Throttle to prevent trackpad momentum / rapid wheel ticks from skipping multiple cards
+      if (now - lastScrollTimeRef.current < 220) return;
+      lastScrollTimeRef.current = now;
+
+      if (primaryDelta > 0) {
+        handleNextCard();
+      } else {
+        handlePrevCard();
+      }
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+    };
+  }, [viewMode, filteredEvents.length, handleNextCard, handlePrevCard]);
+
+  // Keyboard navigation when stage is in viewport
+  useEffect(() => {
     if (viewMode !== "stack" || filteredEvents.length <= 1) return;
 
-    // Only respond to horizontal scrolling or shift-wheel so normal vertical page scrolling is uninterrupted
-    const isHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.5 || e.shiftKey;
-    if (!isHorizontal) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      const el = stageContainerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (!inView) return;
 
-    const now = Date.now();
-    if (now - lastScrollTimeRef.current < 280) return;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        handleNextCard();
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        handlePrevCard();
+      }
+    };
 
-    const delta = e.shiftKey ? e.deltaY : e.deltaX;
-    if (Math.abs(delta) < 25) return;
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [viewMode, filteredEvents.length, handleNextCard, handlePrevCard]);
 
-    lastScrollTimeRef.current = now;
-    if (delta > 0) {
-      handleNextCard();
-    } else {
-      handlePrevCard();
-    }
-  };
-
-  // Touch swipe support: only triggers when swipe is primarily horizontal
-  // Prevents normal vertical page scrolling from accidentally rotating cards
+  // Touch swipe support: handles both horizontal and vertical swipes on the card deck
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartXRef.current = e.touches[0].clientX;
     touchStartYRef.current = e.touches[0].clientY;
@@ -1160,8 +1195,14 @@ export function ClubEventsSection({
     const diffX = e.changedTouches[0].clientX - touchStartXRef.current;
     const diffY = e.changedTouches[0].clientY - touchStartYRef.current;
 
-    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY) * 1.4) {
+    if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY)) {
       if (diffX < 0) {
+        handleNextCard();
+      } else {
+        handlePrevCard();
+      }
+    } else if (Math.abs(diffY) > 40 && Math.abs(diffY) >= Math.abs(diffX)) {
+      if (diffY < 0) {
         handleNextCard();
       } else {
         handlePrevCard();
@@ -1383,8 +1424,8 @@ export function ClubEventsSection({
         ) : viewMode === "stack" ? (
           /* 3D Circular Loop Interactive Stage with Scroll Wheel / Gesture Support */
           <div
-            className="relative py-8 sm:py-12 flex flex-col items-center justify-center"
-            onWheel={handleStageWheel}
+            ref={stageContainerRef}
+            className="relative py-8 sm:py-12 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing select-none"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >

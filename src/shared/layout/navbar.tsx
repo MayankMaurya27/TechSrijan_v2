@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { useTheme, useAuth } from "@/core";
+import { useTheme, useAuth, normalizeTheme } from "@/core";
 import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
 import {
   Menu,
@@ -85,7 +85,7 @@ export function Navbar() {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(true);
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const { user, isAuthenticated, logout } = useAuth();
   const { openAuthModal } = useAuthModal();
 
@@ -119,17 +119,13 @@ export function Navbar() {
     return null;
   }
 
+  const currentCanonical = normalizeTheme(resolvedTheme || theme);
   const currentThemeConfig =
-    THEME_CONFIG[theme as keyof typeof THEME_CONFIG] || THEME_CONFIG["arrakis-day"];
+    THEME_CONFIG[currentCanonical] || THEME_CONFIG["arrakis-day"];
 
   const toggleTheme = () => {
-    const normalized =
-      theme === "arrakis"
-        ? "arrakis-day"
-        : theme === "giedi-prime"
-          ? "geass-moon"
-          : (theme as (typeof THEME_CYCLE)[number]);
-    const currentIndex = THEME_CYCLE.indexOf(normalized);
+    const activeCanonical = normalizeTheme(resolvedTheme || theme);
+    const currentIndex = THEME_CYCLE.indexOf(activeCanonical);
     const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % THEME_CYCLE.length;
     setTheme(THEME_CYCLE[nextIndex]);
   };
@@ -170,7 +166,7 @@ export function Navbar() {
                 alt="TechSrijan Logo"
                 className="h-9 sm:h-9.5 w-auto object-contain brightness-110 group-hover:brightness-125 transition-all duration-300"
                 style={{
-                  filter: "drop-shadow(0 0 6px rgba(245, 158, 11, 0.45))",
+                  filter: `drop-shadow(0 0 6px ${currentThemeConfig.laserStrokeAura}73)`,
                 }}
               />
             </Link>
@@ -181,7 +177,11 @@ export function Navbar() {
             <button
               type="button"
               onClick={toggleTheme}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-[rgba(212,168,67,0.45)] bg-black/85 backdrop-blur-md shadow-[0_0_10px_rgba(0,0,0,0.6)] hover:border-[var(--accent-primary,#d4a843)] transition-all duration-300 active:scale-95 cursor-pointer"
+              className="flex h-8 w-8 items-center justify-center rounded-full border bg-black/85 backdrop-blur-md transition-all duration-300 active:scale-95 cursor-pointer"
+              style={{
+                borderColor: currentThemeConfig.frameStroke,
+                boxShadow: `0 0 10px ${currentThemeConfig.laserStrokeAura}33`,
+              }}
               title={`Active Theme: ${currentThemeConfig.title} (Click to cycle)`}
             >
               <div
@@ -342,15 +342,15 @@ export function Navbar() {
             >
               <div className="relative flex items-center">
                 <div
-                  className="absolute -inset-1 rounded-full blur-md opacity-35 group-hover:opacity-75 transition-opacity duration-500 pointer-events-none"
-                  style={{ backgroundColor: "rgba(245, 158, 11, 0.45)" }}
+                  className="absolute -inset-1 rounded-full blur-md opacity-35 group-hover:opacity-75 transition-all duration-500 pointer-events-none"
+                  style={{ backgroundColor: currentThemeConfig.frameStroke }}
                 />
                 <img
                   src="/images/TS LOGO NEW.png"
                   alt="TechSrijan Logo"
                   className="relative h-9.5 xl:h-10.5 2xl:h-11 w-auto object-contain brightness-110 group-hover:brightness-125 transition-all duration-300"
                   style={{
-                    filter: "drop-shadow(0 0 6px rgba(245, 158, 11, 0.45))",
+                    filter: `drop-shadow(0 0 6px ${currentThemeConfig.laserStrokeAura}73)`,
                   }}
                 />
               </div>
@@ -362,14 +362,14 @@ export function Navbar() {
             <div
               className="group/navbar relative w-fit max-w-full rounded-full border bg-[#0d0906]/92 backdrop-blur-2xl transition-all duration-500 shadow-2xl"
               style={{
-                borderColor: "rgba(245, 158, 11, 0.45)",
-                boxShadow: "0 0 18px rgba(245, 158, 11, 0.2), 0 10px 30px rgba(0,0,0,0.9)",
+                borderColor: currentThemeConfig.frameStroke,
+                boxShadow: `0 0 18px ${currentThemeConfig.laserStrokeAura}33, 0 10px 30px rgba(0,0,0,0.9)`,
               }}
             >
-              {/* Dynamic Normalized Traveling Laser Border (Constant Imperial Gold) */}
+              {/* Dynamic Normalized Traveling Laser Border (Theme Synchronized) */}
               <svg
-                className="absolute -inset-[1px] w-[calc(100%+2px)] h-[calc(100%+2px)] pointer-events-none rounded-full overflow-visible z-0"
-                style={{ filter: "drop-shadow(0 0 10px rgba(245, 158, 11, 0.5)) drop-shadow(0 0 24px rgba(217, 119, 6, 0.35))" }}
+                className="absolute -inset-[1px] w-[calc(100%+2px)] h-[calc(100%+2px)] pointer-events-none rounded-full overflow-visible z-0 transition-[filter] duration-500"
+                style={{ filter: currentThemeConfig.ambientChassisGlow }}
               >
                 <rect
                   x="1"
@@ -380,11 +380,11 @@ export function Navbar() {
                   ry="9999"
                   pathLength="100"
                   fill="none"
-                  stroke="#F59E0B"
+                  stroke={currentThemeConfig.laserStrokeAura}
                   strokeWidth="3"
                   strokeOpacity="0.5"
                   strokeLinecap="round"
-                  className="animate-neon-rect-travel"
+                  className="animate-neon-rect-travel transition-[stroke] duration-500"
                 />
                 <rect
                   x="1"
@@ -395,10 +395,10 @@ export function Navbar() {
                   ry="9999"
                   pathLength="100"
                   fill="none"
-                  stroke="#F59E0B"
+                  stroke={currentThemeConfig.laserStrokeCore}
                   strokeWidth="1.8"
                   strokeLinecap="round"
-                  className="animate-neon-rect-travel"
+                  className="animate-neon-rect-travel transition-[stroke] duration-500"
                 />
               </svg>
 
@@ -410,18 +410,18 @@ export function Navbar() {
                     return (
                       <div key={item.href} className="flex items-center">
                         {index > 0 && (
-                          <span className="text-[rgba(212,168,67,0.25)] select-none text-[9.5px] xl:text-[10.5px] mx-1 xl:mx-1.5">
+                          <span className="text-white/20 select-none text-[9.5px] xl:text-[10.5px] mx-1 xl:mx-1.5">
                             |
                           </span>
                         )}
                         <Link
                           href={item.href}
-                          className={`px-1.5 xl:px-2 py-0.5 uppercase font-medium hover:text-[#d4a843] transition-all duration-300 relative group whitespace-nowrap ${isActive ? "text-[#d4a843] font-semibold" : ""
+                          className={`px-1.5 xl:px-2 py-0.5 uppercase font-medium hover:text-[var(--accent-primary,#d4a843)] transition-all duration-300 relative group whitespace-nowrap ${isActive ? "text-[var(--accent-primary,#d4a843)] font-semibold" : ""
                             }`}
                         >
                           <span>{item.label}</span>
                           <span
-                            className={`absolute bottom-0 left-0 h-[1.5px] bg-[#d4a843] transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"
+                            className={`absolute bottom-0 left-0 h-[1.5px] bg-[var(--accent-primary,#d4a843)] transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"
                               }`}
                           />
                         </Link>
@@ -430,7 +430,7 @@ export function Navbar() {
                   })}
 
                   {/* Separator before Theme Toggle */}
-                  <span className="text-[rgba(212,168,67,0.25)] select-none text-[9.5px] xl:text-[10.5px] mx-1 xl:mx-1.5">
+                  <span className="text-white/20 select-none text-[9.5px] xl:text-[10.5px] mx-1 xl:mx-1.5">
                     |
                   </span>
 
@@ -438,7 +438,11 @@ export function Navbar() {
                   <button
                     type="button"
                     onClick={toggleTheme}
-                    className="flex items-center justify-center h-6 w-6 xl:h-6.5 xl:w-6.5 rounded-full border border-[rgba(212,168,67,0.45)] bg-black/75 shadow-[0_0_12px_rgba(212,168,67,0.25)] hover:border-[var(--accent-primary,#d4a843)] hover:scale-110 transition-all duration-300 active:scale-95 cursor-pointer flex-shrink-0 ml-1.5 xl:ml-2"
+                    className="flex items-center justify-center h-6 w-6 xl:h-6.5 xl:w-6.5 rounded-full border bg-black/75 hover:border-[var(--accent-primary,#d4a843)] hover:scale-110 transition-all duration-300 active:scale-95 cursor-pointer flex-shrink-0 ml-1.5 xl:ml-2"
+                    style={{
+                      borderColor: currentThemeConfig.frameStroke,
+                      boxShadow: `0 0 12px ${currentThemeConfig.laserStrokeAura}33`,
+                    }}
                     title={`Active Theme: ${currentThemeConfig.title} (Click to cycle)`}
                     aria-label={`Cycle Theme: Currently ${currentThemeConfig.label}`}
                   >

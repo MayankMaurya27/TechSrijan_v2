@@ -16,9 +16,41 @@ import {
   ChevronDown,
   HelpCircle,
 } from "lucide-react";
-import { usePageTheme, type PageThemeConfig } from "@/core";
+import { usePageTheme, type PageThemeConfig, type CanonicalTheme } from "@/core";
 import { api } from "@/lib/api";
 import { FestFooter } from "@/shared/layout/fest-footer";
+
+const CONTACT_BTN_THEMES: Record<
+  CanonicalTheme,
+  {
+    bg: string;
+    border: string;
+    shadow: string;
+    text: string;
+  }
+> = {
+  "arrakis-day": {
+    bg: "linear-gradient(135deg, #E2B755 0%, #D4A843 50%, #9E6B12 100%)",
+    border: "rgba(243, 201, 106, 0.75)",
+    shadow:
+      "0 0 25px rgba(212, 168, 67, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 4px 14px rgba(0, 0, 0, 0.5)",
+    text: "text-[#0a0702] font-black",
+  },
+  "geass-moon": {
+    bg: "linear-gradient(135deg, #FF2E36 0%, #D4141C 50%, #8A070B 100%)",
+    border: "rgba(255, 82, 89, 0.75)",
+    shadow:
+      "0 0 25px rgba(255, 30, 39, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 4px 14px rgba(0, 0, 0, 0.5)",
+    text: "text-white font-black drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]",
+  },
+  "krelln-night": {
+    bg: "linear-gradient(135deg, #64748B 0%, #475569 50%, #1E293B 100%)",
+    border: "rgba(203, 213, 225, 0.65)",
+    shadow:
+      "0 0 25px rgba(148, 163, 184, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 4px 14px rgba(0, 0, 0, 0.5)",
+    text: "text-white font-black drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]",
+  },
+};
 
 /**
  * Full-Frame Atmospheric Canvas Animation (Dynamic Moon Embers & Ambient Light Blooms)
@@ -160,6 +192,8 @@ const FAQS: FaqItem[] = [
 
 export function ContactView() {
   const pageTheme = usePageTheme();
+  const currentTheme: CanonicalTheme = pageTheme.id || "arrakis-day";
+  const btnTheme = CONTACT_BTN_THEMES[currentTheme] || CONTACT_BTN_THEMES["arrakis-day"];
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -337,25 +371,31 @@ export function ContactView() {
               <button
                 type="button"
                 onClick={scrollToForm}
-                className={`inline-flex items-center gap-2.5 rounded-lg px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider ${pageTheme.btnText} hover:scale-105 active:scale-95 transition-all cursor-pointer`}
+                className={`group relative inline-flex items-center gap-2.5 rounded-lg px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider ${btnTheme.text} hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer overflow-hidden border`}
                 style={{
-                  backgroundImage: `linear-gradient(to right, ${pageTheme.headingTo}, ${pageTheme.accentBright}, ${pageTheme.headingTo})`,
-                  boxShadow: `0 0 30px ${pageTheme.accentGlow}`,
+                  background: btnTheme.bg,
+                  borderColor: btnTheme.border,
+                  boxShadow: btnTheme.shadow,
                 }}
               >
-                <PenLine className="h-3.5 w-3.5" />
+                {/* Subtle reflective light sheen on hover */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out"
+                />
+                <PenLine className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-rotate-12" />
                 <span>SEND A MESSAGE</span>
-                <ArrowUpRight className="h-4 w-4" />
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
 
               <a
                 href="mailto:techsrijan@mmmut.ac.in"
-                className="inline-flex items-center gap-2 rounded-lg px-6 py-3.5 text-xs font-geist font-medium text-white bg-black/60 hover:bg-black/80 transition-colors backdrop-blur-md"
+                className="group inline-flex items-center gap-2.5 rounded-lg px-6 py-3.5 text-xs font-montserrat font-bold tracking-wider uppercase text-zinc-300 hover:text-white bg-black/60 hover:bg-black/85 transition-all duration-300 backdrop-blur-md hover:scale-[1.02] active:scale-[0.98] border shadow-[0_4px_16px_rgba(0,0,0,0.4)]"
                 style={{
-                  border: `1px solid ${pageTheme.border}`,
+                  borderColor: pageTheme.border,
                 }}
               >
-                <Mail className="h-3.5 w-3.5" style={{ color: pageTheme.accent }} />
+                <Mail className="h-3.5 w-3.5 transition-transform duration-200 group-hover:scale-110" style={{ color: pageTheme.accent }} />
                 <span>techsrijan@mmmut.ac.in</span>
               </a>
             </div>
@@ -598,12 +638,18 @@ export function ContactView() {
                     <button
                       type="submit"
                       disabled={formStatus === "sending"}
-                      className={`inline-flex items-center gap-2.5 rounded-lg px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider ${pageTheme.btnText} hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-60`}
+                      className={`group relative inline-flex items-center gap-2.5 rounded-lg px-8 py-3.5 text-xs font-montserrat font-bold uppercase tracking-wider ${btnTheme.text} hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer disabled:opacity-60 overflow-hidden border`}
                       style={{
-                        backgroundImage: `linear-gradient(to right, ${pageTheme.headingTo}, ${pageTheme.accentBright}, ${pageTheme.headingTo})`,
-                        boxShadow: `0 0 30px ${pageTheme.accentGlow}`,
+                        background: btnTheme.bg,
+                        borderColor: btnTheme.border,
+                        boxShadow: btnTheme.shadow,
                       }}
                     >
+                      {/* Subtle reflective light sheen on hover */}
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out"
+                      />
                       {formStatus === "sending" ? (
                         <>
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -611,9 +657,9 @@ export function ContactView() {
                         </>
                       ) : (
                         <>
-                          <Send className="h-3.5 w-3.5" />
+                          <Send className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
                           <span>SEND MESSAGE</span>
-                          <ArrowUpRight className="h-4 w-4" />
+                          <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                         </>
                       )}
                     </button>
@@ -715,16 +761,17 @@ export function ContactView() {
                       setActiveFaqCategory(cat);
                       setOpenFaqIndex(null);
                     }}
-                    className={`px-4 sm:px-5 py-2 rounded-full text-xs font-bebas tracking-[0.2em] uppercase transition-all duration-300 cursor-pointer ${
+                    className={`relative px-4 sm:px-5 py-2 rounded-full text-xs font-montserrat font-bold tracking-[0.16em] uppercase transition-all duration-300 cursor-pointer border overflow-hidden ${
                       isActive
-                        ? `${pageTheme.btnText} font-bold shadow-lg scale-105`
-                        : "bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 border border-white/10"
+                        ? `${btnTheme.text} shadow-lg scale-105`
+                        : "bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 hover:text-white border-white/10 hover:border-white/25 hover:scale-[1.02]"
                     }`}
                     style={
                       isActive
                         ? {
-                            backgroundImage: `linear-gradient(to right, ${pageTheme.headingTo}, ${pageTheme.accentBright}, ${pageTheme.headingTo})`,
-                            boxShadow: `0 0 25px ${pageTheme.accentGlow}`,
+                            background: btnTheme.bg,
+                            borderColor: btnTheme.border,
+                            boxShadow: btnTheme.shadow,
                           }
                         : {}
                     }

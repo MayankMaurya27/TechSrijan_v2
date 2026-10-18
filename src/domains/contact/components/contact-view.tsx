@@ -322,22 +322,6 @@ export function ContactView() {
         {/* Foreground Content */}
         <div className="relative z-10 w-full max-w-[1720px] mx-auto px-6 sm:px-12 lg:px-20 py-20 lg:py-28">
           <div className="max-w-2xl space-y-6 sm:space-y-8">
-            {/* Eyebrow Label with Compass Star & Trailing Line */}
-            <div className="flex items-center gap-3">
-              <span style={{ color: pageTheme.accent }} className="text-base leading-none transition-colors duration-300">✦</span>
-              <span
-                style={{ color: pageTheme.accent }}
-                className="font-bebas text-base sm:text-lg tracking-[0.25em] uppercase transition-colors duration-300"
-              >
-                CONTACT US
-              </span>
-              <div
-                className="h-px w-28 transition-all duration-300"
-                style={{
-                  background: `linear-gradient(to right, ${pageTheme.accent}, transparent)`,
-                }}
-              />
-            </div>
 
             {/* Grand Headline: GET IN TOUCH */}
             <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-montserrat font-black tracking-tight text-white leading-[0.92]">
@@ -407,8 +391,6 @@ export function ContactView() {
               <span>IDEAS</span>
               <span style={{ color: pageTheme.accent }}>✦</span>
               <span>IMPACT</span>
-              <span className="hidden sm:inline" style={{ color: pageTheme.accent }}>✦</span>
-              <span className="hidden sm:inline">MMMUT GORAKHPUR</span>
             </div>
           </div>
         </div>
@@ -446,22 +428,6 @@ export function ContactView() {
             <div className="lg:col-span-7 space-y-6 sm:space-y-8">
               {/* Form Section Eyebrow */}
               <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <span style={{ color: pageTheme.accent }} className="text-base leading-none transition-colors duration-300">✦</span>
-                  <span
-                    style={{ color: pageTheme.accent }}
-                    className="font-bebas text-base sm:text-lg tracking-[0.25em] uppercase transition-colors duration-300"
-                  >
-                    CONTACT US
-                  </span>
-                  <div
-                    className="h-px w-28 transition-all duration-300"
-                    style={{
-                      background: `linear-gradient(to right, ${pageTheme.accent}, transparent)`,
-                    }}
-                  />
-                </div>
-
                 <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-montserrat font-black tracking-tight text-white leading-tight">
                   <span
                     className="text-transparent bg-clip-text transition-all duration-300"
@@ -477,24 +443,6 @@ export function ContactView() {
                 <p className="text-zinc-300 text-base sm:text-lg font-chancery max-w-lg">
                   Fill out the form below and we&apos;ll get back to you as soon as possible.
                 </p>
-
-                {/* Mobile Inline Slogan Ribbon: Compact between header and form with zero extra dead space */}
-                <div className="lg:hidden flex items-center justify-between py-2.5 px-3.5 rounded-xl border border-white/10 bg-black/60 backdrop-blur-md shadow-md">
-                  <div
-                    className="flex items-center gap-1.5 sm:gap-2 font-bebas text-xs sm:text-sm tracking-[0.2em] uppercase"
-                    style={{ color: pageTheme.accent }}
-                  >
-                    <span>IDEAS</span>
-                    <span>•</span>
-                    <span>PEOPLE</span>
-                    <span>•</span>
-                    <span>IMPACT</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 font-bebas text-xs sm:text-sm tracking-wider text-white">
-                    <span>LET&apos;S BUILD TOGETHER</span>
-                    <span style={{ color: pageTheme.accent }}>✦</span>
-                  </div>
-                </div>
               </div>
 
               {/* HUD Form Box with Dynamic Moon Border & Glowing Accents */}
@@ -685,20 +633,6 @@ export function ContactView() {
               </div>
             </div>
 
-            {/* Right Column: Floating Slogan in Front of the Citadel Art (Desktop only, hidden on mobile so it doesn't take extra space) */}
-            <div className="hidden lg:flex lg:col-span-5 flex-col justify-end items-end text-right space-y-4 pt-0">
-              <div
-                className="space-y-1.5 font-bebas text-lg sm:text-2xl tracking-[0.25em] uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] transition-colors duration-300"
-                style={{ color: pageTheme.accent }}
-              >
-                <div>IDEAS</div>
-                <div>PEOPLE</div>
-                <div>IMPACT</div>
-                <div className="text-white pt-2">LET&apos;S BUILD</div>
-                <div className="text-white">TOGETHER.</div>
-              </div>
-              <div style={{ color: pageTheme.accent }} className="text-lg transition-colors duration-300">✦</div>
-            </div>
           </div>
         </div>
       </section>

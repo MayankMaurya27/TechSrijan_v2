@@ -123,22 +123,6 @@ export function AmbassadorApply() {
             className="lg:col-span-7 flex flex-col justify-between"
           >
             <div>
-              {/* Overline with Theme Dot */}
-              <div className="flex items-center gap-2 mb-3">
-                <span className="font-mono text-xs sm:text-[13px] tracking-[0.25em] uppercase text-neutral-400 font-medium">
-                  TECHSRIJAN &apos;27
-                </span>
-                <span
-                  className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                  style={{
-                    backgroundColor: t.accent,
-                    boxShadow: `0 0 8px ${t.accent}`,
-                  }}
-                />
-                <span className="font-mono text-xs sm:text-[13px] tracking-[0.25em] uppercase text-neutral-400 font-medium">
-                  MMMUT GORAKHPUR
-                </span>
-              </div>
 
               {/* Massive Industrial Headline */}
               <h2 className="font-bebas text-6xl sm:text-7xl lg:text-[5.5rem] xl:text-[6.8rem] leading-[0.88] tracking-wider uppercase">
@@ -166,8 +150,6 @@ export function AmbassadorApply() {
 
               {/* Mission Statement Paragraph */}
               <p className="text-neutral-300 text-sm sm:text-base font-sans font-light leading-relaxed max-w-md">
-                Applications are open across Gorakhpur and Eastern UP.
-                <br className="hidden sm:block" />
                 Represent your campus at Techsrijan &apos;27.
               </p>
 

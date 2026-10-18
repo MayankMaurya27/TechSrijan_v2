@@ -362,26 +362,6 @@ export function AmbassadorHero() {
           }
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
         >
-          {/* Top Line: TECHSRIJAN'27 — MMMUT GORAKHPUR */}
-          <div className="flex items-center gap-2 mb-2 xl:mb-3">
-            <span
-              className="font-mono text-[9px] xl:text-[10px] tracking-[0.26em] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] whitespace-nowrap transition-colors duration-500"
-              style={{ color: t.heroTopDash }}
-            >
-              TECHSRIJAN&apos;27
-            </span>
-            <span className="font-mono text-xs opacity-60" style={{ color: t.heroTopDash }}>—</span>
-            <span
-              className="font-mono text-[9px] xl:text-[10px] tracking-[0.26em] uppercase font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] whitespace-nowrap transition-colors duration-500"
-              style={{ color: t.heroTopDash }}
-            >
-              MMMUT GORAKHPUR
-            </span>
-            <div
-              className="h-[1px] w-12 xl:w-20 ml-1 transition-all duration-500"
-              style={{ background: `linear-gradient(to right, ${t.heroTopDash}B3, transparent)` }}
-            />
-          </div>
 
           {/* Main Title: CAMPUS AMBASSADOR (Montserrat Heading) */}
           <h1 className="font-montserrat text-[clamp(2.4rem,3.4vw,4.1rem)] font-black leading-[0.94] tracking-tight whitespace-nowrap">

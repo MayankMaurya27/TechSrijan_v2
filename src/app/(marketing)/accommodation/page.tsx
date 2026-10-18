@@ -1030,7 +1030,7 @@ export default function AccommodationPage() {
           <div
             ref={formCardRef}
             data-lenis-prevent
-            className="relative w-full max-w-3xl max-h-[82vh] sm:max-h-[88vh] overflow-y-auto rounded-lg bg-[#07080b]/95 backdrop-blur-2xl border border-white/[0.09] p-4 sm:p-8 pb-28 sm:pb-8 shadow-[0_25px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.06)]"
+            className="relative w-full max-w-3xl max-h-[85vh] sm:max-h-[88vh] overflow-y-auto rounded-lg bg-[#07080b]/95 backdrop-blur-2xl border border-white/[0.09] p-4 sm:p-8 pb-8 shadow-[0_25px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.06)]"
           >
             {/* Mobile Sheet Pull-Down Grab Handle (quick return) */}
             <div className="flex sm:hidden flex-col items-center gap-1 pb-2 -mt-1">
@@ -1212,33 +1212,25 @@ export default function AccommodationPage() {
                 {/* Form Header */}
                 <div className="relative pb-4 sm:pb-5 border-b border-white/[0.07] flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4">
                   <div className="space-y-1.5 flex-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.08]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#E61924] shadow-[0_0_6px_#E61924]" />
-                        <span className="font-bebas text-xs sm:text-sm tracking-wider uppercase text-[#C4BEB2] font-medium">
-                          RESIDENCE DIRECTIVE · STEP 01
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5 sm:gap-2">
-                        <button
-                          type="button"
-                          onClick={() => scrollToStageProgress(0.58)}
-                          className="inline-flex items-center gap-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-300 hover:text-white px-2 sm:px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 transition-colors cursor-pointer active:scale-95"
-                          title="Return to Pass Specifications"
-                        >
-                          <ArrowLeft className="w-3 h-3 text-[#E61924]" />
-                          <span>Specs</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => scrollToStageProgress(0)}
-                          className="inline-flex items-center gap-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-300 hover:text-white px-2 sm:px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 transition-colors cursor-pointer active:scale-95"
-                          title="Scroll to Top Overview"
-                        >
-                          <ArrowUp className="w-3 h-3 text-[#E61924]" />
-                          <span>Overview</span>
-                        </button>
-                      </div>
+                    <div className="flex items-center justify-end gap-1.5 sm:gap-2">
+                      <button
+                        type="button"
+                        onClick={() => scrollToStageProgress(0.58)}
+                        className="inline-flex items-center gap-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-300 hover:text-white px-2 sm:px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 transition-colors cursor-pointer active:scale-95"
+                        title="Return to Pass Specifications"
+                      >
+                        <ArrowLeft className="w-3 h-3 text-[#E61924]" />
+                        <span>Specs</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => scrollToStageProgress(0)}
+                        className="inline-flex items-center gap-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-300 hover:text-white px-2 sm:px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 transition-colors cursor-pointer active:scale-95"
+                        title="Scroll to Top Overview"
+                      >
+                        <ArrowUp className="w-3 h-3 text-[#E61924]" />
+                        <span>Overview</span>
+                      </button>
                     </div>
                     <h2 className="font-montserrat font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-tight text-[#F5F2EB] leading-none pt-1">
                       RESERVE YOUR STAY
@@ -1246,12 +1238,6 @@ export default function AccommodationPage() {
                     <p className="font-geist text-xs sm:text-[13px] text-[#A8A49C] tracking-wide">
                       Submit your details to begin your accommodation request.
                     </p>
-                  </div>
-
-                  {/* Micro Metadata on Top Right */}
-                  <div className="hidden sm:flex flex-col items-end text-right font-mono text-[9px] tracking-[0.22em] text-neutral-500 space-y-0.5">
-                    <span className="text-[#E61924] font-medium">STATUS: ALLOCATIONS ACTIVE</span>
-                    <span>DIRECTIVE // RES-27</span>
                   </div>
                 </div>
 
@@ -1535,11 +1521,7 @@ export default function AccommodationPage() {
                 </div>
 
                 {/* Row 6: Submit Bar */}
-                <div className="pt-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-2 font-mono text-[10px] text-neutral-400 uppercase tracking-widest">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#E61924] shadow-[0_0_6px_#E61924]" />
-                    <span>PRIORITY VERIFICATION APPLIED</span>
-                  </div>
+                <div className="pt-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-end gap-4">
 
                   <button
                     type="submit"

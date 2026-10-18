@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useId } from "react";
-import { useTheme, normalizeTheme, type CanonicalTheme } from "@/core";
+import type { CanonicalTheme } from "@/core";
+import { useActiveCanonicalTheme } from "../hooks/use-active-theme";
 
 interface Waypoint {
   id: string;
@@ -439,54 +440,29 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
   const uniqueId = useId().replace(/:/g, "");
 
   // Dynamic Theme Synchronization with 0ms reactivity
-  const themeContext = useTheme();
-  const [currentTheme, setCurrentTheme] = useState<CanonicalTheme>(() =>
-    normalizeTheme(themeContext?.resolvedTheme)
-  );
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const resolveCurrent = (): CanonicalTheme => {
-      const domTheme = document.documentElement.getAttribute("data-theme");
-      return normalizeTheme(domTheme || themeContext?.resolvedTheme);
-    };
-
-    const apply = () => {
-      setCurrentTheme(resolveCurrent());
-    };
-
-    apply();
-
-    const observer = new MutationObserver(apply);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
-
-    window.addEventListener("techsrijan-theme-change", apply);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("techsrijan-theme-change", apply);
-    };
-  }, [themeContext?.resolvedTheme]);
-
+  const currentTheme = useActiveCanonicalTheme();
   const totemTheme = TOTEM_THEMES[currentTheme] || TOTEM_THEMES["arrakis-day"];
 
-  // Mouse parallax tilt for 3D depth matching the Citadel monoliths
+  // RAF-throttled mouse parallax tilt for 3D depth matching the Citadel monoliths
   useEffect(() => {
+    let rafId = 0;
     const handlePointerMove = (e: PointerEvent) => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      if (w > 0 && h > 0) {
-        const rotY = (e.clientX / w - 0.5) * 4.5;
-        const rotX = -(e.clientY / h - 0.5) * 3.2;
-        setMouseTilt({ x: rotX, y: rotY });
-      }
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        if (w > 0 && h > 0) {
+          const rotY = (e.clientX / w - 0.5) * 4.5;
+          const rotX = -(e.clientY / h - 0.5) * 3.2;
+          setMouseTilt({ x: rotX, y: rotY });
+        }
+      });
     };
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    return () => window.removeEventListener("pointermove", handlePointerMove);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("pointermove", handlePointerMove);
+    };
   }, []);
 
   // Synchronized emergence with Citadel Archive

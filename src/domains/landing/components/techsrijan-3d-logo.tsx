@@ -4,7 +4,8 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 // three.js and gsap are imported dynamically (after load/idle, or on interaction) to keep them off the critical path
 import type * as THREE from "three";
-import { useTheme, normalizeTheme, whenIdleAfterLoad, type CanonicalTheme } from "@/core";
+import { whenIdleAfterLoad, type CanonicalTheme } from "@/core";
+import { useActiveCanonicalTheme } from "../hooks/use-active-theme";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
 interface TechSrijan3DLogoProps {
@@ -82,39 +83,7 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
   scrollProgressRef.current = scrollProgress;
 
   // Synchronize active theme dynamically with zero latency
-  const themeContext = useTheme();
-  const [currentTheme, setCurrentTheme] = useState<CanonicalTheme>(() =>
-    normalizeTheme(themeContext?.resolvedTheme)
-  );
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const resolveCurrent = (): CanonicalTheme => {
-      const domTheme = document.documentElement.getAttribute("data-theme");
-      return normalizeTheme(domTheme || themeContext?.resolvedTheme);
-    };
-
-    const apply = () => {
-      setCurrentTheme(resolveCurrent());
-    };
-
-    apply();
-
-    const observer = new MutationObserver(apply);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
-
-    window.addEventListener("techsrijan-theme-change", apply);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("techsrijan-theme-change", apply);
-    };
-  }, [themeContext?.resolvedTheme]);
-
+  const currentTheme = useActiveCanonicalTheme();
   const activeConf = LOGO_THEMES[currentTheme] || LOGO_THEMES["arrakis-day"];
 
   // Mouse & interactive 3D physics

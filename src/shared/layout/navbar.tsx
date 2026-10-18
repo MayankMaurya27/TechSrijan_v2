@@ -91,6 +91,26 @@ export function Navbar() {
 
   const hasProfile = isAuthenticated || Boolean(user);
 
+  // Exact border pill curvature tracking to keep traveling laser lines strictly on the border
+  const pillRef = useRef<HTMLDivElement>(null);
+  const [pillRadius, setPillRadius] = useState(26);
+
+  useEffect(() => {
+    const el = pillRef.current;
+    if (!el) return;
+    const updateRadius = () => {
+      if (el.offsetHeight > 0) {
+        setPillRadius(el.offsetHeight / 2);
+      }
+    };
+    updateRadius();
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(updateRadius);
+      ro.observe(el);
+      return () => ro.disconnect();
+    }
+  }, []);
+
   useEffect(() => {
     setIsVisible(true);
     setMobileMenuOpen(false);
@@ -360,13 +380,14 @@ export function Navbar() {
           {/* Desktop Center: Anti-Collision Flexible Pill */}
           <div className="flex-1 flex items-center justify-center min-w-0 pointer-events-auto z-10 mx-auto px-2">
             <div
+              ref={pillRef}
               className="group/navbar relative w-fit max-w-full rounded-full border bg-[#0d0906]/92 backdrop-blur-2xl transition-all duration-500 shadow-2xl"
               style={{
                 borderColor: currentThemeConfig.frameStroke,
                 boxShadow: `0 0 18px ${currentThemeConfig.laserStrokeAura}33, 0 10px 30px rgba(0,0,0,0.9)`,
               }}
             >
-              {/* Dynamic Normalized Traveling Laser Border (Theme Synchronized) */}
+              {/* Dynamic Normalized Traveling Laser Border (Strictly Bound to Pill Perimeter) */}
               <svg
                 className="absolute -inset-[1px] w-[calc(100%+2px)] h-[calc(100%+2px)] pointer-events-none rounded-full overflow-visible z-0 transition-[filter] duration-500"
                 style={{ filter: currentThemeConfig.ambientChassisGlow }}
@@ -376,8 +397,8 @@ export function Navbar() {
                   y="1"
                   width="calc(100% - 2px)"
                   height="calc(100% - 2px)"
-                  rx="9999"
-                  ry="9999"
+                  rx={pillRadius}
+                  ry={pillRadius}
                   pathLength="100"
                   fill="none"
                   stroke={currentThemeConfig.laserStrokeAura}
@@ -391,8 +412,8 @@ export function Navbar() {
                   y="1"
                   width="calc(100% - 2px)"
                   height="calc(100% - 2px)"
-                  rx="9999"
-                  ry="9999"
+                  rx={pillRadius}
+                  ry={pillRadius}
                   pathLength="100"
                   fill="none"
                   stroke={currentThemeConfig.laserStrokeCore}

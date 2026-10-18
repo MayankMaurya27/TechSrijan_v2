@@ -612,12 +612,6 @@ export function EventsHeroScroll({
           className="absolute inset-0 z-20 flex items-center px-5 sm:px-12 md:px-16 lg:px-24 pointer-events-none"
         >
           <div className="max-w-[90vw] sm:max-w-xl text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-white/20 backdrop-blur-md mb-3 sm:mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              <span className="font-mono text-[8px] sm:text-[9.5px] tracking-[0.25em] uppercase text-white/80">
-                TECHSRIJAN &apos;27 // THE ARENA
-              </span>
-            </div>
             <h1 className="font-montserrat tracking-tight text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white uppercase drop-shadow-[0_4px_30px_rgba(0,0,0,1)]">
               EVENTS<span className="sr-only"> at TechSrijan&apos;27, the techfest of MMMUT Gorakhpur</span>
             </h1>

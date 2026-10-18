@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { ChevronRight, ChevronLeft, RotateCcw, LayoutGrid, Orbit, Sparkles, ArrowUp } from "lucide-react";
+import { ChevronRight, ChevronLeft, RotateCcw, LayoutGrid, Orbit, ArrowUp } from "lucide-react";
 import type { ClubId } from "./arena-spatial-cards";
 import { CLUBS } from "./arena-spatial-cards";
 import { EventDetailModal } from "./event-detail-modal";
@@ -1229,13 +1229,6 @@ export function ClubEventsSection({
 
       {/* ── Section Header ─────────────────────────────────────────────────── */}
       <div className="relative z-10 pt-14 sm:pt-20 pb-5 sm:pb-7 px-4 sm:px-8 text-center border-b border-white/10">
-        {/* Dune ornament */}
-        <div className="flex items-center justify-center mb-2 sm:mb-3">
-          <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.4em] text-white/80 uppercase flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3 text-white inline" />
-            TechSrijan XXVII · Dossier
-          </span>
-        </div>
 
         <motion.h2
           initial={{ opacity: 0, y: 20 }}

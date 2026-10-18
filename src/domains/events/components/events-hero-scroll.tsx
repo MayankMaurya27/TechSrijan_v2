@@ -634,17 +634,11 @@ export function EventsHeroScroll({
           ref={arenaHudRef}
           className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none px-4 text-center opacity-0"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/70 border border-white/20 backdrop-blur-md mb-2.5 shadow-[0_0_20px_rgba(0,0,0,0.8)]">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-            <span className="font-mono text-[8.5px] sm:text-[10px] tracking-[0.3em] uppercase text-white/90">
-              CRUCIBLE MATRIX // ONLINE
-            </span>
-          </div>
           <h2 className="font-montserrat tracking-tight text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white uppercase drop-shadow-[0_4px_35px_rgba(0,0,0,1)]">
             THE ARENA
           </h2>
           <p className="mt-2 sm:mt-3 font-mono text-[9px] sm:text-xs md:text-sm tracking-[0.25em] text-neutral-300 uppercase max-w-lg">
-            5 CHAPTERS · 23 CHAMPIONSHIP EVENTS
+            5 CHAPTERS · CHAMPIONSHIP ARENA
           </p>
           <div className="mt-3.5 flex items-center gap-2">
             <div className="h-[1px] w-6 sm:w-16 bg-gradient-to-r from-transparent to-white/50" />

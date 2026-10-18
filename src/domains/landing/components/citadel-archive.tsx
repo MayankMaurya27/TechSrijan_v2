@@ -396,7 +396,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
         /* DESKTOP EXPERIENCE: MONUMENTAL BALANCED 3D ARCHIVE STAGE      */
         /* ───────────────────────────────────────────────────────────── */
         <div
-          className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-center gap-6 lg:gap-10 xl:gap-14 pointer-events-none h-[76vh] max-h-[580px] min-h-[460px] translate-y-6 sm:translate-y-8"
+          className="relative w-full max-w-7xl xl:max-w-[1440px] 2xl:max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 lg:pr-14 xl:pr-20 2xl:pr-24 flex items-center justify-center gap-5 lg:gap-8 xl:gap-10 pointer-events-none h-[76vh] max-h-[580px] min-h-[460px] translate-y-6 sm:translate-y-8"
           style={{ transformStyle: "preserve-3d" }}
         >
           {/* ═════════════════════════════════════════════════════════════ */}
@@ -404,9 +404,9 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
           {/* ═════════════════════════════════════════════════════════════ */}
           <ArchiveFrameCard
             theme={citadelTheme}
-            className="h-full w-[35vw] max-w-[405px] min-w-[290px]"
+            className="h-full w-[46vw] lg:w-[48vw] xl:w-[50vw] max-w-[540px] lg:max-w-[590px] xl:max-w-[650px] 2xl:max-w-[680px] min-w-[320px]"
             contentTranslateZ={24}
-            paddingClassName="pt-[21%] pb-[19%] px-[15%]"
+            paddingClassName="pt-[16%] lg:pt-[15%] xl:pt-[14%] pb-[14%] lg:pb-[13%] xl:pb-[12%] px-[12%] lg:px-[11%] xl:px-[10%]"
             style={{
               transform: `translate3d(0, ${emergeY}px, ${30 + emergeZ}px) rotateY(${
                 1.5 + mouseTilt.y * 0.4

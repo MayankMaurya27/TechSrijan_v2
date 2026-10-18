@@ -55,17 +55,17 @@ export function CardEvents({
               onMouseEnter={() => onHoverEvent?.(ev.id)}
               onMouseLeave={() => onHoverEvent?.(null)}
               className={`group relative flex items-center justify-between rounded border transition-all duration-200 ${
-                isMobile ? "py-1 px-2" : "py-2 px-2.5"
+                isMobile ? "py-1 px-2" : "py-2 px-2.5 sm:px-3 lg:px-3.5"
               } ${theme.eventItemBorder} ${theme.eventItemBg} ${theme.eventItemHoverBg} ${theme.eventItemHoverBorder}`}
               style={{
                 transform: !isMobile && isHover ? "translateZ(8px) scale(1.01)" : "translateZ(0)",
                 boxShadow: !isMobile && isHover ? theme.rowHoverShadow : "none",
               }}
             >
-              <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 min-w-0">
                 <span
                   className={`font-mono font-bold transition-colors duration-300 ${
-                    isMobile ? "text-[9px]" : "text-[10px] sm:text-[11px]"
+                    isMobile ? "text-[9px]" : "text-[10px] sm:text-[11px] lg:text-xs"
                   }`}
                   style={{ color: theme.eventNumber }}
                 >
@@ -74,7 +74,7 @@ export function CardEvents({
                 <div className="flex flex-col min-w-0">
                   <span
                     className={`font-montserrat font-semibold tracking-wider text-[#F0EAE1] truncate transition-colors ${
-                      isMobile ? "text-[9.5px]" : "text-[11px] sm:text-xs"
+                      isMobile ? "text-[9.5px]" : "text-[11px] sm:text-xs lg:text-[13px]"
                     }`}
                     style={{ color: isHover ? theme.accentBright : undefined }}
                   >
@@ -82,7 +82,7 @@ export function CardEvents({
                   </span>
                   <span
                     className={`font-mono text-[#a89b88] tracking-wider truncate ${
-                      isMobile ? "text-[6.5px] sm:text-[7px]" : "text-[8px] sm:text-[9px]"
+                      isMobile ? "text-[6.5px] sm:text-[7px]" : "text-[8px] sm:text-[9px] lg:text-[9.5px]"
                     }`}
                   >
                     {ev.meta}
@@ -120,7 +120,7 @@ export function CardEvents({
           className={`group flex items-center justify-center gap-1.5 sm:gap-2 w-full rounded border font-mono uppercase transition-all duration-300 ${
             isMobile
               ? "py-1 px-2.5 text-[8px] tracking-[0.2em]"
-              : "py-1.5 px-3 text-[9px] sm:text-[10px] tracking-[0.22em]"
+              : "py-1.5 sm:py-2 px-3 sm:px-4 text-[9px] sm:text-[10px] lg:text-[11px] tracking-[0.22em]"
           } ${theme.btnBorder} ${theme.btnBg} ${theme.btnHoverBg} ${theme.btnHoverBorder} ${theme.btnText} ${theme.btnShadow}`}
         >
           <span>EXPLORE ALL EVENTS</span>

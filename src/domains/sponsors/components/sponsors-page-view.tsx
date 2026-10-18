@@ -20,9 +20,6 @@ import {
   ChevronRight,
   Shield,
   Layers,
-  PhoneCall,
-  Mail,
-  MapPin,
   Crown,
 } from "lucide-react";
 import { SponsorsInquiryModal } from "./sponsors-inquiry-modal";
@@ -157,54 +154,6 @@ export interface Sponsor {
   rankWeight: number; // 5 = King, 4 = Queen, 3 = Rook, 2 = Knight/Bishop, 1 = Pawn
 }
 
-// Baseline sponsors mirroring DB seed until dynamic database fetch populates
-const BASELINE_SPONSORS: Sponsor[] = [
-  {
-    id: "sp-imperium",
-    name: "IMPERIUM TECHNOLOGIES",
-    tier: "Title Partner",
-    role: "KING",
-    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-1.webp", 400),
-    pieceName: "King",
-    logoType: "custom",
-    logoUrl: "/images/sponsors/cp-1.webp",
-    websiteUrl: "https://techsrijan.org",
-    customLogoText: "Imperium Technologies",
-    accent: "#FFE600",
-    borderGlow: "rgba(255, 230, 0, 1)",
-    rankWeight: 5,
-  },
-  {
-    id: "sp-robokriti",
-    name: "ROBOKRITI ROBOTICS",
-    tier: "Gold Partner",
-    role: "QUEEN",
-    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-2.webp", 400),
-    pieceName: "Queen",
-    logoType: "custom",
-    logoUrl: "/images/sponsors/cp-2.webp",
-    websiteUrl: "https://techsrijan.org",
-    customLogoText: "RoboKriti Robotics",
-    accent: "#F59E0B",
-    borderGlow: "rgba(245, 158, 11, 0.95)",
-    rankWeight: 4,
-  },
-  {
-    id: "sp-purvanchal",
-    name: "PURVANCHAL TECH NEXUS",
-    tier: "Associate Partner",
-    role: "ROOK",
-    pieceImg: getOptimizedImageUrl("/images/sponsors/cp-5.webp", 400),
-    pieceName: "Rook",
-    logoType: "custom",
-    logoUrl: "https://techsrijan.org/images/sponsors/3-sigil.webp",
-    websiteUrl: "https://techsrijan.org",
-    customLogoText: "Purvanchal Tech Nexus",
-    accent: "#EF4444",
-    borderGlow: "rgba(239, 68, 68, 0.95)",
-    rankWeight: 3,
-  },
-];
 
 const PARTNERSHIP_COLUMNS = [
   {
@@ -281,20 +230,6 @@ const PARTNERSHIP_COLUMNS = [
   },
 ];
 
-const CONTACTS = [
-  {
-    name: "Prakhar Dubey",
-    role: "President",
-    council: "Technical Sub Council",
-    dept: "Technical Sub Council (TSC) • MMMUT Gorakhpur",
-  },
-  {
-    name: "Siddhi Mishra",
-    role: "Joint Secretary",
-    council: "Technical Sub Council",
-    dept: "Technical Sub Council (TSC) • MMMUT Gorakhpur",
-  },
-];
 
 // ─── CHESS & EDITORIAL GLYPHS FOR IMAGE 4 ─────────────────────────────
 function HeraldicKnightIcon({ className = "w-4 h-4 text-[#D4AF37]" }: { className?: string }) {
@@ -416,8 +351,9 @@ export function SponsorsPageView() {
   const heroRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [sponsors, setSponsors] = useState<Sponsor[]>(BASELINE_SPONSORS);
-  const [activeSponsor, setActiveSponsor] = useState<string>("sp-imperium");
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [activeSponsor, setActiveSponsor] = useState<string>("");
+  const [isLoadingSponsors, setIsLoadingSponsors] = useState(true);
 
 
   // Mouse Parallax Springs
@@ -549,10 +485,16 @@ export function SponsorsPageView() {
           });
           setSponsors(mapped);
           if (mapped[0]) setActiveSponsor(mapped[0].id);
+        } else {
+          setSponsors([]);
         }
       })
       .catch((err) => {
-        console.warn("Could not fetch DB sponsors, using baseline:", err);
+        console.warn("Could not fetch DB sponsors:", err);
+        setSponsors([]);
+      })
+      .finally(() => {
+        setIsLoadingSponsors(false);
       });
 
     return () => clearTimeout(timer);
@@ -782,19 +724,6 @@ export function SponsorsPageView() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Tagline: TECHSRIJAN '27 */}
-            <div className="flex items-center gap-2 mb-1.5">
-              <div
-                className="w-1.5 h-1.5 rounded-full animate-pulse transition-colors duration-500"
-                style={{ backgroundColor: t.accent }}
-              />
-              <span
-                className="font-mono text-[9px] sm:text-[10px] md:text-xs font-bold tracking-[0.28em] uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] transition-colors duration-500"
-                style={{ color: t.gold }}
-              >
-                TECHSRIJAN &apos;27
-              </span>
-            </div>
 
             {/* Main Headline: OUR [sigil] PARTNERS (Montserrat Heading) */}
             <div className="flex flex-col">
@@ -828,83 +757,7 @@ export function SponsorsPageView() {
             </p>
           </motion.div>
 
-          {/* Top Right Motto: STRONGER TOGETHER */}
-          <motion.div
-            className="hidden md:flex flex-col items-center self-start select-none"
-            initial={{ opacity: 0, y: -15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-          >
-            {/* Upper Ornamental Rule with Gold Diamonds */}
-            <div className="flex items-center justify-center w-64 sm:w-72 md:w-80 mb-2 opacity-95">
-              <div
-                className="h-[1.5px] flex-1 transition-all duration-500"
-                style={{ background: `linear-gradient(90deg, transparent, ${t.gold}, ${t.accent})` }}
-              />
-              <div
-                className="w-1.5 h-1.5 rotate-45 shrink-0 transition-all duration-500"
-                style={{ backgroundColor: t.gold, boxShadow: `0 0 8px ${t.gold}` }}
-              />
-              <div className="h-[1.5px] w-5 sm:w-7 transition-colors duration-500" style={{ backgroundColor: t.gold }} />
-              <div
-                className="w-2.5 h-2.5 rotate-45 shrink-0 transition-all duration-500"
-                style={{ backgroundColor: t.goldBright, boxShadow: `0 0 10px ${t.gold}` }}
-              />
-              <div className="h-[1.5px] w-5 sm:w-7 transition-colors duration-500" style={{ backgroundColor: t.gold }} />
-              <div
-                className="w-1.5 h-1.5 rotate-45 shrink-0 transition-all duration-500"
-                style={{ backgroundColor: t.gold, boxShadow: `0 0 8px ${t.gold}` }}
-              />
-              <div
-                className="h-[1.5px] flex-1 transition-all duration-500"
-                style={{ background: `linear-gradient(270deg, transparent, ${t.gold}, ${t.accent})` }}
-              />
-            </div>
 
-            {/* Typography: STRONGER / TOGETHER */}
-            <div className="flex flex-col items-center tracking-[0.42em] font-sans text-[12px] sm:text-[13px] md:text-[14px] font-bold text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)] my-1">
-              <span className="leading-tight">STRONGER</span>
-              <span className="leading-tight mt-1">TOGETHER</span>
-            </div>
-
-            {/* Lower Ornamental Rule with Wing Emblem in Center Break */}
-            <div className="flex items-center justify-center w-68 sm:w-76 md:w-84 mt-1.5">
-              <div
-                className="h-[1.5px] flex-1 transition-all duration-500"
-                style={{ background: `linear-gradient(90deg, transparent, ${t.gold}, ${t.accent})` }}
-              />
-              <div
-                className="w-1.5 h-1.5 rotate-45 shrink-0 transition-all duration-500"
-                style={{ backgroundColor: t.gold, boxShadow: `0 0 8px ${t.gold}` }}
-              />
-              <div className="h-[1.5px] w-4 sm:w-6 transition-colors duration-500" style={{ backgroundColor: t.gold }} />
-
-              {/* Exact Wing Sigil */}
-              <div className="shrink-0 -my-1 px-1.5">
-                <svg
-                  viewBox="0 0 120 50"
-                  fill="currentColor"
-                  className="w-9 h-4.5 sm:w-10 sm:h-5 transition-all duration-500"
-                  style={{
-                    color: t.accent,
-                    filter: `drop-shadow(0 0 14px ${t.accent})`,
-                  }}
-                >
-                  <path d="M60 48 C54 34 38 27 20 24 C10 22 2 18 0 12 C15 17 32 18 46 12 C54 8 57 4 60 0 C63 4 66 8 74 12 C88 18 105 17 120 12 C118 18 110 22 100 24 C82 27 66 34 60 48 Z" />
-                </svg>
-              </div>
-
-              <div className="h-[1.5px] w-4 sm:w-6 transition-colors duration-500" style={{ backgroundColor: t.gold }} />
-              <div
-                className="w-1.5 h-1.5 rotate-45 shrink-0 transition-all duration-500"
-                style={{ backgroundColor: t.gold, boxShadow: `0 0 8px ${t.gold}` }}
-              />
-              <div
-                className="h-[1.5px] flex-1 transition-all duration-500"
-                style={{ background: `linear-gradient(270deg, transparent, ${t.gold}, ${t.accent})` }}
-              />
-            </div>
-          </motion.div>
         </div>
 
         {/* ========================================================
@@ -920,7 +773,24 @@ export function SponsorsPageView() {
           <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[90%] sm:w-[70%] max-w-3xl h-[20px] sm:h-[24px] rounded-[50%] bg-black/80 blur-md pointer-events-none" />
 
           {/* The Circular Pedestals Row - Fits all 5 seamlessly on mobile without horizontal scroll */}
-          <div className="flex items-end justify-center gap-1 xs:gap-1.5 sm:gap-3.5 md:gap-5 lg:gap-6 xl:gap-7 w-full max-w-full overflow-visible py-2 sm:py-3 px-0.5 sm:px-2 no-scrollbar">
+          {isLoadingSponsors ? (
+            <div className="py-12 sm:py-16 text-center flex flex-col items-center justify-center gap-3">
+              <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+              <p className="font-mono text-xs tracking-[0.25em] text-neutral-400 uppercase">
+                LOADING ALLOCATED SPONSORS...
+              </p>
+            </div>
+          ) : sponsors.length === 0 ? (
+            <div className="py-12 sm:py-16 text-center flex flex-col items-center justify-center gap-2">
+              <p className="font-mono text-xs tracking-[0.25em] text-neutral-400 uppercase">
+                // DOSSIER OPEN FOR STRATEGIC ALLOCATIONS
+              </p>
+              <p className="font-sans text-xs text-neutral-500 max-w-sm">
+                Official corporate partners and campus brand alliances are currently being finalized.
+              </p>
+            </div>
+          ) : (
+            <div className="flex items-end justify-center gap-1 xs:gap-1.5 sm:gap-3.5 md:gap-5 lg:gap-6 xl:gap-7 w-full max-w-full overflow-visible py-2 sm:py-3 px-0.5 sm:px-2 no-scrollbar">
             {sponsors.map((sponsor) => {
               const isKing = sponsor.role === "KING";
               const isQueen = sponsor.role === "QUEEN";
@@ -1119,6 +989,7 @@ export function SponsorsPageView() {
               );
             })}
           </div>
+          )}
         </div>
 
         {/* Bottom subtle edge divider */}
@@ -1276,25 +1147,7 @@ export function SponsorsPageView() {
           </div>
 
           {/* Bottom Divider Bar (Exact Image 4 Replica) */}
-          <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6">
-            {/* Left/Center Ornamental Text */}
-            <div
-              className="flex items-center gap-2.5 sm:gap-3.5 select-none font-mono text-[10px] sm:text-xs tracking-[0.28em] uppercase font-bold transition-colors duration-500"
-              style={{ color: `${t.gold}E0` }}
-            >
-              <div
-                className="h-[1px] w-6 sm:w-12 transition-all duration-500"
-                style={{ background: `linear-gradient(90deg, transparent, ${t.gold})` }}
-              />
-              <span style={{ color: t.gold }}>✦</span>
-              <span className="text-neutral-300">BUILD SOMETHING THAT MATTERS</span>
-              <span style={{ color: t.gold }}>✦</span>
-              <div
-                className="h-[1px] w-6 sm:w-12 transition-all duration-500"
-                style={{ background: `linear-gradient(270deg, transparent, ${t.gold})` }}
-              />
-            </div>
-
+          <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-end gap-6">
             {/* Right Theme CTA Button */}
             <button
               onClick={() => setIsInquiryModalOpen(true)}
@@ -1307,141 +1160,7 @@ export function SponsorsPageView() {
         </div>
       </section>
 
-      {/* ========================================================
-          EXECUTIVE LIAISONS & DIRECT COMMUNICATION CHANNELS
-          Beautified on-page communication hub for direct contact
-          ======================================================== */}
-      <section id="liaisons" className="relative z-30 bg-[#070303] py-20 px-6 sm:px-10 lg:px-16 border-t border-white/5 overflow-hidden">
-        {/* Ambient Theme Light Glow in Background (Desktop only) */}
-        <div
-          className="hidden sm:block absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] blur-[160px] opacity-15 pointer-events-none transition-colors duration-500"
-          style={{ backgroundColor: t.accent }}
-        />
 
-        <div className="relative z-10 max-w-7xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${t.liaisonsBadgeBorder} ${t.liaisonsBadgeBg} mb-3 transition-colors duration-500`}>
-              <PhoneCall className={`w-3.5 h-3.5 ${t.liaisonsBadgeText}`} />
-              <span className={`font-mono text-[10px] tracking-[0.25em] ${t.liaisonsBadgeText} font-bold uppercase`}>
-                DIRECT INSTITUTIONAL CHANNELS
-              </span>
-            </div>
-            <h2 className="font-montserrat text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight">
-              Executive <span style={{ color: t.gold }}>Liaisons</span>
-            </h2>
-            <p className="mt-3 text-neutral-400 text-xs sm:text-sm md:text-base leading-relaxed">
-              Connect directly with our lead student convenors for expedited proposals, bespoke tier allocations, and on-campus tours.
-            </p>
-          </div>
-
-          {/* Executive Liaisons Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
-            {CONTACTS.map((c, i) => (
-              <div
-                key={i}
-                className={`relative rounded-xl border ${t.liaisonsCardBorder} bg-gradient-to-b ${t.liaisonsCardBg} p-6 backdrop-blur-none sm:backdrop-blur-md ${t.liaisonsCardHoverBorder} transition-all duration-300 group flex flex-col justify-between`}
-              >
-                {/* Card Top */}
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span
-                      className="px-2.5 py-0.5 rounded-full border text-[9px] font-mono font-bold uppercase tracking-wider transition-colors duration-500"
-                      style={{
-                        borderColor: `${t.gold}50`,
-                        backgroundColor: `${t.gold}15`,
-                        color: t.gold,
-                      }}
-                    >
-                      {c.role}
-                    </span>
-                    <div className="flex items-center gap-1.5 text-[9px] font-mono text-emerald-400">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span>Active</span>
-                    </div>
-                  </div>
-
-                  <h3
-                    className="font-montserrat text-xl font-bold text-white transition-colors"
-                  >
-                    {c.name}
-                  </h3>
-                  <p className="text-xs text-neutral-400 font-mono mt-1 mb-6">
-                    {c.dept}
-                  </p>
-                </div>
-
-                {/* Institutional Channel */}
-                <div className="pt-4 border-t border-white/10 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono text-neutral-400">
-                    <span className="text-[10px] uppercase tracking-wider text-neutral-500">Channel</span>
-                    <span className="text-neutral-300 font-medium text-[11px]">Official Directorate</span>
-                  </div>
-                  <a
-                    href="mailto:techsrijan@mmmut.ac.in"
-                    className="flex items-center gap-2 text-xs font-mono text-neutral-300 hover:text-white transition-colors bg-black/40 p-2.5 rounded-lg border border-white/5"
-                    title="Send inquiry to Techsrijan Directorate"
-                  >
-                    <Mail className="w-3.5 h-3.5 shrink-0 transition-colors duration-500" style={{ color: t.gold }} />
-                    <span className="truncate">techsrijan@mmmut.ac.in</span>
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Secretariat Headquarters & Dual Action Relays */}
-          <div className={`rounded-xl border border-white/10 ${t.secretariatBg} p-6 sm:p-8 flex flex-col lg:flex-row items-center justify-between gap-6 transition-colors duration-500`}>
-            {/* Left Info */}
-            <div className="flex items-start gap-4">
-              <div
-                className="w-10 h-10 rounded-lg border flex items-center justify-center shrink-0 mt-1 transition-colors duration-500"
-                style={{
-                  borderColor: `${t.accent}50`,
-                  backgroundColor: `${t.accent}15`,
-                  color: t.accent,
-                }}
-              >
-                <MapPin className="w-5 h-5" />
-              </div>
-              <div>
-                <span
-                  className="font-mono text-[10px] tracking-[0.25em] uppercase font-bold block mb-1 transition-colors duration-500"
-                  style={{ color: t.gold }}
-                >
-                  SECRETARIAT HEADQUARTERS
-                </span>
-                <p className="text-white text-xs sm:text-sm font-semibold">
-                  Technical Sub Council (TSC), Madan Mohan Malaviya University of Technology
-                </p>
-                <p className="text-neutral-400 text-xs font-mono mt-0.5">
-                  Deoria Road, Singhariya, Gorakhpur, UP 273010, India • 24-Hour Corporate Turnaround
-                </p>
-              </div>
-            </div>
-
-            {/* Right Buttons */}
-            <div className="flex flex-wrap items-center gap-3 shrink-0 w-full lg:w-auto justify-end">
-              <button
-                onClick={() => setIsInquiryModalOpen(true)}
-                className={`${t.liaisonsPrimaryBtn} px-6 py-3 rounded-full font-mono text-xs font-bold tracking-[0.18em] uppercase transition-all flex items-center gap-2 active:scale-95 cursor-pointer`}
-              >
-                <span>INITIATE PROPOSAL</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </button>
-
-              <a
-                href="/brochure.pdf"
-                download
-                className={`${t.brochureBorder} ${t.brochureBg} ${t.brochureText} px-5 py-3 rounded-full border font-mono text-xs font-bold tracking-[0.18em] uppercase transition-all flex items-center gap-2`}
-              >
-                <Download className="w-4 h-4" />
-                <span>BROCHURE &apos;27</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Standard Fest Footer */}
       <FestFooter />

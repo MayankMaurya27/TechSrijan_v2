@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 
 export function TechSrijanPreloader() {
   const [progress, setProgress] = useState(0);
-  const [statusText, setStatusText] = useState("INITIALIZING NEURAL INTERFACE...");
   const [isDone, setIsDone] = useState(false);
   // Rendered in the server HTML so it covers the page from first paint (no page-then-overlay flash).
   // Returning visitors: the inline <head> script sets html[data-booted], which hides it via CSS before hydration.
@@ -60,16 +59,6 @@ export function TechSrijanPreloader() {
           )
         );
 
-        if (next < 30) {
-          setStatusText("INITIALIZING SPATIAL SUBSYSTEMS...");
-        } else if (next < 65) {
-          setStatusText("PRE-CACHING TEXTURES & CRESTS...");
-        } else if (next < 90) {
-          setStatusText("SYNCHRONIZING APEX REQUISITION MATRIX...");
-        } else {
-          setStatusText("TECHSRIJAN '27 // SYSTEM READY");
-        }
-
         if (next >= 100 || elapsed >= maxSafetyTimeout) {
           clearInterval(interval);
           finishLoading();
@@ -83,7 +72,6 @@ export function TechSrijanPreloader() {
     const safetyTimer = setTimeout(() => {
       clearInterval(interval);
       setProgress(100);
-      setStatusText("TECHSRIJAN '27 // SYSTEM READY");
       finishLoading();
     }, maxSafetyTimeout);
 
@@ -144,9 +132,6 @@ export function TechSrijanPreloader() {
 
         {/* Festival Eyebrow & Headline */}
         <div className="space-y-1.5 mb-8">
-          <p className="font-mono text-[9px] sm:text-[10px] tracking-[0.35em] text-neutral-400 uppercase">
-            MMMUT GORAKHPUR PRESENTS
-          </p>
           <h2 className="font-montserrat font-black text-xl sm:text-2xl tracking-[0.2em] text-white uppercase drop-shadow-[0_2px_15px_rgba(255,255,255,0.4)]">
             TECHSRIJAN &apos;27
           </h2>
@@ -157,9 +142,8 @@ export function TechSrijanPreloader() {
 
         {/* Progress Bar & Numerical Counter */}
         <div className="w-full space-y-3">
-          <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-neutral-400">
-            <span className="truncate max-w-[200px] text-left">{statusText}</span>
-            <span className="font-bold text-white tabular-nums ml-2">
+          <div className="flex items-center justify-end font-mono text-[10px] tracking-[0.2em] text-neutral-400">
+            <span className="font-bold text-white tabular-nums">
               {progress.toString().padStart(3, "0")}%
             </span>
           </div>
@@ -170,12 +154,6 @@ export function TechSrijanPreloader() {
               className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-neutral-500 via-white to-white transition-all duration-100 ease-out shadow-[0_0_12px_#ffffff]"
               style={{ width: `${progress}%` }}
             />
-          </div>
-
-          {/* Micro Footer */}
-          <div className="flex items-center justify-between text-[8px] font-mono tracking-[0.25em] text-neutral-400 pt-1">
-            <span>TECHNICAL SUB COUNCIL</span>
-            <span className="animate-pulse">MMMUT GORAKHPUR</span>
           </div>
         </div>
       </div>

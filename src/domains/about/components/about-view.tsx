@@ -3,7 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, ChevronDown, Sparkles } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import {
   ABOUT_STATS,
   PATRON_DIRECTORATE,
@@ -11,41 +11,7 @@ import {
   ABOUT_CLUBS,
 } from "../data/about-data";
 import { useAboutTheme } from "../data/about-theme";
-import { useTheme, normalizeTheme, type CanonicalTheme } from "@/core";
 import { FestFooter } from "@/shared/layout/fest-footer";
-
-const LOGO_CONFIGS: Record<
-  CanonicalTheme,
-  {
-    imageSrcWebp: string;
-    imageSrcPng: string;
-    glowColor: string;
-    dropGlow: string;
-    accentHex: string;
-  }
-> = {
-  "geass-moon": {
-    imageSrcWebp: "/hero-logo-geass-moon.webp",
-    imageSrcPng: "/hero-logo-geass-moon.png",
-    glowColor: "rgba(255, 30, 39, 0.65)",
-    dropGlow: "drop-shadow(0 0 35px rgba(255, 30, 39, 0.6)) drop-shadow(0 20px 50px rgba(0,0,0,0.95))",
-    accentHex: "#FF1E27",
-  },
-  "arrakis-day": {
-    imageSrcWebp: "/hero-logo-arrakis-day.webp",
-    imageSrcPng: "/hero-logo-arrakis-day.png",
-    glowColor: "rgba(212, 168, 67, 0.65)",
-    dropGlow: "drop-shadow(0 0 35px rgba(212, 168, 67, 0.6)) drop-shadow(0 20px 50px rgba(0,0,0,0.95))",
-    accentHex: "#D4A843",
-  },
-  "krelln-night": {
-    imageSrcWebp: "/hero-logo-krelln-night.webp",
-    imageSrcPng: "/hero-logo-krelln-night.png",
-    glowColor: "rgba(121, 199, 227, 0.65)",
-    dropGlow: "drop-shadow(0 0 35px rgba(121, 199, 227, 0.6)) drop-shadow(0 20px 50px rgba(0,0,0,0.95))",
-    accentHex: "#79C7E3",
-  },
-};
 
 function clamp(val: number, min = 0, max = 1) {
   return Math.min(Math.max(val, min), max);
@@ -117,9 +83,6 @@ function StatCounter({
 
 export function AboutView() {
   const theme = useAboutTheme();
-  const themeContext = useTheme();
-  const activeCanonical: CanonicalTheme = normalizeTheme(themeContext?.resolvedTheme);
-  const activeLogo = LOGO_CONFIGS[activeCanonical] || LOGO_CONFIGS["geass-moon"];
 
   // Multi-stage scroll tracker with fixed-pin guarantee (bypasses sticky overflow bug)
   const heroRef = useRef<HTMLDivElement>(null);
@@ -164,47 +127,25 @@ export function AboutView() {
     };
   }, []);
 
-  // Stage 1: Shining Logo (0 -> 0.28)
-  const logoOpacity = scrollProgress < 0.16 ? 1 : mapRange(scrollProgress, 0.16, 0.28, 1, 0);
-  const logoScale = mapRange(scrollProgress, 0, 0.28, 1, 1.08);
-  const logoY = mapRange(scrollProgress, 0, 0.28, 0, -30);
-
-  // Stage 2: "We Are techSRIJAN '27" (0.24 -> 0.64)
+  // Scene 1: "WE ARE" + TS27 white text graphic (Active 0 -> 0.45)
   const weAreOpacity =
-    scrollProgress < 0.44
-      ? mapRange(scrollProgress, 0.25, 0.36, 0, 1)
-      : mapRange(scrollProgress, 0.52, 0.63, 1, 0);
-  const weAreScale =
-    scrollProgress < 0.44
-      ? mapRange(scrollProgress, 0.25, 0.36, 0.94, 1)
-      : mapRange(scrollProgress, 0.52, 0.63, 1, 1.06);
-  const weAreY =
-    scrollProgress < 0.44
-      ? mapRange(scrollProgress, 0.25, 0.36, 30, 0)
-      : mapRange(scrollProgress, 0.52, 0.63, 0, -30);
+    scrollProgress < 0.25
+      ? 1
+      : mapRange(scrollProgress, 0.25, 0.45, 1, 0);
+  const weAreScale = mapRange(scrollProgress, 0, 0.45, 1, 1.05);
+  const weAreY = mapRange(scrollProgress, 0, 0.45, 0, -35);
 
-  // Stage 3: Narrative & Cloudinary BG (0.58 -> 1.0)
-  const bgImageOpacity = mapRange(scrollProgress, 0.56, 0.70, 0, 0.75);
-  const narrativeOpacity = mapRange(scrollProgress, 0.62, 0.74, 0, 1);
-  const narrativeScale = mapRange(scrollProgress, 0.62, 0.74, 0.95, 1);
-  const narrativeY = mapRange(scrollProgress, 0.62, 0.74, 35, 0);
+  // Scene 2: Narrative & Metrics (Active 0.40 -> 1.0)
+  const narrativeOpacity = mapRange(scrollProgress, 0.40, 0.65, 0, 1);
+  const narrativeScale = mapRange(scrollProgress, 0.40, 0.65, 0.95, 1);
+  const narrativeY = mapRange(scrollProgress, 0.40, 0.65, 35, 0);
 
-  const scrollDownFromStage1 = () => {
+  const scrollDownToNarrative = () => {
     const windowHeight = window.innerHeight || 800;
-    const heroHeight = heroRef.current?.offsetHeight || windowHeight * 2.8;
+    const heroHeight = heroRef.current?.offsetHeight || windowHeight * 2;
     const scrollDistance = heroHeight - windowHeight;
     window.scrollTo({
-      top: scrollDistance * 0.42,
-      behavior: "smooth",
-    });
-  };
-
-  const scrollDownFromStage2 = () => {
-    const windowHeight = window.innerHeight || 800;
-    const heroHeight = heroRef.current?.offsetHeight || windowHeight * 2.8;
-    const scrollDistance = heroHeight - windowHeight;
-    window.scrollTo({
-      top: scrollDistance * 0.8,
+      top: scrollDistance * 0.7,
       behavior: "smooth",
     });
   };
@@ -223,78 +164,30 @@ export function AboutView() {
       } as React.CSSProperties}
     >
       {/* ============================================================
-          SCENE 1, 2 & 3: HERO SCROLL-DRIVEN STAGE (Pinned Container)
+          HERO SCROLL-DRIVEN STAGE (Pinned Container)
           ============================================================ */}
-      <div ref={heroRef} className="relative h-[280vh] w-full">
+      <div ref={heroRef} className="relative h-[200vh] w-full">
         <div
           className={`${
             pinState === "fixed" ? "fixed top-0 left-0" : "absolute bottom-0 left-0"
           } h-screen w-full flex items-center justify-center overflow-hidden bg-black z-10`}
         >
-          {/* Dynamic Cloudinary Narrative Background Image (Cross-fades in Stage 3) */}
-          <div
-            style={{
-              opacity: bgImageOpacity,
-              visibility: bgImageOpacity > 0.005 ? "visible" : "hidden",
-            }}
-            className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-300 ease-out"
-          >
+          {/* Dynamic Cloudinary Narrative Background Image */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
             <Image
               src="https://res.cloudinary.com/dosovvovq/image/upload/w_1920,q_85,f_auto,c_limit/techsrijan/images/about/about-bg.webp"
               alt="TechSrijan Citadel Architecture"
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center brightness-[0.35] contrast-[1.2] blur-[1px]"
+              className="object-cover object-center brightness-[0.4] contrast-[1.15]"
             />
             {/* Deep Vignette Scrim Overlays to guarantee zero visual text clash */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/85" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.92)_100%)]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/80" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)]" />
           </div>
 
-          {/* ── STAGE 1: TECHSRIJAN LOGO SHINING IN MIDDLE ── */}
-          <div
-            style={{
-              opacity: logoOpacity,
-              transform: `translate3d(0, ${logoY}px, 0) scale(${logoScale})`,
-              visibility: logoOpacity > 0.005 ? "visible" : "hidden",
-              pointerEvents: logoOpacity > 0.5 ? "auto" : "none",
-            }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 select-none transition-all duration-200 ease-out"
-          >
-            {/* Ambient Laser Halo */}
-            <div
-              className="absolute w-[320px] sm:w-[550px] md:w-[700px] h-[220px] sm:h-[320px] rounded-full blur-[100px] sm:blur-[140px] opacity-75 animate-pulse transition-colors duration-700 pointer-events-none"
-              style={{ backgroundColor: activeLogo.glowColor }}
-            />
-
-            {/* Glowing TechSrijan Emblem */}
-            <div className="relative w-[280px] xs:w-[340px] sm:w-[500px] md:w-[680px] lg:w-[820px] aspect-[2172/724] drop-shadow-[0_0_35px_rgba(255,255,255,0.25)]">
-              <Image
-                src={activeLogo.imageSrcWebp}
-                alt="TechSrijan '27 Logo"
-                fill
-                priority
-                className="object-contain filter contrast-110 brightness-110"
-                style={{ filter: activeLogo.dropGlow }}
-              />
-
-              {/* Shimmer Specular Light Sweep */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-60 mix-blend-overlay animate-pulse pointer-events-none" />
-            </div>
-
-            {/* Scroll Indicator */}
-            <button
-              type="button"
-              onClick={scrollDownFromStage1}
-              className="absolute bottom-10 sm:bottom-14 flex flex-col items-center gap-2 font-mono text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-white/50 hover:text-white transition-colors cursor-pointer"
-            >
-              <span>SCROLL TO ENTER</span>
-              <ChevronDown className="w-4 h-4 text-white/60 animate-bounce" />
-            </button>
-          </div>
-
-          {/* ── STAGE 2: "WE ARE TECHSRIJAN '27" ── */}
+          {/* ── STAGE 1: "WE ARE" + TS27 WHITE TEXT GRAPHIC ── */}
           <div
             style={{
               opacity: weAreOpacity,
@@ -302,44 +195,40 @@ export function AboutView() {
               visibility: weAreOpacity > 0.005 ? "visible" : "hidden",
               pointerEvents: weAreOpacity > 0.5 ? "auto" : "none",
             }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center px-6 text-center select-none transition-all duration-200 ease-out"
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 sm:px-6 text-center select-none transition-all duration-200 ease-out"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md mb-4 sm:mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              <span className="font-mono text-[10px] sm:text-xs tracking-[0.25em] text-white/70 uppercase font-semibold">
-                THE ANNUAL TECHNO-MANAGEMENT PHENOMENON
-              </span>
-            </div>
-
-            <h1 className="font-montserrat font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight uppercase text-white leading-none drop-shadow-[0_8px_35px_rgba(0,0,0,1)]">
-              WE ARE{" "}
-              <span
-                className="text-transparent bg-clip-text transition-all duration-500"
-                style={{
-                  backgroundImage: theme.headlineGradient,
-                  filter: `drop-shadow(0 0 25px ${theme.accentGlow})`,
-                }}
-              >
-                TECHSRIJAN &apos;27
-              </span>
+            <h1 className="font-montserrat font-black text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] uppercase text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.95)]">
+              WE ARE
             </h1>
 
-            <p className="mt-4 sm:mt-6 font-mono text-xs sm:text-sm tracking-[0.2em] text-neutral-400 uppercase max-w-xl">
+            {/* Stylized White TS27 Emblem Graphic */}
+            <div className="relative w-[320px] xs:w-[420px] sm:w-[560px] md:w-[680px] max-w-[92vw] h-[160px] sm:h-[220px] md:h-[260px] my-2 sm:my-3 flex items-center justify-center">
+              <Image
+                src="/TS27 white Text.png"
+                alt="TechSrijan '27"
+                fill
+                priority
+                sizes="(max-width: 768px) 90vw, 680px"
+                className="object-contain filter drop-shadow-[0_0_35px_rgba(255,255,255,0.4)] drop-shadow-[0_12px_30px_rgba(0,0,0,0.95)]"
+              />
+            </div>
+
+            <p className="font-mono text-xs sm:text-sm tracking-[0.2em] text-neutral-300 uppercase max-w-xl drop-shadow-md">
               Madan Mohan Malaviya University of Technology · Gorakhpur
             </p>
 
             {/* Scroll Indicator */}
             <button
               type="button"
-              onClick={scrollDownFromStage2}
-              className="absolute bottom-10 sm:bottom-14 flex flex-col items-center gap-2 font-mono text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-white/50 hover:text-white transition-colors cursor-pointer"
+              onClick={scrollDownToNarrative}
+              className="absolute bottom-10 sm:bottom-14 flex flex-col items-center gap-2 font-mono text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-white/60 hover:text-white transition-colors cursor-pointer"
             >
-              <span>KEEP SCROLLING</span>
-              <ChevronDown className="w-4 h-4 text-white/60 animate-bounce" />
+              <span>SCROLL TO ENTER</span>
+              <ChevronDown className="w-4 h-4 text-white/70 animate-bounce" />
             </button>
           </div>
 
-          {/* ── STAGE 3: CORE FESTIVAL NARRATIVE & METRICS (FROSTED GLASS CARD) ── */}
+          {/* ── STAGE 2: CORE FESTIVAL NARRATIVE & METRICS (FROSTED GLASS CARD) ── */}
           <div
             style={{
               opacity: narrativeOpacity,
@@ -350,13 +239,6 @@ export function AboutView() {
             className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 sm:px-6 select-none transition-all duration-200 ease-out"
           >
             <div className="w-full max-w-4xl mx-auto rounded-3xl p-6 sm:p-8 md:p-10 bg-[#090507]/90 backdrop-blur-2xl border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.95)] flex flex-col items-center text-center">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.05] border border-white/15 mb-4 sm:mb-5">
-                <Sparkles className="w-3.5 h-3.5" style={{ color: theme.accent }} />
-                <span className="font-mono text-[10px] sm:text-xs tracking-[0.22em] text-white/90 uppercase font-bold">
-                  ABOUT TECHSRIJAN &apos;27
-                </span>
-              </div>
-
               {/* Exact User Text Block */}
               <p className="font-sans text-sm sm:text-base md:text-lg lg:text-xl font-normal text-neutral-100 leading-relaxed max-w-3xl mx-auto drop-shadow-md">
                 TechSrijan is the flagship annual techno-management festival of{" "}
@@ -663,11 +545,6 @@ export function AboutView() {
                   </p>
                 )}
 
-                {/* Department Info */}
-                <p className="mt-1 text-xs text-neutral-400 font-sans">
-                  {club.department}
-                </p>
-
                 {/* Faculty Mentorship Card */}
                 <div className="mt-4 p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 flex flex-col gap-2.5">
                   <div className="font-mono text-[9px] sm:text-[10px] tracking-wider text-neutral-400 uppercase font-bold flex items-center gap-1.5 pb-1 border-b border-white/5">
@@ -730,9 +607,6 @@ export function AboutView() {
                   <span>Explore Arenas</span>
                   <ArrowUpRight className="w-3.5 h-3.5" style={{ color: club.accentColor }} />
                 </Link>
-                <span className="font-mono text-[9px] text-neutral-500 uppercase">
-                  TSC · MMMUT
-                </span>
               </div>
             </div>
           ))}

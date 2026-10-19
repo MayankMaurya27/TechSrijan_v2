@@ -201,7 +201,7 @@ export const ABOUT_CLUBS: ClubItem[] = [
     ],
     accentColor: "#38BDF8",
     glowColor: "rgba(56, 189, 248, 0.45)",
-    logo: "/club-logos/reso-logo.jpg",
+    logo: "/club-logos/reso-logo.png",
   },
   {
     id: "robotics",

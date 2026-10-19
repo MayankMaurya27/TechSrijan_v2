@@ -47,6 +47,7 @@ export interface ClubItem {
   accentColor: string;
   glowColor: string;
   logo: string;
+  instagram?: string;
 }
 
 /* =====================================================================
@@ -179,6 +180,7 @@ export const ABOUT_CLUBS: ClubItem[] = [
     fullName: "MMMUT RESO",
     tagline: "Playground For Problem Solvers",
     department: "Department of Computer Science & Engineering",
+    instagram: "https://www.instagram.com/mmmut.xyz/",
     faculties: [
       {
         name: "Dr. Shailendra Pratap Singh",
@@ -208,6 +210,7 @@ export const ABOUT_CLUBS: ClubItem[] = [
     shortName: "Robotics Club",
     fullName: "Robotics Club MMMUT",
     department: "Department of Electronics & Communication Engineering",
+    instagram: "https://www.instagram.com/robotics_club_mmmut/",
     faculties: [
       {
         name: "Dr. Prince Kumar Singh",
@@ -231,6 +234,7 @@ export const ABOUT_CLUBS: ClubItem[] = [
     shortName: "SAE Collegiate",
     fullName: "SAE Collegiate Club",
     department: "Department of Mechanical Engineering",
+    instagram: "https://www.instagram.com/sae_collegiate_club_mmmut/",
     faculties: [
       {
         name: "Dr. Dheerandra Singh",
@@ -254,6 +258,7 @@ export const ABOUT_CLUBS: ClubItem[] = [
     shortName: "IEEE STB",
     fullName: "IEEE Student Branch MMMUT",
     department: "Department of Electrical Engineering",
+    instagram: "https://www.instagram.com/ieeesb.mmmut/",
     faculties: [
       {
         name: "Prof. Prabhakar Tiwari",

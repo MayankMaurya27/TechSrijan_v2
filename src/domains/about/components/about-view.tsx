@@ -13,6 +13,24 @@ import {
 import { useAboutTheme } from "../data/about-theme";
 import { FestFooter } from "@/shared/layout/fest-footer";
 
+function IconInstagram({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
+
 function clamp(val: number, min = 0, max = 1) {
   return Math.min(Math.max(val, min), max);
 }
@@ -590,10 +608,30 @@ export function AboutView() {
                   </span>
                 </div>
 
-                {/* Club Name */}
-                <h3 className="text-xl sm:text-2xl font-montserrat font-black text-white uppercase tracking-tight">
-                  {club.fullName}
-                </h3>
+                {/* Club Name & Instagram Link */}
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-xl sm:text-2xl font-montserrat font-black text-white uppercase tracking-tight">
+                    {club.fullName}
+                  </h3>
+                  {club.instagram && (
+                    <a
+                      href={club.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${club.fullName} Instagram`}
+                      className="p-1.5 sm:p-2 rounded-xl border transition-all duration-200 hover:scale-110 shrink-0 flex items-center justify-center group/insta"
+                      style={{
+                        borderColor: `${club.accentColor}40`,
+                        color: club.accentColor,
+                        backgroundColor: `${club.accentColor}12`,
+                        boxShadow: `0 0 14px ${club.accentColor}20`,
+                      }}
+                      title="Follow on Instagram"
+                    >
+                      <IconInstagram className="w-4 h-4 transition-transform group-hover/insta:scale-110" />
+                    </a>
+                  )}
+                </div>
 
                 {/* Optional Tagline (Strictly only for MMMUT RESO) */}
                 {club.tagline && (

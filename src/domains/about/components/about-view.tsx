@@ -3,7 +3,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight, ChevronDown, Sparkles } from "lucide-react";
 import {
   ABOUT_STATS,
@@ -48,10 +47,36 @@ const LOGO_CONFIGS: Record<
   },
 };
 
-function StatCounter({ target, suffix }: { target: number; suffix: string }) {
+function clamp(val: number, min = 0, max = 1) {
+  return Math.min(Math.max(val, min), max);
+}
+
+function mapRange(
+  val: number,
+  inMin: number,
+  inMax: number,
+  outMin: number,
+  outMax: number
+) {
+  if (inMax === inMin) return outMin;
+  const clamped = clamp(val, inMin, inMax);
+  const ratio = (clamped - inMin) / (inMax - inMin);
+  return outMin + ratio * (outMax - outMin);
+}
+
+function StatCounter({
+  target,
+  suffix,
+  prefix = "",
+}: {
+  target: number;
+  suffix: string;
+  prefix?: string;
+}) {
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const isDecimal = target % 1 !== 0;
 
   useEffect(() => {
     const node = ref.current;
@@ -69,7 +94,7 @@ function StatCounter({ target, suffix }: { target: number; suffix: string }) {
         const tick = (now: number) => {
           const progress = Math.min((now - start) / duration, 1);
           const eased = 1 - Math.pow(1 - progress, 3);
-          setDisplay(Math.round(target * eased));
+          setDisplay(Number((target * eased).toFixed(isDecimal ? 1 : 0)));
           if (progress < 1) requestAnimationFrame(tick);
         };
         requestAnimationFrame(tick);
@@ -79,11 +104,12 @@ function StatCounter({ target, suffix }: { target: number; suffix: string }) {
 
     node && observer.observe(node);
     return () => observer.disconnect();
-  }, [target, hasAnimated]);
+  }, [target, hasAnimated, isDecimal]);
 
   return (
     <span ref={ref} className="tabular-nums font-montserrat font-black">
-      {display.toLocaleString()}
+      {prefix}
+      {isDecimal ? display.toFixed(1) : display.toLocaleString()}
       {suffix}
     </span>
   );
@@ -95,28 +121,86 @@ export function AboutView() {
   const activeCanonical: CanonicalTheme = normalizeTheme(themeContext?.resolvedTheme);
   const activeLogo = LOGO_CONFIGS[activeCanonical] || LOGO_CONFIGS["geass-moon"];
 
-  // Hero multi-stage scroll progress
+  // Multi-stage scroll tracker with 100% deterministic layout calculation
   const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end end"],
-  });
+  const [progress, setProgress] = useState(0);
 
-  // Stage 1: Shining Logo (0 -> 0.32)
-  const logoOpacity = useTransform(heroProgress, [0, 0.22, 0.32], [1, 1, 0]);
-  const logoScale = useTransform(heroProgress, [0, 0.3], [1, 1.12]);
-  const logoY = useTransform(heroProgress, [0, 0.3], [0, -35]);
+  useEffect(() => {
+    let ticking = false;
 
-  // Stage 2: "We Are techSRIJAN '27" (0.26 -> 0.62)
-  const weAreOpacity = useTransform(heroProgress, [0.26, 0.36, 0.52, 0.62], [0, 1, 1, 0]);
-  const weAreScale = useTransform(heroProgress, [0.26, 0.36, 0.62], [0.9, 1, 1.08]);
-  const weAreY = useTransform(heroProgress, [0.26, 0.36, 0.62], [35, 0, -30]);
+    const updateScroll = () => {
+      if (!heroRef.current) return;
+      const rect = heroRef.current.getBoundingClientRect();
+      const scrollDistance = heroRef.current.offsetHeight - window.innerHeight;
+      if (scrollDistance <= 0) return;
+      const currentScroll = -rect.top;
+      const p = clamp(currentScroll / scrollDistance, 0, 1);
+      setProgress(p);
+      ticking = false;
+    };
 
-  // Stage 3: Narrative & Cloudinary BG (0.52 -> 1.0)
-  const bgImageOpacity = useTransform(heroProgress, [0.5, 0.68], [0, 0.88]);
-  const narrativeOpacity = useTransform(heroProgress, [0.56, 0.72, 1], [0, 1, 1]);
-  const narrativeY = useTransform(heroProgress, [0.56, 0.72], [45, 0]);
-  const narrativeScale = useTransform(heroProgress, [0.56, 0.72], [0.96, 1]);
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    };
+
+    updateScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  // Stage 1: Shining Logo (0 -> 0.28)
+  const logoOpacity = progress < 0.16 ? 1 : mapRange(progress, 0.16, 0.28, 1, 0);
+  const logoScale = mapRange(progress, 0, 0.28, 1, 1.08);
+  const logoY = mapRange(progress, 0, 0.28, 0, -30);
+
+  // Stage 2: "We Are techSRIJAN '27" (0.24 -> 0.64)
+  const weAreOpacity =
+    progress < 0.44
+      ? mapRange(progress, 0.25, 0.36, 0, 1)
+      : mapRange(progress, 0.52, 0.63, 1, 0);
+  const weAreScale =
+    progress < 0.44
+      ? mapRange(progress, 0.25, 0.36, 0.94, 1)
+      : mapRange(progress, 0.52, 0.63, 1, 1.06);
+  const weAreY =
+    progress < 0.44
+      ? mapRange(progress, 0.25, 0.36, 30, 0)
+      : mapRange(progress, 0.52, 0.63, 0, -30);
+
+  // Stage 3: Narrative & Cloudinary BG (0.58 -> 1.0)
+  const bgImageOpacity = mapRange(progress, 0.56, 0.70, 0, 0.75);
+  const narrativeOpacity = mapRange(progress, 0.62, 0.74, 0, 1);
+  const narrativeScale = mapRange(progress, 0.62, 0.74, 0.95, 1);
+  const narrativeY = mapRange(progress, 0.62, 0.74, 35, 0);
+
+  const scrollDownFromStage1 = () => {
+    if (!heroRef.current) return;
+    const scrollDistance = heroRef.current.offsetHeight - window.innerHeight;
+    window.scrollTo({
+      top: scrollDistance * 0.42,
+      behavior: "smooth",
+    });
+  };
+
+  const scrollDownFromStage2 = () => {
+    if (!heroRef.current) return;
+    const scrollDistance = heroRef.current.offsetHeight - window.innerHeight;
+    window.scrollTo({
+      top: scrollDistance * 0.8,
+      behavior: "smooth",
+    });
+  };
+
+  const scrollToLeadership = () => {
+    document.getElementById("leadership")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div
@@ -128,14 +212,17 @@ export function AboutView() {
       } as React.CSSProperties}
     >
       {/* ============================================================
-          SCENE 1, 2 & 3: HERO SCROLL-DRIVEN STAGE (Pinned 260vh Container)
+          SCENE 1, 2 & 3: HERO SCROLL-DRIVEN STAGE (Pinned Container)
           ============================================================ */}
-      <div ref={heroRef} className="relative h-[270vh] w-full">
+      <div ref={heroRef} className="relative h-[280vh] w-full">
         <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-black">
           {/* Dynamic Cloudinary Narrative Background Image (Cross-fades in Stage 3) */}
-          <motion.div
-            style={{ opacity: bgImageOpacity }}
-            className="absolute inset-0 z-0 pointer-events-none"
+          <div
+            style={{
+              opacity: bgImageOpacity,
+              visibility: bgImageOpacity > 0.005 ? "visible" : "hidden",
+            }}
+            className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-300 ease-out"
           >
             <Image
               src="https://res.cloudinary.com/dosovvovq/image/upload/w_1920,q_85,f_auto,c_limit/techsrijan/images/about/about-bg.webp"
@@ -143,21 +230,22 @@ export function AboutView() {
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center brightness-[0.4] contrast-[1.15]"
+              className="object-cover object-center brightness-[0.35] contrast-[1.2] blur-[1px]"
             />
-            {/* Deep Vignette Scrim Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/80" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)]" />
-          </motion.div>
+            {/* Deep Vignette Scrim Overlays to guarantee zero visual text clash */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/75 to-black/85" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.92)_100%)]" />
+          </div>
 
           {/* ── STAGE 1: TECHSRIJAN LOGO SHINING IN MIDDLE ── */}
-          <motion.div
+          <div
             style={{
               opacity: logoOpacity,
-              scale: logoScale,
-              y: logoY,
+              transform: `translate3d(0, ${logoY}px, 0) scale(${logoScale})`,
+              visibility: logoOpacity > 0.005 ? "visible" : "hidden",
+              pointerEvents: logoOpacity > 0.5 ? "auto" : "none",
             }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none px-4 select-none"
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 select-none transition-all duration-200 ease-out"
           >
             {/* Ambient Laser Halo */}
             <div
@@ -181,20 +269,25 @@ export function AboutView() {
             </div>
 
             {/* Scroll Indicator */}
-            <div className="absolute bottom-10 sm:bottom-14 flex flex-col items-center gap-2 font-mono text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-white/50">
+            <button
+              type="button"
+              onClick={scrollDownFromStage1}
+              className="absolute bottom-10 sm:bottom-14 flex flex-col items-center gap-2 font-mono text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-white/50 hover:text-white transition-colors cursor-pointer"
+            >
               <span>SCROLL TO ENTER</span>
               <ChevronDown className="w-4 h-4 text-white/60 animate-bounce" />
-            </div>
-          </motion.div>
+            </button>
+          </div>
 
           {/* ── STAGE 2: "WE ARE TECHSRIJAN '27" ── */}
-          <motion.div
+          <div
             style={{
               opacity: weAreOpacity,
-              scale: weAreScale,
-              y: weAreY,
+              transform: `translate3d(0, ${weAreY}px, 0) scale(${weAreScale})`,
+              visibility: weAreOpacity > 0.005 ? "visible" : "hidden",
+              pointerEvents: weAreOpacity > 0.5 ? "auto" : "none",
             }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none px-6 text-center select-none"
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center px-6 text-center select-none transition-all duration-200 ease-out"
           >
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md mb-4 sm:mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
@@ -219,64 +312,85 @@ export function AboutView() {
             <p className="mt-4 sm:mt-6 font-mono text-xs sm:text-sm tracking-[0.2em] text-neutral-400 uppercase max-w-xl">
               Madan Mohan Malaviya University of Technology · Gorakhpur
             </p>
-          </motion.div>
 
-          {/* ── STAGE 3: CORE FESTIVAL NARRATIVE & METRICS ── */}
-          <motion.div
+            {/* Scroll Indicator */}
+            <button
+              type="button"
+              onClick={scrollDownFromStage2}
+              className="absolute bottom-10 sm:bottom-14 flex flex-col items-center gap-2 font-mono text-[9px] sm:text-[10px] tracking-[0.3em] uppercase text-white/50 hover:text-white transition-colors cursor-pointer"
+            >
+              <span>KEEP SCROLLING</span>
+              <ChevronDown className="w-4 h-4 text-white/60 animate-bounce" />
+            </button>
+          </div>
+
+          {/* ── STAGE 3: CORE FESTIVAL NARRATIVE & METRICS (FROSTED GLASS CARD) ── */}
+          <div
             style={{
               opacity: narrativeOpacity,
-              scale: narrativeScale,
-              y: narrativeY,
+              transform: `translate3d(0, ${narrativeY}px, 0) scale(${narrativeScale})`,
+              visibility: narrativeOpacity > 0.005 ? "visible" : "hidden",
+              pointerEvents: narrativeOpacity > 0.5 ? "auto" : "none",
             }}
-            className="relative z-30 w-full max-w-5xl mx-auto px-6 sm:px-10 text-center flex flex-col items-center justify-center my-auto"
+            className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 sm:px-6 select-none transition-all duration-200 ease-out"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-white/15 backdrop-blur-md mb-5 sm:mb-6">
-              <Sparkles className="w-3.5 h-3.5" style={{ color: theme.accent }} />
-              <span className="font-mono text-[10px] sm:text-xs tracking-[0.22em] text-white/80 uppercase font-bold">
-                ABOUT TECHSRIJAN &apos;27
-              </span>
-            </div>
+            <div className="w-full max-w-4xl mx-auto rounded-3xl p-6 sm:p-8 md:p-10 bg-[#090507]/90 backdrop-blur-2xl border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.95)] flex flex-col items-center text-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.05] border border-white/15 mb-4 sm:mb-5">
+                <Sparkles className="w-3.5 h-3.5" style={{ color: theme.accent }} />
+                <span className="font-mono text-[10px] sm:text-xs tracking-[0.22em] text-white/90 uppercase font-bold">
+                  ABOUT TECHSRIJAN &apos;27
+                </span>
+              </div>
 
-            {/* Exact User Text Block */}
-            <p className="font-sans text-base sm:text-xl md:text-2xl lg:text-[25px] font-normal text-neutral-200 leading-relaxed sm:leading-relaxed md:leading-snug max-w-4xl mx-auto drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">
-              TechSrijan is the flagship annual techno-management festival of{" "}
-              <span
-                className="text-white font-semibold underline decoration-2 underline-offset-8 transition-colors duration-300"
-                style={{ textDecorationColor: theme.accent }}
+              {/* Exact User Text Block */}
+              <p className="font-sans text-sm sm:text-base md:text-lg lg:text-xl font-normal text-neutral-100 leading-relaxed max-w-3xl mx-auto drop-shadow-md">
+                TechSrijan is the flagship annual techno-management festival of{" "}
+                <span
+                  className="text-white font-bold underline decoration-2 underline-offset-4"
+                  style={{ textDecorationColor: theme.accent }}
+                >
+                  Madan Mohan Malaviya University of Technology (MMMUT)
+                </span>{" "}
+                Gorakhpur, bringing together technology, innovation, coding, robotics and creative
+                competition with 25K+ expected footfall nationwide, Governed by the Technical
+                Sub-Council under the Council of Student Activities (CSA).
+              </p>
+
+              {/* Metric Strip */}
+              <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 w-full pt-5 sm:pt-6 border-t border-white/15">
+                {ABOUT_STATS.map((stat) => (
+                  <div key={stat.id} className="flex flex-col items-center text-center p-2">
+                    <div
+                      className="text-xl sm:text-2xl md:text-3xl font-montserrat font-black text-transparent bg-clip-text"
+                      style={{ backgroundImage: theme.metricGradient }}
+                    >
+                      <StatCounter
+                        target={stat.number}
+                        suffix={stat.suffix}
+                        prefix={stat.prefix}
+                      />
+                    </div>
+                    <div className="mt-1 font-bebas text-xs sm:text-sm tracking-wider uppercase text-white">
+                      {stat.label}
+                    </div>
+                    <div className="font-mono text-[8.5px] sm:text-[9.5px] tracking-wide text-neutral-400 mt-0.5">
+                      {stat.subtext}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Scroll Down Prompt for Faculty Cards */}
+              <button
+                type="button"
+                onClick={scrollToLeadership}
+                className="mt-6 inline-flex items-center gap-2 font-mono text-[9px] sm:text-[10px] tracking-[0.25em] text-white/70 hover:text-white uppercase transition-colors cursor-pointer"
               >
-                Madan Mohan Malaviya University of Technology (MMMUT)
-              </span>{" "}
-              Gorakhpur, bringing together technology, innovation, coding, robotics and creative
-              competition with 25K+ expected footfall nationwide, Governed by the Technical
-              Sub-Council under the Council of Student Activities (CSA).
-            </p>
-
-            {/* Metric Strip */}
-            <div className="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 w-full max-w-4xl border-t border-b border-white/15 py-5 sm:py-6 bg-black/50 backdrop-blur-md rounded-2xl px-4">
-              {ABOUT_STATS.map((stat) => (
-                <div key={stat.id} className="flex flex-col items-center text-center">
-                  <div
-                    className="text-2xl sm:text-3xl md:text-4xl font-montserrat font-black text-transparent bg-clip-text"
-                    style={{ backgroundImage: theme.metricGradient }}
-                  >
-                    <StatCounter target={stat.number} suffix={stat.suffix} />
-                  </div>
-                  <div className="mt-1 font-bebas text-xs sm:text-sm tracking-wider uppercase text-white">
-                    {stat.label}
-                  </div>
-                  <div className="font-mono text-[9px] sm:text-[10px] tracking-wide text-neutral-400 mt-0.5">
-                    {stat.subtext}
-                  </div>
-                </div>
-              ))}
+                <span>EXPLORE PATRONAGE &amp; GOVERNANCE</span>
+                <ChevronDown className="w-3.5 h-3.5 animate-bounce" />
+              </button>
             </div>
-
-            {/* Scroll Down Prompt for Faculty Cards */}
-            <div className="mt-6 sm:mt-8 flex items-center justify-center gap-2 font-mono text-[9.5px] sm:text-[11px] tracking-[0.25em] text-white/60 uppercase">
-              <span>EXPLORE PATRONAGE &amp; GOVERNANCE</span>
-              <ChevronDown className="w-3.5 h-3.5 animate-bounce" />
-            </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 

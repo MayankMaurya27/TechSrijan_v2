@@ -2,6 +2,7 @@ export interface StatItem {
   id: string;
   value: string;
   number: number;
+  prefix?: string;
   suffix: string;
   label: string;
   subtext: string;
@@ -64,6 +65,7 @@ export const ABOUT_STATS: StatItem[] = [
     id: "prize",
     value: "₹2.5L+",
     number: 2.5,
+    prefix: "₹",
     suffix: "L+",
     label: "PRIZE POOL",
     subtext: "Cash awards, certificates & seed grants",

@@ -121,32 +121,41 @@ export function AboutView() {
   const activeCanonical: CanonicalTheme = normalizeTheme(themeContext?.resolvedTheme);
   const activeLogo = LOGO_CONFIGS[activeCanonical] || LOGO_CONFIGS["geass-moon"];
 
-  // Multi-stage scroll tracker with 100% deterministic layout calculation
+  // Multi-stage scroll tracker with fixed-pin guarantee (bypasses sticky overflow bug)
   const heroRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [pinState, setPinState] = useState<"fixed" | "bottom">("fixed");
 
   useEffect(() => {
     let ticking = false;
 
-    const updateScroll = () => {
+    const handleScroll = () => {
       if (!heroRef.current) return;
-      const rect = heroRef.current.getBoundingClientRect();
-      const scrollDistance = heroRef.current.offsetHeight - window.innerHeight;
-      if (scrollDistance <= 0) return;
-      const currentScroll = -rect.top;
-      const p = clamp(currentScroll / scrollDistance, 0, 1);
-      setProgress(p);
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const windowHeight = window.innerHeight || 800;
+      const heroHeight = heroRef.current.offsetHeight;
+      const scrollDistance = Math.max(heroHeight - windowHeight, 1);
+
+      const p = clamp(scrollY / scrollDistance, 0, 1);
+      setScrollProgress(p);
+
+      if (scrollY >= scrollDistance) {
+        setPinState("bottom");
+      } else {
+        setPinState("fixed");
+      }
+
       ticking = false;
     };
 
     const onScroll = () => {
       if (!ticking) {
-        requestAnimationFrame(updateScroll);
+        requestAnimationFrame(handleScroll);
         ticking = true;
       }
     };
 
-    updateScroll();
+    handleScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
@@ -156,33 +165,34 @@ export function AboutView() {
   }, []);
 
   // Stage 1: Shining Logo (0 -> 0.28)
-  const logoOpacity = progress < 0.16 ? 1 : mapRange(progress, 0.16, 0.28, 1, 0);
-  const logoScale = mapRange(progress, 0, 0.28, 1, 1.08);
-  const logoY = mapRange(progress, 0, 0.28, 0, -30);
+  const logoOpacity = scrollProgress < 0.16 ? 1 : mapRange(scrollProgress, 0.16, 0.28, 1, 0);
+  const logoScale = mapRange(scrollProgress, 0, 0.28, 1, 1.08);
+  const logoY = mapRange(scrollProgress, 0, 0.28, 0, -30);
 
   // Stage 2: "We Are techSRIJAN '27" (0.24 -> 0.64)
   const weAreOpacity =
-    progress < 0.44
-      ? mapRange(progress, 0.25, 0.36, 0, 1)
-      : mapRange(progress, 0.52, 0.63, 1, 0);
+    scrollProgress < 0.44
+      ? mapRange(scrollProgress, 0.25, 0.36, 0, 1)
+      : mapRange(scrollProgress, 0.52, 0.63, 1, 0);
   const weAreScale =
-    progress < 0.44
-      ? mapRange(progress, 0.25, 0.36, 0.94, 1)
-      : mapRange(progress, 0.52, 0.63, 1, 1.06);
+    scrollProgress < 0.44
+      ? mapRange(scrollProgress, 0.25, 0.36, 0.94, 1)
+      : mapRange(scrollProgress, 0.52, 0.63, 1, 1.06);
   const weAreY =
-    progress < 0.44
-      ? mapRange(progress, 0.25, 0.36, 30, 0)
-      : mapRange(progress, 0.52, 0.63, 0, -30);
+    scrollProgress < 0.44
+      ? mapRange(scrollProgress, 0.25, 0.36, 30, 0)
+      : mapRange(scrollProgress, 0.52, 0.63, 0, -30);
 
   // Stage 3: Narrative & Cloudinary BG (0.58 -> 1.0)
-  const bgImageOpacity = mapRange(progress, 0.56, 0.70, 0, 0.75);
-  const narrativeOpacity = mapRange(progress, 0.62, 0.74, 0, 1);
-  const narrativeScale = mapRange(progress, 0.62, 0.74, 0.95, 1);
-  const narrativeY = mapRange(progress, 0.62, 0.74, 35, 0);
+  const bgImageOpacity = mapRange(scrollProgress, 0.56, 0.70, 0, 0.75);
+  const narrativeOpacity = mapRange(scrollProgress, 0.62, 0.74, 0, 1);
+  const narrativeScale = mapRange(scrollProgress, 0.62, 0.74, 0.95, 1);
+  const narrativeY = mapRange(scrollProgress, 0.62, 0.74, 35, 0);
 
   const scrollDownFromStage1 = () => {
-    if (!heroRef.current) return;
-    const scrollDistance = heroRef.current.offsetHeight - window.innerHeight;
+    const windowHeight = window.innerHeight || 800;
+    const heroHeight = heroRef.current?.offsetHeight || windowHeight * 2.8;
+    const scrollDistance = heroHeight - windowHeight;
     window.scrollTo({
       top: scrollDistance * 0.42,
       behavior: "smooth",
@@ -190,8 +200,9 @@ export function AboutView() {
   };
 
   const scrollDownFromStage2 = () => {
-    if (!heroRef.current) return;
-    const scrollDistance = heroRef.current.offsetHeight - window.innerHeight;
+    const windowHeight = window.innerHeight || 800;
+    const heroHeight = heroRef.current?.offsetHeight || windowHeight * 2.8;
+    const scrollDistance = heroHeight - windowHeight;
     window.scrollTo({
       top: scrollDistance * 0.8,
       behavior: "smooth",
@@ -204,7 +215,7 @@ export function AboutView() {
 
   return (
     <div
-      className="relative min-h-screen bg-[#050304] text-[#F3EFEA] font-sans overflow-x-hidden selection:bg-[#E61E25]/30 selection:text-white"
+      className="relative min-h-screen bg-[#050304] text-[#F3EFEA] font-sans selection:bg-[#E61E25]/30 selection:text-white"
       style={{
         "--theme-accent": theme.accent,
         "--theme-accent-glow": theme.accentGlow,
@@ -215,7 +226,11 @@ export function AboutView() {
           SCENE 1, 2 & 3: HERO SCROLL-DRIVEN STAGE (Pinned Container)
           ============================================================ */}
       <div ref={heroRef} className="relative h-[280vh] w-full">
-        <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-black">
+        <div
+          className={`${
+            pinState === "fixed" ? "fixed top-0 left-0" : "absolute bottom-0 left-0"
+          } h-screen w-full flex items-center justify-center overflow-hidden bg-black z-10`}
+        >
           {/* Dynamic Cloudinary Narrative Background Image (Cross-fades in Stage 3) */}
           <div
             style={{

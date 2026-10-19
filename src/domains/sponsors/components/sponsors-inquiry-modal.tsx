@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, CheckCircle2, Shield, Phone, Mail } from "lucide-react";
+import { X, Send, CheckCircle2, Phone, Mail } from "lucide-react";
 import { useTheme, type CanonicalTheme } from "@/core";
 import { api } from "@/lib/api";
 
@@ -132,7 +132,7 @@ export function SponsorsInquiryModal({
     try {
       const res = await api.sponsors.inquire(formData);
       setFormState("success");
-      setFormMsg(res?.message || "Inquiry transmitted successfully. Our Secretariat will contact you within 24 hours.");
+      setFormMsg(res?.message || "Thank you for reaching out! We have received your inquiry and our team will get in touch with you shortly.");
       setFormData({
         company_name: "",
         contact_person: "",
@@ -143,10 +143,9 @@ export function SponsorsInquiryModal({
       });
     } catch (err: any) {
       setFormState("error");
-      setFormMsg(err?.message || "Transmission failed. Please dispatch via direct contact liaisons.");
+      setFormMsg(err?.message || "Failed to submit inquiry. Please try again or reach out to us directly.");
     }
   };
-
 
   return (
     <AnimatePresence>
@@ -185,17 +184,11 @@ export function SponsorsInquiryModal({
             <div className="p-6 sm:p-8 max-h-[85vh] overflow-y-auto custom-scrollbar">
               {/* Header */}
               <div className="mb-6 pr-8">
-                <div className={`inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full border ${mt.badgeBorder} ${mt.badgeBg} mb-2`}>
-                  <Shield className={`w-3 h-3 ${mt.badgeText}`} />
-                  <span className={`font-mono text-[9px] tracking-[0.25em] ${mt.badgeText} font-bold uppercase`}>
-                    DIRECT TRANSMISSION
-                  </span>
-                </div>
                 <h3 className="font-montserrat text-2xl sm:text-3xl font-black uppercase text-white tracking-tight">
-                  Initiate <span className={mt.titleAccent}>Contract Proposal</span>
+                  Partner with <span className={mt.titleAccent}>TechSrijan</span>
                 </h3>
                 <p className="mt-1.5 font-geist text-neutral-300 text-xs sm:text-sm leading-relaxed">
-                  Transmit your activation objectives directly to the Secretariat of Technical Sub Council (TSC). Our convenors respond with official deliverables within 24 hours.
+                  Get in touch with our team to discuss sponsorship and partnership opportunities. We will get back to you within 24 hours.
                 </p>
               </div>
 
@@ -206,17 +199,17 @@ export function SponsorsInquiryModal({
                     <CheckCircle2 className="w-7 h-7" />
                   </div>
                   <h4 className="font-montserrat text-xl font-extrabold text-white uppercase tracking-tight">
-                    Transmission Dispatched
+                    Inquiry Submitted
                   </h4>
                   <p className="text-neutral-300 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">
-                    {formMsg || "Thank you. Your corporate inquiry has been securely delivered to the Executive Secretariat. We will contact your designated liaison promptly."}
+                    {formMsg || "Thank you for reaching out! We have received your inquiry and our team will get in touch with you shortly."}
                   </p>
                   <div className="pt-4 flex justify-center">
                     <button
                       onClick={onClose}
                       className={`px-6 py-2.5 rounded-full ${mt.submitBtn} font-mono text-xs font-bold tracking-wider uppercase transition-colors`}
                     >
-                      Close Window
+                      Close
                     </button>
                   </div>
                 </div>
@@ -225,7 +218,7 @@ export function SponsorsInquiryModal({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5">
-                        Company / Brand Name <span style={{ color: mt.accent }}>*</span>
+                        Company / Organization <span style={{ color: mt.accent }}>*</span>
                       </label>
                       <input
                         required
@@ -233,13 +226,14 @@ export function SponsorsInquiryModal({
                         name="company_name"
                         value={formData.company_name}
                         onChange={handleInputChange}
+                        placeholder="e.g. Acme Corporation"
                         className={`w-full bg-black/60 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 rounded-lg focus:outline-none ${mt.inputFocus} transition-all`}
                       />
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5">
-                        Contact Liaison Name <span style={{ color: mt.accent }}>*</span>
+                        Contact Person Name <span style={{ color: mt.accent }}>*</span>
                       </label>
                       <input
                         required
@@ -247,13 +241,14 @@ export function SponsorsInquiryModal({
                         name="contact_person"
                         value={formData.contact_person}
                         onChange={handleInputChange}
+                        placeholder="e.g. John Doe"
                         className={`w-full bg-black/60 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 rounded-lg focus:outline-none ${mt.inputFocus} transition-all`}
                       />
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5">
-                        Corporate Email <span style={{ color: mt.accent }}>*</span>
+                        Official Email <span style={{ color: mt.accent }}>*</span>
                       </label>
                       <input
                         required
@@ -261,19 +256,22 @@ export function SponsorsInquiryModal({
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
+                        placeholder="e.g. partner@company.com"
                         className={`w-full bg-black/60 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 rounded-lg focus:outline-none ${mt.inputFocus} transition-all`}
                       />
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5">
-                        Contact Phone Number
+                        Phone Number <span style={{ color: mt.accent }}>*</span>
                       </label>
                       <input
+                        required
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
+                        placeholder="e.g. +91 98765 43210"
                         className={`w-full bg-black/60 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 rounded-lg focus:outline-none ${mt.inputFocus} transition-all`}
                       />
                     </div>
@@ -281,7 +279,7 @@ export function SponsorsInquiryModal({
 
                   <div>
                     <label className={`block text-[11px] font-mono uppercase tracking-wider ${mt.selectLabel} font-bold mb-1.5`}>
-                      Proposed Partnership Tier / Category
+                      Preferred Partnership Tier
                     </label>
                     <select
                       name="proposed_budget_tier"
@@ -290,58 +288,54 @@ export function SponsorsInquiryModal({
                       className={`w-full bg-black/80 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white rounded-lg focus:outline-none ${mt.selectFocus} transition-all cursor-pointer`}
                     >
                       <option value="" disabled className="bg-neutral-900 text-neutral-500">
-                        Select partnership designation
+                        Select a partnership tier (optional)
                       </option>
                       <option value="King / Title Partner" className="bg-neutral-900 text-white">
-                        King / Title Partner (Flagship Festival Naming)
+                        Title Partner
                       </option>
                       <option value="Queen / Gold Partner" className="bg-neutral-900 text-white">
-                        Queen / Gold Partner (Major Stage Co-Powered)
+                        Co-Powered By / Gold Partner
                       </option>
                       <option value="Rook / Silver Partner" className="bg-neutral-900 text-white">
-                        Rook / Silver Partner (Arena / Pavilion Title)
+                        Associate / Silver Partner
                       </option>
                       <option value="Knight / Associate Partner" className="bg-neutral-900 text-white">
-                        Knight / Associate Partner (Event / Track Partner)
+                        Event / Category Partner
                       </option>
                       <option value="Pawn / Supporting Partner" className="bg-neutral-900 text-white">
-                        Pawn / Supporting Partner (Stall &amp; Product Sampling)
+                        Media &amp; Sampling Partner
                       </option>
                       <option value="Custom / Bespoke Consultation" className="bg-neutral-900 text-white">
-                        Custom / Bespoke Consultation (Tailored Framework)
+                        Custom Partnership / Other
                       </option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5">
-                      Activation Scope &amp; Specific Deliverables
+                      Message / Partnership Details
                     </label>
                     <textarea
                       rows={3}
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
+                      placeholder="Tell us about your brand goals, expected deliverables, or any questions..."
                       className={`w-full bg-black/60 border border-white/15 px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 rounded-lg focus:outline-none ${mt.inputFocus} transition-all resize-none`}
                     />
                   </div>
 
-                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/10">
-                    <div className="flex items-center gap-2 text-[10px] text-neutral-500 font-mono">
-                      <Shield className={`w-3 h-3 ${mt.shieldIcon}`} />
-                      <span>Confidential institutional inquiry • 24h SLA response</span>
-                    </div>
-
+                  <div className="pt-2 flex items-center justify-end border-t border-white/10">
                     <button
                       type="submit"
                       disabled={formState === "submitting"}
-                      className={`w-full sm:w-auto px-6 py-2.5 rounded-full ${mt.submitBtn} font-mono text-xs font-bold tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-2 disabled:opacity-50`}
+                      className={`w-full sm:w-auto px-7 py-2.5 rounded-full ${mt.submitBtn} font-mono text-xs font-bold tracking-[0.18em] uppercase transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer`}
                     >
                       {formState === "submitting" ? (
-                        <span>TRANSMITTING...</span>
+                        <span>SUBMITTING...</span>
                       ) : (
                         <>
-                          <span>DISPATCH INQUIRY</span>
+                          <span>SUBMIT INQUIRY</span>
                           <Send className="w-3.5 h-3.5" />
                         </>
                       )}
@@ -350,9 +344,9 @@ export function SponsorsInquiryModal({
                 </form>
               )}
 
-              {/* Direct Convenors Note */}
+              {/* Direct Note */}
               <div className="mt-6 pt-4 border-t border-white/5 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-neutral-400">
-                <span className="text-neutral-500">Need immediate voice clearance?</span>
+                <span className="text-neutral-500">Need immediate assistance?</span>
                 <div className="flex items-center gap-3">
                   <a
                     href="tel:8917769294"

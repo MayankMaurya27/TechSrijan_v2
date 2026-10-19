@@ -46,8 +46,8 @@ export const CLUBS: Club[] = [
     tagline: "Resonance — the premier coding arena powering Mantrastra & beyond.",
     eventCount: 1,
     color: "amber",
-    logo: getOptimizedImageUrl("/club-logos/reso-logo.png", 320),
-    watermarkLogo: getOptimizedImageUrl("/club-logos/reso-logo.png", 320),
+    logo: "/club-logos/reso-logo.jpg",
+    watermarkLogo: "/club-logos/reso-logo.jpg",
     glowColor: "rgba(56, 189, 248, 0.5)",
   },
   {
@@ -82,8 +82,8 @@ export const CLUBS: Club[] = [
     tagline: "Engineering design mastery — CAD, bridge-building & precision challenges.",
     eventCount: 4,
     color: "violet",
-    logo: getOptimizedImageUrl("/club-logos/sae-logo-white.png", 320),
-    watermarkLogo: getOptimizedImageUrl("/club-logos/sae-logo-white.png", 320),
+    logo: "/club-logos/sae-logo.png",
+    watermarkLogo: "/club-logos/sae-logo.png",
     glowColor: "rgba(168, 85, 247, 0.5)",
   },
 ];
@@ -101,19 +101,16 @@ export interface ArenaSpatialCardsProps {
 function ClubCard({
   club,
   idx,
-  onClick,
 }: {
   club: Club;
   idx: number;
-  onClick: () => void;
 }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.88, y: 28 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.45, delay: idx * 0.07, ease: "easeOut" }}
-      onClick={onClick}
-      className="relative cursor-pointer group flex items-center justify-center select-none active:scale-95 transition-transform duration-150 w-[108px] sm:w-[140px] md:w-[170px] lg:w-[210px] xl:w-[230px]"
+      className="relative cursor-default group flex items-center justify-center select-none w-[108px] sm:w-[140px] md:w-[170px] lg:w-[210px] xl:w-[230px]"
     >
       <div className="relative w-full aspect-[2/3] max-h-[36vh] sm:max-h-[46vh] md:max-h-[64vh] flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-2">
         {/* Dark Glass Interior */}
@@ -199,11 +196,11 @@ function ClubCard({
             <span className="absolute px-1 text-white/50 text-[6.5px] sm:text-[8px]">✦</span>
           </div>
 
-          {/* ── Event count & Action ── */}
+          {/* ── Event count & Status ── */}
           <div className="flex items-center justify-between font-mono text-[7px] sm:text-[9px] tracking-[0.12em] text-neutral-500 uppercase border-t border-white/10 pt-1 sm:pt-1.5 z-10">
             <span>{club.eventCount} EVENTS</span>
-            <span className="text-white/70 group-hover:text-white transition-colors flex items-center gap-0.5 font-semibold">
-              VIEW <ChevronDown className="w-2.5 h-2.5 mt-0.5 group-hover:translate-y-0.5 transition-transform" />
+            <span className="text-white/60 font-mono tracking-widest text-[6.5px] sm:text-[8px] uppercase">
+              CHAPTER {club.slotNumber}
             </span>
           </div>
         </div>
@@ -223,26 +220,11 @@ function ClubCard({
 
 export function ArenaSpatialCards({
   isVisible,
-  onClubSelect,
-  onCategorySelect,
   onExploreEvents,
   leftCardsRef,
   centerCardRef,
   rightCardsRef,
 }: ArenaSpatialCardsProps) {
-  const handleClubClick = (club: Club) => {
-    const categoryMap: Record<string, string> = {
-      tsc: "CULTURAL",
-      "mmmut-reso": "TECHNICAL",
-      "ieee-stb": "TECHNICAL",
-      robotics: "ROBOTICS",
-      sae: "MANAGEMENT",
-    };
-    if (onCategorySelect) onCategorySelect(categoryMap[club.id] || "ALL");
-    if (onClubSelect) onClubSelect(club.id);
-    if (onExploreEvents) onExploreEvents();
-  };
-
   return (
     <div
       className={`absolute inset-0 z-30 flex flex-col justify-between transition-all duration-500 ${
@@ -262,7 +244,6 @@ export function ArenaSpatialCards({
                 key={club.id}
                 club={club}
                 idx={i}
-                onClick={() => handleClubClick(club)}
               />
             ))}
           </div>
@@ -275,7 +256,6 @@ export function ArenaSpatialCards({
             <ClubCard
               club={CLUBS[2]}
               idx={2}
-              onClick={() => handleClubClick(CLUBS[2])}
             />
           </div>
 
@@ -289,7 +269,6 @@ export function ArenaSpatialCards({
                 key={club.id}
                 club={club}
                 idx={i + 3}
-                onClick={() => handleClubClick(club)}
               />
             ))}
           </div>
@@ -310,7 +289,7 @@ export function ArenaSpatialCards({
             <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
           <p className="font-mono text-[9px] tracking-[0.25em] text-white/40 uppercase text-center">
-            SELECT A CLUB OR SCROLL DOWN TO ENTER THE DOSSIER
+            SCROLL DOWN OR CLICK BELOW TO ENTER THE DOSSIER
           </p>
         </div>
       </div>
@@ -325,7 +304,7 @@ export function ArenaSpatialCards({
             </span>
           </div>
           <p className="font-mono text-[7.5px] tracking-[0.25em] text-white/50 uppercase">
-            TAP A CLUB TO ENTER DOSSIER
+            SCROLL DOWN TO ENTER DOSSIER
           </p>
         </div>
 
@@ -336,8 +315,7 @@ export function ArenaSpatialCards({
             {[CLUBS[0], CLUBS[2]].map((club) => (
               <div
                 key={club.id}
-                onClick={() => handleClubClick(club)}
-                className="relative cursor-pointer active:scale-95 transition-transform duration-150 rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
+                className="relative cursor-default select-none rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
               >
                 <div
                   className="w-10 h-10 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 mb-1.5"
@@ -369,8 +347,7 @@ export function ArenaSpatialCards({
             {[CLUBS[1], CLUBS[3]].map((club) => (
               <div
                 key={club.id}
-                onClick={() => handleClubClick(club)}
-                className="relative cursor-pointer active:scale-95 transition-transform duration-150 rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
+                className="relative cursor-default select-none rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
               >
                 <div
                   className="w-10 h-10 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 mb-1.5"
@@ -401,8 +378,7 @@ export function ArenaSpatialCards({
         {/* 5th Club (SAE) full-width centered card inside centerCardRef */}
         <div ref={centerCardRef} className="w-full mt-2 will-change-transform">
           <div
-            onClick={() => handleClubClick(CLUBS[4])}
-            className="relative cursor-pointer active:scale-95 transition-transform duration-150 rounded-xl bg-black/85 border border-white/15 p-2.5 flex items-center justify-between shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
+            className="relative cursor-default select-none rounded-xl bg-black/85 border border-white/15 p-2.5 flex items-center justify-between shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
           >
             <div className="flex items-center gap-2.5">
               <div

@@ -1048,15 +1048,6 @@ export function SponsorsPageView() {
                 }}
               >
                 <span>AVENUES</span>
-                <span
-                  className="text-lg sm:text-2xl select-none transition-all duration-500"
-                  style={{
-                    color: t.gold,
-                    filter: `drop-shadow(0 0 10px ${t.gold})`,
-                  }}
-                >
-                  ✦
-                </span>
               </h2>
             </div>
 

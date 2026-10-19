@@ -32,14 +32,6 @@ export default function DevelopersPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-3xl flex flex-col items-center text-center">
-        {/* Header Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-[var(--accent-primary,#d4a843)]/35 bg-[var(--accent-primary,#d4a843)]/10 mb-6 shadow-[0_0_20px_rgba(212,168,67,0.15)]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary,#d4a843)] animate-pulse" />
-          <span className="font-mono text-[10px] sm:text-xs tracking-[0.28em] uppercase text-[var(--accent-primary,#d4a843)] font-semibold">
-            Citadel Architecture
-          </span>
-        </div>
-
         <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-wider text-[#f8eed9] uppercase mb-12 sm:mb-16">
           Developers
         </h1>

@@ -417,7 +417,7 @@ export const CATEGORY_TABS: CategoryTabItem[] = [
   {
     id: "ALL",
     label: "ALL ARENAS",
-    tagline: "The complete dossier of TechSrijan XXVII championships across all domains.",
+    tagline: "The complete dossier of TechSrijan across all domains.",
     glowColor: "rgba(255, 255, 255, 0.4)",
   },
   {

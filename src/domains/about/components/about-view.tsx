@@ -180,11 +180,11 @@ export function AboutView() {
               fill
               priority
               sizes="100vw"
-              className="object-cover object-center brightness-[0.4] contrast-[1.15]"
+              className="object-cover object-center brightness-[0.78] contrast-[1.08]"
             />
-            {/* Deep Vignette Scrim Overlays to guarantee zero visual text clash */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/80" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)]" />
+            {/* Balanced Vignette Scrim Overlays: rich cinematic atmosphere with readable text */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/60" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_25%,rgba(0,0,0,0.55)_100%)]" />
           </div>
 
           {/* ── STAGE 1: "WE ARE" + TS27 WHITE TEXT GRAPHIC ── */}
@@ -202,13 +202,13 @@ export function AboutView() {
             </h1>
 
             {/* Stylized White TS27 Emblem Graphic */}
-            <div className="relative w-[320px] xs:w-[420px] sm:w-[560px] md:w-[680px] max-w-[92vw] h-[160px] sm:h-[220px] md:h-[260px] my-2 sm:my-3 flex items-center justify-center">
+            <div className="relative w-[300px] xs:w-[420px] sm:w-[560px] md:w-[700px] lg:w-[820px] max-w-[92vw] aspect-[2939/556] my-3 sm:my-5 flex items-center justify-center">
               <Image
                 src="/TS27 white Text.png"
                 alt="TechSrijan '27"
                 fill
                 priority
-                sizes="(max-width: 768px) 90vw, 680px"
+                sizes="(max-width: 768px) 92vw, (max-width: 1200px) 700px, 820px"
                 className="object-contain filter drop-shadow-[0_0_35px_rgba(255,255,255,0.4)] drop-shadow-[0_12px_30px_rgba(0,0,0,0.95)]"
               />
             </div>

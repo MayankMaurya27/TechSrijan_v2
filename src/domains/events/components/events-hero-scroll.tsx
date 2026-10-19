@@ -585,8 +585,8 @@ export function EventsHeroScroll({
             className="absolute inset-0 pointer-events-none z-10"
             style={{
               background: isMobile
-                ? "linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.65) 100%)"
-                : "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.3) 60%, transparent 100%)",
+                ? "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.5) 100%)"
+                : "linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 30%, rgba(0,0,0,0.15) 60%, transparent 100%)",
               opacity: Math.max(0, 1 - scrollProgress * 2.8),
             }}
           />

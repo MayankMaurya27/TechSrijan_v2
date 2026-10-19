@@ -17,7 +17,7 @@ export interface Club {
   slotNumber: string;
   shortName: string;
   fullName: string;
-  tagline: string;
+  tagline?: string;
   eventCount: number;
   color: string;
   logo: string;
@@ -31,7 +31,6 @@ export const CLUBS: Club[] = [
     slotNumber: "01",
     shortName: "TSC",
     fullName: "TechSrijan Core",
-    tagline: "The cultural vanguard — cosplay, science exhibitions & flagship campus events.",
     eventCount: 4,
     color: "crimson",
     logo: getOptimizedImageUrl("/club-logos/techrijan-logo.png", 320),
@@ -43,7 +42,7 @@ export const CLUBS: Club[] = [
     slotNumber: "02",
     shortName: "RESO",
     fullName: "MMMUT RESO",
-    tagline: "Resonance — the premier coding arena powering Mantrastra & beyond.",
+    tagline: "Playground For Problem Solvers",
     eventCount: 1,
     color: "amber",
     logo: "/club-logos/reso-logo.jpg",
@@ -55,7 +54,6 @@ export const CLUBS: Club[] = [
     slotNumber: "03",
     shortName: "IEEE-STB",
     fullName: "IEEE-STB MMMUT",
-    tagline: "Technical excellence across robotics, software, hardware & innovation.",
     eventCount: 8,
     color: "blue",
     logo: getOptimizedImageUrl("/club-logos/ieee-logo.png", 320),
@@ -67,7 +65,6 @@ export const CLUBS: Club[] = [
     slotNumber: "04",
     shortName: "RC",
     fullName: "Robotics Club",
-    tagline: "Battle-tested machines — RoboWar, Laser Strike, CTF & arena combat.",
     eventCount: 6,
     color: "emerald",
     logo: getOptimizedImageUrl("/club-logos/robotics-logo.png", 320),
@@ -79,7 +76,6 @@ export const CLUBS: Club[] = [
     slotNumber: "05",
     shortName: "SAE",
     fullName: "SAE Collegiate, MMMUT Chapter",
-    tagline: "Engineering design mastery — CAD, bridge-building & precision challenges.",
     eventCount: 4,
     color: "violet",
     logo: "/club-logos/sae-logo.png",
@@ -185,9 +181,11 @@ function ClubCard({
             <p className="mt-0.5 sm:mt-1 font-mono text-[6.5px] sm:text-[8.5px] tracking-[0.1em] text-neutral-300 uppercase leading-tight line-clamp-1 max-w-[95%]">
               {club.fullName}
             </p>
-            <p className="mt-1 sm:mt-1.5 font-sans text-[7.5px] sm:text-[9.5px] md:text-[10px] text-neutral-400 group-hover:text-neutral-200 leading-snug line-clamp-2 transition-colors duration-300 max-w-[95%]">
-              {club.tagline}
-            </p>
+            {club.tagline && (
+              <p className="mt-1 sm:mt-1.5 font-sans text-[7.5px] sm:text-[9.5px] md:text-[10px] text-neutral-400 group-hover:text-neutral-200 leading-snug line-clamp-2 transition-colors duration-300 max-w-[95%]">
+                {club.tagline}
+              </p>
+            )}
           </div>
 
           {/* ── Divider ── */}

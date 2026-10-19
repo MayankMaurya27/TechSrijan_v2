@@ -709,6 +709,31 @@ html[data-theme="arrakis"] [data-ember-effect="true"] {
   animation: specularSheen 7s ease-in-out infinite;
 }
 
+@keyframes logoSheenSlide {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.9;
+  }
+  32% {
+    opacity: 0.95;
+  }
+  38% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.animate-logo-sheen {
+  animation: logoSheenSlide 5.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 @keyframes neonBorderTravel {
   0% {
     stroke-dashoffset: 0;

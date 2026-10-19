@@ -187,7 +187,7 @@ export function AboutView() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_25%,rgba(0,0,0,0.55)_100%)]" />
           </div>
 
-          {/* ── STAGE 1: "WE ARE" + TS27 WHITE TEXT GRAPHIC ── */}
+          {/* ── STAGE 1: "WE ARE" + TS27 WHITE TEXT GRAPHIC + ECLIPSE GLOW & SPECULAR SHEEN ── */}
           <div
             style={{
               opacity: weAreOpacity,
@@ -197,20 +197,80 @@ export function AboutView() {
             }}
             className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 sm:px-6 text-center select-none transition-all duration-200 ease-out"
           >
-            <h1 className="font-montserrat font-black text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] uppercase text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.95)]">
+            {/* ── THEMATIC ECLIPSE BACKLIGHT (Pulsing Ambient Solar Halo) ── */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
+              {/* Outer Volumetric Corona: Broad atmospheric diffusion */}
+              <div
+                className="absolute w-[360px] sm:w-[560px] md:w-[760px] lg:w-[960px] h-[180px] sm:h-[260px] md:h-[340px] rounded-full blur-[80px] sm:blur-[120px] pointer-events-none transition-all duration-700 animate-pulse"
+                style={{
+                  background: `radial-gradient(ellipse at center, ${theme.accentGlow} 0%, ${theme.accentSecondary}35 45%, transparent 75%)`,
+                  animationDuration: "5s",
+                }}
+              />
+
+              {/* Core Solar Corona: Intense warm light centered directly behind the eclipse & logo */}
+              <div
+                className="absolute w-[200px] sm:w-[320px] md:w-[460px] h-[100px] sm:h-[150px] md:h-[200px] rounded-full blur-[35px] sm:blur-[60px] pointer-events-none transition-all duration-700 animate-pulse"
+                style={{
+                  background: `radial-gradient(ellipse at center, ${theme.accentBright} 0%, ${theme.accent} 50%, transparent 72%)`,
+                  opacity: 0.8,
+                  animationDuration: "3.5s",
+                }}
+              />
+
+              {/* Eclipse Coronal Ring: Faint celestial halo around the eclipsed sun */}
+              <div
+                className="absolute w-[220px] sm:w-[320px] md:w-[440px] h-[220px] sm:h-[320px] md:h-[440px] rounded-full pointer-events-none border border-white/10 blur-[1px] animate-[spin_60s_linear_infinite]"
+                style={{
+                  borderColor: `${theme.accent}30`,
+                  boxShadow: `0 0 35px ${theme.accentGlow}`,
+                  opacity: 0.4,
+                }}
+              />
+            </div>
+
+            <h1 className="font-montserrat font-black text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] uppercase text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.95)] drop-shadow-[0_0_20px_rgba(255,255,255,0.25)]">
               WE ARE
             </h1>
 
-            {/* Stylized White TS27 Emblem Graphic */}
+            {/* Stylized White TS27 Emblem Graphic with Specular Sheen & Dynamic Theme Glow */}
             <div className="relative w-[300px] xs:w-[420px] sm:w-[560px] md:w-[700px] lg:w-[820px] max-w-[92vw] aspect-[2939/556] my-3 sm:my-5 flex items-center justify-center">
+              {/* Base Logo Image with Thematic Ambient Rim Glow */}
               <Image
                 src="/TS27 white Text.png"
                 alt="TechSrijan '27"
                 fill
                 priority
                 sizes="(max-width: 768px) 92vw, (max-width: 1200px) 700px, 820px"
-                className="object-contain filter drop-shadow-[0_0_35px_rgba(255,255,255,0.4)] drop-shadow-[0_12px_30px_rgba(0,0,0,0.95)]"
+                className="object-contain transition-all duration-500"
+                style={{
+                  filter: `drop-shadow(0 0 20px ${theme.accentGlow}) drop-shadow(0 0 45px rgba(255,255,255,0.35)) drop-shadow(0 12px 30px rgba(0,0,0,0.95))`,
+                }}
               />
+
+              {/* Specular Light Sweep Overlay: Alpha-masked to the exact contours of the letterforms */}
+              <div
+                className="absolute inset-0 pointer-events-none z-10 overflow-hidden"
+                style={{
+                  maskImage: "url('/TS27 white Text.png')",
+                  WebkitMaskImage: "url('/TS27 white Text.png')",
+                  maskSize: "contain",
+                  WebkitMaskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  WebkitMaskRepeat: "no-repeat",
+                  maskPosition: "center",
+                  WebkitMaskPosition: "center",
+                  mixBlendMode: "screen",
+                }}
+              >
+                {/* Luminous High-Intensity Light Beam Traversing Across the Letters */}
+                <div
+                  className="w-full h-full pointer-events-none animate-logo-sheen"
+                  style={{
+                    background: `linear-gradient(110deg, transparent 30%, ${theme.accentSecondary}25 40%, rgba(255,255,255,0.7) 47%, #ffffff 50%, ${theme.accentBright} 53%, ${theme.accentSecondary}25 60%, transparent 70%)`,
+                  }}
+                />
+              </div>
             </div>
 
             <p className="font-mono text-xs sm:text-sm tracking-[0.2em] text-neutral-300 uppercase max-w-xl drop-shadow-md">

@@ -94,10 +94,16 @@ export function SignInRouteModal({
           : "/profile";
       localStorage.setItem("ts27_auth_return_url", returnPath);
     }
+    const ssoPortal =
+      process.env.NEXT_PUBLIC_MMMUT_SSO_PORTAL_URL || "https://mmmut.xyz/auth/Login";
+    const clientId =
+      process.env.NEXT_PUBLIC_MMMUT_SSO_CLIENT_ID || "techsrijan";
     const callbackUrl = `${origin}/auth/callback?provider=mmmut`;
-    window.location.href = `https://mmmut.xyz/auth/Login?client_id=techsrijan&callbackUrl=${encodeURIComponent(
+    window.location.href = `${ssoPortal}?client_id=${encodeURIComponent(
+      clientId
+    )}&redirect_uri=${encodeURIComponent(callbackUrl)}&callbackUrl=${encodeURIComponent(
       callbackUrl
-    )}&redirect_uri=${encodeURIComponent(callbackUrl)}`;
+    )}`;
   };
 
   const handleGoogleSignIn = () => {

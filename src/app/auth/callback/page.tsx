@@ -28,6 +28,7 @@ function AuthCallbackContent() {
     const processCallback = async () => {
       try {
         const provider = searchParams.get("provider") || "oauth";
+        const code = searchParams.get("code");
         const token = searchParams.get("token");
         const userParam = searchParams.get("user");
         const error = searchParams.get("error");
@@ -39,7 +40,88 @@ function AuthCallbackContent() {
 
         setStatusText(`Authorizing ${provider === "mmmut" ? "MMMUT Campus" : "Google"} directive...`);
 
-        // Case 1: Token provided in URL
+        // Case 1: Primary MMMUT SSO Code Verification (from mmmut.xyz / backend.mmmut.xyz)
+        if (code) {
+          setStatusText("Verifying clearance with MMMUT university portal...");
+
+          const verifyUrl =
+            process.env.NEXT_PUBLIC_MMMUT_SSO_VERIFY_URL ||
+            "https://backend.mmmut.xyz/api/student/sso/verify";
+
+          let verifyRes: Response;
+          try {
+            verifyRes = await fetch(verifyUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ code }),
+            });
+          } catch (fetchErr: any) {
+            throw new Error(`Unable to reach university verification service: ${fetchErr.message || "Network error"}`);
+          }
+
+          let verifyData: any;
+          try {
+            verifyData = await verifyRes.json();
+          } catch {
+            throw new Error(`University portal returned unexpected response (status ${verifyRes.status})`);
+          }
+
+          if (!verifyRes.ok || !verifyData.success || !verifyData.user) {
+            const serverMsg = verifyData?.message || "Invalid or expired authorization code";
+            if (typeof serverMsg === "string" && serverMsg.toLowerCase().includes("expired")) {
+              throw new Error("University authentication code expired (30s limit). Please return and sign in again.");
+            }
+            if (typeof serverMsg === "string" && serverMsg.toLowerCase().includes("invalid")) {
+              throw new Error("University authorization ticket was already used or invalid. Please sign in again.");
+            }
+            throw new Error(`MMMUT verification failed: ${serverMsg}`);
+          }
+
+          const ssoUser = verifyData.user;
+          const studentRoll = ssoUser.id || ssoUser.urollno;
+          const studentEmail = (
+            ssoUser.email ||
+            (studentRoll ? `${studentRoll.toLowerCase()}@mmmut.ac.in` : "")
+          ).toLowerCase().trim();
+          const studentName =
+            ssoUser.name ||
+            (studentRoll ? `Student (${studentRoll.toUpperCase()})` : "MMMUT Student");
+
+          setStatusText("Establishing TechSrijan festival clearance...");
+
+          // Persist user and obtain official session clearance from PostgreSQL
+          const authRes = await api.auth.oauthLogin({
+            email: studentEmail,
+            name: studentName,
+            rollNumber: studentRoll ? studentRoll.toUpperCase() : null,
+            provider: "mmmut",
+          });
+
+          const loggedInUser = authRes.user;
+          setUserName(loggedInUser.name);
+
+          // Update global session across application
+          window.dispatchEvent(new Event("storage"));
+          await refreshUser();
+
+          const savedReturnUrl = localStorage.getItem("ts27_auth_return_url");
+          if (savedReturnUrl) localStorage.removeItem("ts27_auth_return_url");
+          const destination =
+            loggedInUser && !loggedInUser.isOnboarded
+              ? "/onboarding"
+              : savedReturnUrl || "/profile";
+
+          setRedirectPath(destination);
+          setStatus("success");
+          setStatusText(`MMMUT Campus Directive Authorized: Welcome, ${loggedInUser.name}!`);
+
+          setTimeout(() => {
+            router.replace(destination);
+          }, 1200);
+          return;
+        }
+
+        // Case 2: Token provided in URL
         if (token) {
           localStorage.setItem("ts27_token", token);
 

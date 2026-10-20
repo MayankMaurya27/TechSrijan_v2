@@ -1021,7 +1021,7 @@ export default function AccommodationPage() {
               scrollToStageProgress(0);
             }
           }}
-          className={`absolute z-30 inset-0 flex items-center justify-center px-3 sm:px-6 lg:px-8 py-4 sm:py-6 will-change-transform ${
+          className={`absolute z-30 inset-0 flex items-center justify-center px-3 sm:px-6 lg:px-8 pt-24 sm:pt-28 md:pt-32 pb-6 sm:pb-8 will-change-transform ${
             scrollProgress >= 0.35 ? "pointer-events-auto" : "pointer-events-none"
           }`}
           style={{ perspective: "1200px" }}
@@ -1030,7 +1030,7 @@ export default function AccommodationPage() {
           <div
             ref={formCardRef}
             data-lenis-prevent
-            className="relative w-full max-w-3xl max-h-[85vh] sm:max-h-[88vh] overflow-y-auto rounded-lg bg-[#07080b]/95 backdrop-blur-2xl border border-white/[0.09] p-4 sm:p-8 pb-8 shadow-[0_25px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.06)]"
+            className="relative w-full max-w-2xl lg:max-w-3xl max-h-[calc(100vh-7.5rem)] sm:max-h-[calc(100vh-9rem)] overflow-y-auto rounded-xl bg-[#07080b]/95 backdrop-blur-2xl border border-white/15 p-5 sm:p-8 pb-8 shadow-[0_25px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.08)]"
           >
             {/* Mobile Sheet Pull-Down Grab Handle (quick return) */}
             <div className="flex sm:hidden flex-col items-center gap-1 pb-2 -mt-1">

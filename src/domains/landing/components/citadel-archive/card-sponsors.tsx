@@ -123,21 +123,23 @@ export function CardSponsors({
         )}
 
         {/* Carousel Dots Indicator */}
-        <div className="flex items-center gap-1.5 mt-2">
-          {sponsors.map((sp, idx) => (
-            <button
-              key={sp.id}
-              type="button"
-              onClick={() => onSelectSponsor(idx)}
-              className={`transition-all duration-300 rounded-full ${
-                idx === activeSponsorIndex
-                  ? `w-4 h-1 ${theme.dotActive}`
-                  : `w-1.5 h-1 ${theme.dotInactive}`
-              }`}
-              aria-label={`Show ${sp.name}`}
-            />
-          ))}
-        </div>
+        {sponsors.length > 1 && (
+          <div className="flex items-center gap-1.5 mt-2">
+            {sponsors.map((sp, idx) => (
+              <button
+                key={sp.id}
+                type="button"
+                onClick={() => onSelectSponsor(idx)}
+                className={`transition-all duration-300 rounded-full ${
+                  idx === activeSponsorIndex
+                    ? `w-4 h-1 ${theme.dotActive}`
+                    : `w-1.5 h-1 ${theme.dotInactive}`
+                }`}
+                aria-label={`Show ${sp.name}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Bottom Action Button */}

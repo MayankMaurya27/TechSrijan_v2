@@ -310,12 +310,7 @@ export function SignInRouteModal({
 
         {/* HEADER SECTION */}
         <div className="relative z-10 text-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#caa462]/30 bg-[#caa462]/5 mb-2.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-            <span className="font-mono text-[10px] tracking-[0.25em] text-[#caa462] uppercase">
-              TECHSRIJAN // CLEARANCE PROTOCOL
-            </span>
-          </div>
+          
 
           <h2 className="font-montserrat text-2xl sm:text-3xl md:text-4xl font-black text-[#f7f2ea] tracking-tight uppercase">
             {view === "choose"

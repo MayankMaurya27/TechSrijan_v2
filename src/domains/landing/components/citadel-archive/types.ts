@@ -218,31 +218,13 @@ export interface SponsorItem {
 
 export const SPONSORS_SHOWCASE: SponsorItem[] = [
   {
-    id: "imperium",
-    name: "IMPERIUM TECHNOLOGIES",
+    id: "revealing-soon",
+    name: "REVEALING SOON",
     tier: "TITLE SPONSOR",
-    tagline: "Apex Strategic Patron",
-    image: getOptimizedImageUrl("/images/sponsors/cp-1.webp", 400),
+    tagline: "techsrijan.org",
+    image: getOptimizedImageUrl("/images/sponsors/3-sigil.webp", 400),
     accent: "#FFE600",
     glow: "rgba(255, 230, 0, 0.9)",
-  },
-  {
-    id: "robokriti",
-    name: "ROBOKRITI ROBOTICS",
-    tier: "POWERED BY SPONSOR",
-    tagline: "Robotics Arena Partner",
-    image: getOptimizedImageUrl("/images/sponsors/cp-2.webp", 400),
-    accent: "#F59E0B",
-    glow: "rgba(245, 158, 11, 0.9)",
-  },
-  {
-    id: "purvanchal",
-    name: "PURVANCHAL TECH NEXUS",
-    tier: "ASSOCIATE SPONSOR",
-    tagline: "Regional Technology Syndicate",
-    image: getOptimizedImageUrl("/images/sponsors/3-sigil.webp", 400),
-    accent: "#EF4444",
-    glow: "rgba(239, 68, 68, 0.9)",
   },
 ];
 

@@ -14,7 +14,7 @@ export type ClubId =
 
 export interface Club {
   id: ClubId;
-  slotNumber: string;
+  slotNumber?: string;
   shortName: string;
   fullName: string;
   tagline?: string;
@@ -27,15 +27,15 @@ export interface Club {
 
 export const CLUBS: Club[] = [
   {
-    id: "tsc",
+    id: "ieee-stb",
     slotNumber: "01",
-    shortName: "TSC",
-    fullName: "TechSrijan Core",
-    eventCount: 4,
-    color: "crimson",
-    logo: getOptimizedImageUrl("/club-logos/techrijan-logo.png", 320),
-    watermarkLogo: getOptimizedImageUrl("/club-logos/techrijan-logo.png", 320),
-    glowColor: "rgba(220, 38, 38, 0.5)",
+    shortName: "IEEE-STB",
+    fullName: "IEEE-STB MMMUT",
+    eventCount: 8,
+    color: "blue",
+    logo: getOptimizedImageUrl("/club-logos/ieee-logo.png", 320),
+    watermarkLogo: getOptimizedImageUrl("/club-logos/ieee-logo.png", 320),
+    glowColor: "rgba(59, 130, 246, 0.5)",
   },
   {
     id: "mmmut-reso",
@@ -50,19 +50,18 @@ export const CLUBS: Club[] = [
     glowColor: "rgba(56, 189, 248, 0.5)",
   },
   {
-    id: "ieee-stb",
-    slotNumber: "03",
-    shortName: "IEEE-STB",
-    fullName: "IEEE-STB MMMUT",
-    eventCount: 8,
-    color: "blue",
-    logo: getOptimizedImageUrl("/club-logos/ieee-logo.png", 320),
-    watermarkLogo: getOptimizedImageUrl("/club-logos/ieee-logo.png", 320),
-    glowColor: "rgba(59, 130, 246, 0.5)",
+    id: "tsc",
+    shortName: "TSC",
+    fullName: "TechSrijan Core",
+    eventCount: 4,
+    color: "crimson",
+    logo: getOptimizedImageUrl("/club-logos/techrijan-logo.png", 320),
+    watermarkLogo: getOptimizedImageUrl("/club-logos/techrijan-logo.png", 320),
+    glowColor: "rgba(220, 38, 38, 0.5)",
   },
   {
     id: "robotics",
-    slotNumber: "04",
+    slotNumber: "03",
     shortName: "RC",
     fullName: "Robotics Club",
     eventCount: 6,
@@ -73,7 +72,7 @@ export const CLUBS: Club[] = [
   },
   {
     id: "sae",
-    slotNumber: "05",
+    slotNumber: "04",
     shortName: "SAE",
     fullName: "SAE Collegiate, MMMUT Chapter",
     eventCount: 4,
@@ -101,12 +100,16 @@ function ClubCard({
   club: Club;
   idx: number;
 }) {
+  const isTsc = club.id === "tsc";
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.88, y: 28 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.45, delay: idx * 0.07, ease: "easeOut" }}
-      className="relative cursor-default group flex items-center justify-center select-none w-[108px] sm:w-[140px] md:w-[170px] lg:w-[210px] xl:w-[230px]"
+      className={`relative cursor-default group flex items-center justify-center select-none w-[108px] sm:w-[140px] md:w-[170px] lg:w-[210px] xl:w-[230px] ${
+        isTsc ? "md:scale-[1.06] md:-translate-y-2.5 z-20" : "z-10"
+      }`}
     >
       <div className="relative w-full aspect-[2/3] max-h-[36vh] sm:max-h-[46vh] md:max-h-[64vh] flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-2">
         {/* Dark Glass Interior */}
@@ -135,12 +138,16 @@ function ClubCard({
           </div>
 
           {/* ── Slot Eyebrow ── */}
-          <div className="flex items-center justify-between gap-1 relative z-10">
-            <span className="font-mono text-[7px] sm:text-[9.5px] tracking-[0.2em] sm:tracking-[0.25em] text-neutral-400 uppercase">
-              CLUB // {club.slotNumber}
-            </span>
-            <div className="h-[1px] flex-1 max-w-[14px] sm:max-w-[26px] bg-gradient-to-r from-white/30 to-transparent" />
-          </div>
+          {club.slotNumber ? (
+            <div className="flex items-center justify-between gap-1 relative z-10">
+              <span className="font-mono text-[7px] sm:text-[9.5px] tracking-[0.2em] sm:tracking-[0.25em] text-neutral-400 uppercase">
+                CLUB // {club.slotNumber}
+              </span>
+              <div className="h-[1px] flex-1 max-w-[14px] sm:max-w-[26px] bg-gradient-to-r from-white/30 to-transparent" />
+            </div>
+          ) : (
+            <div className="h-[12px] sm:h-[15px]" />
+          )}
 
           {/* ── Club Medallion Crest & Titles ── */}
           <div className="relative z-10 my-auto py-0.5 sm:py-1 flex flex-col items-center text-center">
@@ -308,9 +315,9 @@ export function ArenaSpatialCards({
 
         {/* 2x2 Grid with Left & Right Collapse Refs */}
         <div className="w-full grid grid-cols-2 gap-2">
-          {/* Left Column Mobile (TSC, IEEE) */}
+          {/* Left Column Mobile (IEEE, RESO) */}
           <div ref={leftCardsRef} className="flex flex-col gap-2 will-change-transform">
-            {[CLUBS[0], CLUBS[2]].map((club) => (
+            {[CLUBS[0], CLUBS[1]].map((club) => (
               <div
                 key={club.id}
                 className="relative cursor-default select-none rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
@@ -327,9 +334,11 @@ export function ArenaSpatialCards({
                     className="w-full h-full object-contain rounded-full"
                   />
                 </div>
-                <span className="font-mono text-[7.5px] tracking-[0.15em] text-white/60 uppercase">
-                  CLUB // {club.slotNumber}
-                </span>
+                {club.slotNumber && (
+                  <span className="font-mono text-[7.5px] tracking-[0.15em] text-white/60 uppercase">
+                    CLUB // {club.slotNumber}
+                  </span>
+                )}
                 <span className="font-bebas text-base tracking-wider text-white uppercase leading-none mt-0.5">
                   {club.shortName}
                 </span>
@@ -340,9 +349,9 @@ export function ArenaSpatialCards({
             ))}
           </div>
 
-          {/* Right Column Mobile (RESO, RC) */}
+          {/* Right Column Mobile (RC, SAE) */}
           <div ref={rightCardsRef} className="flex flex-col gap-2 will-change-transform">
-            {[CLUBS[1], CLUBS[3]].map((club) => (
+            {[CLUBS[3], CLUBS[4]].map((club) => (
               <div
                 key={club.id}
                 className="relative cursor-default select-none rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
@@ -359,9 +368,11 @@ export function ArenaSpatialCards({
                     className="w-full h-full object-contain rounded-full"
                   />
                 </div>
-                <span className="font-mono text-[7.5px] tracking-[0.15em] text-white/60 uppercase">
-                  CLUB // {club.slotNumber}
-                </span>
+                {club.slotNumber && (
+                  <span className="font-mono text-[7.5px] tracking-[0.15em] text-white/60 uppercase">
+                    CLUB // {club.slotNumber}
+                  </span>
+                )}
                 <span className="font-bebas text-base tracking-wider text-white uppercase leading-none mt-0.5">
                   {club.shortName}
                 </span>
@@ -373,35 +384,32 @@ export function ArenaSpatialCards({
           </div>
         </div>
 
-        {/* 5th Club (SAE) full-width centered card inside centerCardRef */}
+        {/* Central Apex Highlight Card (TSC - Index 2) */}
         <div ref={centerCardRef} className="w-full mt-2 will-change-transform">
           <div
-            className="relative cursor-default select-none rounded-xl bg-black/85 border border-white/15 p-2.5 flex items-center justify-between shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
+            className="relative cursor-default select-none rounded-xl bg-black/90 border border-red-500/35 p-2.5 flex items-center justify-between shadow-[0_4px_22px_rgba(220,38,38,0.35)] backdrop-blur-md overflow-hidden"
           >
             <div className="flex items-center gap-2.5">
               <div
-                className="w-9 h-9 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 shrink-0"
-                style={{ boxShadow: `0 0 12px ${CLUBS[4].glowColor}` }}
+                className="w-9 h-9 rounded-full p-1 flex items-center justify-center border border-red-500/40 bg-black/60 shrink-0"
+                style={{ boxShadow: `0 0 14px ${CLUBS[2].glowColor}` }}
               >
                 <img
                   loading="lazy"
                   decoding="async"
-                  src={CLUBS[4].logo}
-                  alt={CLUBS[4].shortName}
+                  src={CLUBS[2].logo}
+                  alt={CLUBS[2].shortName}
                   className="w-full h-full object-contain rounded-full"
                 />
               </div>
               <div className="text-left">
-                <span className="font-mono text-[7.5px] tracking-[0.15em] text-white/60 uppercase block">
-                  CLUB // {CLUBS[4].slotNumber}
-                </span>
                 <span className="font-bebas text-base tracking-wider text-white uppercase">
-                  {CLUBS[4].shortName} · {CLUBS[4].fullName}
+                  {CLUBS[2].shortName} · {CLUBS[2].fullName}
                 </span>
               </div>
             </div>
-            <span className="px-2 py-0.5 rounded-full bg-white/10 text-[7px] font-mono tracking-wider text-neutral-300 uppercase shrink-0">
-              {CLUBS[4].eventCount} EVENTS
+            <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 text-[7px] font-mono tracking-wider uppercase shrink-0 border border-red-500/30">
+              {CLUBS[2].eventCount} EVENTS
             </span>
           </div>
         </div>
@@ -413,7 +421,7 @@ export function ArenaSpatialCards({
             onClick={onExploreEvents}
             className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-white text-black font-mono text-[10px] font-bold tracking-[0.2em] uppercase rounded-lg active:scale-95 transition-all shadow-[0_0_15px_rgba(255,255,255,0.25)] cursor-pointer"
           >
-            <span>EXPLORE ALL 23 EVENTS</span>
+            <span>EXPLORE ALL EVENTS</span>
             <ChevronDown className="w-3.5 h-3.5 animate-bounce" />
           </button>
         </div>

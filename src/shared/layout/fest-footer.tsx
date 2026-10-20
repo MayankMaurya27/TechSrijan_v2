@@ -69,8 +69,8 @@ export function FestFooter({ className = "" }: { className?: string }) {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-16 border-b transition-colors duration-300"
           style={{ borderColor: pageTheme.border }}
         >
-          {/* Col 1: Brand & Socials (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* Col 1: Brand & Socials (6 cols) */}
+          <div className="lg:col-span-6 space-y-6">
             <div>
               <Link href="/" className="inline-flex items-center gap-2 group">
                 <span className="font-montserrat font-black text-2xl sm:text-3xl tracking-wider text-white uppercase">
@@ -132,8 +132,8 @@ export function FestFooter({ className = "" }: { className?: string }) {
             </div>
           </div>
 
-          {/* Col 2: Quick Links (2 cols) */}
-          <div className="lg:col-span-2 space-y-4">
+          {/* Col 2: Quick Links (3 cols) */}
+          <div className="lg:col-span-3 space-y-4">
             <div
               className="flex items-center gap-2 font-bebas text-base tracking-[0.2em] uppercase transition-colors duration-300"
               style={{ color: pageTheme.accent }}
@@ -144,6 +144,9 @@ export function FestFooter({ className = "" }: { className?: string }) {
             <ul className="space-y-2.5 text-sm font-geist text-zinc-300">
               <li>
                 <Link href="/" className="hover:text-white transition-colors">Home</Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
               </li>
               <li>
                 <Link href="/events" className="hover:text-white transition-colors">Events</Link>
@@ -157,32 +160,7 @@ export function FestFooter({ className = "" }: { className?: string }) {
             </ul>
           </div>
 
-          {/* Col 3: Useful Links (2 cols) */}
-          <div className="lg:col-span-2 space-y-4">
-            <div
-              className="flex items-center gap-2 font-bebas text-base tracking-[0.2em] uppercase transition-colors duration-300"
-              style={{ color: pageTheme.accent }}
-            >
-              <span>✦</span>
-              <span>USEFUL LINKS</span>
-            </div>
-            <ul className="space-y-2.5 text-sm font-geist text-zinc-300">
-              <li>
-                <Link href="/about" className="hover:text-white transition-colors">About TechSrijan</Link>
-              </li>
-              <li>
-                <Link href="/rules" className="hover:text-white transition-colors">Code of Conduct</Link>
-              </li>
-              <li>
-                <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-              </li>
-              <li>
-                <Link href="/team" className="hover:text-white transition-colors">Core Team Roster</Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 4: Get In Touch (3 cols) */}
+          {/* Col 3: Get In Touch (3 cols) */}
           <div className="lg:col-span-3 space-y-4">
             <div
               className="flex items-center gap-2 font-bebas text-base tracking-[0.2em] uppercase transition-colors duration-300"
@@ -237,7 +215,7 @@ export function FestFooter({ className = "" }: { className?: string }) {
           </div>
 
           <div className="flex items-center gap-1.5 text-zinc-400 font-medium">
-            <span>Technical Sub Council (TSC) • MMMUT Gorakhpur</span>
+            <span>Website Powered By MMMUT RESO</span>
           </div>
         </div>
       </div>

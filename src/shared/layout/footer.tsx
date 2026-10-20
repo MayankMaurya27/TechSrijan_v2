@@ -15,7 +15,7 @@ export function Footer() {
             TECHSRIJAN&apos;27 — IMPERIUM: REQUIEM
           </span>
           <p className="mt-1 text-[11px] text-[var(--text-muted)]">
-            Technical Sub Council (TSC) • Madan Mohan Malaviya University of Technology, Gorakhpur
+            Website Powered By MMMUT RESO
           </p>
           <p className="mt-0.5 text-[10px] text-[var(--text-muted)]">
             Conducted under TSC by MMMUT RESO • SAE MMMUT • IEEE MMMUT • RC (Robotics Club) MMMUT

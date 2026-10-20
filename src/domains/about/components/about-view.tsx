@@ -320,14 +320,11 @@ export function AboutView() {
               {/* Exact User Text Block */}
               <p className="font-sans text-sm sm:text-base md:text-lg lg:text-xl font-normal text-neutral-100 leading-relaxed max-w-3xl mx-auto drop-shadow-md">
                 TechSrijan is the flagship annual techno-management festival of{" "}
-                <span
-                  className="text-white font-bold underline decoration-2 underline-offset-4"
-                  style={{ textDecorationColor: theme.accent }}
-                >
+                <span className="text-white font-bold whitespace-nowrap inline-block">
                   Madan Mohan Malaviya University of Technology (MMMUT)
                 </span>{" "}
                 Gorakhpur, bringing together technology, innovation, coding, robotics and creative
-                competition with 25K+ expected footfall nationwide, Governed by the Technical
+                competition with 15K+ expected footfall nationwide, Governed by the Technical
                 Sub-Council under the Council of Student Activities (CSA).
               </p>
 
@@ -448,12 +445,14 @@ export function AboutView() {
                   {/* Concise Narrative */}
                   <div className={`lg:col-span-8 ${isEven ? "lg:order-1" : "lg:order-2"}`}>
                     <div className="space-y-3.5">
-                      <div
-                        className="font-bebas text-sm sm:text-base tracking-[0.2em] uppercase"
-                        style={{ color: patron.accent }}
-                      >
-                        {patron.kicker}
-                      </div>
+                      {patron.kicker && (
+                        <div
+                          className="font-bebas text-sm sm:text-base tracking-[0.2em] uppercase"
+                          style={{ color: patron.accent }}
+                        >
+                          {patron.kicker}
+                        </div>
+                      )}
 
                       <h3 className="text-2xl sm:text-4xl font-montserrat font-black tracking-tight text-white leading-tight">
                         {patron.name}
@@ -564,13 +563,13 @@ export function AboutView() {
             className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase mb-2"
             style={{ color: theme.accent }}
           >
-            GOVERNING BODIES &amp; CHAPTERS
+            CLUBS &amp; CHAPTERS
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-montserrat font-black tracking-tight text-white uppercase leading-tight">
-            Technical Sub-Council &amp; Specialist Societies
+            Clubs Under Technical Sub-Council
           </h2>
           <p className="mt-3 text-sm sm:text-base text-neutral-300 font-sans leading-relaxed max-w-2xl mx-auto">
-            Operating under apex faculty mentorship to conduct university-level engineering championships.
+            Operating under the Technical Sub-Council (TSC) to organize and power all arenas, engineering championships, and flagship events of TechSrijan.
           </p>
         </div>
 

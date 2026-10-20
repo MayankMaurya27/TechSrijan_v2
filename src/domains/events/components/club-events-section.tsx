@@ -416,8 +416,8 @@ export interface CategoryTabItem {
 export const CATEGORY_TABS: CategoryTabItem[] = [
   {
     id: "ALL",
-    label: "ALL ARENAS",
-    tagline: "The complete dossier of TechSrijan across all domains.",
+    label: "EVENTS",
+    tagline: "",
     glowColor: "rgba(255, 255, 255, 0.4)",
   },
   {
@@ -874,18 +874,7 @@ export function ClubEventsSection({
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
-            {onReturnToArena && (
-              <button
-                type="button"
-                onClick={onReturnToArena}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-[10px] uppercase tracking-wider transition-all border border-white/20 bg-black/60 hover:bg-white hover:text-black text-white/80 cursor-pointer active:scale-95 shadow-[0_0_10px_rgba(255,255,255,0.1)]"
-                title="Return to Arena Overview"
-              >
-                <ArrowUp className="w-3 h-3 text-white" />
-                <span className="hidden sm:inline">Back to Arena</span>
-                <span className="sm:hidden">Arena</span>
-              </button>
-            )}
+            
 
             {/* View Mode Toggle: Orbit Circle vs Grid */}
             <div className="flex items-center gap-0.5 sm:gap-1 p-0.5 sm:p-1 bg-black/60 rounded-lg sm:rounded-xl border border-white/15">
@@ -943,9 +932,11 @@ export function ClubEventsSection({
             <h3 className="font-montserrat font-bold text-2xl sm:text-4xl tracking-tight text-white uppercase">
               {activeCategoryTab.label}
             </h3>
-            <p className="mt-1 font-sans text-xs sm:text-sm text-neutral-400 max-w-xl leading-relaxed">
-              {activeCategoryTab.tagline}
-            </p>
+            {activeCategoryTab.tagline && (
+              <p className="mt-1 font-sans text-xs sm:text-sm text-neutral-400 max-w-xl leading-relaxed">
+                {activeCategoryTab.tagline}
+              </p>
+            )}
           </div>
         </div>
 

@@ -18,7 +18,7 @@ export interface PatronItem {
   badge: string;
   accent: string;
   image: string;
-  kicker: string;
+  kicker?: string;
   initiatives: string[];
 }
 
@@ -73,8 +73,8 @@ export const ABOUT_STATS: StatItem[] = [
   },
   {
     id: "footfall",
-    value: "25K+",
-    number: 25000,
+    value: "15K+",
+    number: 15000,
     suffix: "+",
     label: "EXPECTED FOOTFALL",
     subtext: "Engineers, coders & innovators nationwide",
@@ -115,11 +115,10 @@ export const PATRON_DIRECTORATE: PatronItem[] = [
     title: "Chairman CSA",
     role: "Chairman CSA",
     department: "Associate Professor, Department of Electronics & Communication Engineering, MMMUT",
-    bio: "Chairman of the Council of Student Activities (CSA). Providing apex leadership and visionary mentorship across all student technical bodies and university delegations.",
+    bio: "Chairman of the Council of Student Activities (CSA). Providing apex leadership and visionary mentorship across all student bodies and university delegations.",
     badge: "CHAIRMAN CSA",
     accent: "#FF1E27",
     image: "/images/about/rajan_mishra_tight_clean.png",
-    kicker: "CHAIRMAN CSA",
     initiatives: [
       "Apex governance across the Council of Student Activities (CSA)",
       "Guiding student leadership and coordinating festival operations",
@@ -135,7 +134,6 @@ export const PATRON_DIRECTORATE: PatronItem[] = [
     badge: "FACULTY ADVISOR • TECHNICAL SUB COUNCIL",
     accent: "#D4A843",
     image: "/images/about/pallav_gupta_clean.png",
-    kicker: "FACULTY ADVISOR • TECHNICAL SUB COUNCIL",
     initiatives: [
       "Technical rulebook validation and combat arena safety architectures",
       "Coordination across technical societies and student conveners",

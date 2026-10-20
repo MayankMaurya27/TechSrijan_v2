@@ -18,7 +18,7 @@ const DEVELOPERS: Developer[] = [
   {
     name: "Mayank Maurya",
     initials: "MM",
-    image: null, // Photo will be provided later to replace avatar
+    image: "/Developers/Mayank.jpg",
   },
 ];
 

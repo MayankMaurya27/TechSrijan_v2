@@ -122,14 +122,14 @@ const RewardsGiftIcon = ({ className }: { className?: string }) => (
 const PERKS: PerkItem[] = [
   {
     number: "01",
-    title: "CERTIFICATE & LOR",
-    description: "Official recognition from Techsrijan, MMMUT Gorakhpur.",
+    title: "CERTIFICATE & CITATION",
+    description: "Official certificate of appreciation from TechSrijan, MMMUT Gorakhpur.",
     icon: RosetteMedalIcon,
   },
   {
     number: "02",
-    title: "EXCLUSIVE NETWORK",
-    description: "Connect with ambassadors across Eastern India.",
+    title: "CAMPUS NETWORK",
+    description: "Connect with proactive student leaders across colleges nationwide.",
     icon: NetworkIcon,
   },
   {
@@ -146,14 +146,14 @@ const PERKS: PerkItem[] = [
   },
   {
     number: "05",
-    title: "PRIORITY INTERNSHIPS",
-    description: "Get considered for sponsor opportunities.",
+    title: "SPONSOR WORKSHOPS",
+    description: "Priority consideration for technical webinars, workshops, and sponsor sessions.",
     icon: InternshipsIcon,
   },
   {
     number: "06",
-    title: "FESTIVAL REWARDS",
-    description: "Earn passes, merchandise and recognition.",
+    title: "FESTIVAL RECOGNITION",
+    description: "Earn performance badges, festival merchandise, and official recognition.",
     icon: RewardsGiftIcon,
   },
 ];
@@ -262,8 +262,8 @@ export function AmbassadorPerks() {
                 className="mt-4 sm:mt-5 max-w-md text-xs sm:text-sm text-neutral-300 font-geist leading-relaxed"
               >
                 More than a title. A launchpad for your career, a badge of
-                leadership, and your gateway into Eastern UP&apos;s biggest tech
-                movement.
+                leadership, and your gateway into MMMUT&apos;s premier national
+                tech fest.
               </motion.p>
 
               {/* Primary Chamfered CTA Button */}

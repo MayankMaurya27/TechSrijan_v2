@@ -175,8 +175,8 @@ const PARTNERSHIP_COLUMNS = [
         desc: "Direct brand association with celebrity performers & keynotes",
       },
       {
-        title: "Robotics Arena Sponsor",
-        desc: "Naming rights for high-stakes combat and drone arena",
+        title: "Championship Track Sponsor",
+        desc: "Prominent arena branding and presentation for flagship competitions",
       },
     ],
   },
@@ -200,7 +200,7 @@ const PARTNERSHIP_COLUMNS = [
       },
       {
         title: "Mobility Partner",
-        desc: "Official transport and logistics fleet across Gorakhpur",
+        desc: "Official transit and campus commute logistics partner",
       },
     ],
   },
@@ -388,11 +388,11 @@ export function SponsorsPageView() {
   // ─── TRANSITION EYE SIGIL (Image 2 - Fixed overlay on scroll, zero page gap) ───
   // Blackout curtain turns screen pitch black so NO background shows through!
   // Fast & snappy transition window: passes quickly on mobile in 1 flick without lingering lag!
-  const curtainOpacity = useTransform(scrollYProgress, [0.05, 0.08, 0.13, 0.16], [0, 1, 1, 0]);
-  const sigilOpacity = useTransform(scrollYProgress, [0.06, 0.09, 0.12, 0.15], [0, 1, 1, 0]);
-  const sigilScale = useTransform(scrollYProgress, [0.06, 0.11, 0.15], [0.85, 1.15, 1.4]);
-  const sigilRotate = useTransform(scrollYProgress, [0.06, 0.15], [-3, 3]);
-  const sigilBlur = useTransform(scrollYProgress, [0.06, 0.09, 0.12, 0.15], [8, 0, 0, 10]);
+  const curtainOpacity = useTransform(scrollYProgress, [0.03, 0.07, 0.18, 0.22], [0, 1, 1, 0]);
+  const sigilOpacity = useTransform(scrollYProgress, [0.04, 0.08, 0.17, 0.21], [0, 1, 1, 0]);
+  const sigilScale = useTransform(scrollYProgress, [0.04, 0.12, 0.21], [0.85, 1.1, 1.35]);
+  const sigilRotate = useTransform(scrollYProgress, [0.04, 0.21], [-3, 3]);
+  const sigilBlur = useTransform(scrollYProgress, [0.04, 0.08, 0.17, 0.21], [8, 0, 0, 10]);
   const sigilFilter = useTransform(sigilBlur, (b) => `blur(${b}px)`);
 
   // Robot Incoming Entrance Animation State
@@ -1052,7 +1052,7 @@ export function SponsorsPageView() {
             </div>
 
             {/* Subtitle (Chancery Italic) */}
-            <p className="mt-3 font-chancery italic text-neutral-200 text-base sm:text-lg md:text-xl tracking-wide">
+            <p className="mt-3 font-sans font-medium text-neutral-300 text-sm sm:text-base md:text-lg tracking-wide not-italic">
               A platform for brands shaping what comes next.
             </p>
 

@@ -460,9 +460,9 @@ export function AmbassadorHero() {
               />
             </div>
 
-            {/* Headline (Chancery Italic) */}
-            <h2 className="relative z-10 font-chancery italic text-[#FAF6EE] text-xl xl:text-[23px] font-normal leading-[1.32] tracking-wide drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
-              Be the vanguard of Eastern UP&apos;s grandest technical festival.
+            {/* Headline (Modern Sans) */}
+            <h2 className="relative z-10 font-sans font-medium text-[#FAF6EE] text-lg xl:text-[21px] leading-[1.35] tracking-wide drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] not-italic">
+              Be the vanguard of MMMUT&apos;s flagship technical festival across colleges nationwide.
             </h2>
 
             {/* Description (Geist) */}
@@ -600,8 +600,8 @@ export function AmbassadorHero() {
               />
             </div>
 
-            <p className="font-chancery italic text-[#FAF6EE] text-base sm:text-lg font-normal leading-snug">
-              Be the vanguard of Eastern UP&apos;s grandest technical festival.
+            <p className="font-sans font-medium text-[#FAF6EE] text-sm sm:text-base leading-snug not-italic">
+              Be the vanguard of MMMUT&apos;s flagship technical festival across colleges nationwide.
             </p>
 
             <div className="mt-4 flex gap-2.5">

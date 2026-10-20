@@ -615,7 +615,7 @@ export function EventsHeroScroll({
             <h1 className="font-montserrat tracking-tight text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white uppercase drop-shadow-[0_4px_30px_rgba(0,0,0,1)]">
               EVENTS<span className="sr-only"> at TechSrijan&apos;27, the techfest of MMMUT Gorakhpur</span>
             </h1>
-            <p className="mt-2.5 sm:mt-6 font-chancery text-sm sm:text-xl md:text-2xl tracking-wide text-neutral-300 max-w-2xl leading-relaxed drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] italic">
+            <p className="mt-2.5 sm:mt-6 font-sans text-xs sm:text-base md:text-lg tracking-wide text-neutral-300 max-w-2xl leading-relaxed drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] font-normal">
               &ldquo;Fear is the mind-killer. Beyond fear lies destiny. Step into the crucible and forge your legacy.&rdquo;
             </p>
             <div className="mt-4 sm:mt-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/20 backdrop-blur-sm">

@@ -206,7 +206,7 @@ export const OPERATIVES_ROSTER: Operative[] = [
     status: "ONLINE",
     yearOrDesignation: "Pre-Final Year",
     branch: "Computer Science & Engg",
-    image: "/images/team/lead-m2.webp",
+    image: "/Developers/Mayank.jpg",
     bio: "Architect behind the Imperium: Requiem web portal, 3D WebGL visuals, real-time Razorpay checkout engine, and distributed QR admission systems.",
     keyDirectives: [
       "Lead developer and architect of TechSrijan 2027 digital systems",

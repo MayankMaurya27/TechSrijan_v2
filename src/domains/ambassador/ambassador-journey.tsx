@@ -24,7 +24,7 @@ const STEPS: JourneyStep[] = [
     number: "02",
     title: "Get Verified",
     description:
-      "Our team reviews your application within 48 hours. Receive your official CA ID, welcome kit, and portal access.",
+      "Our team reviews your application within 48 hours. Receive your official CA ID and induction into the student ambassador network.",
     icon: ShieldCheck,
   },
   {
@@ -38,7 +38,7 @@ const STEPS: JourneyStep[] = [
     number: "04",
     title: "Lead & Earn",
     description:
-      "Climb the ranks to unlock free event passes, exclusive merchandise, cash rewards, and an official LOR from MMMUT.",
+      "Climb the ranks to earn certificate of appreciation, leadership recognition, and festival merchandise based on verified participation.",
     icon: Trophy,
   },
 ];

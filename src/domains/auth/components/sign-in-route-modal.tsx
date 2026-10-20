@@ -95,7 +95,7 @@ export function SignInRouteModal({
       localStorage.setItem("ts27_auth_return_url", returnPath);
     }
     const callbackUrl = `${origin}/auth/callback?provider=mmmut`;
-    window.location.href = `https://mmmut.xyz/auth/Login?callbackUrl=${encodeURIComponent(
+    window.location.href = `https://mmmut.xyz/auth/Login?client_id=techsrijan&callbackUrl=${encodeURIComponent(
       callbackUrl
     )}&redirect_uri=${encodeURIComponent(callbackUrl)}`;
   };
@@ -320,13 +320,13 @@ export function SignInRouteModal({
                 : "EXTERNAL PARTICIPANT ACCESS"}
           </h2>
 
-          <p className="font-geist text-xs sm:text-sm text-[#a09484] mt-1.5 max-w-md mx-auto">
-            {view === "choose"
-              ? "Select your affiliation portal to authenticate and manage registrations."
-              : view === "mmmut"
+          {view !== "choose" && (
+            <p className="font-geist text-xs sm:text-sm text-[#a09484] mt-1.5 max-w-md mx-auto">
+              {view === "mmmut"
                 ? "University single sign-on with your roll number or student email."
                 : "Register or sign in with your institutional credentials."}
-          </p>
+            </p>
+          )}
         </div>
 
         {/* ERROR NOTIFICATION BANNER */}
@@ -429,7 +429,7 @@ export function SignInRouteModal({
                 </h3>
 
                 <p className="font-geist text-xs sm:text-[13px] text-[#a09484] leading-relaxed max-w-[220px]">
-                  Attendees from IITs, NITs, and other colleges across India. One-click sign-in.
+                  Attendees from universities and engineering institutions across India. One-click sign-in.
                 </p>
               </div>
 
@@ -638,7 +638,7 @@ export function SignInRouteModal({
                           name="collegeName"
                           value={formData.collegeName}
                           onChange={handleChange}
-                          placeholder="e.g. IIT Kanpur / NIT Kurukshetra"
+                          placeholder="e.g. University / Engineering Institute Name"
                           required
                           className="w-full px-3 py-2 rounded bg-white/[0.04] border border-[#caa462]/30 text-sm text-white placeholder:text-neutral-600 focus:border-[#caa462] focus:outline-none"
                         />

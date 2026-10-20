@@ -1052,7 +1052,7 @@ export function SponsorsPageView() {
             </div>
 
             {/* Subtitle (Chancery Italic) */}
-            <p className="mt-3 font-sans font-medium text-neutral-300 text-sm sm:text-base md:text-lg tracking-wide not-italic">
+            <p className="mt-3 font-geist font-normal text-neutral-400 text-sm sm:text-base md:text-lg tracking-wide not-italic">
               A platform for brands shaping what comes next.
             </p>
 

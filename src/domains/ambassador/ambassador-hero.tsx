@@ -461,7 +461,7 @@ export function AmbassadorHero() {
             </div>
 
             {/* Headline (Modern Sans) */}
-            <h2 className="relative z-10 font-sans font-medium text-[#FAF6EE] text-lg xl:text-[21px] leading-[1.35] tracking-wide drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] not-italic">
+            <h2 className="relative z-10 font-geist font-normal text-neutral-300 text-base xl:text-lg leading-relaxed tracking-wide drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] not-italic">
               Be the vanguard of MMMUT&apos;s flagship technical festival across colleges nationwide.
             </h2>
 
@@ -600,7 +600,7 @@ export function AmbassadorHero() {
               />
             </div>
 
-            <p className="font-sans font-medium text-[#FAF6EE] text-sm sm:text-base leading-snug not-italic">
+            <p className="font-geist font-normal text-neutral-300 text-xs sm:text-sm leading-snug not-italic">
               Be the vanguard of MMMUT&apos;s flagship technical festival across colleges nationwide.
             </p>
 

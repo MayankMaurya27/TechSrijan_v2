@@ -1021,7 +1021,7 @@ export default function AccommodationPage() {
               scrollToStageProgress(0);
             }
           }}
-          className={`absolute z-30 inset-0 flex items-center justify-center px-3 sm:px-6 lg:px-8 pt-24 sm:pt-28 md:pt-32 pb-6 sm:pb-8 will-change-transform ${
+          className={`absolute z-30 inset-0 flex items-center justify-center px-3 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-6 sm:pb-8 overflow-y-auto will-change-transform ${
             scrollProgress >= 0.35 ? "pointer-events-auto" : "pointer-events-none"
           }`}
           style={{ perspective: "1200px" }}
@@ -1030,7 +1030,7 @@ export default function AccommodationPage() {
           <div
             ref={formCardRef}
             data-lenis-prevent
-            className="relative w-full max-w-2xl lg:max-w-3xl max-h-[calc(100vh-7.5rem)] sm:max-h-[calc(100vh-9rem)] overflow-y-auto rounded-xl bg-[#07080b]/95 backdrop-blur-2xl border border-white/15 p-5 sm:p-8 pb-8 shadow-[0_25px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.08)]"
+            className="relative w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[calc(100vh-6.5rem)] sm:max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl bg-[#07080b]/95 backdrop-blur-2xl border border-white/15 p-6 sm:p-8 lg:p-10 pb-8 shadow-[0_25px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.08)] my-auto"
           >
             {/* Mobile Sheet Pull-Down Grab Handle (quick return) */}
             <div className="flex sm:hidden flex-col items-center gap-1 pb-2 -mt-1">
@@ -1242,7 +1242,7 @@ export default function AccommodationPage() {
                 </div>
 
                 {/* Staggered Form Fields Container - Balanced 4 Rows of 2 Columns */}
-                <div ref={formFieldsRef} className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-5">
+                <div ref={formFieldsRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Row 1, Col 1: Full Name */}
                   <div className="space-y-1.5 group">
                     <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">

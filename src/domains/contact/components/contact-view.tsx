@@ -15,6 +15,10 @@ import {
   Loader2,
   ChevronDown,
   HelpCircle,
+  MapPin,
+  Building2,
+  Clock,
+  ExternalLink,
 } from "lucide-react";
 import { usePageTheme, type PageThemeConfig, type CanonicalTheme } from "@/core";
 import { api } from "@/lib/api";
@@ -346,7 +350,7 @@ export function ContactView() {
             </h1>
 
             {/* Editorial Subtitle */}
-            <p className="text-zinc-200 text-lg sm:text-xl md:text-2xl font-chancery leading-relaxed max-w-xl">
+            <p className="text-neutral-300 text-sm sm:text-base md:text-lg font-geist font-normal leading-relaxed max-w-xl">
               Have a question, collaboration idea or just want to say hi? We would love to hear from you.
             </p>
 
@@ -440,7 +444,7 @@ export function ContactView() {
                   </span>
                 </h2>
 
-                <p className="text-zinc-300 text-base sm:text-lg font-chancery max-w-lg">
+                <p className="text-neutral-300 text-xs sm:text-sm md:text-base font-geist font-normal max-w-lg">
                   Fill out the form below and we&apos;ll get back to you as soon as possible.
                 </p>
               </div>
@@ -632,6 +636,101 @@ export function ContactView() {
                 </form>
               </div>
             </div>
+            {/* Right Column: Official Registry, Secretariat & Network Directives */}
+            <div className="lg:col-span-5 space-y-6">
+              {/* Card 1: Official University Secretariat */}
+              <div
+                className="relative rounded-2xl bg-black/60 backdrop-blur-2xl p-6 sm:p-7 border transition-all duration-300 shadow-xl"
+                style={{
+                  borderColor: pageTheme.border,
+                  boxShadow: `0 15px 45px rgba(0,0,0,0.7), 0 0 20px ${pageTheme.accentMuted}`,
+                }}
+              >
+                <div className="flex items-center gap-2 font-bebas text-xs sm:text-sm tracking-[0.2em] uppercase transition-colors" style={{ color: pageTheme.accent }}>
+                  <span>✦</span>
+                  <span>CENTRAL SECRETARIAT</span>
+                </div>
+
+                <div className="mt-3 space-y-3 font-geist text-xs sm:text-sm text-neutral-300">
+                  <div className="flex items-start gap-3">
+                    <Building2 className="h-4 w-4 shrink-0 mt-0.5" style={{ color: pageTheme.accent }} />
+                    <div>
+                      <div className="font-semibold text-white">Technical Sub-Council (TSC)</div>
+                      <div className="text-neutral-400 text-xs">Council of Student Activities (CSA)</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-4 w-4 shrink-0 mt-0.5" style={{ color: pageTheme.accent }} />
+                    <div className="text-xs leading-relaxed text-neutral-300">
+                      Madan Mohan Malaviya University of Technology (MMMUT), Gorakhpur, UP - 273010, India
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <Clock className="h-4 w-4 shrink-0 mt-0.5" style={{ color: pageTheme.accent }} />
+                    <div className="text-xs text-neutral-300">
+                      Response SLA: <span className="text-white font-medium">24–48 Hours Turnaround</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2: Direct Desks & Emergency */}
+              <div className="relative rounded-2xl bg-black/60 backdrop-blur-2xl p-6 sm:p-7 border border-white/10 transition-all duration-300 shadow-xl space-y-4">
+                <div className="font-bebas text-xs sm:text-sm tracking-[0.2em] uppercase text-neutral-400">
+                  DIRECT DESK CONTACTS
+                </div>
+
+                <div className="space-y-3 text-xs sm:text-sm font-geist">
+                  <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
+                    <div>
+                      <div className="text-[11px] font-mono uppercase text-neutral-400 tracking-wider">General Inquiries</div>
+                      <a href="mailto:techsrijan@mmmut.ac.in" className="text-white font-medium hover:underline">
+                        techsrijan@mmmut.ac.in
+                      </a>
+                    </div>
+                    <a href="mailto:techsrijan@mmmut.ac.in" aria-label="Email General Inquiries" className="p-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 transition-colors">
+                      <Mail className="h-3.5 w-3.5 text-neutral-300" />
+                    </a>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
+                    <div>
+                      <div className="text-[11px] font-mono uppercase text-neutral-400 tracking-wider">Corporate &amp; Alliances</div>
+                      <a href="mailto:sponsorship.techsrijan@mmmut.ac.in" className="text-white font-medium hover:underline">
+                        sponsorship.techsrijan@mmmut.ac.in
+                      </a>
+                    </div>
+                    <a href="mailto:sponsorship.techsrijan@mmmut.ac.in" aria-label="Email Sponsorship" className="p-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 transition-colors">
+                      <Mail className="h-3.5 w-3.5 text-neutral-300" />
+                    </a>
+                  </div>
+                </div>
+
+                {/* Social Connect Pills */}
+                <div className="pt-2 border-t border-white/[0.07] flex items-center gap-2">
+                  <a
+                    href="https://www.instagram.com/techsrijan_mmmut"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-center font-mono text-[10px] uppercase tracking-wider text-neutral-300 hover:text-white transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <span>Instagram</span>
+                    <ExternalLink className="h-2.5 w-2.5 text-neutral-400" />
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/company/techsrijan-mmmut/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-center font-mono text-[10px] uppercase tracking-wider text-neutral-300 hover:text-white transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <span>LinkedIn</span>
+                    <ExternalLink className="h-2.5 w-2.5 text-neutral-400" />
+                  </a>
+                </div>
+              </div>
+            </div>
 
           </div>
         </div>
@@ -679,7 +778,7 @@ export function ContactView() {
               </span>
             </h2>
 
-            <p className="text-zinc-300 text-base sm:text-lg font-chancery max-w-2xl leading-relaxed">
+            <p className="text-neutral-300 text-xs sm:text-sm md:text-base font-geist font-normal max-w-2xl leading-relaxed">
               Common inquiries on registration, arena guidelines, outstation lodging, and security clearance.
             </p>
 

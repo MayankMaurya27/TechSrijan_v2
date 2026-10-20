@@ -116,7 +116,7 @@ export function GuestsView() {
               GUESTS OF HONOUR
             </h1>
             <div
-              className="font-chancery text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-transparent bg-clip-text leading-tight transition-all duration-300"
+              className="font-geist font-medium text-xl sm:text-3xl md:text-4xl text-transparent bg-clip-text leading-tight transition-all duration-300"
               style={{
                 backgroundImage: theme.heroSubheadGradient,
                 filter: `drop-shadow(0 2px 25px ${theme.accentGlow})`,
@@ -171,7 +171,7 @@ export function GuestsView() {
                 <div className="font-montserrat font-black text-white text-sm sm:text-base group-hover:text-zinc-200 transition-colors leading-tight">
                   Prof. H. C. Verma
                 </div>
-                <div className="font-chancery text-xs sm:text-sm text-zinc-300">
+                <div className="font-geist text-xs sm:text-sm text-zinc-400">
                   Padma Shri Awardee &middot; Concepts of Physics
                 </div>
               </div>
@@ -222,7 +222,7 @@ export function GuestsView() {
                 <div className="font-montserrat font-black text-white text-sm sm:text-base group-hover:text-zinc-200 transition-colors leading-tight">
                   Prof. Poonam Tandon
                 </div>
-                <div className="font-chancery text-xs sm:text-sm text-zinc-300">
+                <div className="font-geist text-xs sm:text-sm text-zinc-400">
                   Former Vice-Chancellor &middot; DDU Gorakhpur University
                 </div>
               </div>
@@ -258,7 +258,7 @@ export function GuestsView() {
             </h2>
 
             <div
-              className="font-chancery text-2xl sm:text-3xl lg:text-4xl transition-colors duration-300 drop-shadow-md"
+              className="font-geist font-normal text-base sm:text-xl lg:text-2xl transition-colors duration-300 drop-shadow-md"
               style={{ color: theme.subheadColor }}
             >
               Prof. Harish Chandra Verma &middot; Padma Shri Awardee &middot; Concepts of Physics
@@ -393,7 +393,7 @@ export function GuestsView() {
                 <h3 className="text-3xl sm:text-5xl lg:text-6xl font-montserrat font-black tracking-tight text-white leading-[1.02] drop-shadow-md">
                   Prof. Harish Chandra Verma
                 </h3>
-                <div className="text-lg sm:text-2xl font-chancery text-zinc-200 drop-shadow-sm">
+                <div className="text-sm sm:text-base md:text-lg font-geist font-normal text-neutral-300 drop-shadow-sm">
                   Padma Shri Awardee &middot; Renowned Physicist &middot; Author of &apos;Concepts of Physics&apos;
                 </div>
               </div>
@@ -444,7 +444,7 @@ export function GuestsView() {
 
               {/* Grand Memorable Pull Quote (Chancery font) */}
               <blockquote
-                className="border-l-4 pl-5 sm:pl-6 py-4 font-chancery text-xl sm:text-2xl text-zinc-100 leading-relaxed rounded-r-2xl pr-4 transition-all duration-300 backdrop-blur-xl shadow-xl"
+                className="border-l-4 pl-5 sm:pl-6 py-4 font-geist italic text-sm sm:text-base text-neutral-200 leading-relaxed rounded-r-2xl pr-4 transition-all duration-300 backdrop-blur-xl shadow-xl"
                 style={{
                   borderColor: theme.accent,
                   backgroundColor: "rgba(0, 0, 0, 0.82)",
@@ -511,7 +511,7 @@ export function GuestsView() {
             </h2>
 
             <div
-              className="font-chancery text-2xl sm:text-3xl lg:text-4xl transition-colors duration-300 drop-shadow-md"
+              className="font-geist font-normal text-base sm:text-xl lg:text-2xl transition-colors duration-300 drop-shadow-md"
               style={{ color: theme.guest2SubheadColor }}
             >
               Prof. Poonam Tandon &middot; Former Vice-Chancellor, DDU Gorakhpur University
@@ -601,7 +601,7 @@ export function GuestsView() {
                 <h3 className="text-3xl sm:text-5xl lg:text-6xl font-montserrat font-black tracking-tight text-white leading-[1.02] drop-shadow-md">
                   Prof. Poonam Tandon
                 </h3>
-                <div className="text-lg sm:text-2xl font-chancery text-zinc-200 drop-shadow-sm">
+                <div className="text-sm sm:text-base md:text-lg font-geist font-normal text-neutral-300 drop-shadow-sm">
                   Former Vice-Chancellor, DDU Gorakhpur University &middot; Senior Professor of Physics
                 </div>
               </div>
@@ -655,7 +655,7 @@ export function GuestsView() {
 
               {/* Grand Memorable Pull Quote (Chancery font) */}
               <blockquote
-                className="border-l-4 pl-5 sm:pl-6 py-4 font-chancery text-xl sm:text-2xl text-zinc-100 leading-relaxed rounded-r-2xl pr-4 transition-all duration-300 backdrop-blur-xl shadow-xl"
+                className="border-l-4 pl-5 sm:pl-6 py-4 font-geist italic text-sm sm:text-base text-neutral-200 leading-relaxed rounded-r-2xl pr-4 transition-all duration-300 backdrop-blur-xl shadow-xl"
                 style={{
                   borderColor: theme.guest2Accent,
                   backgroundColor: "rgba(0, 0, 0, 0.82)",
@@ -681,7 +681,7 @@ export function GuestsView() {
       <section className="relative z-10 py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center space-y-8">
         <div className="max-w-3xl mx-auto space-y-3.5 p-6 sm:p-8 rounded-3xl bg-black/55 backdrop-blur-md border border-white/[0.1] shadow-2xl">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-montserrat font-black text-white drop-shadow-md">
-            Join 25,000+ Innovators in the Arena
+            Join 15,000+ Innovators in the Arena
           </h2>
           <p className="text-sm sm:text-base text-zinc-200 font-geist leading-relaxed max-w-2xl mx-auto drop-shadow-sm">
             From the keynote dais to the high-stakes battle cages of RoboWars and 24-hour coding marathons, TechSrijan &apos;27 is where legendary leadership meets cutting-edge engineering.

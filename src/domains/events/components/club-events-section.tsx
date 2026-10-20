@@ -467,7 +467,7 @@ function CategoryTab({
     <button
       type="button"
       onClick={onClick}
-      className={`relative px-3.5 sm:px-4.5 py-1.5 sm:py-2 font-mono text-[10px] sm:text-xs tracking-[0.16em] uppercase transition-all duration-300 border cursor-pointer active:scale-95 whitespace-nowrap flex items-center gap-2 ${
+      className={`relative px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs md:text-[13px] tracking-[0.16em] uppercase transition-all duration-300 border cursor-pointer active:scale-95 whitespace-nowrap flex items-center gap-2 sm:gap-2.5 ${
         isActive
           ? "bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] font-bold"
           : "bg-transparent text-neutral-400 border-white/15 hover:border-white/40 hover:text-white"
@@ -854,12 +854,12 @@ export function ClubEventsSection({
       </div>
 
       {/* ── Category Filter Tabs Bar ────────────────────────────────────────── */}
-      <div className="relative z-10 bg-black/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3">
-        <div className="flex items-center justify-between gap-3 max-w-6xl mx-auto">
+      <div className="relative z-10 bg-black/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 lg:px-12 py-3.5">
+        <div className="flex items-center justify-between gap-4 w-full max-w-7xl 2xl:max-w-[1720px] mx-auto">
           {/* Category Tabs */}
           <div
             ref={tabsRef}
-            className="flex items-center gap-2 sm:gap-2.5 overflow-x-auto scrollbar-none pb-0.5 flex-1"
+            className="flex items-center gap-2 sm:gap-3 md:gap-3.5 overflow-x-auto scrollbar-none pb-0.5 flex-1"
           >
             {CATEGORY_TABS.map((tab) => (
               <div key={tab.id} data-catid={tab.id}>
@@ -911,7 +911,7 @@ export function ClubEventsSection({
       </div>
 
       {/* ── Active Category Eyebrow & Subtitle ───────────────────────────────────── */}
-      <div className="relative z-10 px-4 sm:px-8 pt-6 sm:pt-8 pb-4 max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <div className="relative z-10 px-4 sm:px-8 lg:px-12 pt-6 sm:pt-8 pb-4 w-full max-w-7xl 2xl:max-w-[1720px] mx-auto flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="flex items-center gap-3.5 sm:gap-4.5">
           {/* Active Category Shield Seal */}
           <div

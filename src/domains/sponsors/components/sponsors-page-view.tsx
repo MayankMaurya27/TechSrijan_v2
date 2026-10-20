@@ -385,14 +385,13 @@ export function SponsorsPageView() {
   const mouseParallaxBgX = useTransform(springX, (v) => v * 0.2);
   const mouseParallaxBgY = useTransform(springY, (v) => v * 0.2);
 
-  // ─── TRANSITION EYE SIGIL (Image 2 - Fixed overlay on scroll, zero page gap) ───
+  // ─── TRANSITION EYE SIGIL (Extended cinematic stay on scroll) ───
   // Blackout curtain turns screen pitch black so NO background shows through!
-  // Fast & snappy transition window: passes quickly on mobile in 1 flick without lingering lag!
-  const curtainOpacity = useTransform(scrollYProgress, [0.03, 0.07, 0.18, 0.22], [0, 1, 1, 0]);
-  const sigilOpacity = useTransform(scrollYProgress, [0.04, 0.08, 0.17, 0.21], [0, 1, 1, 0]);
-  const sigilScale = useTransform(scrollYProgress, [0.04, 0.12, 0.21], [0.85, 1.1, 1.35]);
-  const sigilRotate = useTransform(scrollYProgress, [0.04, 0.21], [-3, 3]);
-  const sigilBlur = useTransform(scrollYProgress, [0.04, 0.08, 0.17, 0.21], [8, 0, 0, 10]);
+  const curtainOpacity = useTransform(scrollYProgress, [0.03, 0.08, 0.28, 0.34], [0, 1, 1, 0]);
+  const sigilOpacity = useTransform(scrollYProgress, [0.04, 0.09, 0.27, 0.33], [0, 1, 1, 0]);
+  const sigilScale = useTransform(scrollYProgress, [0.04, 0.18, 0.33], [0.82, 1.12, 1.38]);
+  const sigilRotate = useTransform(scrollYProgress, [0.04, 0.33], [-3, 3]);
+  const sigilBlur = useTransform(scrollYProgress, [0.04, 0.09, 0.27, 0.33], [8, 0, 0, 10]);
   const sigilFilter = useTransform(sigilBlur, (b) => `blur(${b}px)`);
 
   // Robot Incoming Entrance Animation State
@@ -995,6 +994,12 @@ export function SponsorsPageView() {
         {/* Bottom subtle edge divider */}
         <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#050202] to-transparent z-10 pointer-events-none" />
       </section>
+
+      {/* ─── EYE SIGIL SCROLL TRANSITION RUNWAY ─── */}
+      <div
+        aria-hidden="true"
+        className="relative w-full h-[65vh] sm:h-[85vh] lg:h-[100vh] pointer-events-none bg-[#050202]"
+      />
 
       {/* ========================================================
           PARTNERSHIP AVENUES (EXACT REPLICA OF IMAGE 4)

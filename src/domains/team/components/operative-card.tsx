@@ -51,8 +51,17 @@ export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) 
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`View dossier for ${operative.name}`}
       onClick={() => onOpenDossier(operative)}
-      className="group cursor-pointer select-none flex flex-col items-center text-center [perspective:1000px]"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onOpenDossier(operative);
+        }
+      }}
+      className="group cursor-pointer select-none flex flex-col items-center text-center [perspective:1000px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-3xl"
     >
       {/* ============================================================
           CIRCULAR 3D PORTRAIT MEDALLION
@@ -104,6 +113,7 @@ export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) 
                 alt={operative.name}
                 className="h-full w-full rounded-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
                 onError={() => setHasImgError(true)}
+                loading="lazy"
                 decoding="async"
               />
             ) : (

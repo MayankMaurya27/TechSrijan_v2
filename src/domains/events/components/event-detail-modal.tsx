@@ -192,7 +192,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
           <div className="absolute top-2 left-2 inset-0 bg-black border border-white/10 rounded-[1.75rem] pointer-events-none" />
 
           {/* Inner Content Surface */}
-          <div className="relative z-10 bg-[#0d0e13] border border-white/20 rounded-[1.75rem] p-5 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden max-h-[88vh] flex flex-col">
+          <div role="dialog" aria-modal="true" aria-labelledby="event-modal-title" className="relative z-10 bg-[#0d0e13] border border-white/20 rounded-[1.75rem] p-5 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden max-h-[88vh] flex flex-col">
             {/* Top Silver Accent Beam */}
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
 
@@ -212,8 +212,8 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
               <button
                 type="button"
                 onClick={onClose}
-                className="w-8 h-8 rounded-full bg-black/60 hover:bg-white hover:text-black border border-white/20 text-white/70 flex items-center justify-center transition-all cursor-pointer active:scale-95"
-                aria-label="Close modal"
+                aria-label="Close event details"
+                className="min-w-[44px] min-h-[44px] rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white bg-black/60 hover:bg-white hover:text-black border border-white/20 text-white/70 flex items-center justify-center transition-all cursor-pointer active:scale-95"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -239,7 +239,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
 
               {/* Title & Tagline */}
               <div>
-                <h2 className="font-montserrat text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tight text-white">
+                <h2 id="event-modal-title" className="font-montserrat text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tight text-white">
                   {event.name}
                 </h2>
                 <p className="font-sans text-xs sm:text-sm text-neutral-400 mt-1 italic">
@@ -249,7 +249,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
 
               {/* Status & Error Badges */}
               {errorMessage && (
-                <div className="p-3 rounded-xl border border-red-500/50 bg-red-950/40 text-red-300 text-xs flex items-center gap-2">
+                <div role="alert" aria-live="assertive" className="p-3 rounded-xl border border-red-500/50 bg-red-950/40 text-red-300 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-400" />
                   <span>{errorMessage}</span>
                 </div>

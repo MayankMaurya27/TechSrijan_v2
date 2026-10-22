@@ -48,7 +48,8 @@ export function Team3DBackground() {
     window.addEventListener("mousemove", onMouseMove);
 
     // 1. Floating Spice Embers & Starlight (Referencing ambient-particles & social-constellation)
-    const particleCount = Math.min(85, Math.floor(width / 18));
+    const isMobile = width < 768;
+    const particleCount = isMobile ? 24 : Math.min(60, Math.floor(width / 22));
     const palette = [
       "212, 168, 67",  // Spice Gold
       "245, 230, 200", // Parchment Star
@@ -196,10 +197,14 @@ export function Team3DBackground() {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
-        ctx.shadowColor = `rgba(${p.color}, 0.5)`;
-        ctx.shadowBlur = p.size * 2.5;
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        if (!isMobile && p.size > 2.2) {
+          ctx.shadowColor = `rgba(${p.color}, 0.4)`;
+          ctx.shadowBlur = 4;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        } else {
+          ctx.fill();
+        }
       }
 
       animId = requestAnimationFrame(render);

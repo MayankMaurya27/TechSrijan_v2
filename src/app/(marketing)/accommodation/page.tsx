@@ -96,11 +96,7 @@ const DISSOLVE_PARTICLES = [
 ];
 
 export default function AccommodationPage() {
-  const { setTheme } = useTheme();
-
-  useEffect(() => {
-    setTheme("giedi-prime");
-  }, [setTheme]);
+  // Retains user selected global theme without mutating persistent localStorage
 
   // Active hover stance: "none" | "left" | "right"
   const [activeHover, setActiveHover] = useState<"none" | "left" | "right">("none");
@@ -596,7 +592,7 @@ export default function AccommodationPage() {
         ref={pinnedStageRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="relative h-screen h-[100dvh] w-full overflow-hidden flex items-center justify-center bg-[#050608]"
+        className="relative min-h-[100dvh] h-[100dvh] w-full overflow-hidden flex items-center justify-center bg-[#050608]"
       >
         {/* =================================================================== */}
         {/* BACKGROUND LAYER 1: MONUMENTAL CITADEL ARCHITECTURE                */}

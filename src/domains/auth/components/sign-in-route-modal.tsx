@@ -232,7 +232,7 @@ export function SignInRouteModal({
 
       {/* MAIN MODAL CHASSIS FRAME */}
       <div
-        className="relative w-full bg-[#0a0708] pt-14 sm:pt-16 md:pt-18 pb-7 sm:pb-8 px-5 sm:px-10 md:px-14 shadow-[0_25px_80px_rgba(0,0,0,0.95)] border border-[#caa462]/75"
+        role={!isPageMode ? "dialog" : undefined} aria-modal={!isPageMode ? "true" : undefined} aria-labelledby="signin-modal-title" className="relative w-full bg-[#0a0708] pt-14 sm:pt-16 md:pt-18 pb-7 sm:pb-8 px-5 sm:px-10 md:px-14 shadow-[0_25px_80px_rgba(0,0,0,0.95)] border border-[#caa462]/75"
         style={{
           clipPath:
             "polygon(24px 0%, calc(100% - 24px) 0%, 100% 24px, 100% calc(100% - 24px), calc(100% - 24px) 100%, 24px 100%, 0% calc(100% - 24px), 0% 24px)",
@@ -307,7 +307,7 @@ export function SignInRouteModal({
           <button
             type="button"
             onClick={handleClose}
-            className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full border border-[#caa462]/40 bg-black/60 text-[#caa462] hover:text-[#f7f2ea] hover:border-[#caa462] flex items-center justify-center transition-all cursor-pointer"
+            className="absolute top-4 right-4 z-30 min-w-[44px] min-h-[44px] rounded-full border border-[#caa462]/40 bg-black/60 text-[#caa462] hover:text-[#f7f2ea] hover:border-[#caa462] flex items-center justify-center transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#caa462]"
             aria-label="Close Authentication Modal"
           >
             ✕
@@ -318,7 +318,7 @@ export function SignInRouteModal({
         <div className="relative z-10 text-center mb-6">
           
 
-          <h2 className="font-montserrat text-2xl sm:text-3xl md:text-4xl font-black text-[#f7f2ea] tracking-tight uppercase">
+          <h2 id="signin-modal-title" className="font-montserrat text-2xl sm:text-3xl md:text-4xl font-black text-[#f7f2ea] tracking-tight uppercase">
             {view === "choose"
               ? "CHOOSE YOUR GATEWAY"
               : view === "mmmut"

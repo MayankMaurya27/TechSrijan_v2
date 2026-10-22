@@ -20,6 +20,7 @@ import {
   User,
   LogOut,
   Shield,
+  Ticket,
 } from "lucide-react";
 
 const THEME_CYCLE = [
@@ -526,6 +527,15 @@ export function Navbar() {
                       <p className="font-sans text-xs font-bold text-white truncate">{user?.name || "Participant"}</p>
                       {user?.email && <p className="font-mono text-[9.5px] text-neutral-400 truncate">{user.email}</p>}
                     </div>
+
+                    <Link
+                      href="/student"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-xs font-mono uppercase tracking-wider text-amber-400 hover:text-amber-300 hover:bg-[rgba(212,168,67,0.18)] rounded-lg transition-colors"
+                    >
+                      <Ticket className="w-3.5 h-3.5" />
+                      <span>3D Fest Pass</span>
+                    </Link>
 
                     <Link
                       href="/profile"

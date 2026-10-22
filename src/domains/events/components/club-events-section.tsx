@@ -797,14 +797,9 @@ export function ClubEventsSection({
     const diffX = e.changedTouches[0].clientX - touchStartXRef.current;
     const diffY = e.changedTouches[0].clientY - touchStartYRef.current;
 
-    if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY)) {
+    // Allow native page scroll for vertical drags. Only trigger card navigation on clear horizontal swipes:
+    if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
       if (diffX < 0) {
-        handleNextCard();
-      } else {
-        handlePrevCard();
-      }
-    } else if (Math.abs(diffY) > 40 && Math.abs(diffY) >= Math.abs(diffX)) {
-      if (diffY < 0) {
         handleNextCard();
       } else {
         handlePrevCard();
@@ -1023,7 +1018,7 @@ export function ClubEventsSection({
           /* 3D Circular Loop Interactive Stage with Scroll Wheel / Gesture Support */
           <div
             ref={stageContainerRef}
-            className="relative py-8 sm:py-12 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing select-none"
+            className="relative py-8 sm:py-12 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing select-none touch-pan-y"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >

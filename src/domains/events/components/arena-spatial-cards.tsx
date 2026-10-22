@@ -96,9 +96,11 @@ export interface ArenaSpatialCardsProps {
 function ClubCard({
   club,
   idx,
+  onSelect,
 }: {
   club: Club;
   idx: number;
+  onSelect?: () => void;
 }) {
   const isTsc = club.id === "tsc";
 
@@ -107,7 +109,17 @@ function ClubCard({
       initial={{ opacity: 0, scale: 0.88, y: 28 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.45, delay: idx * 0.07, ease: "easeOut" }}
-      className={`relative cursor-default group flex items-center justify-center select-none w-[108px] sm:w-[140px] md:w-[170px] lg:w-[210px] xl:w-[230px] ${
+      role="button"
+      tabIndex={0}
+      aria-label={`Filter ${club.fullName} events`}
+      onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect?.();
+        }
+      }}
+      className={`relative cursor-pointer group flex items-center justify-center select-none w-[108px] sm:w-[140px] md:w-[170px] lg:w-[210px] xl:w-[230px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-2xl ${
         isTsc ? "md:scale-[1.06] md:-translate-y-2.5 z-20" : "z-10"
       }`}
     >
@@ -225,6 +237,8 @@ function ClubCard({
 
 export function ArenaSpatialCards({
   isVisible,
+  onCategorySelect,
+  onClubSelect,
   onExploreEvents,
   leftCardsRef,
   centerCardRef,
@@ -249,6 +263,10 @@ export function ArenaSpatialCards({
                 key={club.id}
                 club={club}
                 idx={i}
+                onSelect={() => {
+                  onClubSelect?.(club.id as any);
+                  onExploreEvents?.();
+                }}
               />
             ))}
           </div>
@@ -261,6 +279,10 @@ export function ArenaSpatialCards({
             <ClubCard
               club={CLUBS[2]}
               idx={2}
+              onSelect={() => {
+                onClubSelect?.(CLUBS[2].id as any);
+                onExploreEvents?.();
+              }}
             />
           </div>
 
@@ -274,6 +296,10 @@ export function ArenaSpatialCards({
                 key={club.id}
                 club={club}
                 idx={i + 3}
+                onSelect={() => {
+                  onClubSelect?.(club.id as any);
+                  onExploreEvents?.();
+                }}
               />
             ))}
           </div>
@@ -422,7 +448,7 @@ export function ArenaSpatialCards({
             className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-white text-black font-mono text-[10px] font-bold tracking-[0.2em] uppercase rounded-lg active:scale-95 transition-all shadow-[0_0_15px_rgba(255,255,255,0.25)] cursor-pointer"
           >
             <span>EXPLORE ALL EVENTS</span>
-            <ChevronDown className="w-3.5 h-3.5 animate-bounce" />
+            <ChevronDown className="w-3.5 h-3.5 motion-safe:animate-pulse motion-reduce:animate-none" />
           </button>
         </div>
       </div>

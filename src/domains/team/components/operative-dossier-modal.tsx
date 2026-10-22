@@ -79,8 +79,8 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
         <button
           onClick={onClose}
           type="button"
-          aria-label="Close"
-          className="absolute right-5 top-5 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.06] text-zinc-400 hover:text-white hover:bg-white/[0.12] transition-colors"
+          aria-label="Close operative dossier"
+          className="absolute right-5 top-5 z-20 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-white/[0.06] text-zinc-400 hover:text-white hover:bg-white/[0.12] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
         >
           <X className="h-4 w-4" />
         </button>

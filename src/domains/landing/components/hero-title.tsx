@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 // Server-rendered so the hero emblem (the LCP element) is in the initial HTML;
 // its heavy three.js / gsap parts load lazily inside the component.
 import { TechSrijan3DLogo } from "./techsrijan-3d-logo";
@@ -130,6 +132,23 @@ export function HeroTitle({ scrollProgress }: HeroTitleProps) {
           </h1>
 
           <TechSrijan3DLogo scrollProgress={scrollProgress} hasEntered={hasEntered} />
+        </div>
+
+        {/* Primary Call-to-Action Gateway (Fast-Track for Attendees) */}
+        <div className="relative mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3.5 sm:gap-4 pointer-events-auto z-30">
+          <Link
+            href="/events"
+            className="group relative inline-flex items-center gap-2 rounded-xl px-7 sm:px-8 py-3 text-xs font-montserrat font-bold uppercase tracking-wider text-white bg-gradient-to-r from-[#B50E15] via-[#85080E] to-[#6E050A] hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_0_25px_rgba(181,14,21,0.55)] border border-[#FF1E27]/70 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+          >
+            <span>EXPLORE ARENA DIRECTIVES</span>
+            <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
+          <Link
+            href="/signin"
+            className="group inline-flex items-center gap-2 rounded-xl px-6 sm:px-7 py-3 text-xs font-montserrat font-bold uppercase tracking-wider text-neutral-200 hover:text-white bg-black/70 hover:bg-black/90 backdrop-blur-md border border-white/20 hover:border-white/40 transition-all duration-300 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            <span>OPERATIVE SIGN IN</span>
+          </Link>
         </div>
 
         {/* Minimal Luxury Vertical Scroll Indicator */}

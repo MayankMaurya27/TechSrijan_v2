@@ -425,12 +425,7 @@ textarea {
   animation: geass-pulse 0.45s ease-out forwards;
 }
 
-.tactical-grid {
-  background-image: 
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-  background-size: 48px 48px;
-}
+/* .tactical-grid removed (dead CSS) */
 
 @property --angle {
   syntax: "<angle>";
@@ -948,3 +943,9 @@ html, body, :root {
   animation: sponsorFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+
+/* Universal WCAG AA 2.4.7 focus indicator for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--theme-accent, #E61E25) !important;
+  outline-offset: 2px !important;
+}

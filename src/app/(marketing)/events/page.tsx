@@ -1,19 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTheme } from "@/core";
 import { EventsHeroScroll, ClubEventsSection } from "@/domains/events";
 import type { ClubId } from "@/domains/events";
 
 export default function EventsPage() {
-  const { setTheme } = useTheme();
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [activeClubId, setActiveClubId] = useState<ClubId | null>(null);
-
-  // Automatically enforce the dark black & white monochrome theme on the events page
-  useEffect(() => {
-    setTheme("giedi-prime");
-  }, [setTheme]);
 
   // Handle category and club selection from arena cards
   const handleCategorySelect = (categoryId: string) => {

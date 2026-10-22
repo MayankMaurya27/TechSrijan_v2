@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, CheckCircle2, Phone, Mail } from "lucide-react";
 import { useTheme, type CanonicalTheme } from "@/core";
 import { api } from "@/lib/api";
+import { useFocusTrap } from "@/shared";
 
 const MODAL_THEME = {
   "geass-moon": {
@@ -99,24 +100,10 @@ export function SponsorsInquiryModal({
     }
   }, [defaultTier]);
 
-  // Handle ESC key to close modal
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleKeyDown);
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, onClose]);
+  const modalContainerRef = useFocusTrap<HTMLDivElement>({
+    isOpen,
+    onClose,
+  });
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -162,6 +149,11 @@ export function SponsorsInquiryModal({
 
           {/* Modal Container */}
           <motion.div
+            ref={modalContainerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sponsors-modal-title"
+            aria-describedby="sponsors-modal-desc"
             initial={{ opacity: 0, scale: 0.94, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 15 }}
@@ -174,20 +166,20 @@ export function SponsorsInquiryModal({
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white border border-white/10 transition-colors z-20 group"
-              aria-label="Close modal"
+              className="absolute top-4 right-4 min-w-[44px] min-h-[44px] rounded-full bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white border border-white/10 transition-colors z-20 group flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              aria-label="Close sponsorship inquiry modal"
             >
-              <X className="w-4 h-4 group-hover:rotate-90 transition-transform duration-200" />
+              <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-200" />
             </button>
 
             {/* Modal Body */}
             <div className="p-6 sm:p-8 max-h-[85vh] overflow-y-auto custom-scrollbar">
               {/* Header */}
               <div className="mb-6 pr-8">
-                <h3 className="font-montserrat text-2xl sm:text-3xl font-black uppercase text-white tracking-tight">
+                <h3 id="sponsors-modal-title" className="font-montserrat text-2xl sm:text-3xl font-black uppercase text-white tracking-tight">
                   Partner with <span className={mt.titleAccent}>TechSrijan</span>
                 </h3>
-                <p className="mt-1.5 font-geist text-neutral-300 text-xs sm:text-sm leading-relaxed">
+                <p id="sponsors-modal-desc" className="mt-1.5 font-geist text-neutral-300 text-xs sm:text-sm leading-relaxed">
                   Get in touch with our team to discuss sponsorship and partnership opportunities. We will get back to you within 24 hours.
                 </p>
               </div>
@@ -217,11 +209,16 @@ export function SponsorsInquiryModal({
                 <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5">
+                      <label
+                        htmlFor="sponsor-company-name"
+                        className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5 cursor-pointer"
+                      >
                         Company / Organization <span style={{ color: mt.accent }}>*</span>
                       </label>
                       <input
+                        id="sponsor-company-name"
                         required
+                        aria-required="true"
                         type="text"
                         name="company_name"
                         value={formData.company_name}
@@ -232,11 +229,16 @@ export function SponsorsInquiryModal({
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5">
+                      <label
+                        htmlFor="sponsor-contact-person"
+                        className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5 cursor-pointer"
+                      >
                         Contact Person Name <span style={{ color: mt.accent }}>*</span>
                       </label>
                       <input
+                        id="sponsor-contact-person"
                         required
+                        aria-required="true"
                         type="text"
                         name="contact_person"
                         value={formData.contact_person}
@@ -247,11 +249,16 @@ export function SponsorsInquiryModal({
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5">
+                      <label
+                        htmlFor="sponsor-email"
+                        className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5 cursor-pointer"
+                      >
                         Official Email <span style={{ color: mt.accent }}>*</span>
                       </label>
                       <input
+                        id="sponsor-email"
                         required
+                        aria-required="true"
                         type="email"
                         name="email"
                         value={formData.email}
@@ -262,11 +269,16 @@ export function SponsorsInquiryModal({
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5">
+                      <label
+                        htmlFor="sponsor-phone"
+                        className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5 cursor-pointer"
+                      >
                         Phone Number <span style={{ color: mt.accent }}>*</span>
                       </label>
                       <input
+                        id="sponsor-phone"
                         required
+                        aria-required="true"
                         type="tel"
                         name="phone"
                         value={formData.phone}
@@ -278,10 +290,14 @@ export function SponsorsInquiryModal({
                   </div>
 
                   <div>
-                    <label className={`block text-[11px] font-mono uppercase tracking-wider ${mt.selectLabel} font-bold mb-1.5`}>
+                    <label
+                      htmlFor="sponsor-tier"
+                      className={`block text-[11px] font-mono uppercase tracking-wider ${mt.selectLabel} font-bold mb-1.5 cursor-pointer`}
+                    >
                       Preferred Partnership Tier
                     </label>
                     <select
+                      id="sponsor-tier"
                       name="proposed_budget_tier"
                       value={formData.proposed_budget_tier}
                       onChange={handleInputChange}
@@ -312,10 +328,14 @@ export function SponsorsInquiryModal({
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5">
+                    <label
+                      htmlFor="sponsor-message"
+                      className="block text-[11px] font-mono uppercase tracking-wider text-neutral-300 font-bold mb-1.5 cursor-pointer"
+                    >
                       Message / Partnership Details
                     </label>
                     <textarea
+                      id="sponsor-message"
                       rows={3}
                       name="message"
                       value={formData.message}

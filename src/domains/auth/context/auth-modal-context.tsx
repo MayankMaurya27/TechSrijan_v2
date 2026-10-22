@@ -2,16 +2,20 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 
-interface AuthModalContextType {
+export interface AuthModalContextType {
   isAuthModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
   toggleAuthModal: () => void;
 }
 
+export interface AuthModalProviderProps {
+  children: React.ReactNode;
+}
+
 const AuthModalContext = createContext<AuthModalContextType | undefined>(undefined);
 
-export function AuthModalProvider({ children }: { children: React.ReactNode }) {
+export function AuthModalProvider({ children }: AuthModalProviderProps) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const openAuthModal = useCallback(() => {

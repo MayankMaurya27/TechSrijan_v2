@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme, useAuth, normalizeTheme } from "@/core";
-import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
+import { useAuthModal } from "@/domains/auth";
 import {
   Menu,
   X,
@@ -171,7 +171,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-[rgba(212,168,67,0.45)] bg-black/85 backdrop-blur-md text-[#f8eed9] hover:text-[var(--accent-primary,#d4a843)] hover:border-[var(--accent-primary,#d4a843)] transition-all duration-300 active:scale-95 shadow-[0_0_12px_rgba(0,0,0,0.7)] cursor-pointer"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--bg-primary)]/90 backdrop-blur-md text-[var(--text-primary)] hover:text-[var(--accent-primary)] hover:border-[var(--accent-primary)] transition-all duration-300 active:scale-95 shadow-[0_0_12px_rgba(0,0,0,0.7)] cursor-pointer"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="h-4.5 w-4.5" /> : <Menu className="h-4.5 w-4.5" />}
@@ -213,7 +213,7 @@ export function Navbar() {
             {hasProfile || pathname === "/profile" ? (
               <Link
                 href="/profile"
-                className="clip-mecha-btn relative px-3 py-1.5 font-mono font-bold text-[9.5px] tracking-[0.16em] uppercase text-[#f8eed9] bg-[rgba(212,168,67,0.25)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_12px_rgba(212,168,67,0.25)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1 cursor-pointer"
+                className="clip-mecha-btn relative px-3 py-1.5 font-mono font-bold text-[9.5px] tracking-[0.16em] uppercase text-[var(--text-primary)] bg-[var(--accent-primary)]/20 border border-[var(--border-accent)] shadow-[0_0_12px_var(--accent-glow)] hover:bg-[var(--accent-primary)] hover:text-black transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1 cursor-pointer"
               >
                 <span className="relative z-10">PROFILE</span>
                 <span className="relative z-10 opacity-70 text-[9px]">→</span>
@@ -222,7 +222,7 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={openAuthModal}
-                className="clip-mecha-btn relative px-3 py-1.5 font-mono font-bold text-[9.5px] tracking-[0.16em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.25)] via-[rgba(212,168,67,0.12)] to-[rgba(212,168,67,0.04)] border border-[var(--accent-primary,#d4a843)] shadow-[0_0_12px_rgba(212,168,67,0.25)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black hover:shadow-[0_0_20px_var(--accent-primary,#d4a843)] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1 cursor-pointer"
+                className="clip-mecha-btn relative px-3 py-1.5 font-mono font-bold text-[9.5px] tracking-[0.16em] uppercase text-[var(--text-primary)] bg-gradient-to-r from-[var(--accent-primary)]/25 via-[var(--accent-primary)]/12 to-[var(--accent-primary)]/4 border border-[var(--border-accent)] shadow-[0_0_12px_var(--accent-glow)] hover:bg-[var(--accent-primary)] hover:text-black hover:shadow-[0_0_20px_var(--accent-glow)] transition-all duration-300 active:scale-95 text-center whitespace-nowrap inline-flex items-center justify-center gap-1 cursor-pointer"
               >
                 <span className="relative z-10">SIGN IN</span>
                 <span className="relative z-10 opacity-70 text-[9px]">↗</span>
@@ -233,8 +233,8 @@ export function Navbar() {
 
         {/* Mobile Full Dropdown Menu Drawer */}
         {mobileMenuOpen && (
-          <div className="mt-2.5 rounded-xl border border-[rgba(212,168,67,0.35)] bg-[#0b0805]/95 backdrop-blur-2xl p-5 shadow-2xl transition-all duration-300 pointer-events-auto animate-in fade-in slide-in-from-top-2">
-            <div className="flex flex-col gap-2 font-sans text-xs tracking-[0.18em] text-[#d6c7b2]">
+          <div className="mt-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-primary)]/95 backdrop-blur-2xl p-5 shadow-2xl transition-all duration-300 pointer-events-auto animate-in fade-in slide-in-from-top-2">
+            <div className="flex flex-col gap-2 font-sans text-xs tracking-[0.18em] text-[var(--text-secondary)]">
               {NAV_LINKS.map((item) => {
                 const isActive = pathname === item.href;
                 return (
@@ -243,27 +243,27 @@ export function Navbar() {
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`py-2 px-3 rounded-lg uppercase font-medium flex items-center justify-between transition-colors ${isActive
-                        ? "bg-[rgba(212,168,67,0.18)] text-[var(--accent-primary,#d4a843)] font-semibold border-l-2 border-[var(--accent-primary,#d4a843)]"
-                        : "hover:bg-white/5 hover:text-[var(--accent-primary,#d4a843)]"
+                        ? "bg-[var(--accent-primary)]/15 text-[var(--accent-primary)] font-semibold border-l-2 border-[var(--border-accent)]"
+                        : "hover:bg-white/5 hover:text-[var(--accent-primary)]"
                       }`}
                   >
                     <span>{item.label}</span>
-                    {isActive && <span className="text-[10px] font-mono text-[var(--accent-primary,#d4a843)]">●</span>}
+                    {isActive && <span className="text-[10px] font-mono text-[var(--accent-primary)]">●</span>}
                   </Link>
                 );
               })}
               {hasProfile ? (
-                <div className="pt-3 mt-1 border-t border-[rgba(212,168,67,0.2)] flex flex-col gap-2">
+                <div className="pt-3 mt-1 border-t border-[var(--border)] flex flex-col gap-2">
                   <div className="px-3 py-2.5 bg-white/5 rounded-lg border border-white/5">
-                    <p className="font-mono text-[9px] text-neutral-400 uppercase tracking-wider">Signed in as</p>
-                    <p className="font-sans text-xs font-bold text-white truncate">{user?.name || "Participant"}</p>
-                    {user?.email && <p className="font-mono text-[10px] text-neutral-400 truncate mt-0.5">{user.email}</p>}
+                    <p className="font-mono text-[9px] text-[var(--text-muted)] uppercase tracking-wider">Signed in as</p>
+                    <p className="font-sans text-xs font-bold text-[var(--text-primary)] truncate">{user?.name || "Participant"}</p>
+                    {user?.email && <p className="font-mono text-[10px] text-[var(--text-muted)] truncate mt-0.5">{user.email}</p>}
                   </div>
 
                   <Link
                     href="/profile"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between py-2 px-3 rounded-lg border border-[rgba(212,168,67,0.3)] bg-[rgba(212,168,67,0.15)] text-[var(--accent-primary,#d4a843)] font-mono text-xs uppercase font-bold"
+                    className="flex items-center justify-between py-2 px-3 rounded-lg border border-[var(--border)] bg-[var(--accent-primary)]/15 text-[var(--accent-primary)] font-mono text-xs uppercase font-bold"
                   >
                     <div className="flex items-center gap-2">
                       <User className="w-3.5 h-3.5" />
@@ -289,7 +289,7 @@ export function Navbar() {
                   <button
                     type="button"
                     onClick={toggleTheme}
-                    className="flex items-center justify-between py-2 px-3 rounded-lg border border-[rgba(212,168,67,0.3)] bg-white/5 text-[#f8eed9] font-mono text-xs uppercase cursor-pointer"
+                    className="flex items-center justify-between py-2 px-3 rounded-lg border border-[var(--border)] bg-white/5 text-[var(--text-primary)] font-mono text-xs uppercase cursor-pointer"
                   >
                     <span>Active Theme</span>
                     <div className="flex items-center gap-2">
@@ -311,11 +311,11 @@ export function Navbar() {
                   </button>
                 </div>
               ) : (
-                <div className="pt-3 mt-1 border-t border-[rgba(212,168,67,0.2)] flex flex-col gap-2">
+                <div className="pt-3 mt-1 border-t border-[var(--border)] flex flex-col gap-2">
                   <button
                     type="button"
                     onClick={toggleTheme}
-                    className="flex items-center justify-between py-2 px-3 rounded-lg border border-[rgba(212,168,67,0.3)] bg-white/5 text-[#f8eed9] font-mono text-xs uppercase cursor-pointer"
+                    className="flex items-center justify-between py-2 px-3 rounded-lg border border-[var(--border)] bg-white/5 text-[var(--text-primary)] font-mono text-xs uppercase cursor-pointer"
                   >
                     <span>Active Theme</span>
                     <div className="flex items-center gap-2">
@@ -329,7 +329,7 @@ export function Navbar() {
                       setMobileMenuOpen(false);
                       openAuthModal();
                     }}
-                    className="clip-mecha-btn block w-full py-2.5 font-mono font-bold text-xs tracking-[0.22em] uppercase text-[#f8eed9] bg-gradient-to-r from-[rgba(212,168,67,0.25)] to-[rgba(212,168,67,0.08)] border border-[var(--accent-primary,#d4a843)] text-center shadow-[0_0_15px_rgba(212,168,67,0.3)] hover:bg-[var(--accent-primary,#d4a843)] hover:text-black transition-all cursor-pointer"
+                    className="clip-mecha-btn block w-full py-2.5 font-mono font-bold text-xs tracking-[0.22em] uppercase text-[var(--text-primary)] bg-gradient-to-r from-[var(--accent-primary)]/25 to-[var(--accent-primary)]/8 border border-[var(--border-accent)] text-center shadow-[0_0_15px_var(--accent-glow)] hover:bg-[var(--accent-primary)] hover:text-black transition-all cursor-pointer"
                   >
                     SIGN IN ↗
                   </button>
@@ -591,10 +591,10 @@ export function Navbar() {
           MOBILE BOTTOM NAVIGATION DOCK (Events, Ambassador, Sponsorship, Stay)
           ========================================================= */}
       <div className="xl:hidden fixed bottom-3 inset-x-3 z-50 pointer-events-auto">
-        <nav className="grid grid-cols-4 w-full items-center py-1.5 px-1 rounded-2xl border border-[rgba(212,168,67,0.35)] bg-[#070503]/92 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,0,0,0.9)]">
+        <nav className="grid grid-cols-4 w-full items-center py-1.5 px-1 rounded-2xl border border-[var(--border)] bg-[var(--bg-primary)]/92 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,0,0,0.9)]">
           <Link
             href="/events"
-            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/events" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/events" ? "text-[var(--accent-primary)] font-semibold" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               }`}
           >
             <Calendar className="h-4 w-4" />
@@ -602,7 +602,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/about"
-            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/about" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/about" ? "text-[var(--accent-primary)] font-semibold" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               }`}
           >
             <Compass className="h-4 w-4" />
@@ -610,7 +610,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/sponsors"
-            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/sponsors" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/sponsors" ? "text-[var(--accent-primary)] font-semibold" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               }`}
           >
             <Handshake className="h-4 w-4" />
@@ -618,7 +618,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/accommodation"
-            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/accommodation" ? "text-[var(--accent-primary,#d4a843)]" : "text-[#a89b88] hover:text-[#f8eed9]"
+            className={`flex flex-col items-center justify-center gap-0.5 py-1 rounded-lg transition-colors ${pathname === "/accommodation" ? "text-[var(--accent-primary)] font-semibold" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
               }`}
           >
             <Hotel className="h-4 w-4" />

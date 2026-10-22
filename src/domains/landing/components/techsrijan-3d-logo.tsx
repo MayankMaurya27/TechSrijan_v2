@@ -5,6 +5,7 @@ import Image from "next/image";
 // three.js and gsap are imported dynamically (after load/idle, or on interaction) to keep them off the critical path
 import type * as THREE from "three";
 import { whenIdleAfterLoad, type CanonicalTheme } from "@/core";
+import { getPrefersReducedMotion } from "@/core/utils/reduced-motion";
 import { useActiveCanonicalTheme } from "../hooks/use-active-theme";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 
@@ -86,13 +87,15 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
   const currentTheme = useActiveCanonicalTheme();
   const activeConf = LOGO_THEMES[currentTheme] || LOGO_THEMES["arrakis-day"];
 
-  // Mouse & interactive 3D physics
-  const [tilt, setTilt] = useState({ rotX: 0, rotY: 0, translateZ: 0 });
-  const [specularPos, setSpecularPos] = useState({ x: 50, y: 50, opacity: 0 });
-  const [isPressed, setIsPressed] = useState(false);
-  const [isInteractive, setIsInteractive] = useState(false);
+  // Mouse & interactive 3D physics — direct DOM mutation via refs (Zero React re-render churn)
+  const currentTiltRef = useRef({ rotX: 0, rotY: 0, translateZ: 0 });
+  const currentSpecularRef = useRef({ x: 50, y: 50, opacity: 0 });
   const targetTiltRef = useRef({ rotX: 0, rotY: 0, translateZ: 0, lightX: 50, lightY: 50, lightOpacity: 0 });
   const animFrameRef = useRef<number | null>(null);
+
+  // Direct element references for 60/120fps hardware composite mutations
+  const sheenLayerRef = useRef<HTMLDivElement>(null);
+  const sheenDotRef = useRef<HTMLDivElement>(null);
 
   // Shockwave state
   const [shockwaves, setShockwaves] = useState<Array<{ id: number; x: number; y: number }>>([]);
@@ -207,13 +210,14 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
 
       let isRunning = true;
       let startTime = performance.now();
+      let particleRafId: number | null = null;
 
       const animateParticles = () => {
         if (!isRunning) return;
-        requestAnimationFrame(animateParticles);
 
         // Skip GPU computation & render when logo is scrolled out of view or tab is hidden
         if (scrollProgressRef.current > 0.15 || document.hidden) {
+          particleRafId = requestAnimationFrame(animateParticles);
           return;
         }
 
@@ -235,9 +239,17 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
         }
         posAttr.needsUpdate = true;
         renderer.render(scene, camera);
+
+        particleRafId = requestAnimationFrame(animateParticles);
       };
 
-      animateParticles();
+      // Check prefers-reduced-motion: if enabled, render single static frame without continuous animation
+      const prefersReducedMotion = getPrefersReducedMotion();
+      if (prefersReducedMotion) {
+        renderer.render(scene, camera);
+      } else {
+        particleRafId = requestAnimationFrame(animateParticles);
+      }
 
       const handleResize = () => {
         if (!canvas.parentElement) return;
@@ -252,10 +264,21 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
 
       return () => {
         isRunning = false;
+        if (particleRafId !== null) {
+          cancelAnimationFrame(particleRafId);
+          particleRafId = null;
+        }
         window.removeEventListener("resize", handleResize);
+
+        // Complete Three.js & WebGL Resource Disposal
+        scene.remove(points);
         geometry.dispose();
         material.dispose();
         particleTexture.dispose();
+        particleTextureRef.current = null;
+        spriteCanvasRef.current = null;
+
+        renderer.forceContextLoss();
         renderer.dispose();
       };
     };
@@ -267,9 +290,18 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
     };
   }, []);
 
-  // Spring physics loop for 3D tilt and specular lighting (pauses when logo offscreen or at rest)
+  // Spring physics loop for 3D tilt and specular lighting — Direct DOM mutations without React re-renders
   useEffect(() => {
     let active = true;
+
+    // Prefers-reduced-motion check: lock to resting equilibrium without running rAF loop
+    const prefersReducedMotion = getPrefersReducedMotion();
+    if (prefersReducedMotion) {
+      if (cardRef.current) {
+        cardRef.current.style.transform = "rotateX(0deg) rotateY(0deg) translateZ(0px)";
+      }
+      return;
+    }
 
     const updatePhysics = () => {
       if (!active) return;
@@ -280,34 +312,41 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
         return;
       }
 
+      const cur = currentTiltRef.current;
       const target = targetTiltRef.current;
-      setTilt((prev) => {
-        const diffX = target.rotX - prev.rotX;
-        const diffY = target.rotY - prev.rotY;
-        const diffZ = target.translateZ - prev.translateZ;
-        if (Math.abs(diffX) < 0.005 && Math.abs(diffY) < 0.005 && Math.abs(diffZ) < 0.01) {
-          return prev; // Same reference: zero React re-render!
-        }
-        return {
-          rotX: prev.rotX + diffX * 0.08,
-          rotY: prev.rotY + diffY * 0.08,
-          translateZ: prev.translateZ + diffZ * 0.1,
-        };
-      });
 
-      setSpecularPos((prev) => {
-        const diffX = target.lightX - prev.x;
-        const diffY = target.lightY - prev.y;
-        const diffOp = target.lightOpacity - prev.opacity;
-        if (Math.abs(diffX) < 0.05 && Math.abs(diffY) < 0.05 && Math.abs(diffOp) < 0.005) {
-          return prev; // Same reference: zero React re-render!
+      const diffX = target.rotX - cur.rotX;
+      const diffY = target.rotY - cur.rotY;
+      const diffZ = target.translateZ - cur.translateZ;
+
+      if (Math.abs(diffX) >= 0.005 || Math.abs(diffY) >= 0.005 || Math.abs(diffZ) >= 0.01) {
+        cur.rotX += diffX * 0.08;
+        cur.rotY += diffY * 0.08;
+        cur.translateZ += diffZ * 0.1;
+
+        if (cardRef.current) {
+          cardRef.current.style.transform = `rotateX(${cur.rotX.toFixed(2)}deg) rotateY(${cur.rotY.toFixed(2)}deg) translateZ(${cur.translateZ.toFixed(1)}px)`;
         }
-        return {
-          x: prev.x + diffX * 0.1,
-          y: prev.y + diffY * 0.1,
-          opacity: prev.opacity + diffOp * 0.08,
-        };
-      });
+      }
+
+      const curSpec = currentSpecularRef.current;
+      const specDiffX = target.lightX - curSpec.x;
+      const specDiffY = target.lightY - curSpec.y;
+      const specDiffOp = target.lightOpacity - curSpec.opacity;
+
+      if (Math.abs(specDiffX) >= 0.05 || Math.abs(specDiffY) >= 0.05 || Math.abs(specDiffOp) >= 0.005) {
+        curSpec.x += specDiffX * 0.1;
+        curSpec.y += specDiffY * 0.1;
+        curSpec.opacity += specDiffOp * 0.08;
+
+        if (sheenLayerRef.current) {
+          sheenLayerRef.current.style.opacity = curSpec.opacity.toFixed(3);
+        }
+        if (sheenDotRef.current) {
+          sheenDotRef.current.style.left = `${curSpec.x.toFixed(2)}%`;
+          sheenDotRef.current.style.top = `${curSpec.y.toFixed(2)}%`;
+        }
+      }
 
       animFrameRef.current = requestAnimationFrame(updatePhysics);
     };
@@ -316,13 +355,23 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
 
     return () => {
       active = false;
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (animFrameRef.current !== null) {
+        cancelAnimationFrame(animFrameRef.current);
+        animFrameRef.current = null;
+      }
     };
   }, []);
 
   // Entrance specular sweep with GSAP
   useEffect(() => {
     if (!hasEntered) return;
+
+    if (getPrefersReducedMotion()) {
+      targetTiltRef.current.lightOpacity = 0.35;
+      targetTiltRef.current.lightX = 50;
+      targetTiltRef.current.lightY = 50;
+      return;
+    }
 
     const target = targetTiltRef.current;
     target.lightOpacity = 0.85;
@@ -377,14 +426,17 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
     targetTiltRef.current.lightOpacity = 0.25;
     targetTiltRef.current.lightX = 50;
     targetTiltRef.current.lightY = 50;
-    setIsPressed(false);
+    if (cardRef.current) {
+      cardRef.current.style.transition = "none";
+    }
   }, []);
 
   // Click / Tap shockwave and tactile 3D bounce
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    setIsPressed(true);
-    setIsInteractive(true);
     targetTiltRef.current.translateZ = -15;
+    if (cardRef.current) {
+      cardRef.current.style.transition = "transform 0.08s ease-out";
+    }
 
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
@@ -419,7 +471,9 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
   }, []);
 
   const handlePointerUp = useCallback(() => {
-    setIsPressed(false);
+    if (cardRef.current) {
+      cardRef.current.style.transition = "none";
+    }
     targetTiltRef.current.translateZ = 12;
     setTimeout(() => {
       targetTiltRef.current.lightOpacity = 0.55;
@@ -450,8 +504,7 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
         className="relative w-full flex justify-center items-center"
         style={{
           transformStyle: "preserve-3d",
-          transform: `rotateX(${tilt.rotX}deg) rotateY(${tilt.rotY}deg) translateZ(${tilt.translateZ}px)`,
-          transition: isPressed ? "transform 0.08s ease-out" : "none",
+          transform: "rotateX(0deg) rotateY(0deg) translateZ(0px)",
           willChange: "transform",
         }}
       >
@@ -481,13 +534,13 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
             );
           })}
 
-          {/* Layer 2: Interactive Specular Sheen (Gleams across the metallic bevels in theme colors).
-              Mask uses the identical high-resolution emblem image so it tracks every bevel and contour with zero blur or ghosting. */}
+          {/* Layer 2: Interactive Specular Sheen (Directly animated via sheenLayerRef and sheenDotRef) */}
           <div
+            ref={sheenLayerRef}
             className="absolute inset-0 pointer-events-none overflow-hidden z-20"
             style={{
-              maskImage: specularPos.opacity > 0.001 ? `url(${activeConf.imageSrcWebp}?v=tsfinal1)` : "none",
-              WebkitMaskImage: specularPos.opacity > 0.001 ? `url(${activeConf.imageSrcWebp}?v=tsfinal1)` : "none",
+              maskImage: `url(${activeConf.imageSrcWebp}?v=tsfinal1)`,
+              WebkitMaskImage: `url(${activeConf.imageSrcWebp}?v=tsfinal1)`,
               maskSize: "contain",
               WebkitMaskSize: "contain",
               maskRepeat: "no-repeat",
@@ -495,17 +548,18 @@ export function TechSrijan3DLogo({ scrollProgress, hasEntered }: TechSrijan3DLog
               maskPosition: "center",
               WebkitMaskPosition: "center",
               mixBlendMode: "color-dodge",
-              opacity: specularPos.opacity,
+              opacity: 0,
               transition: "opacity 0.25s ease-out",
             }}
           >
             <div
+              ref={sheenDotRef}
               className="absolute rounded-full pointer-events-none blur-[24px]"
               style={{
                 width: "360px",
                 height: "360px",
-                left: `${specularPos.x}%`,
-                top: `${specularPos.y}%`,
+                left: "50%",
+                top: "50%",
                 transform: "translate(-50%, -50%)",
                 background: activeConf.specularGradient,
               }}

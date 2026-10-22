@@ -135,9 +135,14 @@ export function AdminAmbassadorsView() {
       {/* SEARCH AND STATUS FILTER */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         <div className="relative flex-1">
+          <label htmlFor="admin-ambassadors-search" className="sr-only">
+            Search Ambassadors
+          </label>
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
           <input
+            id="admin-ambassadors-search"
             type="text"
+            aria-label="Search Ambassadors"
             placeholder="Search by student name, college, city, or referral code..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -145,7 +150,7 @@ export function AdminAmbassadorsView() {
           />
         </div>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex items-center gap-1.5 overflow-x-auto touch-pan-y pb-1 sm:pb-0">
           {(["ALL", "PENDING", "APPROVED", "REJECTED"] as const).map((filter) => (
             <button
               key={filter}
@@ -175,7 +180,7 @@ export function AdminAmbassadorsView() {
         </div>
       ) : (
         <div className="w-full overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto touch-pan-y">
             <table className="w-full text-left text-xs">
               <thead className="bg-zinc-900 border-b border-zinc-800 text-zinc-400 uppercase text-[11px] font-semibold tracking-wider">
                 <tr>

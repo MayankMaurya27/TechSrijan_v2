@@ -152,6 +152,9 @@ export function FestFooter({ className = "" }: { className?: string }) {
                 <Link href="/events" className="hover:text-white transition-colors">Events</Link>
               </li>
               <li>
+                <Link href="/team" className="hover:text-white transition-colors">Team</Link>
+              </li>
+              <li>
                 <Link href="/sponsors" className="hover:text-white transition-colors">Sponsors</Link>
               </li>
               <li>

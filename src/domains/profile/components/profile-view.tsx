@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useFocusTrap } from "@/shared";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,8 +26,9 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/core";
 import { api } from "@/lib/api";
-import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
+import { useAuthModal } from "@/domains/auth";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
+import { useReducedMotion } from "@/shared/hooks/use-reduced-motion";
 
 export interface UserProfileData {
   fullName: string;
@@ -73,11 +75,19 @@ const DEFAULT_PROFILE: UserProfileData = {
 export function ProfileView() {
   const { user, refreshUser } = useAuth();
   const { openAuthModal } = useAuthModal();
+  const shouldReduceMotion = useReducedMotion();
+  const editTriggerButtonRef = useRef<HTMLButtonElement>(null);
   const [profile, setProfile] = useState<UserProfileData>(DEFAULT_PROFILE);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<UserProfileData>(DEFAULT_PROFILE);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  const editModalRef = useFocusTrap<HTMLDivElement>({
+    isOpen: isEditing,
+    onClose: () => setIsEditing(false),
+    returnFocusRef: editTriggerButtonRef,
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -262,17 +272,25 @@ export function ProfileView() {
                   backgroundColor: emberColor,
                   boxShadow: `0 0 10px ${emberColor}`,
                 }}
-                animate={{
-                  y: [0, -40, 0],
-                  opacity: [0.2, 0.75, 0.2],
-                  scale: [1, 1.3, 1],
-                }}
-                transition={{
-                  duration: 4.5 + (i % 4),
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: (i % 5) * 0.4,
-                }}
+                animate={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        y: [0, -40, 0],
+                        opacity: [0.2, 0.75, 0.2],
+                        scale: [1, 1.3, 1],
+                      }
+                }
+                transition={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        duration: 4.5 + (i % 4),
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: (i % 5) * 0.4,
+                      }
+                }
               />
             );
           })}
@@ -626,14 +644,15 @@ export function ProfileView() {
 
             {/* Action Button: EDIT PROFILE */}
             <button
+              ref={editTriggerButtonRef}
               type="button"
               onClick={() => {
                 setEditForm(profile);
                 setIsEditing(true);
               }}
-              className="relative w-full py-2.5 px-5 font-mono text-xs tracking-[0.2em] uppercase text-[#caa462] hover:text-[#f8eed9] transition-all duration-300 border border-[#caa462]/40 hover:border-[#caa462] bg-[#140e10]/80 hover:bg-[#201518] rounded flex items-center justify-center gap-2 group mt-1"
+              className="relative w-full min-h-[44px] py-2.5 px-5 font-mono text-xs tracking-[0.2em] uppercase text-[#caa462] hover:text-[#f8eed9] transition-all duration-300 border border-[#caa462]/40 hover:border-[#caa462] bg-[#140e10]/80 hover:bg-[#201518] rounded flex items-center justify-center gap-2 group mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#caa462] cursor-pointer"
             >
-              <Edit3 className="w-3.5 h-3.5 text-[#caa462] group-hover:scale-110 transition-transform" />
+              <Edit3 className="w-4 h-4 text-[#caa462] group-hover:scale-110 transition-transform" />
               <span>EDIT PROFILE</span>
             </button>
           </motion.div>
@@ -796,10 +815,11 @@ export function ProfileView() {
                   </div>
                   <div className="w-full h-1.5 rounded-full bg-[#1c1214] border border-[#3e292c] overflow-hidden">
                     <motion.div
-                      className="h-full bg-gradient-to-r from-red-600 via-red-500 to-[#caa462] rounded-full shadow-[0_0_8px_rgba(202,164,98,0.6)]"
-                      initial={{ width: 0 }}
-                      animate={{ width: "73%" }}
-                      transition={{ duration: 1.2, delay: 0.35, ease: "easeOut" }}
+                      className="h-full w-full origin-left bg-gradient-to-r from-red-600 via-red-500 to-[#caa462] rounded-full shadow-[0_0_8px_rgba(202,164,98,0.6)]"
+                      style={{ transformOrigin: "left" }}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 0.73 }}
+                      transition={{ duration: 0.8, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
                     />
                   </div>
                 </div>
@@ -825,28 +845,39 @@ export function ProfileView() {
         {isEditing && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
             <motion.div
+              ref={editModalRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="edit-profile-modal-title"
+              aria-describedby="edit-profile-modal-desc"
               className="relative w-full max-w-lg bg-[#0e090b] border border-[#caa462]/70 p-6 sm:p-7 shadow-[0_25px_80px_rgba(0,0,0,0.95)]"
               style={{
                 clipPath:
                   "polygon(16px 0%, calc(100% - 16px) 0%, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0% calc(100% - 18px), 0% 16px)",
                 boxShadow: "0 0 30px rgba(202, 164, 98, 0.2), inset 0 0 30px rgba(0, 0, 0, 0.9)",
               }}
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ duration: 0.25 }}
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 15 }}
+              animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ duration: shouldReduceMotion ? 0.15 : 0.25 }}
             >
               <div className="flex items-center justify-between border-b border-[#caa462]/20 pb-3.5 mb-5">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]" />
-                  <h3 className="font-montserrat text-lg sm:text-xl font-bold text-[#f8eed9]">
-                    Edit Account Details
-                  </h3>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]" />
+                    <h3 id="edit-profile-modal-title" className="font-montserrat text-lg sm:text-xl font-bold text-[#f8eed9]">
+                      Edit Account Details
+                    </h3>
+                  </div>
+                  <p id="edit-profile-modal-desc" className="text-xs text-[#9e9282] mt-1 font-geist">
+                    Update your participant profile and institutional credentials.
+                  </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsEditing(false)}
-                  className="text-[#9e9282] hover:text-[#f8eed9] transition-colors p-1"
+                  className="min-w-[44px] min-h-[44px] rounded-full text-[#9e9282] hover:text-[#f8eed9] transition-colors p-2 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#caa462]"
+                  aria-label="Close edit profile dialog"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -854,25 +885,28 @@ export function ProfileView() {
 
               <form onSubmit={handleSaveProfile} className="space-y-4">
                 <div>
-                  <label className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1">
+                  <label htmlFor="profile-edit-fullname" className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1 cursor-pointer">
                     Full Name
                   </label>
                   <input
+                    id="profile-edit-fullname"
                     type="text"
                     name="fullName"
                     value={editForm.fullName}
                     onChange={handleEditChange}
                     required
+                    aria-required="true"
                     className="w-full px-3.5 py-2 rounded bg-[#160e10] border border-[#3e292c] text-sm text-[#f8eed9] focus:border-[#caa462] focus:outline-none transition-all"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1">
+                    <label htmlFor="profile-edit-phone" className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1 cursor-pointer">
                       Phone Number
                     </label>
                     <input
+                      id="profile-edit-phone"
                       type="tel"
                       name="phone"
                       value={editForm.phone}
@@ -882,10 +916,11 @@ export function ProfileView() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1">
+                    <label htmlFor="profile-edit-city" className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1 cursor-pointer">
                       City, State
                     </label>
                     <input
+                      id="profile-edit-city"
                       type="text"
                       name="city"
                       value={editForm.city}
@@ -896,10 +931,11 @@ export function ProfileView() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1">
+                  <label htmlFor="profile-edit-college" className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1 cursor-pointer">
                     College / Institution
                   </label>
                   <input
+                    id="profile-edit-college"
                     type="text"
                     name="college"
                     value={editForm.college}
@@ -910,10 +946,11 @@ export function ProfileView() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1">
+                    <label htmlFor="profile-edit-course" className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1 cursor-pointer">
                       Course / Department
                     </label>
                     <input
+                      id="profile-edit-course"
                       type="text"
                       name="course"
                       value={editForm.course}
@@ -923,10 +960,11 @@ export function ProfileView() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1">
+                    <label htmlFor="profile-edit-year" className="block text-[10px] font-mono tracking-widest uppercase text-[#9e9282] mb-1 cursor-pointer">
                       Year of Study
                     </label>
                     <select
+                      id="profile-edit-year"
                       name="year"
                       value={editForm.year}
                       onChange={handleEditChange}
@@ -945,14 +983,14 @@ export function ProfileView() {
                   <button
                     type="button"
                     onClick={() => setIsEditing(false)}
-                    className="px-4 py-2 font-mono text-xs uppercase text-[#9e9282] hover:text-[#f8eed9] transition-colors"
+                    className="min-h-[44px] px-4 py-2.5 font-mono text-xs uppercase text-[#9e9282] hover:text-[#f8eed9] transition-colors rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#caa462] cursor-pointer"
                   >
                     Cancel
                   </button>
 
                   <button
                     type="submit"
-                    className="px-6 py-2 rounded bg-gradient-to-r from-red-700 to-red-600 border border-red-500 font-mono text-xs font-bold tracking-wider text-white shadow-[0_0_15px_rgba(239,68,68,0.5)] flex items-center gap-2 hover:brightness-110 transition-all"
+                    className="min-h-[44px] px-6 py-2.5 rounded bg-gradient-to-r from-red-700 to-red-600 border border-red-500 font-mono text-xs font-bold tracking-wider text-white shadow-[0_0_15px_rgba(239,68,68,0.5)] flex items-center gap-2 hover:brightness-110 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 cursor-pointer"
                   >
                     {saveSuccess ? (
                       <>

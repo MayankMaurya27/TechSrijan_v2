@@ -28,7 +28,7 @@ export function ArchiveFrameCard({
 }: ArchiveFrameCardProps) {
   return (
     <div
-      className={`archive-card pointer-events-auto transition-transform duration-300 relative ${className}`}
+      className={`archive-card pointer-events-auto transition-transform duration-300 relative touch-pan-y ${className}`}
       style={style}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

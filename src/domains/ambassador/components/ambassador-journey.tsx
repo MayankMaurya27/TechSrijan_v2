@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { motion, useInView, useScroll, useSpring, useTransform } from "framer-motion";
 import { FileText, ShieldCheck, Zap, Trophy } from "lucide-react";
-import { useAmbassadorTheme } from "./ambassador-theme";
+import { useAmbassadorTheme } from "../data/ambassador-theme";
 
 interface JourneyStep {
   number: string;

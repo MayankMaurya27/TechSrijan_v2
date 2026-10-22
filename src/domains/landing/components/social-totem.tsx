@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useId } from "react";
+import { useState, useEffect, useRef, useId } from "react";
 import type { CanonicalTheme } from "@/core";
+import { getPrefersReducedMotion } from "@/core/utils/reduced-motion";
 import { useActiveCanonicalTheme } from "../hooks/use-active-theme";
 
 interface Waypoint {
@@ -436,25 +437,28 @@ interface SocialTotemProps {
 
 export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
   const [hoveredWaypoint, setHoveredWaypoint] = useState<string | null>(null);
-  const [mouseTilt, setMouseTilt] = useState({ x: 0, y: 0 });
+  const totemRef = useRef<HTMLDivElement>(null);
   const uniqueId = useId().replace(/:/g, "");
 
   // Dynamic Theme Synchronization with 0ms reactivity
   const currentTheme = useActiveCanonicalTheme();
   const totemTheme = TOTEM_THEMES[currentTheme] || TOTEM_THEMES["arrakis-day"];
 
-  // RAF-throttled mouse parallax tilt for 3D depth matching the Citadel monoliths
+  // RAF-throttled mouse parallax tilt for 3D depth matching the Citadel monoliths (Direct DOM style mutation)
   useEffect(() => {
     let rafId = 0;
+    const prefersReducedMotion = getPrefersReducedMotion();
+    if (prefersReducedMotion) return;
+
     const handlePointerMove = (e: PointerEvent) => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
         const w = window.innerWidth;
         const h = window.innerHeight;
-        if (w > 0 && h > 0) {
-          const rotY = (e.clientX / w - 0.5) * 4.5;
-          const rotX = -(e.clientY / h - 0.5) * 3.2;
-          setMouseTilt({ x: rotX, y: rotY });
+        if (w > 0 && h > 0 && totemRef.current) {
+          const rotY = ((e.clientX / w - 0.5) * 4.5 * 0.65).toFixed(2);
+          const rotX = (-(e.clientY / h - 0.5) * 3.2 * 0.65).toFixed(2);
+          totemRef.current.style.transform = `translate3d(0, var(--totem-translate-y, 0px), 0) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
         }
       });
     };
@@ -498,6 +502,7 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
 
   return (
     <div
+      ref={totemRef}
       className="hidden lg:block pointer-events-none absolute z-30 select-none transition-all duration-700"
       style={{
         // Perfectly positioned on the right flank, aligned with Citadel Archive cards
@@ -506,7 +511,8 @@ export function SocialTotem({ scrollProgress = 0 }: SocialTotemProps) {
         opacity: currentOpacity,
         visibility: isVisible ? "visible" : "hidden",
         pointerEvents: currentOpacity > 0.35 ? "auto" : "none",
-        transform: `translate3d(0, ${currentTranslateY}px, 0) rotateY(${mouseTilt.y * 0.65}deg) rotateX(${mouseTilt.x * 0.65}deg)`,
+        ["--totem-translate-y" as string]: `${currentTranslateY}px`,
+        transform: `translate3d(0, var(--totem-translate-y, 0px), 0) rotateY(0deg) rotateX(0deg)`,
         perspective: "1400px",
         transformStyle: "preserve-3d",
         willChange: "transform, opacity",

@@ -377,9 +377,14 @@ export function AdminEventsView() {
       {/* FILTER & SEARCH STRIP */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         <div className="relative flex-1">
+          <label htmlFor="admin-events-search" className="sr-only">
+            Search Events
+          </label>
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
           <input
+            id="admin-events-search"
             type="text"
+            aria-label="Search Events"
             placeholder="Search by event title, category, or venue..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -388,18 +393,25 @@ export function AdminEventsView() {
         </div>
 
         {isSuperAdmin && (
-          <select
-            value={clubFilter}
-            onChange={(e) => setClubFilter(e.target.value)}
-            className="h-10 px-3 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-100 focus:border-amber-500 focus:outline-none"
-          >
-            <option value="ALL">All Organizing Clubs</option>
-            {CLUBS.map((c) => (
-              <option key={c} value={c}>
-                Club: {c}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <label htmlFor="admin-events-club-filter" className="sr-only">
+              Filter by Club
+            </label>
+            <select
+              id="admin-events-club-filter"
+              aria-label="Filter by Club"
+              value={clubFilter}
+              onChange={(e) => setClubFilter(e.target.value)}
+              className="h-10 px-3 rounded-lg bg-zinc-900 border border-zinc-800 text-xs text-zinc-100 focus:border-amber-500 focus:outline-none cursor-pointer"
+            >
+              <option value="ALL">All Organizing Clubs</option>
+              {CLUBS.map((c) => (
+                <option key={c} value={c}>
+                  Club: {c}
+                </option>
+              ))}
+            </select>
+          </div>
         )}
       </div>
 
@@ -672,7 +684,7 @@ export function AdminEventsView() {
               No confirmed participants have registered for this event yet.
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto touch-pan-y">
               <table className="w-full text-left text-xs">
                 <thead className="bg-zinc-900 border-b border-zinc-800 text-zinc-400 uppercase text-[11px] font-semibold">
                   <tr>
@@ -749,15 +761,21 @@ export function AdminEventsView() {
       {/* CREATE / EDIT EVENT MODAL */}
       {modalMode && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="w-full max-w-xl bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-events-modal-title"
+            className="w-full max-w-xl bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto"
+          >
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
-              <h3 className="text-base font-bold text-zinc-100">
+              <h3 id="admin-events-modal-title" className="text-base font-bold text-zinc-100">
                 {modalMode === "create" ? "Create New Event" : "Edit Event"}
               </h3>
               <button
                 type="button"
                 onClick={() => setModalMode(null)}
-                className="text-zinc-400 hover:text-zinc-100"
+                aria-label="Close modal"
+                className="text-zinc-400 hover:text-zinc-100 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -766,10 +784,14 @@ export function AdminEventsView() {
             <form onSubmit={handleSaveEvent} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-zinc-300 font-medium mb-1">Event Title *</label>
+                  <label htmlFor="admin-event-title" className="block text-zinc-300 font-medium mb-1 cursor-pointer">
+                    Event Title *
+                  </label>
                   <input
+                    id="admin-event-title"
                     type="text"
                     required
+                    aria-required="true"
                     placeholder="e.g. RoboWars 2027"
                     value={eventForm.title}
                     onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
@@ -778,8 +800,12 @@ export function AdminEventsView() {
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-medium mb-1">Category *</label>
+                  <label htmlFor="admin-event-category" className="block text-zinc-300 font-medium mb-1 cursor-pointer">
+                    Category *
+                  </label>
                   <select
+                    id="admin-event-category"
+                    aria-required="true"
                     value={eventForm.category}
                     onChange={(e) =>
                       setEventForm({
@@ -787,7 +813,7 @@ export function AdminEventsView() {
                         category: e.target.value as any,
                       })
                     }
-                    className="w-full h-9 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
+                    className="w-full h-9 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none cursor-pointer"
                   >
                     {CATEGORIES.map((c) => (
                       <option key={c} value={c}>
@@ -800,9 +826,12 @@ export function AdminEventsView() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-zinc-300 font-medium mb-1">Organizing Club</label>
+                  <label htmlFor="admin-event-club" className="block text-zinc-300 font-medium mb-1 cursor-pointer">
+                    Organizing Club
+                  </label>
                   {isSuperAdmin ? (
                     <select
+                      id="admin-event-club"
                       value={eventForm.organizingClub}
                       onChange={(e) =>
                         setEventForm({
@@ -810,7 +839,7 @@ export function AdminEventsView() {
                           organizingClub: e.target.value as any,
                         })
                       }
-                      className="w-full h-9 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
+                      className="w-full h-9 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none cursor-pointer"
                     >
                       {CLUBS.map((c) => (
                         <option key={c} value={c}>
@@ -820,6 +849,7 @@ export function AdminEventsView() {
                     </select>
                   ) : (
                     <input
+                      id="admin-event-club"
                       type="text"
                       disabled
                       value={userClub}
@@ -829,8 +859,11 @@ export function AdminEventsView() {
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-medium mb-1">Venue</label>
+                  <label htmlFor="admin-event-venue" className="block text-zinc-300 font-medium mb-1 cursor-pointer">
+                    Venue
+                  </label>
                   <input
+                    id="admin-event-venue"
                     type="text"
                     placeholder="e.g. Main Auditorium"
                     value={eventForm.venue}
@@ -842,8 +875,11 @@ export function AdminEventsView() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-zinc-300 font-medium mb-1">Prize Pool (₹)</label>
+                  <label htmlFor="admin-event-prizepool" className="block text-zinc-300 font-medium mb-1 cursor-pointer">
+                    Prize Pool (₹)
+                  </label>
                   <input
+                    id="admin-event-prizepool"
                     type="number"
                     min={0}
                     value={eventForm.prizePool}
@@ -855,8 +891,11 @@ export function AdminEventsView() {
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-medium mb-1">Min Team Size</label>
+                  <label htmlFor="admin-event-minteam" className="block text-zinc-300 font-medium mb-1 cursor-pointer">
+                    Min Team Size
+                  </label>
                   <input
+                    id="admin-event-minteam"
                     type="number"
                     min={1}
                     value={eventForm.minTeamSize}
@@ -868,8 +907,11 @@ export function AdminEventsView() {
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-medium mb-1">Max Team Size</label>
+                  <label htmlFor="admin-event-maxteam" className="block text-zinc-300 font-medium mb-1 cursor-pointer">
+                    Max Team Size
+                  </label>
                   <input
+                    id="admin-event-maxteam"
                     type="number"
                     min={1}
                     value={eventForm.maxTeamSize}
@@ -883,8 +925,11 @@ export function AdminEventsView() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-zinc-300 font-medium mb-1">Registration Fee (₹)</label>
+                  <label htmlFor="admin-event-fee" className="block text-zinc-300 font-medium mb-1 cursor-pointer">
+                    Registration Fee (₹)
+                  </label>
                   <input
+                    id="admin-event-fee"
                     type="number"
                     min={0}
                     value={eventForm.registrationFee}
@@ -896,10 +941,11 @@ export function AdminEventsView() {
                 </div>
 
                 <div>
-                  <label className="block text-zinc-300 font-medium mb-1">
+                  <label htmlFor="admin-event-capacity" className="block text-zinc-300 font-medium mb-1 cursor-pointer">
                     Max Capacity (Optional)
                   </label>
                   <input
+                    id="admin-event-capacity"
                     type="number"
                     placeholder="Unlimited if empty"
                     value={eventForm.maxCapacity}
@@ -910,8 +956,11 @@ export function AdminEventsView() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">Rules & Description</label>
+                <label htmlFor="admin-event-rules" className="block text-zinc-300 font-medium mb-1 cursor-pointer">
+                  Rules & Description
+                </label>
                 <textarea
+                  id="admin-event-rules"
                   rows={3}
                   placeholder="Enter details, rules, eligibility criteria..."
                   value={eventForm.rulesText}
@@ -1012,18 +1061,24 @@ export function AdminEventsView() {
       {/* PODIUM DECLARATION MODAL */}
       {podiumModalOpen && selectedEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-5">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-podium-modal-title"
+            className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-5"
+          >
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
               <div className="flex items-center gap-2 text-amber-400">
                 <Trophy className="h-5 w-5" />
-                <h3 className="text-base font-bold text-zinc-100">
+                <h3 id="admin-podium-modal-title" className="text-base font-bold text-zinc-100">
                   Declare Winners: {selectedEvent.title}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setPodiumModalOpen(false)}
-                className="text-zinc-400 hover:text-zinc-100"
+                aria-label="Close modal"
+                className="text-zinc-400 hover:text-zinc-100 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -1047,12 +1102,17 @@ export function AdminEventsView() {
                   >
                     #{pos}
                   </span>
+                  <label htmlFor={`admin-event-podium-winner-${pos}`} className="sr-only">
+                    Position {pos} Winner
+                  </label>
                   <select
+                    id={`admin-event-podium-winner-${pos}`}
+                    aria-label={`Position ${pos} Winner`}
                     value={podiumPositions[pos] || ""}
                     onChange={(e) =>
                       setPodiumPositions((prev) => ({ ...prev, [pos]: e.target.value }))
                     }
-                    className="flex-1 h-9 rounded-lg bg-zinc-950 border border-zinc-800 px-3 text-xs text-zinc-100 focus:border-amber-500 focus:outline-none"
+                    className="flex-1 h-9 rounded-lg bg-zinc-950 border border-zinc-800 px-3 text-xs text-zinc-100 focus:border-amber-500 focus:outline-none cursor-pointer"
                   >
                     <option value="">-- Select Winner --</option>
                     {participants.map((p: any) => {

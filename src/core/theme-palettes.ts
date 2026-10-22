@@ -28,7 +28,7 @@ export interface PageThemeConfig {
   badgeText: string;
 }
 
-export const PAGE_THEMES: Record<CanonicalTheme, PageThemeConfig> = {
+const PAGE_THEMES: Record<CanonicalTheme, PageThemeConfig> = {
   "arrakis-day": {
     id: "arrakis-day",
     name: "Arrakis Day",

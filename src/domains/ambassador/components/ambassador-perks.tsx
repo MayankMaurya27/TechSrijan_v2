@@ -2,9 +2,9 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, type Variants } from "framer-motion";
-import { useAmbassadorTheme } from "./ambassador-theme";
+import { useAmbassadorTheme } from "../data/ambassador-theme";
 import { useAuth } from "@/core";
-import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
+import { useAuthModal } from "@/domains/auth";
 
 interface PerkItem {
   number: string;
@@ -244,11 +244,11 @@ export function AmbassadorPerks() {
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               >
-                <h2 className="font-bebas text-5xl sm:text-6xl md:text-7xl lg:text-[4rem] xl:text-[4.85rem] leading-[0.88] tracking-wider">
-                  <span className="block text-[#FAF6EE] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] whitespace-nowrap">
+                <h2 className="font-bebas text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[4rem] xl:text-[4.85rem] leading-[0.88] tracking-wider">
+                  <span className="block text-[#FAF6EE] drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
                     WHY JOIN
                   </span>
-                  <span className={`block ${t.perksHeaderAccent} drop-shadow-[0_0_35px_${t.accentGlow}] transition-colors duration-500 whitespace-nowrap`}>
+                  <span className={`block ${t.perksHeaderAccent} drop-shadow-[0_0_35px_${t.accentGlow}] transition-colors duration-500`}>
                     THE VANGUARD
                   </span>
                 </h2>

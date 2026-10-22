@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useTheme } from "@/core";
+import { getPrefersReducedMotion } from "@/core/utils/reduced-motion";
 
 export function TwinSunsRays() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -13,16 +14,77 @@ export function TwinSunsRays() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animId: number;
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
+
+    let animId: number | null = null;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
+
+    const prefersReducedMotion = getPrefersReducedMotion();
+
+    const drawStaticRays = () => {
+      ctx.clearRect(0, 0, width, height);
+      const sunX = width * 0.82;
+      const sunY = height * 0.12;
+
+      const primaryColor = "196, 125, 72";
+      const secondaryColor = "240, 234, 225";
+      const glowAlpha = 0.14;
+
+      const sunGlow = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, width * 0.7);
+      sunGlow.addColorStop(0, `rgba(${secondaryColor}, ${glowAlpha})`);
+      sunGlow.addColorStop(0.3, `rgba(${primaryColor}, ${glowAlpha * 0.45})`);
+      sunGlow.addColorStop(1, "transparent");
+      ctx.fillStyle = sunGlow;
+      ctx.fillRect(0, 0, width, height);
+
+      const rayLength = Math.max(width, height) * 1.5;
+      const sharedRayGrad = ctx.createRadialGradient(sunX, sunY, 20, sunX, sunY, rayLength * 0.8);
+      sharedRayGrad.addColorStop(0, `rgba(${primaryColor}, 0.95)`);
+      sharedRayGrad.addColorStop(0.4, `rgba(${secondaryColor}, 0.45)`);
+      sharedRayGrad.addColorStop(1, "transparent");
+
+      ctx.save();
+      const count = 8;
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 0.9 + 0.1;
+        const rayW = 0.08;
+        const x1 = sunX + Math.cos(angle - rayW) * rayLength;
+        const y1 = sunY + Math.sin(angle - rayW) * rayLength;
+        const x2 = sunX + Math.cos(angle + rayW) * rayLength;
+        const y2 = sunY + Math.sin(angle + rayW) * rayLength;
+
+        ctx.globalAlpha = 0.08;
+        ctx.beginPath();
+        ctx.moveTo(sunX, sunY);
+        ctx.lineTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.closePath();
+        ctx.fillStyle = sharedRayGrad;
+        ctx.fill();
+      }
+      ctx.restore();
+    };
 
     const onResize = () => {
       if (!canvas) return;
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = "transparent";
+      if (prefersReducedMotion) {
+        drawStaticRays();
+      }
     };
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", onResize, { passive: true });
+
+    if (prefersReducedMotion) {
+      drawStaticRays();
+      return () => {
+        window.removeEventListener("resize", onResize);
+      };
+    }
 
     let mouseX = width * 0.75;
     let mouseY = height * 0.2;
@@ -33,7 +95,7 @@ export function TwinSunsRays() {
       targetMouseX = e.clientX;
       targetMouseY = e.clientY;
     };
-    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
 
     const isMobile = width < 768;
     const rayCount = isMobile ? 6 : 14;
@@ -49,13 +111,11 @@ export function TwinSunsRays() {
     let frameCount = 0;
 
     const render = () => {
-      // Pause completely if tab is hidden or user has scrolled past hero section
       if (document.hidden || window.scrollY > height * 1.5) {
         animId = requestAnimationFrame(render);
         return;
       }
 
-      // Throttle to ~30fps on mobile to preserve GPU fill rate
       frameCount++;
       if (isMobile && frameCount % 2 !== 0) {
         animId = requestAnimationFrame(render);
@@ -117,7 +177,7 @@ export function TwinSunsRays() {
     render();
 
     return () => {
-      cancelAnimationFrame(animId);
+      if (animId !== null) cancelAnimationFrame(animId);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("mousemove", onMouseMove);
     };
@@ -125,6 +185,7 @@ export function TwinSunsRays() {
 
   return (
     <canvas
+      aria-hidden="true"
       ref={canvasRef}
       className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-90 transition-opacity duration-1000"
     />

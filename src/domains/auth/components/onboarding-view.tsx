@@ -7,9 +7,11 @@ import { useAuth } from "@/core";
 import { api } from "@/lib/api";
 import { AlertCircle } from "lucide-react";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
+import { useReducedMotion } from "@/shared/hooks/use-reduced-motion";
 
 export function OnboardingView() {
   const { user, refreshUser } = useAuth();
+  const shouldReduceMotion = useReducedMotion();
   const [step, setStep] = useState<1 | 2>(1);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -123,17 +125,25 @@ export function OnboardingView() {
                   backgroundColor: emberColor,
                   boxShadow: `0 0 10px ${emberColor}`,
                 }}
-                animate={{
-                  y: [0, -32 - (i % 24), 0],
-                  x: [0, i % 2 === 0 ? 8 : -8, 0],
-                  opacity: [0.15, 0.85, 0.15],
-                }}
-                transition={{
-                  duration: 4.5 + (i % 4),
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: (i * 0.25) % 3,
-                }}
+                animate={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        y: [0, -32 - (i % 24), 0],
+                        x: [0, i % 2 === 0 ? 8 : -8, 0],
+                        opacity: [0.15, 0.85, 0.15],
+                      }
+                }
+                transition={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        duration: 4.5 + (i % 4),
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: (i * 0.25) % 3,
+                      }
+                }
               />
             );
           })}
@@ -178,15 +188,23 @@ export function OnboardingView() {
           {/* Ground Arrival Aura (Pulses gently beneath warrior's boots) */}
           <motion.div
             className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[70%] h-[24px] rounded-[50%] blur-[28px] bg-red-600/35 pointer-events-none"
-            animate={{
-              opacity: [0.25, 0.55, 0.25],
-              scale: [0.95, 1.08, 0.95],
-            }}
-            transition={{
-              duration: 3.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            animate={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    opacity: [0.25, 0.55, 0.25],
+                    scale: [0.95, 1.08, 0.95],
+                  }
+            }
+            transition={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    duration: 3.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }
+            }
           />
 
           <picture className="w-full h-full flex items-end justify-center">
@@ -256,10 +274,11 @@ export function OnboardingView() {
             {/* Glowing Tactical Rail Connector */}
             <div className="relative w-14 sm:w-20 h-[2px] bg-[#2a1d18] rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-red-600 via-red-500 to-[#caa462]"
-                initial={{ width: "50%" }}
-                animate={{ width: step === 1 ? "50%" : "100%" }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="h-full w-full origin-left bg-gradient-to-r from-red-600 via-red-500 to-[#caa462]"
+                style={{ transformOrigin: "left" }}
+                initial={{ scaleX: 0.5 }}
+                animate={{ scaleX: step === 1 ? 0.5 : 1 }}
+                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
               />
             </div>
 
@@ -304,7 +323,7 @@ export function OnboardingView() {
             - Deep obsidian glass background
             ======================================================== */}
         <div
-          className="relative w-full bg-[#0a0708]/92 backdrop-blur-xl pt-7 pb-6 sm:pb-7 px-5 sm:px-8 md:px-10 border border-[#caa462]/60 shadow-[0_20px_60px_rgba(0,0,0,0.95)] transition-all duration-500"
+          className="relative w-full bg-[#0a0708]/92 backdrop-blur-xl pt-10 sm:pt-7 pb-6 sm:pb-7 px-5 sm:px-8 md:px-10 border border-[#caa462]/60 shadow-[0_20px_60px_rgba(0,0,0,0.95)] transition-all duration-500"
           style={{
             clipPath:
               "polygon(18px 0%, calc(100% - 18px) 0%, 100% 18px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 18px 100%, 0% calc(100% - 18px), 0% 18px)",
@@ -355,32 +374,42 @@ export function OnboardingView() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4.5">
                   {/* Field 1: FULL NAME */}
                   <div className="flex flex-col">
-                    <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold">
+                    <label
+                      htmlFor="onboarding-fullname"
+                      className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold cursor-pointer"
+                    >
                       FULL NAME
                     </label>
                     <input
+                      id="onboarding-fullname"
                       type="text"
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleChange}
                       placeholder="Enter your full name"
                       required
+                      aria-required="true"
                       className="w-full px-3.5 py-2.5 rounded-lg bg-[#130d0e]/90 border border-[#382a24]/90 text-sm text-[#f7f2ea] placeholder:text-[#6a5e52] focus:border-[#caa462] focus:bg-[#1a1113] focus:outline-none transition-all duration-200"
                     />
                   </div>
 
                   {/* Field 2: EMAIL ADDRESS (Pre-filled Google Email + Badges) */}
                   <div className="flex flex-col">
-                    <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold">
+                    <label
+                      htmlFor="onboarding-email"
+                      className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold cursor-pointer"
+                    >
                       EMAIL ADDRESS
                     </label>
                     <div className="relative flex items-center">
                       <input
+                        id="onboarding-email"
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
                         readOnly
+                        aria-readonly="true"
                         className="w-full px-3.5 pr-14 py-2.5 rounded-lg bg-[#130d0e]/90 border border-[#382a24]/90 text-sm text-[#f7f2ea] focus:outline-none cursor-default font-sans"
                       />
                       {/* Google G Logo & Green Verified Check */}
@@ -422,10 +451,14 @@ export function OnboardingView() {
 
                   {/* Field 3: PHONE NUMBER */}
                   <div className="flex flex-col">
-                    <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold">
+                    <label
+                      htmlFor="onboarding-phone"
+                      className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold cursor-pointer"
+                    >
                       PHONE NUMBER
                     </label>
                     <input
+                      id="onboarding-phone"
                       type="tel"
                       name="phone"
                       value={formData.phone}
@@ -437,10 +470,14 @@ export function OnboardingView() {
 
                   {/* Field 4: COLLEGE / INSTITUTION */}
                   <div className="flex flex-col">
-                    <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold">
+                    <label
+                      htmlFor="onboarding-college"
+                      className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold cursor-pointer"
+                    >
                       COLLEGE / INSTITUTION
                     </label>
                     <input
+                      id="onboarding-college"
                       type="text"
                       name="college"
                       value={formData.college}
@@ -452,10 +489,14 @@ export function OnboardingView() {
 
                   {/* Field 5: COURSE / DEPARTMENT */}
                   <div className="flex flex-col">
-                    <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold">
+                    <label
+                      htmlFor="onboarding-course"
+                      className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold cursor-pointer"
+                    >
                       COURSE / DEPARTMENT
                     </label>
                     <input
+                      id="onboarding-course"
                       type="text"
                       name="course"
                       value={formData.course}
@@ -467,11 +508,15 @@ export function OnboardingView() {
 
                   {/* Field 6: YEAR OF STUDY */}
                   <div className="flex flex-col">
-                    <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold">
+                    <label
+                      htmlFor="onboarding-year"
+                      className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold cursor-pointer"
+                    >
                       YEAR OF STUDY
                     </label>
                     <div className="relative">
                       <select
+                        id="onboarding-year"
                         name="year"
                         value={formData.year}
                         onChange={handleChange}
@@ -518,10 +563,14 @@ export function OnboardingView() {
 
                   {/* Field 7: CITY (Span 2 columns if not MMMUT, or 1 column if MMMUT) */}
                   <div className={`flex flex-col ${user?.isMmmutStudent ? "sm:col-span-2" : "sm:col-span-2"}`}>
-                    <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold">
+                    <label
+                      htmlFor="onboarding-city"
+                      className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#9e9282] mb-1.5 font-semibold cursor-pointer"
+                    >
                       CITY
                     </label>
                     <input
+                      id="onboarding-city"
                       type="text"
                       name="city"
                       value={formData.city}
@@ -535,30 +584,40 @@ export function OnboardingView() {
                   {user?.isMmmutStudent && (
                     <>
                       <div className="flex flex-col">
-                        <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#caa462] mb-1.5 font-semibold">
+                        <label
+                          htmlFor="onboarding-bank-account"
+                          className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#caa462] mb-1.5 font-semibold cursor-pointer"
+                        >
                           BANK ACCOUNT NUMBER (FOR PRIZE DISBURSEMENTS) *
                         </label>
                         <input
+                          id="onboarding-bank-account"
                           type="text"
                           name="bankAccountNumber"
                           value={formData.bankAccountNumber}
                           onChange={handleChange}
                           placeholder="e.g. 102938475612"
                           required
+                          aria-required="true"
                           className="w-full px-3.5 py-2.5 rounded-lg bg-[#130d0e]/90 border border-[#caa462]/60 text-sm text-[#f7f2ea] placeholder:text-[#6a5e52] focus:border-[#caa462] focus:bg-[#1a1113] focus:outline-none transition-all duration-200"
                         />
                       </div>
                       <div className="flex flex-col">
-                        <label className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#caa462] mb-1.5 font-semibold">
+                        <label
+                          htmlFor="onboarding-bank-ifsc"
+                          className="font-mono text-[9.5px] sm:text-[10px] tracking-[0.2em] uppercase text-[#caa462] mb-1.5 font-semibold cursor-pointer"
+                        >
                           BANK IFSC CODE *
                         </label>
                         <input
+                          id="onboarding-bank-ifsc"
                           type="text"
                           name="bankIfsc"
                           value={formData.bankIfsc}
                           onChange={handleChange}
                           placeholder="e.g. SBIN0002578"
                           required
+                          aria-required="true"
                           className="w-full px-3.5 py-2.5 rounded-lg bg-[#130d0e]/90 border border-[#caa462]/60 text-sm text-[#f7f2ea] placeholder:text-[#6a5e52] focus:border-[#caa462] focus:bg-[#1a1113] focus:outline-none transition-all duration-200 uppercase"
                         />
                       </div>
@@ -567,7 +626,11 @@ export function OnboardingView() {
                 </div>
 
                 {error && (
-                  <div className="mt-4 p-3 rounded-lg border border-red-500/60 bg-red-950/40 text-red-300 text-xs flex items-center gap-2">
+                  <div
+                    id="onboarding-error"
+                    role="alert"
+                    className="mt-4 p-3 rounded-lg border border-red-500/60 bg-red-950/40 text-red-300 text-xs flex items-center gap-2"
+                  >
                     <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-400" />
                     <span>{error}</span>
                   </div>

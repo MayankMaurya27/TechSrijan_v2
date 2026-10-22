@@ -23,7 +23,7 @@ import type {
 
 export * from "./types";
 
-export class ApiError extends Error {
+class ApiError extends Error {
   code: string;
   details?: any;
 

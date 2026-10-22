@@ -49,7 +49,7 @@ export type Operative = {
 };
 
 /* Curated, sleek color palettes */
-export const PALETTES = {
+const PALETTES = {
   GOLD: {
     accent: "#D4A843",
     glow: "rgba(212, 168, 67, 0.35)",

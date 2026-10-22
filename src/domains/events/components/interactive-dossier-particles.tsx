@@ -95,9 +95,10 @@ export function InteractiveDossierParticles({
     const ripples: ClickRipple[] = [];
 
     const isMobile = window.innerWidth < 768;
-    if (isMobile) {
-      // Mobile touch optimization: completely bypass continuous 4000px canvas RAF animation loop.
-      // Eliminates GPU fillrate bottleneck and delivers solid 60-120fps native touch scrolling.
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (isMobile || prefersReducedMotion) {
+      // Mobile & reduced-motion optimization: completely bypass continuous canvas RAF animation loop.
+      // Eliminates GPU fillrate bottleneck and respects user accessibility preferences.
       return;
     }
 
@@ -114,6 +115,8 @@ export function InteractiveDossierParticles({
       canvas.style.height = `${height}px`;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = "transparent";
     };
 
     updateDimensions();
@@ -262,7 +265,7 @@ export function InteractiveDossierParticles({
     const render = () => {
       animId = requestAnimationFrame(render);
 
-      if (!isVisible || width <= 0 || height <= 0) return;
+      if (!isVisible || document.hidden || width <= 0 || height <= 0) return;
 
       time += 0.02;
 
@@ -502,22 +505,38 @@ export function InteractiveDossierParticles({
           ctx.quadraticCurveTo(0, 0, 0, -s);
           ctx.closePath();
 
+          // Dual-pass concentric diamond aura (composite-only, zero Gaussian blur cost)
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.22})`;
+          const haloS = s * 1.5;
+          ctx.beginPath();
+          ctx.moveTo(0, -haloS);
+          ctx.quadraticCurveTo(0, 0, haloS, 0);
+          ctx.quadraticCurveTo(0, 0, 0, haloS);
+          ctx.quadraticCurveTo(0, 0, -haloS, 0);
+          ctx.quadraticCurveTo(0, 0, 0, -haloS);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.moveTo(0, -s);
+          ctx.quadraticCurveTo(0, 0, s, 0);
+          ctx.quadraticCurveTo(0, 0, 0, s);
+          ctx.quadraticCurveTo(0, 0, -s, 0);
+          ctx.quadraticCurveTo(0, 0, 0, -s);
+          ctx.closePath();
           ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.9})`;
-          if (!isMobile) {
-            ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.6})`;
-            ctx.shadowBlur = 6;
-          }
           ctx.fill();
           ctx.restore();
         } else if (p.type === "spark") {
-          // Glowing round nodes
+          // Glowing round nodes: dual concentric arc (100% hardware composite, zero shadowBlur GPU penalty)
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.2})`;
+          ctx.fill();
+
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.85})`;
-          if (!isMobile) {
-            ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${p.alpha * 0.5})`;
-            ctx.shadowBlur = 4;
-          }
           ctx.fill();
         } else {
           // Micro stardust

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { cn, useTheme } from "@/core";
 
-export function ButtonSandEffect({ className }: { className?: string }) {
+function ButtonSandEffect({ className }: { className?: string }) {
   const { theme } = useTheme();
 
   if (theme !== "arrakis" && theme !== "arrakis-day") {
@@ -61,7 +61,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const BUTTON_BASE_STYLES =
-  "mecha-bracket group relative overflow-hidden inline-flex items-center justify-center whitespace-nowrap text-xs font-mono font-bold tracking-[0.2em] uppercase transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--border-accent)] disabled:pointer-events-none disabled:opacity-50 select-none active:scale-[0.98]";
+  "mecha-bracket group relative overflow-hidden inline-flex items-center justify-center whitespace-nowrap text-xs font-mono font-bold tracking-[0.2em] uppercase transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 select-none active:scale-[0.98]";
 
 const BUTTON_VARIANTS = {
   default:

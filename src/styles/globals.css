@@ -92,22 +92,23 @@ html[data-theme="giedi-prime"] .theme-btn-gradient {
 @layer base {
 
   :root, html[data-theme="arrakis-day"], html[data-theme="arrakis"] {
-    --bg-primary: #4B3629;        
-    --bg-secondary: #3B2A1F;      
+    --bg-primary: #241710;        
+    --bg-secondary: #332117;      
     --surface: rgba(139, 87, 56, 0.42); 
     --surface-hover: rgba(139, 87, 56, 0.65);
-    --accent-primary: #C47D48;    
+    --accent-primary: #E89A58;    
     --accent-secondary: #F0EAE1;  
     --accent-glow: rgba(196, 125, 72, 0.45);
     --text-primary: #F0EAE1;      
     --text-secondary: #D4C9BC;    
-    --text-muted: #9E897A;        
+    --text-muted: #D9C3B0;        
+    --text-placeholder: #D9C3B0;  
     --border: rgba(139, 87, 56, 0.45);
-    --border-accent: #C47D48;
+    --border-accent: #E89A58;
     --glow: 0 0 35px rgba(196, 125, 72, 0.38);
     --geass-crimson: #E61924;
     --grid-line: rgba(196, 125, 72, 0.08);
-    --hud-bracket: #C47D48;
+    --hud-bracket: #E89A58;
     --ray-color: rgba(196, 125, 72, 0.12);
 
     --accent: var(--accent-primary);
@@ -136,7 +137,8 @@ html[data-theme="krelln-night"], html[data-theme="kelln-night"] {
     --accent-glow: rgba(119, 130, 146, 0.42);
     --text-primary: #D7DBE2;      
     --text-secondary: #A0A8B5;    
-    --text-muted: #5B6472;        
+    --text-muted: #9BA5B5;        
+    --text-placeholder: #9BA5B5;  
     --border: rgba(119, 130, 146, 0.28);
     --border-accent: rgba(215, 219, 226, 0.6);
     --glow: 0 0 35px rgba(119, 130, 146, 0.35);
@@ -167,12 +169,13 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
     --bg-secondary: #0B0408;      
     --surface: rgba(106, 0, 13, 0.38); 
     --surface-hover: rgba(106, 0, 13, 0.70);
-    --accent-primary: #C80014;    
+    --accent-primary: #FF2E44;    
     --accent-secondary: #FF1E27;  
     --accent-glow: rgba(255, 30, 39, 0.52);
     --text-primary: #FFFFFF;      
     --text-secondary: #D9A8B0;    
-    --text-muted: #80404C;        
+    --text-muted: #D194A0;        
+    --text-placeholder: #D194A0;  
     --border: rgba(200, 0, 20, 0.30);
     --border-accent: #FF1E27;
     --glow: 0 0 35px rgba(255, 30, 39, 0.48);
@@ -198,17 +201,19 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
 
 @supports (color: oklch(0% 0 0)) {
     :root, html[data-theme="arrakis-day"], html[data-theme="arrakis"] {
-      --bg-primary: oklch(0.28 0.05 45);
+      --bg-primary: oklch(0.20 0.04 45);
       --surface: oklch(0.48 0.11 48 / 0.42);
       --surface-hover: oklch(0.48 0.11 48 / 0.65);
       --text-primary: oklch(0.95 0.03 90);
-      --accent-primary: oklch(0.65 0.16 55);
+      --text-muted: oklch(0.82 0.04 70);
+      --text-placeholder: oklch(0.82 0.04 70);
+      --accent-primary: oklch(0.72 0.16 58);
       --accent-secondary: oklch(0.95 0.03 90);
       --accent-glow: oklch(0.65 0.16 55 / 0.45);
       --border: oklch(0.48 0.11 48 / 0.45);
-      --border-accent: oklch(0.65 0.16 55);
+      --border-accent: oklch(0.72 0.16 58);
       --glow: 0 0 35px oklch(0.65 0.16 55 / 0.38);
-      --hud-bracket: oklch(0.65 0.16 55);
+      --hud-bracket: oklch(0.72 0.16 58);
     }
 
     html[data-theme="krelln-night"], html[data-theme="kelln-night"] {
@@ -216,6 +221,8 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
       --surface: oklch(0.25 0.03 260 / 0.48);
       --surface-hover: oklch(0.25 0.03 260 / 0.75);
       --text-primary: oklch(0.88 0.02 260);
+      --text-muted: oklch(0.68 0.03 245);
+      --text-placeholder: oklch(0.68 0.03 245);
       --accent-primary: oklch(0.55 0.04 260);
       --accent-secondary: oklch(0.88 0.02 260);
       --accent-glow: oklch(0.55 0.04 260 / 0.42);
@@ -233,7 +240,9 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
       --surface: oklch(28.45% 0.138 27.42 / 0.38);
       --surface-hover: oklch(28.45% 0.138 27.42 / 0.70);
       --text-primary: #FFFFFF;
-      --accent-primary: oklch(48.23% 0.234 26.85);
+      --text-muted: oklch(0.72 0.06 15);
+      --text-placeholder: oklch(0.72 0.06 15);
+      --accent-primary: oklch(0.62 0.24 25);
       --accent-secondary: oklch(61.85% 0.256 25.12);
       --accent-glow: oklch(61.85% 0.256 25.12 / 0.52);
       --border: oklch(48.23% 0.234 26.85 / 0.30);
@@ -241,6 +250,14 @@ html[data-theme="geass-moon"], html[data-theme="giedi-prime"] {
       --glow: 0 0 35px oklch(61.85% 0.256 25.12 / 0.48);
       --hud-bracket: oklch(61.85% 0.256 25.12);
     }
+  }
+
+  /* Universal WCAG AA 1.4.3 compliant placeholder contrast (>= 4.5:1) */
+  ::placeholder,
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--text-placeholder, var(--text-muted, #A1A1AA)) !important;
+    opacity: 1; /* Eliminates Firefox default 0.54 opacity dimming */
   }
 
   * {
@@ -374,7 +391,8 @@ textarea {
   width: 8px;
   height: 8px;
   pointer-events: none;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
 }
 
 .mecha-bracket::before {
@@ -382,6 +400,7 @@ textarea {
   left: -1px;
   border-top: 2px solid var(--hud-bracket);
   border-left: 2px solid var(--hud-bracket);
+  transform-origin: top left;
 }
 
 .mecha-bracket::after {
@@ -389,17 +408,16 @@ textarea {
   right: -1px;
   border-bottom: 2px solid var(--hud-bracket);
   border-right: 2px solid var(--hud-bracket);
+  transform-origin: bottom right;
 }
 
 .mecha-bracket:hover::before {
-  width: 14px;
-  height: 14px;
+  transform: scale(1.75);
   border-color: var(--geass-crimson);
 }
 
 .mecha-bracket:hover::after {
-  width: 14px;
-  height: 14px;
+  transform: scale(1.75);
   border-color: var(--geass-crimson);
 }
 
@@ -944,8 +962,36 @@ html, body, :root {
 }
 
 
-/* Universal WCAG AA 2.4.7 focus indicator for keyboard navigation */
-:focus-visible {
-  outline: 2px solid var(--theme-accent, #E61E25) !important;
-  outline-offset: 2px !important;
+/* ==========================================================================
+   UNIVERSAL FOCUS-VISIBLE SYSTEM (WCAG 2.1 / 2.2 AA Compliant)
+   - Enforces minimum 2px perimeter and 3:1 contrast ratio (SC 2.4.11, SC 2.4.7)
+   - Suppresses mouse click outlines via :focus:not(:focus-visible)
+   - Neutralizes competing Tailwind box-shadow rings to prevent double rings
+   - Theme-reactive fallback: var(--theme-accent, var(--accent-primary, #E61924))
+   ========================================================================== */
+:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
 }
+
+:focus-visible {
+  outline: 2px solid var(--theme-accent, var(--accent-primary, #E61924)) !important;
+  outline-offset: 2px !important;
+  transition: outline-offset 0.15s ease, outline-color 0.15s ease;
+}
+
+/* Neutralize competing Tailwind utility ring box-shadows on keyboard focus */
+*:focus-visible {
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+}
+
+/* Form input focus indicators: crisp accent outline with border synchronization */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--theme-accent, var(--accent-primary, #E61924)) !important;
+  outline-offset: 1px !important;
+  border-color: var(--theme-accent, var(--accent-primary, #E61924)) !important;
+}
+

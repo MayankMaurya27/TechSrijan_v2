@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useTheme } from "@/core";
+import { getPrefersReducedMotion } from "@/core/utils/reduced-motion";
 
 interface Particle {
   x: number;
@@ -26,17 +26,48 @@ export function AmbientParticles() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationFrameId: number;
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
+
+    let animationFrameId: number | null = null;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
+
+    const prefersReducedMotion = getPrefersReducedMotion();
+
+    const drawStaticConstellation = () => {
+      ctx.clearRect(0, 0, width, height);
+      const count = 12; // Static, faint resting constellation
+      const color = particleColorRef.current;
+      for (let i = 0; i < count; i++) {
+        const px = (i * 8.3 + 12) % width;
+        const py = (i * 7.7 + 15) % height;
+        ctx.beginPath();
+        ctx.arc(px, py, 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${color}, 0.25)`;
+        ctx.fill();
+      }
+    };
 
     const handleResize = () => {
       if (!canvas) return;
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = "transparent";
+      if (prefersReducedMotion) {
+        drawStaticConstellation();
+      }
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize, { passive: true });
+
+    if (prefersReducedMotion) {
+      drawStaticConstellation();
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
 
     let mouseX = width / 2;
     let mouseY = height / 2;
@@ -46,7 +77,7 @@ export function AmbientParticles() {
       mouseY = e.clientY;
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
     const isMobile = width < 768;
     const particleCount = isMobile ? 18 : Math.min(80, Math.floor(width / 20));
@@ -63,13 +94,11 @@ export function AmbientParticles() {
     let frameCount = 0;
 
     const render = () => {
-      // Pause completely if tab is hidden or user has scrolled past hero section
       if (document.hidden || window.scrollY > height * 1.5) {
         animationFrameId = requestAnimationFrame(render);
         return;
       }
 
-      // Throttle to ~30fps on mobile to preserve battery and GPU fill rate
       frameCount++;
       if (isMobile && frameCount % 2 !== 0) {
         animationFrameId = requestAnimationFrame(render);
@@ -112,7 +141,7 @@ export function AmbientParticles() {
     render();
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
     };
@@ -120,6 +149,7 @@ export function AmbientParticles() {
 
   return (
     <canvas
+      aria-hidden="true"
       ref={canvasRef}
       className="pointer-events-none fixed inset-0 z-0 h-full w-full"
     />

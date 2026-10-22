@@ -2,14 +2,11 @@ export {
   ThemeProvider,
   useTheme,
   normalizeTheme,
-  type Theme,
   type CanonicalTheme,
-  type ThemeContextType,
 } from "./providers/theme-provider";
 export { LenisProvider } from "./providers/lenis-provider";
 export { AuthProvider, useAuth } from "./providers/auth-provider";
 export { cn } from "./utils/cn";
-export { useDeviceTier, isMobileDevice, type DeviceTier } from "./utils/device-tier";
+export { isMobileDevice } from "./utils/device-tier";
 export { whenIdleAfterLoad } from "./utils/idle";
-export { sanitizeCsvField, generateSafeCsv, downloadCsv } from "./utils/csv";
-export { PAGE_THEMES, usePageTheme, type PageThemeConfig } from "./theme-palettes";
+export { usePageTheme } from "./theme-palettes";

@@ -132,7 +132,7 @@ const CATEGORY_DEFAULT_IMAGES: Record<string, string> = {
   CULTURAL: "/images/events/tsc-vail.jpg",
 };
 
-export const ALL_EVENTS: DetailedEvent[] = [];
+
 
 // ─── 3D Circular Loop Position Calculator ─────────────────────────────────────
 function getCircleCardTransform(
@@ -413,7 +413,7 @@ export interface CategoryTabItem {
   glowColor: string;
 }
 
-export const CATEGORY_TABS: CategoryTabItem[] = [
+const CATEGORY_TABS: CategoryTabItem[] = [
   {
     id: "ALL",
     label: "EVENTS",
@@ -605,7 +605,6 @@ export function ClubEventsSection({
   const sectionRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const stageContainerRef = useRef<HTMLDivElement>(null);
-  const lastScrollTimeRef = useRef(0);
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
 
@@ -729,39 +728,6 @@ export function ClubEventsSection({
     setActiveIndex(0);
   };
 
-  // Native non-passive wheel listener on the card stage:
-  // When scrolling over the 3D cards, advance/rewind cards smoothly without scrolling the background page.
-  useEffect(() => {
-    const el = stageContainerRef.current;
-    if (!el || viewMode !== "stack") return;
-
-    const onWheel = (e: WheelEvent) => {
-      if (filteredEvents.length <= 1) return;
-
-      const primaryDelta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-      if (Math.abs(primaryDelta) < 12) return;
-
-      // Prevent the page from scrolling away while user is interacting with the card deck
-      e.preventDefault();
-
-      const now = Date.now();
-      // Throttle to prevent trackpad momentum / rapid wheel ticks from skipping multiple cards
-      if (now - lastScrollTimeRef.current < 220) return;
-      lastScrollTimeRef.current = now;
-
-      if (primaryDelta > 0) {
-        handleNextCard();
-      } else {
-        handlePrevCard();
-      }
-    };
-
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => {
-      el.removeEventListener("wheel", onWheel);
-    };
-  }, [viewMode, filteredEvents.length, handleNextCard, handlePrevCard]);
-
   // Keyboard navigation when stage is in viewport
   useEffect(() => {
     if (viewMode !== "stack" || filteredEvents.length <= 1) return;
@@ -854,7 +820,7 @@ export function ClubEventsSection({
           {/* Category Tabs */}
           <div
             ref={tabsRef}
-            className="flex items-center gap-2 sm:gap-3 md:gap-3.5 overflow-x-auto scrollbar-none pb-0.5 flex-1"
+            className="flex items-center gap-2 sm:gap-3 md:gap-3.5 overflow-x-auto touch-pan-y scrollbar-none pb-0.5 flex-1"
           >
             {CATEGORY_TABS.map((tab) => (
               <div key={tab.id} data-catid={tab.id}>

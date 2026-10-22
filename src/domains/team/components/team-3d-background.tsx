@@ -47,7 +47,7 @@ export function Team3DBackground() {
     };
     window.addEventListener("mousemove", onMouseMove);
 
-    // 1. Floating Spice Embers & Starlight (Referencing ambient-particles & social-constellation)
+    // 1. Floating Spice Embers & Starlight
     const isMobile = width < 768;
     const particleCount = isMobile ? 24 : Math.min(60, Math.floor(width / 22));
     const palette = [
@@ -71,8 +71,14 @@ export function Team3DBackground() {
     }));
 
     let time = 0;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const render = () => {
+      if (document.hidden) {
+        animId = requestAnimationFrame(render);
+        return;
+      }
+
       time += 0.01;
       ctx.clearRect(0, 0, width, height);
 
@@ -83,7 +89,7 @@ export function Team3DBackground() {
       const parallaxY = (mouseY - height / 2) * 0.03;
 
       // -----------------------------------------------------------------
-      // LAYER 1: Deep Atmospheric Nebula Pools (Soft & Diffuse, No harsh rays)
+      // LAYER 1: Deep Atmospheric Nebula Pools
       // -----------------------------------------------------------------
       const radial1 = ctx.createRadialGradient(
         width * 0.8 + parallaxX,
@@ -113,10 +119,11 @@ export function Team3DBackground() {
       ctx.fillRect(0, 0, width, height);
 
       // -----------------------------------------------------------------
-      // LAYER 2: Delicate Celestial Constellation Lines (Interactive Star Map)
+      // LAYER 2: Delicate Celestial Constellation Lines (Batched stroke)
       // -----------------------------------------------------------------
       ctx.save();
       const maxDistance = 110;
+      ctx.beginPath();
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -124,20 +131,18 @@ export function Team3DBackground() {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < maxDistance) {
-            const lineAlpha = (1 - dist / maxDistance) * 0.12;
-            ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(212, 168, 67, ${lineAlpha})`;
-            ctx.lineWidth = 0.75;
-            ctx.stroke();
           }
         }
       }
+      ctx.strokeStyle = "rgba(212, 168, 67, 0.08)";
+      ctx.lineWidth = 0.75;
+      ctx.stroke();
       ctx.restore();
 
       // -----------------------------------------------------------------
-      // LAYER 3: Subtle Rotating Astrolabe Orbit Ellipses (From social-constellation)
+      // LAYER 3: Subtle Rotating Astrolabe Orbit Ellipses
       // -----------------------------------------------------------------
       ctx.save();
       const astrolabeX = width * 0.5 + parallaxX * 0.5;
@@ -162,52 +167,57 @@ export function Team3DBackground() {
       ctx.restore();
 
       // -----------------------------------------------------------------
-      // LAYER 4: Floating Spice Embers with Mouse Physics
+      // LAYER 4: Floating Spice Embers with Mouse Physics (No ctx.shadowBlur)
       // -----------------------------------------------------------------
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
 
-        // Deflect gently away from cursor
-        const dx = mouseX - p.x;
-        const dy = mouseY - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 130 && dist > 0) {
-          const force = (130 - dist) / 130;
-          p.x -= (dx / dist) * force * 1.5;
-          p.y -= (dy / dist) * force * 1.5;
+        if (!prefersReducedMotion) {
+          // Deflect gently away from cursor
+          const dx = mouseX - p.x;
+          const dy = mouseY - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 130 && dist > 0) {
+            const force = (130 - dist) / 130;
+            p.x -= (dx / dist) * force * 1.5;
+            p.y -= (dy / dist) * force * 1.5;
+          }
+
+          // Drifting velocity + natural wave
+          p.x += p.speedX + Math.sin(time + p.twinklePhase) * 0.18;
+          p.y += p.speedY;
+
+          // Wrap around viewport edges
+          if (p.y < -10) {
+            p.y = height + 10;
+            p.x = Math.random() * width;
+          }
+          if (p.x < -10) p.x = width + 10;
+          if (p.x > width + 10) p.x = -10;
+
+          // Twinkle pulse
+          const twinkle = (Math.sin(time * p.twinkleSpeed * 60 + p.twinklePhase) + 1) * 0.5;
+          p.opacity = p.baseOpacity * (0.6 + twinkle * 0.8);
         }
-
-        // Drifting velocity + natural wave
-        p.x += p.speedX + Math.sin(time + p.twinklePhase) * 0.18;
-        p.y += p.speedY;
-
-        // Wrap around viewport edges
-        if (p.y < -10) {
-          p.y = height + 10;
-          p.x = Math.random() * width;
-        }
-        if (p.x < -10) p.x = width + 10;
-        if (p.x > width + 10) p.x = -10;
-
-        // Twinkle pulse
-        const twinkle = (Math.sin(time * p.twinkleSpeed * 60 + p.twinklePhase) + 1) * 0.5;
-        p.opacity = p.baseOpacity * (0.6 + twinkle * 0.8);
 
         // Draw particle
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
-        if (!isMobile && p.size > 2.2) {
-          ctx.shadowColor = `rgba(${p.color}, 0.4)`;
-          ctx.shadowBlur = 4;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        } else {
+        ctx.fill();
+
+        // Soft outer glow without expensive Gaussian shadowBlur
+        if (!isMobile && p.size > 2.0) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.color}, ${p.opacity * 0.2})`;
           ctx.fill();
         }
       }
 
-      animId = requestAnimationFrame(render);
+      if (!prefersReducedMotion) {
+        animId = requestAnimationFrame(render);
+      }
     };
 
     render();

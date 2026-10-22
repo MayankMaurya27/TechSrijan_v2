@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -14,9 +14,11 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react";
-import { useAmbassadorTheme } from "./ambassador-theme";
+import { useAmbassadorTheme } from "../data/ambassador-theme";
 import { useAuth } from "@/core";
 import { api } from "@/lib/api";
+import { useFocusTrap } from "@/shared";
+import { useReducedMotion } from "@/shared/hooks/use-reduced-motion";
 
 const GORAKHPUR_COLLEGES = [
   "MMMUT Gorakhpur (Madan Mohan Malaviya Univ. of Tech)",
@@ -56,6 +58,7 @@ interface AmbassadorModalProps {
 export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
   const t = useAmbassadorTheme();
   const { user } = useAuth();
+  const shouldReduceMotion = useReducedMotion();
   const [step, setStep] = useState<1 | 2>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -111,21 +114,16 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
     }
   }, [user, isOpen]);
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape") onClose();
-      };
-      window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.body.style.overflow = "unset";
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [isOpen, onClose]);
+  const resetAndClose = useCallback(() => {
+    setSubmitted(false);
+    setStep(1);
+    onClose();
+  }, [onClose]);
+
+  const modalContainerRef = useFocusTrap<HTMLDivElement>({
+    isOpen,
+    onClose: resetAndClose,
+  });
 
   const handleChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -211,11 +209,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
     }
   };
 
-  const resetAndClose = () => {
-    setSubmitted(false);
-    setStep(1);
-    onClose();
-  };
+  
 
   return (
     <AnimatePresence>
@@ -233,10 +227,15 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
           {/* Modal Card Chassis */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 15 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            ref={modalContainerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ambassador-modal-title"
+            aria-describedby="ambassador-modal-desc"
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 15 }}
+            animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 15 }}
+            transition={{ duration: shouldReduceMotion ? 0.15 : 0.35, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-3xl my-auto rounded-2xl border border-neutral-800 bg-[#0C0D10] overflow-hidden flex flex-col max-h-[92vh] transition-shadow duration-500"
             style={{
@@ -294,13 +293,13 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
               </svg>
             </div>
 
-            {/* Subtle Close Button Top Right */}
+            {/* Close Button with 44x44px Touch Target */}
             <button
               onClick={resetAndClose}
-              className="absolute top-4 right-4 sm:top-5 sm:right-5 z-30 w-8 h-8 rounded-full bg-neutral-900/80 border border-neutral-700/60 text-neutral-400 hover:text-white hover:border-neutral-500 flex items-center justify-center transition-all"
-              aria-label="Close modal"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 min-w-[44px] min-h-[44px] rounded-full bg-neutral-900/80 border border-neutral-700/60 text-neutral-400 hover:text-white hover:border-neutral-500 flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              aria-label="Close ambassador application modal"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
 
             {/* ====================================================
@@ -322,10 +321,11 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                   {/* Progress Track */}
                   <div className="h-[3px] w-full bg-[#24262B] rounded-full overflow-hidden flex">
                     <motion.div
-                      className={`h-full ${t.modalProgressBarBg} transition-colors duration-300`}
-                      initial={{ width: "50%" }}
-                      animate={{ width: step === 1 ? "50%" : "100%" }}
-                      transition={{ duration: 0.3 }}
+                      className={`h-full w-full origin-left ${t.modalProgressBarBg} transition-colors duration-300`}
+                      style={{ transformOrigin: "left" }}
+                      initial={{ scaleX: 0.5 }}
+                      animate={{ scaleX: step === 1 ? 0.5 : 1 }}
+                      transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
                     />
                   </div>
                 </div>
@@ -346,10 +346,15 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                     {/* Scrollable Form Body */}
                     <div className="flex-1 overflow-y-auto px-6 sm:px-9 py-2 custom-scrollbar overscroll-contain">
                       {/* Big Headline */}
-                      <h2 className="font-bebas text-4xl sm:text-5xl lg:text-6xl leading-none uppercase tracking-wider">
+                      <h2 id="ambassador-modal-title" className="font-bebas text-4xl sm:text-5xl lg:text-6xl leading-none uppercase tracking-wider">
                         <span className="text-white">YOUR </span>
                         <span className={`${t.accentTextClass} transition-colors duration-300`}>DETAILS</span>
                       </h2>
+
+                      {/* Sub-headline */}
+                      <p id="ambassador-modal-desc" className="text-neutral-400 text-xs sm:text-sm font-sans mt-2 mb-2">
+                        Step 01 of your Campus Ambassador initiation. Confirm your core information.
+                      </p>
 
                       {/* Accent Dash */}
                       <div
@@ -364,17 +369,20 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3.5 sm:gap-y-4">
                         {/* 1. Full name */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
+                          <label htmlFor="ambassador-fullname" className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                             Full name
                           </label>
                           <input
+                            id="ambassador-fullname"
                             type="text"
                             value={formData.fullName}
                             onChange={(e) => handleChange("fullName", e.target.value)}
+                            aria-invalid={!!errors.fullName}
+                            aria-describedby={errors.fullName ? "ambassador-fullname-error" : undefined}
                             className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.fullName && (
-                            <span className="text-xs text-red-400 mt-1 block font-sans">
+                            <span id="ambassador-fullname-error" role="alert" className="text-xs text-red-400 mt-1 block font-sans">
                               {errors.fullName}
                             </span>
                           )}
@@ -382,17 +390,20 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* 2. Email address */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
+                          <label htmlFor="ambassador-email" className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                             Email address
                           </label>
                           <input
+                            id="ambassador-email"
                             type="email"
                             value={formData.email}
                             onChange={(e) => handleChange("email", e.target.value)}
+                            aria-invalid={!!errors.email}
+                            aria-describedby={errors.email ? "ambassador-email-error" : undefined}
                             className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.email && (
-                            <span className="text-xs text-red-400 mt-1 block font-sans">
+                            <span id="ambassador-email-error" role="alert" className="text-xs text-red-400 mt-1 block font-sans">
                               {errors.email}
                             </span>
                           )}
@@ -400,17 +411,20 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* 3. Mobile number */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
+                          <label htmlFor="ambassador-phone" className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                             Mobile number
                           </label>
                           <input
+                            id="ambassador-phone"
                             type="tel"
                             value={formData.phone}
                             onChange={(e) => handleChange("phone", e.target.value)}
+                            aria-invalid={!!errors.phone}
+                            aria-describedby={errors.phone ? "ambassador-phone-error" : undefined}
                             className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.phone && (
-                            <span className="text-xs text-red-400 mt-1 block font-sans">
+                            <span id="ambassador-phone-error" role="alert" className="text-xs text-red-400 mt-1 block font-sans">
                               {errors.phone}
                             </span>
                           )}
@@ -418,14 +432,17 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* 4. College / university */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
+                          <label htmlFor="ambassador-college" className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                             College / university
                           </label>
                           <input
+                            id="ambassador-college"
                             type="text"
                             list="colleges-list"
                             value={formData.college}
                             onChange={(e) => handleChange("college", e.target.value)}
+                            aria-invalid={!!errors.college}
+                            aria-describedby={errors.college ? "ambassador-college-error" : undefined}
                             className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           <datalist id="colleges-list">
@@ -434,7 +451,7 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                             ))}
                           </datalist>
                           {errors.college && (
-                            <span className="text-xs text-red-400 mt-1 block font-sans">
+                            <span id="ambassador-college-error" role="alert" className="text-xs text-red-400 mt-1 block font-sans">
                               {errors.college}
                             </span>
                           )}
@@ -442,11 +459,12 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* 5. Course and year dropdown */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
+                          <label htmlFor="ambassador-course-year" className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                             Course and year
                           </label>
                           <div className="relative">
                             <select
+                              id="ambassador-course-year"
                               value={formData.courseYear}
                               onChange={(e) => handleChange("courseYear", e.target.value)}
                               className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white focus:outline-none ${t.modalInputFocusBorder} transition-all font-sans appearance-none pr-10 cursor-pointer`}
@@ -463,17 +481,20 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* 6. City */}
                         <div>
-                          <label className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5">
+                          <label htmlFor="ambassador-city" className="block text-white font-sans text-sm sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                             City
                           </label>
                           <input
+                            id="ambassador-city"
                             type="text"
                             value={formData.city}
                             onChange={(e) => handleChange("city", e.target.value)}
+                            aria-invalid={!!errors.city}
+                            aria-describedby={errors.city ? "ambassador-city-error" : undefined}
                             className={`w-full px-4 py-2.5 sm:py-3 bg-[#111215] border border-neutral-700/60 rounded-md text-sm sm:text-base text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.city && (
-                            <span className="text-xs text-red-400 mt-1 block font-sans">
+                            <span id="ambassador-city-error" role="alert" className="text-xs text-red-400 mt-1 block font-sans">
                               {errors.city}
                             </span>
                           )}
@@ -482,23 +503,36 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                       {/* Checkbox: I agree to be contacted */}
                       <div className="mt-4 mb-3">
-                        <label className="flex items-center gap-3 cursor-pointer select-none">
-                          <div
-                            onClick={() => handleChange("agreeContact", !formData.agreeContact)}
-                            className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-colors ${
+                        <label
+                          htmlFor="ambassador-agree-contact"
+                          className="flex items-center gap-3 cursor-pointer select-none min-h-[44px] py-1.5"
+                        >
+                          <input
+                            id="ambassador-agree-contact"
+                            type="checkbox"
+                            name="agreeContact"
+                            checked={formData.agreeContact}
+                            onChange={(e) => handleChange("agreeContact", e.target.checked)}
+                            aria-invalid={!!errors.agreeContact}
+                            aria-describedby={errors.agreeContact ? "ambassador-agree-error" : undefined}
+                            className="sr-only peer"
+                          />
+                          <span
+                            aria-hidden="true"
+                            className={`w-5 h-5 rounded border flex items-center justify-center transition-all peer-focus-visible:ring-2 peer-focus-visible:ring-white peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[#0C0D10] ${
                               formData.agreeContact
                                 ? `${t.modalCheckboxCheckedBg}`
                                 : "border-neutral-500 bg-transparent"
                             }`}
                           >
-                            {formData.agreeContact && <Check className="w-3 h-3 text-white stroke-[3]" />}
-                          </div>
+                            {formData.agreeContact && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
+                          </span>
                           <span className="text-neutral-300 text-xs sm:text-sm font-sans">
                             I agree to be contacted about my application.
                           </span>
                         </label>
                         {errors.agreeContact && (
-                          <span className="text-xs text-red-400 mt-1 block font-sans">
+                          <span id="ambassador-agree-error" role="alert" className="text-xs text-red-400 mt-1 block font-sans">
                             {errors.agreeContact}
                           </span>
                         )}
@@ -576,17 +610,20 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 sm:gap-y-3.5">
                         {/* Branch / Department */}
                         <div>
-                          <label className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5">
+                          <label htmlFor="ambassador-branch" className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                             Branch / Department
                           </label>
                           <input
+                            id="ambassador-branch"
                             type="text"
                             value={formData.branch}
                             onChange={(e) => handleChange("branch", e.target.value)}
+                            aria-invalid={!!errors.branch}
+                            aria-describedby={errors.branch ? "ambassador-branch-error" : undefined}
                             className={`w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans`}
                           />
                           {errors.branch && (
-                            <span className="text-xs text-red-400 mt-1 block font-sans">
+                            <span id="ambassador-branch-error" role="alert" className="text-xs text-red-400 mt-1 block font-sans">
                               {errors.branch}
                             </span>
                           )}
@@ -594,10 +631,11 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* College Roll No / Student ID */}
                         <div>
-                          <label className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5">
+                          <label htmlFor="ambassador-rollno" className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                             Roll number or Student ID (Optional)
                           </label>
                           <input
+                            id="ambassador-rollno"
                             type="text"
                             value={formData.rollNo}
                             onChange={(e) => handleChange("rollNo", e.target.value)}
@@ -607,11 +645,12 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* Leadership experience */}
                         <div>
-                          <label className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5">
+                          <label htmlFor="ambassador-experience" className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                             Leadership or club experience
                           </label>
                           <div className="relative">
                             <select
+                              id="ambassador-experience"
                               value={formData.experience}
                               onChange={(e) => handleChange("experience", e.target.value)}
                               className={`w-full px-4 py-2 sm:py-2.5 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white focus:outline-none ${t.modalInputFocusBorder} transition-all font-sans appearance-none pr-10 cursor-pointer`}
@@ -638,10 +677,11 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                         {/* Social Link */}
                         <div>
-                          <label className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5">
+                          <label htmlFor="ambassador-social-link" className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                             Social profile link (Optional)
                           </label>
                           <input
+                            id="ambassador-social-link"
                             type="url"
                             value={formData.socialLink}
                             onChange={(e) => handleChange("socialLink", e.target.value)}
@@ -652,17 +692,20 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                       {/* Statement / Why Vanguard */}
                       <div className="mt-3 sm:mt-3.5 mb-3">
-                        <label className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5">
+                        <label htmlFor="ambassador-statement" className="block text-white font-sans text-xs sm:text-[14px] font-medium mb-1.5 cursor-pointer">
                           Why do you want to represent Techsrijan on your campus?
                         </label>
                         <textarea
+                          id="ambassador-statement"
                           rows={2}
                           value={formData.statement}
                           onChange={(e) => handleChange("statement", e.target.value)}
+                          aria-invalid={!!errors.statement}
+                          aria-describedby={errors.statement ? "ambassador-statement-error" : undefined}
                           className={`w-full px-4 py-2 bg-[#111215] border border-neutral-700/60 rounded-md text-sm text-white placeholder:text-neutral-500 focus:outline-none ${t.modalInputFocusBorder} ${t.modalInputFocusShadow} transition-all font-sans resize-none`}
                         />
                         {errors.statement && (
-                          <span className="text-xs text-red-400 mt-1 block font-sans">
+                          <span id="ambassador-statement-error" role="alert" className="text-xs text-red-400 mt-1 block font-sans">
                             {errors.statement}
                           </span>
                         )}
@@ -670,10 +713,11 @@ export function AmbassadorModal({ isOpen, onClose }: AmbassadorModalProps) {
 
                       {/* Referral Code (Optional) */}
                       <div className="max-w-xs mb-2">
-                        <label className="block text-white font-sans text-xs sm:text-[13px] font-medium mb-1">
+                        <label htmlFor="ambassador-referral-code" className="block text-white font-sans text-xs sm:text-[13px] font-medium mb-1 cursor-pointer">
                           Referral code (Optional)
                         </label>
                         <input
+                          id="ambassador-referral-code"
                           type="text"
                           value={formData.referralCode}
                           onChange={(e) => handleChange("referralCode", e.target.value)}

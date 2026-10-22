@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, Radio, Terminal, Send, ChevronRight } from "lucide-react";
+import { Activity, Radio, Terminal, ChevronRight } from "lucide-react";
 import type { Operative } from "../data/team-roster";
 
 interface TacticalTableViewProps {
@@ -10,9 +10,9 @@ interface TacticalTableViewProps {
 
 export function TacticalTableView({ operatives, onOpenDossier }: TacticalTableViewProps) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[#120D08]/90">
+    <div className="overflow-x-auto touch-pan-y rounded-xl border border-[var(--border)] bg-[var(--bg-secondary,#120D08)]/90">
       <table className="w-full text-left font-sans text-xs">
-        <thead className="border-b border-[var(--border)] bg-[#18110A] font-mono text-[9px] tracking-[0.25em] text-[var(--text-muted)] uppercase">
+        <thead className="border-b border-[var(--border)] bg-[var(--surface,#18110A)] font-mono text-[9px] tracking-[0.25em] text-[var(--text-muted)] uppercase">
           <tr>
             <th className="px-5 py-4">ID</th>
             <th className="px-5 py-4">OPERATIVE</th>
@@ -28,8 +28,17 @@ export function TacticalTableView({ operatives, onOpenDossier }: TacticalTableVi
             return (
               <tr
                 key={op.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`View dossier for ${op.name}`}
                 onClick={() => onOpenDossier(op)}
-                className="group cursor-pointer transition-colors hover:bg-[var(--surface-hover)]"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onOpenDossier(op);
+                  }
+                }}
+                className="group cursor-pointer transition-colors hover:bg-[var(--surface-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
               >
                 {/* ID */}
                 <td className="whitespace-nowrap px-5 py-4 font-mono text-[10px] text-[var(--text-muted)] group-hover:text-[var(--accent-primary)]">
@@ -113,7 +122,7 @@ export function TacticalTableView({ operatives, onOpenDossier }: TacticalTableVi
                       onOpenDossier(op);
                     }}
                     type="button"
-                    className="inline-flex items-center gap-1 rounded border border-[var(--border)] bg-[#171009] px-2.5 py-1 font-mono text-[9px] font-bold text-[var(--text-primary)] transition-colors hover:border-[var(--accent-primary)] hover:text-white"
+                    className="inline-flex items-center gap-1 rounded border border-[var(--border)] bg-[var(--surface,#171009)] px-2.5 py-1 font-mono text-[9px] font-bold text-[var(--text-primary)] transition-colors hover:border-[var(--accent-primary)] hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-primary)]"
                   >
                     <Terminal className="h-3 w-3 text-[var(--accent-primary)]" />
                     DOSSIER

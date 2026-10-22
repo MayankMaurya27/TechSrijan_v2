@@ -24,6 +24,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useTheme, useAuth } from "@/core";
+import { getPrefersReducedMotion } from "@/core/utils/reduced-motion";
 import { api } from "@/lib/api";
 
 import gsap from "gsap";
@@ -264,13 +265,15 @@ export default function AccommodationPage() {
         0
       );
 
-      // Facilities cards glide smoothly outward to the sides
+      const prefersReduced = getPrefersReducedMotion();
+
+      // Facilities cards glide smoothly outward to the sides (in-place fade under reduced motion)
       tl.to(
         leftCardsRef.current,
         {
-          xPercent: isMobile ? -75 : -95,
+          xPercent: prefersReduced ? 0 : (isMobile ? -75 : -95),
           opacity: 0,
-          scale: 0.94,
+          scale: prefersReduced ? 1 : 0.94,
           ease: "power2.inOut",
           duration: 0.35,
         },
@@ -280,9 +283,9 @@ export default function AccommodationPage() {
       tl.to(
         rightCardsRef.current,
         {
-          xPercent: isMobile ? 75 : 95,
+          xPercent: prefersReduced ? 0 : (isMobile ? 75 : 95),
           opacity: 0,
-          scale: 0.94,
+          scale: prefersReduced ? 1 : 0.94,
           ease: "power2.inOut",
           duration: 0.35,
         },
@@ -411,94 +414,6 @@ export default function AccommodationPage() {
     }
   }, []);
 
-  // Touch & Wheel gesture bridge for the Form Panel
-  // Bridges swipe-down gestures when at the top of the form directly to window scroll,
-  // allowing mobile users to effortlessly scroll back up into the cinematic experience.
-  useEffect(() => {
-    const card = formCardRef.current;
-    const panel = formPanelRef.current;
-    if (!card || !panel) return;
-
-    let touchStartY = 0;
-    let touchLastY = 0;
-    let isTouching = false;
-
-    const scrollPage = (deltaY: number) => {
-      const lenis = window.__lenis;
-      if (lenis) {
-        lenis.scrollTo(lenis.scroll + deltaY, { immediate: true });
-      } else {
-        window.scrollBy({ top: deltaY, behavior: "auto" });
-      }
-      ScrollTrigger.update();
-    };
-
-    const handleTouchStart = (e: TouchEvent) => {
-      if (e.touches.length !== 1) return;
-      touchStartY = e.touches[0].clientY;
-      touchLastY = e.touches[0].clientY;
-      isTouching = true;
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!isTouching || e.touches.length !== 1) return;
-      const currentY = e.touches[0].clientY;
-      const deltaFromLast = currentY - touchLastY;
-      touchLastY = currentY;
-
-      const target = e.target as Node | null;
-      const insideCard = card.contains(target);
-
-      if (insideCard) {
-        // If swiping down (deltaFromLast > 0, meaning finger moves down to scroll page UP)
-        if (deltaFromLast > 0 && card.scrollTop <= 2) {
-          // At top of form: bridge swipe-down directly to window scroll-up
-          scrollPage(-deltaFromLast * 1.4);
-          if (e.cancelable) e.preventDefault();
-        }
-      } else {
-        // Touching outside the card (on backdrop / margins):
-        // All vertical swipes directly scroll the window
-        scrollPage(-deltaFromLast * 1.4);
-        if (e.cancelable) e.preventDefault();
-      }
-    };
-
-    const handleTouchEnd = () => {
-      isTouching = false;
-    };
-
-    const handleWheel = (e: WheelEvent) => {
-      const target = e.target as Node | null;
-      const insideCard = card.contains(target);
-
-      if (insideCard) {
-        // Wheeling up (e.deltaY < 0) when at the top of the card
-        if (e.deltaY < 0 && card.scrollTop <= 2) {
-          scrollPage(e.deltaY * 1.1);
-          if (e.cancelable) e.preventDefault();
-        }
-      } else {
-        // Wheeling outside the card on the backdrop
-        scrollPage(e.deltaY * 1.1);
-        if (e.cancelable) e.preventDefault();
-      }
-    };
-
-    panel.addEventListener("touchstart", handleTouchStart, { passive: true });
-    panel.addEventListener("touchmove", handleTouchMove, { passive: false });
-    panel.addEventListener("touchend", handleTouchEnd, { passive: true });
-    panel.addEventListener("touchcancel", handleTouchEnd, { passive: true });
-    panel.addEventListener("wheel", handleWheel, { passive: false });
-
-    return () => {
-      panel.removeEventListener("touchstart", handleTouchStart);
-      panel.removeEventListener("touchmove", handleTouchMove);
-      panel.removeEventListener("touchend", handleTouchEnd);
-      panel.removeEventListener("touchcancel", handleTouchEnd);
-      panel.removeEventListener("wheel", handleWheel);
-    };
-  }, []);
 
   // Form Validation & Submission
   const validateForm = () => {
@@ -697,7 +612,7 @@ export default function AccommodationPage() {
             {/* LEFT COLUMN: 2 FACILITY CARDS */}
             <div
               ref={leftCardsRef}
-              className="w-[46%] sm:w-[42%] lg:w-[30%] max-w-[420px] flex flex-col gap-2.5 sm:gap-4 lg:gap-5 z-20 will-change-transform lg:self-center -translate-y-3 sm:-translate-y-6 lg:-translate-y-8 xl:-translate-y-10"
+              className="w-[48%] sm:w-[34%] md:w-[32%] lg:w-[28%] xl:w-[30%] max-w-[420px] flex flex-col gap-2.5 sm:gap-4 lg:gap-5 z-20 will-change-transform lg:self-center -translate-y-3 sm:-translate-y-6 lg:-translate-y-8 xl:-translate-y-10"
             >
               {LEFT_FACILITIES.map((facility) => {
                 const Icon = facility.icon;
@@ -762,7 +677,7 @@ export default function AccommodationPage() {
               ref={centerCharacterRef}
               onMouseEnter={() => setIsCharHovered(true)}
               onMouseLeave={() => setIsCharHovered(false)}
-              className="absolute inset-x-0 -bottom-3 sm:-bottom-4 lg:-bottom-6 xl:-bottom-7 flex items-end justify-center pointer-events-none lg:pointer-events-auto z-10 will-change-transform cursor-pointer group"
+              className="absolute inset-x-0 -bottom-3 sm:-bottom-4 lg:-bottom-6 xl:-bottom-7 hidden sm:flex items-end justify-center pointer-events-none lg:pointer-events-auto z-10 will-change-transform cursor-pointer group"
             >
               {/* Restrained Dynamic Outline Rim Glow */}
               <div
@@ -780,7 +695,7 @@ export default function AccommodationPage() {
               {/* Character Stage Wrapper - Optimum dimensions & flush bottom anchor */}
               <div
                 ref={charImageWrapRef}
-                className="relative w-[190px] sm:w-[260px] md:w-[310px] lg:w-[360px] xl:w-[410px] 2xl:w-[450px] h-[240px] sm:h-[330px] md:h-[390px] lg:h-[440px] xl:h-[490px] 2xl:h-[530px] select-none flex items-end justify-center will-change-transform translate-y-4 sm:translate-y-5 lg:translate-y-7 xl:translate-y-8"
+                className="relative w-[180px] sm:w-[200px] md:w-[230px] lg:w-[340px] xl:w-[410px] 2xl:w-[450px] h-[240px] sm:h-[270px] md:h-[310px] lg:h-[420px] xl:h-[490px] 2xl:h-[530px] select-none flex items-end justify-center will-change-transform translate-y-4 sm:translate-y-5 lg:translate-y-7 xl:translate-y-8"
               >
                 {/* 1. DEFAULT STATE: NORMAL CENTERED LELOUCH CHARACTER CUTOUT */}
                 <div
@@ -914,7 +829,7 @@ export default function AccommodationPage() {
             {/* RIGHT COLUMN: 2 FACILITY CARDS */}
             <div
               ref={rightCardsRef}
-              className="w-[46%] sm:w-[42%] lg:w-[30%] max-w-[420px] flex flex-col gap-2.5 sm:gap-4 lg:gap-5 z-20 will-change-transform lg:self-center -translate-y-3 sm:-translate-y-6 lg:-translate-y-8 xl:-translate-y-10"
+              className="w-[48%] sm:w-[34%] md:w-[32%] lg:w-[28%] xl:w-[30%] max-w-[420px] flex flex-col gap-2.5 sm:gap-4 lg:gap-5 z-20 will-change-transform lg:self-center -translate-y-3 sm:-translate-y-6 lg:-translate-y-8 xl:-translate-y-10"
             >
               {RIGHT_FACILITIES.map((facility) => {
                 const Icon = facility.icon;
@@ -1026,7 +941,7 @@ export default function AccommodationPage() {
           <div
             ref={formCardRef}
             data-lenis-prevent
-            className="relative w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[calc(100vh-6.5rem)] sm:max-h-[calc(100vh-7rem)] overflow-y-auto rounded-2xl bg-[#07080b]/95 backdrop-blur-2xl border border-white/15 p-6 sm:p-8 lg:p-10 pb-8 shadow-[0_25px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.08)] my-auto"
+            className="relative w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[calc(100vh-6.5rem)] sm:max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-y-contain rounded-2xl bg-[#07080b]/95 backdrop-blur-2xl border border-white/15 p-6 sm:p-8 lg:p-10 pb-8 shadow-[0_25px_80px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.08)] my-auto"
           >
             {/* Mobile Sheet Pull-Down Grab Handle (quick return) */}
             <div className="flex sm:hidden flex-col items-center gap-1 pb-2 -mt-1">
@@ -1120,36 +1035,52 @@ export default function AccommodationPage() {
                       </div>
 
                       {paymentError && (
-                        <div className="p-2 rounded bg-red-950/40 border border-red-500/40 text-red-300 text-[10px] flex items-center gap-1.5">
+                        <div
+                          id="acc-payment-error"
+                          role="alert"
+                          className="p-2 rounded bg-red-950/40 border border-red-500/40 text-red-300 text-[10px] flex items-center gap-1.5"
+                        >
                           <AlertCircle className="w-3 h-3 flex-shrink-0 text-red-400" />
                           <span>{paymentError}</span>
                         </div>
                       )}
 
                       <div className="space-y-1">
-                        <label className="text-[10px] text-neutral-400 uppercase tracking-wider">
+                        <label
+                          htmlFor="acc-utr-number"
+                          className="text-[10px] text-neutral-400 uppercase tracking-wider cursor-pointer"
+                        >
                           UTR / UPI Transaction ID *
                         </label>
                         <input
+                          id="acc-utr-number"
                           type="text"
                           value={utrNumber}
                           onChange={(e) => setUtrNumber(e.target.value)}
                           required
+                          aria-required="true"
+                          aria-invalid={paymentError ? "true" : undefined}
+                          aria-describedby={paymentError ? "acc-payment-error" : undefined}
                           className="w-full px-3 py-1.5 rounded bg-black/60 border border-white/20 text-xs text-white placeholder:text-neutral-600 focus:border-[#E61924] focus:outline-none"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[10px] text-neutral-400 uppercase tracking-wider">
+                        <label
+                          htmlFor="acc-receipt-file"
+                          className="text-[10px] text-neutral-400 uppercase tracking-wider cursor-pointer"
+                        >
                           Screenshot Receipt Image *
                         </label>
                         <input
+                          id="acc-receipt-file"
                           type="file"
                           accept="image/*"
                           onChange={(e) => {
                             if (e.target.files?.[0]) setReceiptFile(e.target.files[0]);
                           }}
                           required
+                          aria-required="true"
                           className="w-full text-[10px] text-neutral-400 file:mr-2 file:py-1 file:px-2.5 file:rounded file:border file:border-white/20 file:bg-white/10 file:text-white file:text-[10px] hover:file:bg-white/20 cursor-pointer"
                         />
                       </div>
@@ -1241,7 +1172,10 @@ export default function AccommodationPage() {
                 <div ref={formFieldsRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Row 1, Col 1: Full Name */}
                   <div className="space-y-1.5 group">
-                    <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">
+                    <label
+                      htmlFor="acc-full-name"
+                      className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between cursor-pointer"
+                    >
                       <span className="flex items-center gap-1.5">
                         <User className="w-3 h-3 text-[#E61924]" />
                         Full Name
@@ -1250,9 +1184,13 @@ export default function AccommodationPage() {
                     </label>
                     <div className="relative">
                       <input
+                        id="acc-full-name"
                         type="text"
                         value={formData.fullName}
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                        aria-required="true"
+                        aria-invalid={formErrors.fullName ? "true" : undefined}
+                        aria-describedby={formErrors.fullName ? "acc-full-name-error" : undefined}
                         className={`w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 ${
                           formErrors.fullName
                             ? "border-[#E61924] shadow-[0_0_12px_rgba(230,25,36,0.25)]"
@@ -1262,7 +1200,10 @@ export default function AccommodationPage() {
                       <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 pointer-events-none group-focus-within:border-[#E61924]" />
                     </div>
                     {formErrors.fullName && (
-                      <p className="font-mono text-[9px] text-[#E61924] tracking-wider flex items-center gap-1 mt-1">
+                      <p
+                        id="acc-full-name-error"
+                        className="font-mono text-[9px] text-[#E61924] tracking-wider flex items-center gap-1 mt-1"
+                      >
                         <AlertCircle className="w-2.5 h-2.5" />
                         {formErrors.fullName}
                       </p>
@@ -1271,7 +1212,10 @@ export default function AccommodationPage() {
 
                   {/* Row 1, Col 2: Email Address */}
                   <div className="space-y-1.5 group">
-                    <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">
+                    <label
+                      htmlFor="acc-email"
+                      className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between cursor-pointer"
+                    >
                       <span className="flex items-center gap-1.5">
                         <Mail className="w-3 h-3 text-[#E61924]" />
                         Email Address
@@ -1280,9 +1224,13 @@ export default function AccommodationPage() {
                     </label>
                     <div className="relative">
                       <input
+                        id="acc-email"
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        aria-required="true"
+                        aria-invalid={formErrors.email ? "true" : undefined}
+                        aria-describedby={formErrors.email ? "acc-email-error" : undefined}
                         className={`w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 ${
                           formErrors.email
                             ? "border-[#E61924] shadow-[0_0_12px_rgba(230,25,36,0.25)]"
@@ -1292,7 +1240,10 @@ export default function AccommodationPage() {
                       <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 pointer-events-none group-focus-within:border-[#E61924]" />
                     </div>
                     {formErrors.email && (
-                      <p className="font-mono text-[9px] text-[#E61924] tracking-wider flex items-center gap-1 mt-1">
+                      <p
+                        id="acc-email-error"
+                        className="font-mono text-[9px] text-[#E61924] tracking-wider flex items-center gap-1 mt-1"
+                      >
                         <AlertCircle className="w-2.5 h-2.5" />
                         {formErrors.email}
                       </p>
@@ -1301,7 +1252,10 @@ export default function AccommodationPage() {
 
                   {/* Row 2, Col 1: Phone Number */}
                   <div className="space-y-1.5 group">
-                    <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">
+                    <label
+                      htmlFor="acc-phone"
+                      className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between cursor-pointer"
+                    >
                       <span className="flex items-center gap-1.5">
                         <Phone className="w-3 h-3 text-[#E61924]" />
                         Phone Number
@@ -1310,9 +1264,13 @@ export default function AccommodationPage() {
                     </label>
                     <div className="relative">
                       <input
+                        id="acc-phone"
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        aria-required="true"
+                        aria-invalid={formErrors.phone ? "true" : undefined}
+                        aria-describedby={formErrors.phone ? "acc-phone-error" : undefined}
                         className={`w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 ${
                           formErrors.phone
                             ? "border-[#E61924] shadow-[0_0_12px_rgba(230,25,36,0.25)]"
@@ -1322,7 +1280,10 @@ export default function AccommodationPage() {
                       <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 pointer-events-none group-focus-within:border-[#E61924]" />
                     </div>
                     {formErrors.phone && (
-                      <p className="font-mono text-[9px] text-[#E61924] tracking-wider flex items-center gap-1 mt-1">
+                      <p
+                        id="acc-phone-error"
+                        className="font-mono text-[9px] text-[#E61924] tracking-wider flex items-center gap-1 mt-1"
+                      >
                         <AlertCircle className="w-2.5 h-2.5" />
                         {formErrors.phone}
                       </p>
@@ -1331,7 +1292,10 @@ export default function AccommodationPage() {
 
                   {/* Row 2, Col 2: College / University */}
                   <div className="space-y-1.5 group">
-                    <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">
+                    <label
+                      htmlFor="acc-college"
+                      className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between cursor-pointer"
+                    >
                       <span className="flex items-center gap-1.5">
                         <Building className="w-3 h-3 text-[#E61924]" />
                         College / University
@@ -1340,9 +1304,13 @@ export default function AccommodationPage() {
                     </label>
                     <div className="relative">
                       <input
+                        id="acc-college"
                         type="text"
                         value={formData.college}
                         onChange={(e) => setFormData({ ...formData, college: e.target.value })}
+                        aria-required="true"
+                        aria-invalid={formErrors.college ? "true" : undefined}
+                        aria-describedby={formErrors.college ? "acc-college-error" : undefined}
                         className={`w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 ${
                           formErrors.college
                             ? "border-[#E61924] shadow-[0_0_12px_rgba(230,25,36,0.25)]"
@@ -1352,7 +1320,10 @@ export default function AccommodationPage() {
                       <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 pointer-events-none group-focus-within:border-[#E61924]" />
                     </div>
                     {formErrors.college && (
-                      <p className="font-mono text-[9px] text-[#E61924] tracking-wider flex items-center gap-1 mt-1">
+                      <p
+                        id="acc-college-error"
+                        className="font-mono text-[9px] text-[#E61924] tracking-wider flex items-center gap-1 mt-1"
+                      >
                         <AlertCircle className="w-2.5 h-2.5" />
                         {formErrors.college}
                       </p>
@@ -1361,7 +1332,10 @@ export default function AccommodationPage() {
 
                   {/* Row 3, Col 1: City */}
                   <div className="space-y-1.5 group">
-                    <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">
+                    <label
+                      htmlFor="acc-city"
+                      className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between cursor-pointer"
+                    >
                       <span className="flex items-center gap-1.5">
                         <MapPin className="w-3 h-3 text-[#E61924]" />
                         City
@@ -1370,9 +1344,13 @@ export default function AccommodationPage() {
                     </label>
                     <div className="relative">
                       <input
+                        id="acc-city"
                         type="text"
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                        aria-required="true"
+                        aria-invalid={formErrors.city ? "true" : undefined}
+                        aria-describedby={formErrors.city ? "acc-city-error" : undefined}
                         className={`w-full px-3.5 py-2.5 rounded bg-white/[0.025] hover:bg-white/[0.04] border text-xs sm:text-sm text-[#F5F2EB] placeholder:text-neutral-600 focus:outline-none transition-all duration-200 ${
                           formErrors.city
                             ? "border-[#E61924] shadow-[0_0_12px_rgba(230,25,36,0.25)]"
@@ -1382,7 +1360,10 @@ export default function AccommodationPage() {
                       <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-white/20 pointer-events-none group-focus-within:border-[#E61924]" />
                     </div>
                     {formErrors.city && (
-                      <p className="font-mono text-[9px] text-[#E61924] tracking-wider flex items-center gap-1 mt-1">
+                      <p
+                        id="acc-city-error"
+                        className="font-mono text-[9px] text-[#E61924] tracking-wider flex items-center gap-1 mt-1"
+                      >
                         <AlertCircle className="w-2.5 h-2.5" />
                         {formErrors.city}
                       </p>
@@ -1391,16 +1372,26 @@ export default function AccommodationPage() {
 
                   {/* Row 3, Col 2: Hostel Allocation */}
                   <div className="space-y-1.5 group">
-                    <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] transition-colors flex items-center justify-between">
+                    <div
+                      id="acc-hostel-group-label"
+                      className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] transition-colors flex items-center justify-between"
+                    >
                       <span className="flex items-center gap-1.5">
                         <Shield className="w-3 h-3 text-[#E61924]" />
                         Hostel Allocation
                       </span>
                       <span className="text-[#E61924] text-xs leading-none">*</span>
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
+                    </div>
+                    <div
+                      role="radiogroup"
+                      aria-labelledby="acc-hostel-group-label"
+                      aria-required="true"
+                      className="grid grid-cols-2 gap-2"
+                    >
                       <button
                         type="button"
+                        role="radio"
+                        aria-checked={formData.gender === "boys"}
                         onClick={() => setFormData({ ...formData, gender: "boys" })}
                         className={`py-2 px-2.5 rounded font-mono text-[11px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer border ${
                           formData.gender === "boys"
@@ -1412,6 +1403,8 @@ export default function AccommodationPage() {
                       </button>
                       <button
                         type="button"
+                        role="radio"
+                        aria-checked={formData.gender === "girls"}
                         onClick={() => setFormData({ ...formData, gender: "girls" })}
                         className={`py-2 px-2.5 rounded font-mono text-[11px] sm:text-xs uppercase tracking-wider transition-all cursor-pointer border ${
                           formData.gender === "girls"
@@ -1426,7 +1419,10 @@ export default function AccommodationPage() {
 
                   {/* Row 4, Col 1: Number of Nights */}
                   <div className="space-y-1.5 group">
-                    <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">
+                    <label
+                      htmlFor="acc-nights"
+                      className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between cursor-pointer"
+                    >
                       <span className="flex items-center gap-1.5">
                         <Calendar className="w-3 h-3 text-[#E61924]" />
                         Number of Nights
@@ -1435,6 +1431,7 @@ export default function AccommodationPage() {
                     </label>
                     <div className="relative">
                       <select
+                        id="acc-nights"
                         value={formData.nights}
                         onChange={(e) => setFormData({ ...formData, nights: e.target.value })}
                         className="w-full appearance-none px-3.5 py-2.5 pr-10 rounded bg-white/[0.025] hover:bg-white/[0.04] border border-white/[0.08] hover:border-white/[0.18] focus:border-[#E61924] focus:bg-white/[0.05] focus:shadow-[0_0_15px_rgba(230,25,36,0.18)] text-xs sm:text-sm text-[#F5F2EB] focus:outline-none transition-all duration-200 cursor-pointer"
@@ -1463,7 +1460,10 @@ export default function AccommodationPage() {
 
                   {/* Row 4, Col 2: Special Requirements */}
                   <div className="space-y-1.5 group">
-                    <label className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between">
+                    <label
+                      htmlFor="acc-special-req"
+                      className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#A8A49C] group-focus-within:text-[#F5F2EB] transition-colors flex items-center justify-between cursor-pointer"
+                    >
                       <span className="flex items-center gap-1.5">
                         <FileText className="w-3 h-3 text-[#E61924]" />
                         Special Requirements
@@ -1472,6 +1472,7 @@ export default function AccommodationPage() {
                     </label>
                     <div className="relative">
                       <textarea
+                        id="acc-special-req"
                         rows={1}
                         value={formData.specialRequirements}
                         onChange={(e) =>
@@ -1487,8 +1488,13 @@ export default function AccommodationPage() {
                   <div className="space-y-1 md:col-span-2 pt-1">
                     <button
                       type="button"
+                      role="checkbox"
+                      aria-checked={formData.confirmed}
+                      aria-required="true"
+                      aria-describedby={formErrors.confirmed ? "acc-confirmed-error" : undefined}
+                      id="acc-confirmed-checkbox"
                       onClick={() => setFormData({ ...formData, confirmed: !formData.confirmed })}
-                      className="flex items-center gap-3 text-left cursor-pointer group select-none"
+                      className="flex items-center gap-3 text-left cursor-pointer group select-none min-h-[44px]"
                     >
                       <div
                         className={`w-4 h-4 rounded-sm border flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
@@ -1508,7 +1514,10 @@ export default function AccommodationPage() {
                       </span>
                     </button>
                     {formErrors.confirmed && (
-                      <p className="font-mono text-[9px] text-[#E61924] tracking-wider pl-7 flex items-center gap-1">
+                      <p
+                        id="acc-confirmed-error"
+                        className="font-mono text-[9px] text-[#E61924] tracking-wider pl-7 flex items-center gap-1"
+                      >
                         <AlertCircle className="w-2.5 h-2.5" />
                         {formErrors.confirmed}
                       </p>

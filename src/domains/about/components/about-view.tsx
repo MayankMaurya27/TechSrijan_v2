@@ -11,7 +11,7 @@ import {
   ABOUT_CLUBS,
 } from "../data/about-data";
 import { useAboutTheme } from "../data/about-theme";
-import { FestFooter } from "@/shared/layout/fest-footer";
+import { FestFooter } from "@/shared";
 
 function IconInstagram({ className }: { className?: string }) {
   return (
@@ -179,7 +179,7 @@ export function AboutView() {
 
   return (
     <div
-      className="relative min-h-screen bg-[#050304] text-[#F3EFEA] font-sans selection:bg-[#E61E25]/30 selection:text-white"
+      className="relative min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans selection:bg-[var(--accent-primary)]/30 selection:text-white"
       style={{
         "--theme-accent": theme.accent,
         "--theme-accent-glow": theme.accentGlow,
@@ -220,36 +220,83 @@ export function AboutView() {
             }}
             className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 sm:px-6 text-center select-none transition-all duration-200 ease-out"
           >
-            {/* ── THEMATIC ECLIPSE BACKLIGHT (Pulsing Ambient Solar Halo) ── */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
-              {/* Outer Volumetric Corona: Broad atmospheric diffusion */}
-              <div
-                className="absolute w-[360px] sm:w-[560px] md:w-[760px] lg:w-[960px] h-[180px] sm:h-[260px] md:h-[340px] rounded-full blur-[80px] sm:blur-[120px] pointer-events-none transition-all duration-700 animate-pulse"
-                style={{
-                  background: `radial-gradient(ellipse at center, ${theme.accentGlow} 0%, ${theme.accentSecondary}35 45%, transparent 75%)`,
-                  animationDuration: "5s",
-                }}
-              />
+            {/* ── THEMATIC ARCHITECTURAL HALO (Crisp Vector Celestial Reticle) ── */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10 overflow-hidden">
+              <svg
+                viewBox="0 0 800 800"
+                className="w-[320px] xs:w-[460px] sm:w-[640px] md:w-[820px] lg:w-[960px] h-[320px] xs:h-[460px] sm:h-[640px] md:h-[820px] lg:h-[960px] select-none"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  {/* Clean Celestial Radial Diffusion (GPU composite-friendly) */}
+                  <radialGradient id="archHaloDiffusion" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="var(--accent-primary, #D4A843)" stopOpacity="0.20" />
+                    <stop offset="45%" stopColor="var(--accent-glow, rgba(212,168,67,0.3))" stopOpacity="0.07" />
+                    <stop offset="85%" stopColor="transparent" stopOpacity="0" />
+                  </radialGradient>
+                </defs>
 
-              {/* Core Solar Corona: Intense warm light centered directly behind the eclipse & logo */}
-              <div
-                className="absolute w-[200px] sm:w-[320px] md:w-[460px] h-[100px] sm:h-[150px] md:h-[200px] rounded-full blur-[35px] sm:blur-[60px] pointer-events-none transition-all duration-700 animate-pulse"
-                style={{
-                  background: `radial-gradient(ellipse at center, ${theme.accentBright} 0%, ${theme.accent} 50%, transparent 72%)`,
-                  opacity: 0.8,
-                  animationDuration: "3.5s",
-                }}
-              />
+                {/* Ambient Center Glow */}
+                <circle cx="400" cy="400" r="320" fill="url(#archHaloDiffusion)" />
 
-              {/* Eclipse Coronal Ring: Faint celestial halo around the eclipsed sun */}
-              <div
-                className="absolute w-[220px] sm:w-[320px] md:w-[440px] h-[220px] sm:h-[320px] md:h-[440px] rounded-full pointer-events-none border border-white/10 blur-[1px] animate-[spin_60s_linear_infinite]"
-                style={{
-                  borderColor: `${theme.accent}30`,
-                  boxShadow: `0 0 35px ${theme.accentGlow}`,
-                  opacity: 0.4,
-                }}
-              />
+                {/* Outer Celestial Stippled Ring */}
+                <circle
+                  cx="400"
+                  cy="400"
+                  r="365"
+                  stroke="var(--accent-primary, #D4A843)"
+                  strokeWidth="1"
+                  strokeDasharray="3 9"
+                  opacity="0.25"
+                />
+
+                {/* Rotating Segmented Orbital Ring */}
+                <circle
+                  cx="400"
+                  cy="400"
+                  r="325"
+                  stroke="var(--border-accent, #D4A843)"
+                  strokeWidth="1.5"
+                  strokeDasharray="140 60 40 60 90 60"
+                  opacity="0.32"
+                  className="motion-safe:animate-[spin_120s_linear_infinite] motion-reduce:animate-none origin-center"
+                />
+
+                {/* Concentric Precision Guide Ring */}
+                <circle
+                  cx="400"
+                  cy="400"
+                  r="265"
+                  stroke="var(--accent-primary, #D4A843)"
+                  strokeWidth="1"
+                  opacity="0.2"
+                />
+
+                {/* Inner Focal Reticle Ring */}
+                <circle
+                  cx="400"
+                  cy="400"
+                  r="205"
+                  stroke="var(--accent-primary, #D4A843)"
+                  strokeWidth="1.25"
+                  strokeDasharray="6 14"
+                  opacity="0.28"
+                  className="motion-safe:animate-[spin_90s_linear_infinite_reverse] motion-reduce:animate-none origin-center"
+                />
+
+                {/* Cardinal Reticle Crosshair Ticks */}
+                <line x1="400" y1="25" x2="400" y2="75" stroke="var(--accent-primary, #D4A843)" strokeWidth="1.5" opacity="0.4" />
+                <line x1="400" y1="725" x2="400" y2="775" stroke="var(--accent-primary, #D4A843)" strokeWidth="1.5" opacity="0.4" />
+                <line x1="25" y1="400" x2="75" y2="400" stroke="var(--accent-primary, #D4A843)" strokeWidth="1.5" opacity="0.4" />
+                <line x1="725" y1="400" x2="775" y2="400" stroke="var(--accent-primary, #D4A843)" strokeWidth="1.5" opacity="0.4" />
+
+                {/* Cardinal Degree Calibration Points */}
+                <circle cx="170" cy="170" r="3" fill="var(--accent-primary, #D4A843)" opacity="0.45" />
+                <circle cx="630" cy="170" r="3" fill="var(--accent-primary, #D4A843)" opacity="0.45" />
+                <circle cx="170" cy="630" r="3" fill="var(--accent-primary, #D4A843)" opacity="0.45" />
+                <circle cx="630" cy="630" r="3" fill="var(--accent-primary, #D4A843)" opacity="0.45" />
+              </svg>
             </div>
 
             <h1 className="font-montserrat font-black text-3xl sm:text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] uppercase text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.95)] drop-shadow-[0_0_20px_rgba(255,255,255,0.25)]">
@@ -321,11 +368,11 @@ export function AboutView() {
             }}
             className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 sm:px-6 select-none transition-all duration-200 ease-out"
           >
-            <div className="w-full max-w-4xl mx-auto rounded-3xl p-6 sm:p-8 md:p-10 bg-[#090507]/90 backdrop-blur-2xl border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.95)] flex flex-col items-center text-center">
+            <div className="w-full max-w-4xl mx-auto rounded-3xl p-6 sm:p-8 md:p-10 bg-[var(--surface)] backdrop-blur-2xl border border-[var(--border)] shadow-[0_25px_80px_rgba(0,0,0,0.95)] flex flex-col items-center text-center">
               {/* Exact User Text Block */}
               <p className="font-sans text-sm sm:text-base md:text-lg lg:text-xl font-normal text-neutral-100 leading-relaxed max-w-3xl mx-auto drop-shadow-md">
                 TechSrijan is the flagship annual techno-management festival of{" "}
-                <span className="text-white font-bold whitespace-nowrap inline-block">
+                <span className="text-white font-bold">
                   Madan Mohan Malaviya University of Technology (MMMUT)
                 </span>{" "}
                 Gorakhpur, bringing together technology, innovation, coding, robotics and creative
@@ -376,11 +423,10 @@ export function AboutView() {
           ============================================================ */}
       <section className="relative z-20 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 py-16 sm:py-24 border-t border-white/10">
         <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-20">
-          <div
-            className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase mb-2"
-            style={{ color: theme.accent }}
-          >
-            UNIVERSITY LEADERSHIP
+          <div className="font-mono text-xs sm:text-[13px] tracking-[0.2em] uppercase text-[var(--text-muted)] mb-3 flex items-center justify-center gap-2.5">
+            <span className="h-px w-6 bg-[var(--border)]" />
+            <span className="text-[var(--accent-primary)] font-semibold">UNIVERSITY LEADERSHIP</span>
+            <span className="h-px w-6 bg-[var(--border)]" />
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-montserrat font-black tracking-tight text-white uppercase leading-tight">
             Patronage &amp; Directorate
@@ -397,7 +443,7 @@ export function AboutView() {
             return (
               <div
                 key={patron.id}
-                className="rounded-3xl p-6 sm:p-10 lg:p-12 bg-gradient-to-b from-[#140b0e]/90 via-[#0d0709]/90 to-[#070305]/95 border border-white/10 backdrop-blur-xl shadow-[0_16px_50px_rgba(0,0,0,0.85)] hover:border-white/20 transition-all duration-300"
+                className="rounded-3xl p-6 sm:p-10 lg:p-12 bg-gradient-to-b from-[var(--surface)] via-[var(--bg-secondary)]/90 to-[var(--bg-primary)] border border-[var(--border)] backdrop-blur-xl shadow-[0_16px_50px_rgba(0,0,0,0.85)] hover:border-[var(--border-accent)]/50 transition-all duration-300"
               >
                 <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                   {/* Portrait Bezel */}
@@ -407,18 +453,12 @@ export function AboutView() {
                     }`}
                   >
                     <div className="relative group w-full flex flex-col items-center justify-center mx-auto">
-                      {/* Ambient Aura */}
+                      {/* Architectural Precision Frame */}
                       <div
-                        className="absolute -inset-3 rounded-full blur-2xl opacity-40 group-hover:opacity-75 transition-opacity duration-500 pointer-events-none"
-                        style={{ backgroundColor: `${patron.accent}55` }}
-                      />
-
-                      {/* Dual-Ring Frame */}
-                      <div
-                        className="relative mx-auto w-44 h-44 sm:w-52 sm:h-52 md:w-56 md:h-56 rounded-full p-1.5 bg-gradient-to-b from-white/20 via-black to-black/80 border-2 transition-transform duration-500 group-hover:scale-105"
+                        className="relative mx-auto w-44 h-44 sm:w-52 sm:h-52 md:w-56 md:h-56 rounded-full p-1.5 bg-gradient-to-b from-white/10 via-black to-black/90 border-2 transition-transform duration-500 group-hover:scale-105"
                         style={{
                           borderColor: patron.accent,
-                          boxShadow: `0 0 30px ${patron.accent}50, inset 0 0 20px rgba(0,0,0,0.9)`,
+                          boxShadow: `0 0 24px ${patron.accent}33, inset 0 0 16px rgba(0,0,0,0.9)`,
                         }}
                       >
                         <div className="relative w-full h-full rounded-full overflow-hidden bg-black shadow-inner">
@@ -431,19 +471,6 @@ export function AboutView() {
                           />
                         </div>
                       </div>
-
-                      {/* Badge Pill */}
-                      <div className="mt-4 w-full flex justify-center text-center">
-                        <span
-                          className="inline-block px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-mono font-bold tracking-widest uppercase border bg-black/85 backdrop-blur-md"
-                          style={{
-                            borderColor: `${patron.accent}66`,
-                            color: patron.accent,
-                          }}
-                        >
-                          {patron.badge}
-                        </span>
-                      </div>
                     </div>
                   </div>
 
@@ -451,11 +478,9 @@ export function AboutView() {
                   <div className={`lg:col-span-8 ${isEven ? "lg:order-1" : "lg:order-2"}`}>
                     <div className="space-y-3.5">
                       {patron.kicker && (
-                        <div
-                          className="font-bebas text-sm sm:text-base tracking-[0.2em] uppercase"
-                          style={{ color: patron.accent }}
-                        >
-                          {patron.kicker}
+                        <div className="font-mono text-[11px] sm:text-xs tracking-widest uppercase text-[var(--accent-primary)] font-semibold flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" />
+                          <span>{patron.kicker}</span>
                         </div>
                       )}
 
@@ -501,11 +526,10 @@ export function AboutView() {
         {/* ── THE 3 FACULTY INCHARGES ── */}
         <div className="mt-16 sm:mt-24 pt-12 border-t border-white/10">
           <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-            <div
-              className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase"
-              style={{ color: theme.accent }}
-            >
-              MENTORSHIP COUNCIL
+            <div className="font-mono text-xs sm:text-[13px] tracking-[0.2em] uppercase text-[var(--text-muted)] flex items-center justify-center gap-2.5">
+              <span className="h-px w-6 bg-[var(--border)]" />
+              <span className="text-[var(--accent-primary)] font-semibold">MENTORSHIP COUNCIL</span>
+              <span className="h-px w-6 bg-[var(--border)]" />
             </div>
             <h3 className="text-2xl sm:text-4xl font-montserrat font-black tracking-tight text-white uppercase">
               Faculty Incharges
@@ -519,7 +543,7 @@ export function AboutView() {
             {FACULTY_INCHARGES.map((mentor) => (
               <div
                 key={mentor.id}
-                className="group relative rounded-3xl p-6 bg-gradient-to-b from-[#180a0e]/85 via-[#0e0508]/85 to-[#070305]/95 border border-white/10 hover:border-white/25 transition-all duration-300 text-center flex flex-col items-center backdrop-blur-xl shadow-xl hover:-translate-y-1.5"
+                className="group relative rounded-3xl p-6 bg-gradient-to-b from-[var(--surface)] via-[var(--bg-secondary)]/90 to-[var(--bg-primary)] border border-[var(--border)] hover:border-[var(--border-accent)]/50 transition-all duration-300 text-center flex flex-col items-center backdrop-blur-xl shadow-xl hover:-translate-y-1.5"
               >
                 {/* Circular Avatar */}
                 <div
@@ -564,11 +588,10 @@ export function AboutView() {
           ============================================================ */}
       <section className="relative z-20 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-10 py-16 sm:py-24 border-t border-white/10">
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div
-            className="font-bebas text-sm sm:text-base tracking-[0.25em] uppercase mb-2"
-            style={{ color: theme.accent }}
-          >
-            CLUBS &amp; CHAPTERS
+          <div className="font-mono text-xs sm:text-[13px] tracking-[0.2em] uppercase text-[var(--text-muted)] mb-3 flex items-center justify-center gap-2.5">
+            <span className="h-px w-6 bg-[var(--border)]" />
+            <span className="text-[var(--accent-primary)] font-semibold">TECHNICAL SUB-COUNCIL BODIES</span>
+            <span className="h-px w-6 bg-[var(--border)]" />
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-montserrat font-black tracking-tight text-white uppercase leading-tight">
             Clubs Under Technical Sub-Council
@@ -583,7 +606,7 @@ export function AboutView() {
           {ABOUT_CLUBS.map((club) => (
             <div
               key={club.id}
-              className="group relative rounded-3xl p-6 sm:p-7 bg-gradient-to-b from-[#140b0e]/85 via-[#0d0709]/85 to-[#070305]/95 border border-white/10 hover:border-white/25 transition-all duration-300 flex flex-col justify-between backdrop-blur-xl shadow-xl hover:-translate-y-1"
+              className="group relative rounded-3xl p-6 sm:p-7 bg-gradient-to-b from-[var(--surface)] via-[var(--bg-secondary)]/90 to-[var(--bg-primary)] border border-[var(--border)] hover:border-[var(--border-accent)]/50 transition-all duration-300 flex flex-col justify-between backdrop-blur-xl shadow-xl hover:-translate-y-1"
             >
               <div>
                 {/* Top Header Row with Logo & Badge */}

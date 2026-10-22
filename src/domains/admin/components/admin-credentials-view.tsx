@@ -244,7 +244,7 @@ export function AdminCredentialsView() {
         </div>
       ) : (
         <div className="w-full overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto touch-pan-y">
             <table className="w-full text-left text-xs">
               <thead className="bg-zinc-900 border-b border-zinc-800 text-zinc-400 uppercase text-[11px] font-semibold tracking-wider">
                 <tr>
@@ -322,16 +322,24 @@ export function AdminCredentialsView() {
       {/* CREATE MODAL */}
       {createModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-5">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-create-modal-title"
+            className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-5"
+          >
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
               <div className="flex items-center gap-2">
                 <KeyRound className="h-5 w-5 text-amber-500" />
-                <h3 className="text-base font-bold text-zinc-100">Create New Administrator</h3>
+                <h3 id="admin-create-modal-title" className="text-base font-bold text-zinc-100">
+                  Create New Administrator
+                </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setCreateModalOpen(false)}
-                className="text-zinc-400 hover:text-zinc-100"
+                aria-label="Close modal"
+                className="text-zinc-400 hover:text-zinc-100 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -339,10 +347,14 @@ export function AdminCredentialsView() {
 
             <form onSubmit={handleCreate} className="space-y-4 text-xs">
               <div>
-                <label className="block text-zinc-300 font-medium mb-1.5">Full Name</label>
+                <label htmlFor="admin-create-name" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
+                  Full Name
+                </label>
                 <input
+                  id="admin-create-name"
                   type="text"
                   required
+                  aria-required="true"
                   placeholder="e.g. John Doe"
                   value={createForm.name}
                   onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
@@ -351,12 +363,14 @@ export function AdminCredentialsView() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1.5">
+                <label htmlFor="admin-create-username" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
                   Admin Username *
                 </label>
                 <input
+                  id="admin-create-username"
                   type="text"
                   required
+                  aria-required="true"
                   placeholder="e.g. tsc_head, mayank, admin1 (any username)"
                   value={createForm.username}
                   onChange={(e) => setCreateForm({ ...createForm, username: e.target.value })}
@@ -365,12 +379,14 @@ export function AdminCredentialsView() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1.5">
+                <label htmlFor="admin-create-password" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
                   Password *
                 </label>
                 <input
+                  id="admin-create-password"
                   type="password"
                   required
+                  aria-required="true"
                   placeholder="••••••••••••"
                   value={createForm.password}
                   onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
@@ -379,8 +395,11 @@ export function AdminCredentialsView() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1.5">Admin Type</label>
+                <label htmlFor="admin-create-type" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
+                  Admin Type
+                </label>
                 <select
+                  id="admin-create-type"
                   value={createForm.adminType}
                   onChange={(e) =>
                     setCreateForm({
@@ -388,7 +407,7 @@ export function AdminCredentialsView() {
                       adminType: e.target.value as "CLUB_ADMIN" | "SUPER_ADMIN" | "HIGHER_ADMIN",
                     })
                   }
-                  className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
+                  className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none cursor-pointer"
                 >
                   <option value="CLUB_ADMIN">Club Admin (Manage own club events only)</option>
                   <option value="SUPER_ADMIN">
@@ -399,10 +418,11 @@ export function AdminCredentialsView() {
 
               {createForm.adminType === "CLUB_ADMIN" && (
                 <div>
-                  <label className="block text-zinc-300 font-medium mb-1.5">
+                  <label htmlFor="admin-create-club" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
                     Assign to Club
                   </label>
                   <select
+                    id="admin-create-club"
                     value={createForm.club}
                     onChange={(e) =>
                       setCreateForm({
@@ -410,7 +430,7 @@ export function AdminCredentialsView() {
                         club: e.target.value as any,
                       })
                     }
-                    className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
+                    className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none cursor-pointer"
                   >
                     <option value="TSC">TSC (Technical Sub-Council)</option>
                     <option value="RC">RC (Robotics Club)</option>
@@ -456,18 +476,24 @@ export function AdminCredentialsView() {
       {/* EDIT MODAL */}
       {editModalOpen && editingAdmin && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-5">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-edit-modal-title"
+            className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-5"
+          >
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
               <div className="flex items-center gap-2">
                 <Edit2 className="h-5 w-5 text-amber-500" />
-                <h3 className="text-base font-bold text-zinc-100">
+                <h3 id="admin-edit-modal-title" className="text-base font-bold text-zinc-100">
                   Edit Admin: {editingAdmin.name}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setEditModalOpen(false)}
-                className="text-zinc-400 hover:text-zinc-100"
+                aria-label="Close modal"
+                className="text-zinc-400 hover:text-zinc-100 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -475,8 +501,11 @@ export function AdminCredentialsView() {
 
             <form onSubmit={handleUpdate} className="space-y-4 text-xs">
               <div>
-                <label className="block text-zinc-300 font-medium mb-1.5">Full Name</label>
+                <label htmlFor="admin-edit-name" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
+                  Full Name
+                </label>
                 <input
+                  id="admin-edit-name"
                   type="text"
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
@@ -485,8 +514,11 @@ export function AdminCredentialsView() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1.5">Username</label>
+                <label htmlFor="admin-edit-username" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
+                  Username
+                </label>
                 <input
+                  id="admin-edit-username"
                   type="text"
                   value={editForm.username}
                   onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
@@ -495,10 +527,11 @@ export function AdminCredentialsView() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1.5">
+                <label htmlFor="admin-edit-password" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
                   Change Password (leave empty to keep current)
                 </label>
                 <input
+                  id="admin-edit-password"
                   type="password"
                   placeholder="New password (optional)"
                   value={editForm.password}
@@ -510,8 +543,11 @@ export function AdminCredentialsView() {
               {editingAdmin.role !== "BOSS" ? (
                 <>
                   <div>
-                    <label className="block text-zinc-300 font-medium mb-1.5">Role</label>
+                    <label htmlFor="admin-edit-type" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
+                      Role
+                    </label>
                     <select
+                      id="admin-edit-type"
                       value={editForm.adminType}
                       onChange={(e) =>
                         setEditForm({
@@ -519,7 +555,7 @@ export function AdminCredentialsView() {
                           adminType: e.target.value as "CLUB_ADMIN" | "SUPER_ADMIN",
                         })
                       }
-                      className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
+                      className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none cursor-pointer"
                     >
                       <option value="CLUB_ADMIN">Club Admin (Manage own club events only)</option>
                       <option value="SUPER_ADMIN">
@@ -530,10 +566,11 @@ export function AdminCredentialsView() {
 
                   {editForm.adminType === "CLUB_ADMIN" && (
                     <div>
-                      <label className="block text-zinc-300 font-medium mb-1.5">
+                      <label htmlFor="admin-edit-club" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
                         Assigned Club
                       </label>
                       <select
+                        id="admin-edit-club"
                         value={editForm.club}
                         onChange={(e) =>
                           setEditForm({
@@ -541,7 +578,7 @@ export function AdminCredentialsView() {
                             club: e.target.value as any,
                           })
                         }
-                        className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
+                        className="w-full h-10 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none cursor-pointer"
                       >
                         <option value="TSC">TSC</option>
                         <option value="RC">RC</option>

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/shared/utils/cloudinary-loader.ts"
+  ],
+  "paths": {
+    "@/*": ["./src/*"]
+  },
+  "ignoreExportsUsedInFile": {
+    "interface": true,
+    "type": true
+  }
+}

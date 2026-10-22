@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { getPrefersReducedMotion } from "@/core/utils/reduced-motion";
 
 declare global {
   interface Window {
@@ -17,9 +18,10 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       }
       window.scrollTo(0, 0);
 
-      // Mobile Touch Devices: bypass Lenis completely to use 120Hz native momentum scrolling
+      // Mobile Touch Devices & Reduced-Motion Users: bypass Lenis completely to respect native 120Hz/discrete scrolling
       const isTouch = window.innerWidth < 768 || ("ontouchstart" in window && window.innerWidth < 1024);
-      if (isTouch) {
+      const prefersReduced = getPrefersReducedMotion();
+      if (isTouch || prefersReduced) {
         return;
       }
     }

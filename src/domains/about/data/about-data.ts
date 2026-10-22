@@ -199,8 +199,8 @@ export const ABOUT_CLUBS: ClubItem[] = [
         image: "/Faculty Images/Dr. Pawan.jpg",
       },
     ],
-    accentColor: "#38BDF8",
-    glowColor: "rgba(56, 189, 248, 0.45)",
+    accentColor: "#CBD5E1",
+    glowColor: "rgba(203, 213, 225, 0.35)",
     logo: "/club-logos/reso-logo.jpg",
   },
   {
@@ -223,8 +223,8 @@ export const ABOUT_CLUBS: ClubItem[] = [
         image: "/Faculty Images/Dr. Vijay.jpg",
       },
     ],
-    accentColor: "#EAB308",
-    glowColor: "rgba(234, 179, 8, 0.45)",
+    accentColor: "#D4A843",
+    glowColor: "rgba(212, 168, 67, 0.35)",
     logo: "/club-logos/robotics-logo.png",
   },
   {
@@ -247,8 +247,8 @@ export const ABOUT_CLUBS: ClubItem[] = [
         image: "/Faculty Images/Dr. Rabesh.jpeg",
       },
     ],
-    accentColor: "#A855F7",
-    glowColor: "rgba(168, 85, 247, 0.45)",
+    accentColor: "#C47D48",
+    glowColor: "rgba(196, 125, 72, 0.35)",
     logo: "/club-logos/sae-logo.png",
   },
   {
@@ -271,8 +271,8 @@ export const ABOUT_CLUBS: ClubItem[] = [
         image: "/Faculty Images/Dr. Shikha.jpg",
       },
     ],
-    accentColor: "#00E5FF",
-    glowColor: "rgba(0, 229, 255, 0.45)",
+    accentColor: "#E61924",
+    glowColor: "rgba(230, 25, 36, 0.35)",
     logo: "/club-logos/ieee-logo.png",
   },
 ];

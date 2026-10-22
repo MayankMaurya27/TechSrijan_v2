@@ -5,9 +5,7 @@ import { SITE_URL } from "@/core/site";
 import { AmbientParticles, TwinSunsRays, Navbar, SwordCursor, TechSrijanPreloader } from "@/shared";
 
 import "@/styles/globals.css";
-// Direct file imports (not the @/domains/auth barrel) so framer-motion-heavy auth views stay out of the root bundle
-import { AuthModalProvider } from "@/domains/auth/context/auth-modal-context";
-import { LazySignInRouteModal } from "@/domains/auth/components/lazy-sign-in-route-modal";
+import { AuthModalProvider, LazySignInRouteModal } from "@/domains/auth";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],

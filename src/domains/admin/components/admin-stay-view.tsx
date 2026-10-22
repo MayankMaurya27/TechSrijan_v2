@@ -111,9 +111,14 @@ export function AdminStayView() {
 
       {/* SEARCH INPUT */}
       <div className="relative max-w-md">
+        <label htmlFor="admin-stay-search" className="sr-only">
+          Search Bookings
+        </label>
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
         <input
+          id="admin-stay-search"
           type="text"
+          aria-label="Search Bookings"
           placeholder="Search by guest name, college, email, or booking ID..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -133,7 +138,7 @@ export function AdminStayView() {
         </div>
       ) : (
         <div className="w-full overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto touch-pan-y">
             <table className="w-full text-left text-xs">
               <thead className="bg-zinc-900 border-b border-zinc-800 text-zinc-400 uppercase text-[11px] font-semibold tracking-wider">
                 <tr>

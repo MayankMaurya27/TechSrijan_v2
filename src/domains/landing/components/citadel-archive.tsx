@@ -328,7 +328,7 @@ export function CitadelArchive({ scrollProgress }: CitadelArchiveProps) {
             <div
               ref={mobileTrackRef}
               onScroll={onMobileTrackScroll}
-              className="w-full flex flex-row items-center gap-3.5 overflow-x-auto snap-x snap-mandatory scroll-smooth px-[11vw] py-1 pointer-events-auto"
+              className="w-full flex flex-row items-center gap-3.5 overflow-x-auto touch-pan-y snap-x snap-mandatory scroll-smooth px-[11vw] py-1 pointer-events-auto"
               style={{
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",

@@ -1,12 +1,13 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/core/site";
 
-// Only indexable, non-redirecting pages (/cap and /team redirect; auth/dashboard routes are noindex)
+// Only indexable, non-redirecting pages (/cap redirects; auth/dashboard routes are noindex)
 const ROUTES: [path: string, priority: number, changeFrequency: "daily" | "weekly" | "monthly"][] = [
   ["/", 1.0, "daily"],
   ["/events", 0.9, "daily"],
   ["/ambassador", 0.8, "weekly"],
   ["/accommodation", 0.8, "weekly"],
+  ["/team", 0.7, "monthly"],
   ["/about", 0.7, "monthly"],
   ["/guests", 0.7, "monthly"],
   ["/sponsors", 0.7, "monthly"],

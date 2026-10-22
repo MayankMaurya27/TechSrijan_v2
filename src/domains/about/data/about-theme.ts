@@ -45,7 +45,7 @@ export interface AboutThemeTokens {
   particleSecondary: string;
 }
 
-export const ABOUT_THEMES: Record<CanonicalTheme, AboutThemeTokens> = {
+const ABOUT_THEMES: Record<CanonicalTheme, AboutThemeTokens> = {
   "geass-moon": {
     theme: "geass-moon",
     accent: "#FF1E27",
@@ -164,5 +164,5 @@ export const ABOUT_THEMES: Record<CanonicalTheme, AboutThemeTokens> = {
 export function useAboutTheme(): AboutThemeTokens {
   const { resolvedTheme } = useTheme();
   const canonical = normalizeTheme(resolvedTheme);
-  return ABOUT_THEMES[canonical] || ABOUT_THEMES["geass-moon"];
+  return ABOUT_THEMES[canonical] || ABOUT_THEMES["arrakis-day"];
 }

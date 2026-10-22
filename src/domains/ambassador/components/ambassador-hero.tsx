@@ -8,10 +8,10 @@ import {
   useMotionValue,
   useSpring,
 } from "framer-motion";
-import { useAmbassadorTheme } from "./ambassador-theme";
+import { useAmbassadorTheme } from "../data/ambassador-theme";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 import { useAuth } from "@/core";
-import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
+import { useAuthModal } from "@/domains/auth";
 
 export function AmbassadorHero() {
   const t = useAmbassadorTheme();

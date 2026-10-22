@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { GuestsView } from "@/domains/guests/components/guests-view";
+import { GuestsView } from "@/domains/guests";
 
 export const metadata: Metadata = {
-  title: "Keynote Guests of Honour — Prof. H. C. Verma & Prof. Poonam Tandon | TechSrijan'27",
+  title: "Past Guests of Honour — Prof. H. C. Verma & Prof. Poonam Tandon | TechSrijan'27",
   description:
-    "Meet the distinguished keynote dignitaries of TechSrijan at MMMUT Gorakhpur. Featuring Previous Edition Luminaries Prof. Harish Chandra Verma (Padma Shri Awardee, Author of Concepts of Physics) and Prof. Poonam Tandon (Former Vice-Chancellor, DDU Gorakhpur University).",
+    "Honouring distinguished past dignitaries of TechSrijan at MMMUT Gorakhpur. Featuring Previous Edition Luminaries Prof. Harish Chandra Verma (Padma Shri Awardee, Author of Concepts of Physics) and Prof. Poonam Tandon (Former Vice-Chancellor, DDU Gorakhpur University).",
   keywords: [
     "TechSrijan Guests",
+    "Past Guests TechSrijan",
     "H C Verma TechSrijan",
     "Poonam Tandon TechSrijan",
     "TechSrijan MMMUT Keynotes",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     canonical: "/guests",
   },
   openGraph: {
-    title: "Keynote Guests of Honour — TechSrijan | MMMUT Gorakhpur",
+    title: "Past Guests of Honour — TechSrijan | MMMUT Gorakhpur",
     description:
       "Prof. H. C. Verma (Padma Shri, Concepts of Physics) and Prof. Poonam Tandon (Former Vice-Chancellor, DDU Gorakhpur University) at TechSrijan.",
     images: [
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
         url: "/images/guests/hc-verma-padmashri.jpg",
         width: 1200,
         height: 630,
-        alt: "Prof. H. C. Verma - Keynote Dignitary TechSrijan",
+        alt: "Prof. H. C. Verma - Past Keynote Dignitary TechSrijan",
       },
     ],
   },

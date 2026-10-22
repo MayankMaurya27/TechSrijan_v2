@@ -119,8 +119,8 @@ function ClubCard({
           onSelect?.();
         }
       }}
-      className={`relative cursor-pointer group flex items-center justify-center select-none w-[108px] sm:w-[140px] md:w-[170px] lg:w-[210px] xl:w-[230px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-2xl ${
-        isTsc ? "md:scale-[1.06] md:-translate-y-2.5 z-20" : "z-10"
+      className={`relative cursor-pointer group flex items-center justify-center select-none w-[108px] sm:w-[125px] md:w-[130px] lg:w-[175px] xl:w-[220px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent,var(--accent-primary,#E61924))] rounded-2xl ${
+        isTsc ? "md:scale-[1.05] xl:scale-[1.08] md:-translate-y-2 z-20" : "z-10"
       }`}
     >
       <div className="relative w-full aspect-[2/3] max-h-[36vh] sm:max-h-[46vh] md:max-h-[64vh] flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-2">
@@ -251,12 +251,12 @@ export function ArenaSpatialCards({
       }`}
     >
       {/* ── Desktop & Tablet View (md+): 5 Ornate Spatial Columns ── */}
-      <div className="hidden md:flex flex-1 flex-col justify-center items-center pb-2 sm:pb-8 pointer-events-auto w-full px-2 sm:px-6">
-        <div className="w-full max-w-[98vw] lg:max-w-6xl xl:max-w-7xl flex flex-row items-center justify-center gap-3.5 lg:gap-5">
+      <div className="hidden md:flex flex-1 flex-col justify-center items-center pb-2 sm:pb-8 pointer-events-auto w-full px-2 sm:px-3 md:px-4 lg:px-6">
+        <div className="w-full max-w-[98vw] lg:max-w-6xl xl:max-w-7xl flex flex-row items-center justify-center gap-2 md:gap-2.5 lg:gap-4 xl:gap-5">
           {/* Left Column (Cards 0 & 1: TSC, RESO) */}
           <div
             ref={leftCardsRef}
-            className="flex items-center justify-center gap-3.5 lg:gap-5 will-change-transform"
+            className="flex items-center justify-center gap-2 md:gap-2.5 lg:gap-4 xl:gap-5 will-change-transform"
           >
             {CLUBS.slice(0, 2).map((club, i) => (
               <ClubCard
@@ -289,7 +289,7 @@ export function ArenaSpatialCards({
           {/* Right Column (Cards 3 & 4: RC, SAE) */}
           <div
             ref={rightCardsRef}
-            className="flex items-center justify-center gap-3.5 lg:gap-5 will-change-transform"
+            className="flex items-center justify-center gap-2 md:gap-2.5 lg:gap-4 xl:gap-5 will-change-transform"
           >
             {CLUBS.slice(3, 5).map((club, i) => (
               <ClubCard
@@ -346,7 +346,21 @@ export function ArenaSpatialCards({
             {[CLUBS[0], CLUBS[1]].map((club) => (
               <div
                 key={club.id}
-                className="relative cursor-default select-none rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
+                role="button"
+                tabIndex={0}
+                aria-label={`Select ${club.fullName}`}
+                onClick={() => {
+                  onClubSelect?.(club.id as any);
+                  onExploreEvents?.();
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onClubSelect?.(club.id as any);
+                    onExploreEvents?.();
+                  }
+                }}
+                className="relative cursor-pointer select-none rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
                 <div
                   className="w-10 h-10 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 mb-1.5"
@@ -380,7 +394,21 @@ export function ArenaSpatialCards({
             {[CLUBS[3], CLUBS[4]].map((club) => (
               <div
                 key={club.id}
-                className="relative cursor-default select-none rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden"
+                role="button"
+                tabIndex={0}
+                aria-label={`Select ${club.fullName}`}
+                onClick={() => {
+                  onClubSelect?.(club.id as any);
+                  onExploreEvents?.();
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onClubSelect?.(club.id as any);
+                    onExploreEvents?.();
+                  }
+                }}
+                className="relative cursor-pointer select-none rounded-xl bg-black/85 border border-white/15 p-2.5 flex flex-col items-center text-center shadow-[0_4px_18px_rgba(0,0,0,0.85)] backdrop-blur-md overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
                 <div
                   className="w-10 h-10 rounded-full p-1 flex items-center justify-center border border-white/20 bg-black/60 mb-1.5"
@@ -413,7 +441,21 @@ export function ArenaSpatialCards({
         {/* Central Apex Highlight Card (TSC - Index 2) */}
         <div ref={centerCardRef} className="w-full mt-2 will-change-transform">
           <div
-            className="relative cursor-default select-none rounded-xl bg-black/90 border border-red-500/35 p-2.5 flex items-center justify-between shadow-[0_4px_22px_rgba(220,38,38,0.35)] backdrop-blur-md overflow-hidden"
+            role="button"
+            tabIndex={0}
+            aria-label={`Select ${CLUBS[2].fullName}`}
+            onClick={() => {
+              onClubSelect?.(CLUBS[2].id as any);
+              onExploreEvents?.();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClubSelect?.(CLUBS[2].id as any);
+                onExploreEvents?.();
+              }
+            }}
+            className="relative cursor-pointer select-none rounded-xl bg-black/90 border border-red-500/35 p-2.5 flex items-center justify-between shadow-[0_4px_22px_rgba(220,38,38,0.35)] backdrop-blur-md overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
           >
             <div className="flex items-center gap-2.5">
               <div

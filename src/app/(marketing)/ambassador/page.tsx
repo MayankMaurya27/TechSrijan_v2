@@ -5,7 +5,7 @@ import {
   AmbassadorJourney,
   AmbassadorApply,
 } from "@/domains/ambassador";
-import { FestFooter } from "@/shared/layout/fest-footer";
+import { FestFooter } from "@/shared";
 
 
 export const metadata: Metadata = {

@@ -37,14 +37,19 @@ export function EventsHeroScroll({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Hero overlays
+  // Hero overlays & poster refs for zero-rerender DOM mutations
   const heroTextRef = useRef<HTMLDivElement>(null);
   const arenaHudRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const exitOverlayRef = useRef<HTMLDivElement>(null);
+  const heroPosterRef = useRef<HTMLDivElement>(null);
+  const midPosterRef = useRef<HTMLDivElement>(null);
+  const arenaPosterRef = useRef<HTMLDivElement>(null);
+  const vignetteRef = useRef<HTMLDivElement>(null);
 
   // State
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isCardsVisible, setIsCardsVisible] = useState(false);
+  const isCardsVisibleRef = useRef(false);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [hasDrawnFrame, setHasDrawnFrame] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -376,10 +381,23 @@ export function EventsHeroScroll({
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const p = self.progress;
-            if (Math.abs(p - lastProgressStateRef.current) >= 0.003) {
+
+            // Direct DOM style mutations without triggering component re-renders
+            if (heroPosterRef.current) heroPosterRef.current.style.opacity = p < 0.16 ? "1" : "0";
+            if (midPosterRef.current) midPosterRef.current.style.opacity = p >= 0.16 && p < 0.28 ? "1" : "0";
+            if (arenaPosterRef.current) arenaPosterRef.current.style.opacity = p >= 0.28 ? "1" : "0";
+            if (vignetteRef.current) vignetteRef.current.style.opacity = Math.max(0, 1 - p * 2.8).toFixed(3);
+
+            // Milestone state toggle for cards container visibility (only 1 re-render at 0.38 boundary)
+            const cardsVisible = p >= 0.38;
+            if (cardsVisible !== isCardsVisibleRef.current) {
+              isCardsVisibleRef.current = cardsVisible;
+              setIsCardsVisible(cardsVisible);
+            }
+
+            if (onScrollProgress && Math.abs(p - lastProgressStateRef.current) >= 0.01) {
               lastProgressStateRef.current = p;
-              setScrollProgress(p);
-              if (onScrollProgress) onScrollProgress(p);
+              onScrollProgress(p);
             }
 
             // Map scroll progress to video time:
@@ -525,24 +543,27 @@ export function EventsHeroScroll({
         <div ref={bgArenaRef} className="absolute inset-0 h-full w-full will-change-transform z-0">
           {/* Baseline WebP Posters: Always render underneath to prevent any blank frames */}
           <div
+            ref={heroPosterRef}
             className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-[1]"
             style={{
               backgroundImage: `url('${heroPoster}')`,
-              opacity: scrollProgress < 0.16 ? 1 : 0,
+              opacity: 1,
             }}
           />
           <div
+            ref={midPosterRef}
             className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-[1]"
             style={{
               backgroundImage: `url('${midPoster}')`,
-              opacity: scrollProgress >= 0.16 && scrollProgress < 0.28 ? 1 : 0,
+              opacity: 0,
             }}
           />
           <div
+            ref={arenaPosterRef}
             className="absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-300 bg-cover bg-center z-[1]"
             style={{
               backgroundImage: `url('${arenaPoster}')`,
-              opacity: scrollProgress >= 0.28 ? 1 : 0,
+              opacity: 0,
             }}
           />
 
@@ -582,12 +603,13 @@ export function EventsHeroScroll({
 
           {/* Deep Obsidian Left/Bottom Vignette for cinematic depth and typography contrast */}
           <div
+            ref={vignetteRef}
             className="absolute inset-0 pointer-events-none z-10"
             style={{
               background: isMobile
                 ? "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.5) 100%)"
                 : "linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 30%, rgba(0,0,0,0.15) 60%, transparent 100%)",
-              opacity: Math.max(0, 1 - scrollProgress * 2.8),
+              opacity: 1,
             }}
           />
 
@@ -646,11 +668,11 @@ export function EventsHeroScroll({
         <div
           ref={cardsContainerRef}
           className={`absolute inset-0 z-30 opacity-0 ${
-            scrollProgress >= 0.38 ? "pointer-events-auto" : "pointer-events-none"
+            isCardsVisible ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
           <ArenaSpatialCards
-            isVisible={scrollProgress >= 0.38}
+            isVisible={isCardsVisible}
             onClubSelect={onClubSelect}
             onCategorySelect={onCategorySelect}
             onExploreEvents={scrollToOurEvents}

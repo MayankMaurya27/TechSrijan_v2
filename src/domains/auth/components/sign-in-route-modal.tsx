@@ -7,6 +7,7 @@ import { useAuthModal } from "../context/auth-modal-context";
 import { useAuth } from "@/core";
 import { AlertCircle, Loader2, ArrowLeft } from "lucide-react";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
+import { useFocusTrap } from "@/shared/hooks/use-focus-trap";
 
 interface SignInRouteModalProps {
   isOpen?: boolean;
@@ -54,28 +55,10 @@ export function SignInRouteModal({
     }
   }, [isOpen]);
 
-  // Close on ESC key when active
-  useEffect(() => {
-    if (!isOpen || isPageMode) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        handleClose();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, isPageMode, handleClose]);
-
-  // Lock body scroll when overlay modal is open
-  useEffect(() => {
-    if (isOpen && !isPageMode) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }
-  }, [isOpen, isPageMode]);
+  const modalContainerRef = useFocusTrap<HTMLDivElement>({
+    isOpen: isOpen && !isPageMode,
+    onClose: handleClose,
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -232,7 +215,12 @@ export function SignInRouteModal({
 
       {/* MAIN MODAL CHASSIS FRAME */}
       <div
-        role={!isPageMode ? "dialog" : undefined} aria-modal={!isPageMode ? "true" : undefined} aria-labelledby="signin-modal-title" className="relative w-full bg-[#0a0708] pt-14 sm:pt-16 md:pt-18 pb-7 sm:pb-8 px-5 sm:px-10 md:px-14 shadow-[0_25px_80px_rgba(0,0,0,0.95)] border border-[#caa462]/75"
+        ref={!isPageMode ? modalContainerRef : undefined}
+        role={!isPageMode ? "dialog" : undefined}
+        aria-modal={!isPageMode ? "true" : undefined}
+        aria-labelledby="signin-modal-title"
+        aria-describedby="signin-modal-desc"
+        className="relative w-full bg-[#0a0708] pt-14 sm:pt-16 md:pt-18 pb-7 sm:pb-8 px-5 sm:px-10 md:px-14 shadow-[0_25px_80px_rgba(0,0,0,0.95)] border border-[#caa462]/75"
         style={{
           clipPath:
             "polygon(24px 0%, calc(100% - 24px) 0%, 100% 24px, 100% calc(100% - 24px), calc(100% - 24px) 100%, 24px 100%, 0% calc(100% - 24px), 0% 24px)",
@@ -326,13 +314,13 @@ export function SignInRouteModal({
                 : "EXTERNAL PARTICIPANT ACCESS"}
           </h2>
 
-          {view !== "choose" && (
-            <p className="font-geist text-xs sm:text-sm text-[#a09484] mt-1.5 max-w-md mx-auto">
-              {view === "mmmut"
+          <p id="signin-modal-desc" className="font-geist text-xs sm:text-sm text-[#a09484] mt-1.5 max-w-md mx-auto">
+            {view === "choose"
+              ? "Select your student or external gateway to access your protocols."
+              : view === "mmmut"
                 ? "University single sign-on with your roll number or student email."
                 : "Register or sign in with your institutional credentials."}
-            </p>
-          )}
+          </p>
         </div>
 
         {/* ERROR NOTIFICATION BANNER */}
@@ -478,9 +466,10 @@ export function SignInRouteModal({
               <button
                 type="button"
                 onClick={() => setView("choose")}
-                className="inline-flex items-center gap-1.5 text-xs font-mono text-[#caa462] hover:text-white transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs font-mono text-[#caa462] hover:text-white transition-colors cursor-pointer min-h-[44px] min-w-[44px] px-2.5 py-2 -ml-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#caa462]"
+                aria-label="Return to gateway selector"
               >
-                <ArrowLeft className="w-3.5 h-3.5" />
+                <ArrowLeft className="w-4 h-4" />
                 <span>Change Gateway</span>
               </button>
 
@@ -488,7 +477,7 @@ export function SignInRouteModal({
                 <button
                   type="button"
                   onClick={() => setAuthMode("login")}
-                  className={`px-3 py-1 font-mono text-[11px] rounded transition-all cursor-pointer ${
+                  className={`px-3.5 py-2 min-h-[44px] inline-flex items-center justify-center font-mono text-xs rounded transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#caa462] ${
                     authMode === "login"
                       ? "bg-[#caa462] text-black font-bold shadow-[0_0_10px_rgba(202,164,98,0.4)]"
                       : "text-neutral-400 hover:text-white"
@@ -499,7 +488,7 @@ export function SignInRouteModal({
                 <button
                   type="button"
                   onClick={() => setAuthMode("register")}
-                  className={`px-3 py-1 font-mono text-[11px] rounded transition-all cursor-pointer ${
+                  className={`px-3.5 py-2 min-h-[44px] inline-flex items-center justify-center font-mono text-xs rounded transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#caa462] ${
                     authMode === "register"
                       ? "bg-[#caa462] text-black font-bold shadow-[0_0_10px_rgba(202,164,98,0.4)]"
                       : "text-neutral-400 hover:text-white"
@@ -571,25 +560,28 @@ export function SignInRouteModal({
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1">
+                      <label htmlFor="auth-fullname" className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1 cursor-pointer">
                         Full Name *
                       </label>
                       <input
+                        id="auth-fullname"
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="e.g. Aarav Sharma"
                         required
+                        aria-required="true"
                         className="w-full px-3 py-2 rounded bg-white/[0.04] border border-[#caa462]/30 text-sm text-white placeholder:text-neutral-600 focus:border-[#caa462] focus:outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1">
+                      <label htmlFor="auth-mobile" className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1 cursor-pointer">
                         10-Digit Mobile *
                       </label>
                       <input
+                        id="auth-mobile"
                         type="tel"
                         name="mobile"
                         value={formData.mobile}
@@ -597,6 +589,7 @@ export function SignInRouteModal({
                         placeholder="9876543210"
                         maxLength={10}
                         required
+                        aria-required="true"
                         className="w-full px-3 py-2 rounded bg-white/[0.04] border border-[#caa462]/30 text-sm text-white placeholder:text-neutral-600 focus:border-[#caa462] focus:outline-none"
                       />
                     </div>
@@ -604,13 +597,15 @@ export function SignInRouteModal({
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1">
+                      <label htmlFor="auth-gender" className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1 cursor-pointer">
                         Gender *
                       </label>
                       <select
+                        id="auth-gender"
                         name="gender"
                         value={formData.gender}
                         onChange={handleChange}
+                        aria-required="true"
                         className="w-full px-3 py-2 rounded bg-[#100b0c] border border-[#caa462]/30 text-sm text-white focus:border-[#caa462] focus:outline-none cursor-pointer"
                       >
                         <option value="MALE">Male</option>
@@ -621,31 +616,35 @@ export function SignInRouteModal({
 
                     {view === "mmmut" ? (
                       <div>
-                        <label className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1">
+                        <label htmlFor="auth-rollnumber" className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1 cursor-pointer">
                           University Roll Number *
                         </label>
                         <input
+                          id="auth-rollnumber"
                           type="text"
                           name="rollNumber"
                           value={formData.rollNumber}
                           onChange={handleChange}
                           placeholder="e.g. 2024CS001"
                           required
+                          aria-required="true"
                           className="w-full px-3 py-2 rounded bg-white/[0.04] border border-[#caa462]/30 text-sm text-white placeholder:text-neutral-600 focus:border-[#caa462] focus:outline-none"
                         />
                       </div>
                     ) : (
                       <div>
-                        <label className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1">
+                        <label htmlFor="auth-college-name" className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1 cursor-pointer">
                           College / University *
                         </label>
                         <input
+                          id="auth-college-name"
                           type="text"
                           name="collegeName"
                           value={formData.collegeName}
                           onChange={handleChange}
                           placeholder="e.g. University / Engineering Institute Name"
                           required
+                          aria-required="true"
                           className="w-full px-3 py-2 rounded bg-white/[0.04] border border-[#caa462]/30 text-sm text-white placeholder:text-neutral-600 focus:border-[#caa462] focus:outline-none"
                         />
                       </div>
@@ -656,7 +655,7 @@ export function SignInRouteModal({
 
               {/* Email / Identifier */}
               <div>
-                <label className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1">
+                <label htmlFor="auth-identifier" className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1 cursor-pointer">
                   {authMode === "login"
                     ? view === "mmmut"
                       ? "Email or University Roll Number *"
@@ -666,6 +665,7 @@ export function SignInRouteModal({
                       : "Email Address *"}
                 </label>
                 <input
+                  id="auth-identifier"
                   type={authMode === "login" ? "text" : "email"}
                   name={authMode === "login" ? "identifier" : "email"}
                   value={authMode === "login" ? formData.identifier : formData.email}
@@ -680,22 +680,25 @@ export function SignInRouteModal({
                         : "your.name@gmail.com"
                   }
                   required
+                  aria-required="true"
                   className="w-full px-3 py-2 rounded bg-white/[0.04] border border-[#caa462]/30 text-sm text-white placeholder:text-neutral-600 focus:border-[#caa462] focus:outline-none"
                 />
               </div>
 
               {/* Password */}
               <div>
-                <label className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1">
+                <label htmlFor="auth-password" className="block font-mono text-[10px] tracking-wider uppercase text-[#a09484] mb-1 cursor-pointer">
                   Password (min 8 characters) *
                 </label>
                 <input
+                  id="auth-password"
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••••••"
                   required
+                  aria-required="true"
                   className="w-full px-3 py-2 rounded bg-white/[0.04] border border-[#caa462]/30 text-sm text-white placeholder:text-neutral-600 focus:border-[#caa462] focus:outline-none"
                 />
               </div>

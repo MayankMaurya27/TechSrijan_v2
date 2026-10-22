@@ -1,7 +1,7 @@
 "use client";
 
 import { SOCIETY_PILLARS } from "../data/team-roster";
-import { Shield, ChevronRight, Users } from "lucide-react";
+import { ChevronRight, Users } from "lucide-react";
 
 interface SocietyPillarsProps {
   activeHouse: string | null;
@@ -30,7 +30,7 @@ export function SocietyPillars({ activeHouse, onSelectHouse }: SocietyPillarsPro
           <button
             onClick={() => onSelectHouse(null)}
             type="button"
-            className="self-start md:self-auto rounded border border-[var(--border-accent)] bg-[var(--surface)] px-3 py-1.5 font-mono text-[10px] tracking-widest text-[var(--accent-primary)] uppercase transition-all hover:bg-[var(--surface-hover)]"
+            className="self-start md:self-auto rounded border border-[var(--border-accent)] bg-[var(--surface)] px-3 py-1.5 font-mono text-[10px] tracking-widest text-[var(--accent-primary)] uppercase transition-all hover:bg-[var(--surface-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
           >
             RESET PILLAR FILTER
           </button>
@@ -44,10 +44,20 @@ export function SocietyPillars({ activeHouse, onSelectHouse }: SocietyPillarsPro
           return (
             <div
               key={pillar.code}
+              role="button"
+              tabIndex={0}
+              aria-pressed={isSelected}
+              aria-label={`Filter by ${pillar.name}`}
               onClick={() => onSelectHouse(isSelected ? null : pillar.code)}
-              className={`mecha-bracket group relative cursor-pointer overflow-hidden rounded-xl border p-6 transition-all duration-300 ${
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelectHouse(isSelected ? null : pillar.code);
+                }
+              }}
+              className={`mecha-bracket group relative cursor-pointer overflow-hidden rounded-xl border p-6 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] ${
                 isSelected
-                  ? "border-[var(--accent-primary)] bg-[#1F150B]/90 shadow-xl"
+                  ? "border-[var(--accent-primary)] bg-[var(--bg-secondary,#1F150B)]/90 shadow-xl"
                   : "border-[var(--border)] bg-[var(--surface)] hover:border-[var(--border-accent)] hover:bg-[var(--surface-hover)] hover:-translate-y-1"
               }`}
               style={{
@@ -99,7 +109,7 @@ export function SocietyPillars({ activeHouse, onSelectHouse }: SocietyPillarsPro
                 {pillar.domains.slice(0, 3).map((domain) => (
                   <span
                     key={domain}
-                    className="rounded bg-[#140E08] px-2 py-0.5 font-mono text-[9px] text-[var(--text-muted)] border border-[var(--border)]"
+                    className="rounded bg-[var(--bg-primary,#140E08)] px-2 py-0.5 font-mono text-[9px] text-[var(--text-muted)] border border-[var(--border)]"
                   >
                     {domain}
                   </span>

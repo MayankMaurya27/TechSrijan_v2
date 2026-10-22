@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { X, Send, ExternalLink, Shield, Check, Copy } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { X, Send, Check, Copy } from "lucide-react";
 import type { Operative } from "../data/team-roster";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
+import { useFocusTrap } from "@/shared";
 
 function IconLinkedin({ className }: { className?: string }) {
   return (
@@ -41,20 +42,12 @@ interface OperativeDossierModalProps {
 
 export function OperativeDossierModal({ operative, onClose }: OperativeDossierModalProps) {
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    if (operative) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleKeyDown);
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [operative, onClose]);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const modalRef = useFocusTrap<HTMLDivElement>({
+    isOpen: !!operative,
+    onClose,
+    initialFocusRef: closeButtonRef,
+  });
 
   if (!operative) return null;
 
@@ -66,17 +59,21 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
 
   return (
     <div
-      role="dialog"
-      aria-modal="true"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-xl bg-black/80 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="operative-dossier-title"
+        aria-describedby="operative-dossier-desc"
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/[0.12] bg-[#0C0D12] p-6 sm:p-8 shadow-[0_30px_70px_rgba(0,0,0,0.95)]"
+        className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-white/[0.12] bg-[var(--surface,#0C0D12)] p-6 sm:p-8 shadow-[0_30px_70px_rgba(0,0,0,0.95)]"
       >
         {/* Close Button */}
         <button
+          ref={closeButtonRef}
           onClick={onClose}
           type="button"
           aria-label="Close operative dossier"
@@ -88,11 +85,13 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
         {/* Profile Header */}
         <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
           {/* Portrait Thumbnail */}
-          <div className="relative h-28 w-28 sm:h-32 sm:w-32 shrink-0 overflow-hidden rounded-2xl border border-white/[0.1] bg-[#12141C]">
+          <div className="relative h-28 w-28 sm:h-32 sm:w-32 shrink-0 overflow-hidden rounded-2xl border border-white/[0.1] bg-[var(--bg-secondary,#12141C)]">
             {operative.image ? (
               <img
                 src={getOptimizedImageUrl(operative.image, 400)}
                 alt={operative.name}
+                width={400}
+                height={400}
                 className="h-full w-full object-cover object-top"
               />
             ) : (
@@ -109,7 +108,7 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
               <span className="text-emerald-400">{operative.status}</span>
             </div>
 
-            <h2 className="mt-2 text-2xl sm:text-3xl font-montserrat font-black text-white tracking-tight">
+            <h2 id="operative-dossier-title" className="mt-2 text-2xl sm:text-3xl font-montserrat font-black text-white tracking-tight">
               {operative.name}
             </h2>
 
@@ -120,7 +119,7 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
         </div>
 
         {/* Bio */}
-        <div className="mt-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 text-xs sm:text-sm font-geist leading-relaxed text-zinc-300">
+        <div id="operative-dossier-desc" className="mt-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 text-xs sm:text-sm font-geist leading-relaxed text-zinc-300">
           {operative.bio}
         </div>
 
@@ -165,7 +164,7 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
           <button
             onClick={handleCopy}
             type="button"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-white transition-colors min-h-[44px] px-3.5 py-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 cursor-pointer"
           >
             {copied ? (
               <>
@@ -180,12 +179,13 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
             )}
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             {operative.contacts.email && (
               <a
                 href={`mailto:${operative.contacts.email}`}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] hover:text-white transition-colors"
+                className="flex min-h-[44px] min-w-[44px] h-11 w-11 items-center justify-center rounded-full bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
                 title="Email"
+                aria-label={`Email ${operative.name}`}
               >
                 <Send className="h-4 w-4" />
               </a>
@@ -195,8 +195,9 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
                 href={operative.contacts.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] hover:text-white transition-colors"
+                className="flex min-h-[44px] min-w-[44px] h-11 w-11 items-center justify-center rounded-full bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
                 title="LinkedIn"
+                aria-label={`${operative.name}'s LinkedIn profile`}
               >
                 <IconLinkedin className="h-4 w-4" />
               </a>
@@ -206,8 +207,9 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
                 href={operative.contacts.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] hover:text-white transition-colors"
+                className="flex min-h-[44px] min-w-[44px] h-11 w-11 items-center justify-center rounded-full bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
                 title="GitHub"
+                aria-label={`${operative.name}'s GitHub profile`}
               >
                 <IconGithub className="h-4 w-4" />
               </a>
@@ -217,8 +219,9 @@ export function OperativeDossierModal({ operative, onClose }: OperativeDossierMo
                 href={operative.contacts.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] hover:text-white transition-colors"
+                className="flex min-h-[44px] min-w-[44px] h-11 w-11 items-center justify-center rounded-full bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
                 title="Instagram"
+                aria-label={`${operative.name}'s Instagram profile`}
               >
                 <IconInstagram className="h-4 w-4" />
               </a>

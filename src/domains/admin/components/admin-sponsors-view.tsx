@@ -174,9 +174,14 @@ export function AdminSponsorsView() {
 
       {/* SEARCH BAR */}
       <div className="relative max-w-md">
+        <label htmlFor="admin-sponsors-search" className="sr-only">
+          Search Sponsors
+        </label>
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
         <input
+          id="admin-sponsors-search"
           type="text"
+          aria-label="Search Sponsors"
           placeholder="Search by sponsor name or tier..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -267,15 +272,21 @@ export function AdminSponsorsView() {
       {/* CREATE / EDIT MODAL */}
       {modalMode && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-5">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-sponsors-modal-title"
+            className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-2xl space-y-5"
+          >
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
-              <h3 className="text-base font-bold text-zinc-100">
+              <h3 id="admin-sponsors-modal-title" className="text-base font-bold text-zinc-100">
                 {modalMode === "create" ? "Add New Sponsor" : "Edit Sponsor"}
               </h3>
               <button
                 type="button"
                 onClick={() => setModalMode(null)}
-                className="text-zinc-400 hover:text-zinc-100"
+                aria-label="Close modal"
+                className="text-zinc-400 hover:text-zinc-100 min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -283,10 +294,17 @@ export function AdminSponsorsView() {
 
             <form onSubmit={handleSaveSponsor} className="space-y-4 text-xs">
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">Sponsor / Partner Name *</label>
+                <label
+                  htmlFor="admin-sponsor-name"
+                  className="block text-zinc-300 font-medium mb-1 cursor-pointer"
+                >
+                  Sponsor / Partner Name *
+                </label>
                 <input
+                  id="admin-sponsor-name"
                   type="text"
                   required
+                  aria-required="true"
                   placeholder="e.g. Google Cloud"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -295,8 +313,14 @@ export function AdminSponsorsView() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">Sponsorship Tier</label>
+                <label
+                  htmlFor="admin-sponsor-tier"
+                  className="block text-zinc-300 font-medium mb-1 cursor-pointer"
+                >
+                  Sponsorship Tier
+                </label>
                 <select
+                  id="admin-sponsor-tier"
                   value={formData.category}
                   onChange={(e) =>
                     setFormData({
@@ -304,7 +328,7 @@ export function AdminSponsorsView() {
                       category: e.target.value as any,
                     })
                   }
-                  className="w-full h-9 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none"
+                  className="w-full h-9 px-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-100 focus:border-amber-500 focus:outline-none cursor-pointer"
                 >
                   {SPONSOR_TIERS.map((tier) => (
                     <option key={tier} value={tier}>
@@ -315,8 +339,14 @@ export function AdminSponsorsView() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">Logo URL</label>
+                <label
+                  htmlFor="admin-sponsor-logo"
+                  className="block text-zinc-300 font-medium mb-1 cursor-pointer"
+                >
+                  Logo URL
+                </label>
                 <input
+                  id="admin-sponsor-logo"
                   type="url"
                   placeholder="https://example.com/logo.png"
                   value={formData.logoUrl}
@@ -326,8 +356,14 @@ export function AdminSponsorsView() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">Website URL</label>
+                <label
+                  htmlFor="admin-sponsor-website"
+                  className="block text-zinc-300 font-medium mb-1 cursor-pointer"
+                >
+                  Website URL
+                </label>
                 <input
+                  id="admin-sponsor-website"
                   type="url"
                   placeholder="https://sponsor.com"
                   value={formData.websiteUrl}
@@ -337,8 +373,14 @@ export function AdminSponsorsView() {
               </div>
 
               <div>
-                <label className="block text-zinc-300 font-medium mb-1">Display Order</label>
+                <label
+                  htmlFor="admin-sponsor-order"
+                  className="block text-zinc-300 font-medium mb-1 cursor-pointer"
+                >
+                  Display Order
+                </label>
                 <input
+                  id="admin-sponsor-order"
                   type="number"
                   min={1}
                   value={formData.displayOrder}

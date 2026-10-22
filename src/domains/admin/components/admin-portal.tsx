@@ -111,7 +111,7 @@ export function AdminPortal({ initialTab = "events" }: AdminPortalProps) {
       {/* NAVIGATION TABS */}
       {/* For Club Admin, only Events tab exists */}
       {!isClubAdmin && (
-        <nav className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 border-b border-zinc-800">
+        <nav className="flex items-center gap-2 overflow-x-auto touch-pan-y pb-4 mb-6 border-b border-zinc-800">
           <TabButton
             icon={Trophy}
             label="Events"
@@ -228,7 +228,11 @@ function AdminSignInView() {
         </div>
 
         {error && (
-          <div className="mb-4 p-3 rounded-lg border border-red-800/60 bg-red-950/40 text-xs text-red-300 flex items-start gap-2">
+          <div
+            id="admin-signin-error"
+            role="alert"
+            className="mb-4 p-3 rounded-lg border border-red-800/60 bg-red-950/40 text-xs text-red-300 flex items-start gap-2"
+          >
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
@@ -236,12 +240,15 @@ function AdminSignInView() {
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="block text-zinc-300 font-medium mb-1.5">
+            <label htmlFor="admin-signin-identifier" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
               Username
             </label>
             <input
+              id="admin-signin-identifier"
               type="text"
               required
+              aria-required="true"
+              aria-describedby={error ? "admin-signin-error" : undefined}
               autoComplete="username"
               placeholder="e.g. admin, tsc_head, or your username"
               value={identifier}
@@ -251,10 +258,15 @@ function AdminSignInView() {
           </div>
 
           <div>
-            <label className="block text-zinc-300 font-medium mb-1.5">Password</label>
+            <label htmlFor="admin-signin-password" className="block text-zinc-300 font-medium mb-1.5 cursor-pointer">
+              Password
+            </label>
             <input
+              id="admin-signin-password"
               type="password"
               required
+              aria-required="true"
+              aria-describedby={error ? "admin-signin-error" : undefined}
               autoComplete="current-password"
               placeholder="••••••••••••"
               value={password}

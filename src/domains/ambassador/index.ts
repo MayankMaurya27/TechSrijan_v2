@@ -1,8 +1,4 @@
-export { AmbassadorHero } from "./ambassador-hero";
-export { AmbassadorPerks } from "./ambassador-perks";
-export { AmbassadorJourney } from "./ambassador-journey";
-export { AmbassadorColleges } from "./ambassador-colleges";
-export { AmbassadorLeaderboard } from "./ambassador-leaderboard";
-export { AmbassadorApply } from "./ambassador-apply";
-export { AmbassadorModal } from "./ambassador-modal";
-export { useAmbassadorTheme, AMBASSADOR_THEMES } from "./ambassador-theme";
+export { AmbassadorHero } from "./components/ambassador-hero";
+export { AmbassadorPerks } from "./components/ambassador-perks";
+export { AmbassadorJourney } from "./components/ambassador-journey";
+export { AmbassadorApply } from "./components/ambassador-apply";

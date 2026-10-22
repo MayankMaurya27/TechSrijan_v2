@@ -26,10 +26,10 @@ import { SponsorsInquiryModal } from "./sponsors-inquiry-modal";
 import { useTheme, type CanonicalTheme } from "@/core";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 import { api } from "@/lib/api";
-import { FestFooter } from "@/shared/layout/fest-footer";
+import { FestFooter } from "@/shared";
 
 
-export const SPONSOR_THEMES = {
+const SPONSOR_THEMES = {
   "geass-moon": {
     name: "Geass Moon",
     accent: "#E61E25",

@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { AmbassadorModal } from "./ambassador-modal";
-import { useAmbassadorTheme } from "./ambassador-theme";
+import { useAmbassadorTheme } from "../data/ambassador-theme";
 import { useAuth } from "@/core";
-import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
+import { useAuthModal } from "@/domains/auth";
 
 export function AmbassadorApply() {
   const ref = useRef<HTMLDivElement>(null);

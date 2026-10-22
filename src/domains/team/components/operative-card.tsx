@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import type { Operative } from "../data/team-roster";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
@@ -14,9 +14,9 @@ interface OperativeCardProps {
 
 export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) {
   const circleRef = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number | null>(null);
+  const glareRef = useRef<HTMLDivElement>(null);
+  const orbitRef = useRef<HTMLDivElement>(null);
   const [hasImgError, setHasImgError] = useState(false);
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0, mx: 50, my: 50, active: false });
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = circleRef.current;
@@ -25,29 +25,32 @@ export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) 
     const px = (e.clientX - rect.left) / rect.width;
     const py = (e.clientY - rect.top) / rect.height;
 
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => {
-      setTilt({
-        rx: (0.5 - py) * 2 * MAX_TILT,
-        ry: (px - 0.5) * 2 * MAX_TILT,
-        mx: px * 100,
-        my: py * 100,
-        active: true,
-      });
-    });
+    const rx = (0.5 - py) * 2 * MAX_TILT;
+    const ry = (px - 0.5) * 2 * MAX_TILT;
+
+    el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateY(-8px) scale(1.03)`;
+
+    if (glareRef.current) {
+      glareRef.current.style.background = `radial-gradient(160px circle at ${px * 100}% ${py * 100}%, rgba(255,255,255,0.22), transparent 65%)`;
+      glareRef.current.style.opacity = "1";
+    }
+
+    if (orbitRef.current) {
+      orbitRef.current.style.borderColor = operative.colorTheme.accent;
+    }
   };
 
   const handlePointerLeave = () => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    setTilt((t) => ({ ...t, rx: 0, ry: 0, active: false }));
+    if (circleRef.current) {
+      circleRef.current.style.transform = "rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)";
+    }
+    if (glareRef.current) {
+      glareRef.current.style.opacity = "0";
+    }
+    if (orbitRef.current) {
+      orbitRef.current.style.borderColor = "";
+    }
   };
-
-  useEffect(
-    () => () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    },
-    []
-  );
 
   return (
     <div
@@ -56,12 +59,12 @@ export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) 
       aria-label={`View dossier for ${operative.name}`}
       onClick={() => onOpenDossier(operative)}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onOpenDossier(operative);
         }
       }}
-      className="group cursor-pointer select-none flex flex-col items-center text-center [perspective:1000px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-3xl"
+      className="group cursor-pointer select-none flex flex-col items-center text-center [perspective:1000px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] rounded-3xl"
     >
       {/* ============================================================
           CIRCULAR 3D PORTRAIT MEDALLION
@@ -72,9 +75,7 @@ export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) 
         onPointerLeave={handlePointerLeave}
         className="relative flex items-center justify-center rounded-full will-change-transform"
         style={{
-          transform: tilt.active
-            ? `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateY(-8px) scale(1.03)`
-            : "rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)",
+          transform: "rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)",
           transition: "transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
@@ -87,23 +88,21 @@ export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) 
 
         {/* Orbit Ring (Fine Dashed Halo) */}
         <div
+          ref={orbitRef}
           aria-hidden="true"
           className="absolute -inset-2.5 rounded-full border border-dashed border-white/10 opacity-30 transition-all duration-300 group-hover:opacity-80 group-hover:scale-105 pointer-events-none"
-          style={{ borderColor: tilt.active ? operative.colorTheme.accent : undefined }}
         />
 
         {/* Circular Frame Container */}
         <div
           className="relative h-44 w-44 sm:h-52 sm:w-52 overflow-hidden rounded-full p-[2px] bg-gradient-to-b from-white/25 via-white/5 to-transparent transition-all duration-500 group-hover:from-[#D4A843] group-hover:via-[#F5E6C8] group-hover:to-[#D4A843]/40 shadow-[0_15px_35px_-10px_rgba(0,0,0,0.9)] group-hover:shadow-[0_20px_45px_-12px_rgba(0,0,0,0.95)]"
         >
-          <div className="relative h-full w-full overflow-hidden rounded-full bg-[#0E1017]">
+          <div className="relative h-full w-full overflow-hidden rounded-full bg-[var(--bg-secondary,#0E1017)]">
             {/* Specular Glare Follows Pointer */}
             <div
+              ref={glareRef}
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-20 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-              style={{
-                background: `radial-gradient(160px circle at ${tilt.mx}% ${tilt.my}%, rgba(255,255,255,0.22), transparent 65%)`,
-              }}
+              className="pointer-events-none absolute inset-0 z-20 rounded-full opacity-0 transition-opacity duration-300"
             />
 
             {/* Member Photo */}
@@ -111,13 +110,15 @@ export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) 
               <img
                 src={getOptimizedImageUrl(operative.image, 400)}
                 alt={operative.name}
+                width={400}
+                height={400}
                 className="h-full w-full rounded-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
                 onError={() => setHasImgError(true)}
                 loading="lazy"
                 decoding="async"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-b from-[#181B26] to-[#0A0B0E] text-3xl font-bold text-white/90">
+              <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-b from-[var(--bg-card,#181B26)] to-[var(--bg-primary,#0A0B0E)] text-3xl font-bold text-white/90">
                 {operative.name
                   .split(" ")
                   .slice(0, 2)
@@ -150,13 +151,13 @@ export function OperativeCard({ operative, onOpenDossier }: OperativeCardProps) 
         </h3>
 
         {/* Professional Role Title (Geist) */}
-        <p className="font-geist mt-1 text-xs sm:text-[13px] text-zinc-400 font-normal leading-snug transition-colors duration-200 group-hover:text-zinc-200">
+        <p className="font-geist mt-1 text-xs sm:text-[13px] text-[var(--text-secondary,#A1A1AA)] font-normal leading-snug transition-colors duration-200 group-hover:text-white">
           {operative.role}
         </p>
 
         {/* Elevated Society/Affiliation Capsule (Bebas) */}
         <div className="mt-2.5 flex items-center justify-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#11131C]/90 border border-white/[0.08] px-3 py-0.5 text-xs font-bebas tracking-wider text-zinc-300 uppercase transition-all duration-300 group-hover:border-[var(--accent-primary)]/50 group-hover:text-white shadow-sm">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--surface,#11131C)]/90 border border-white/[0.08] px-3 py-0.5 text-xs font-bebas tracking-wider text-[var(--text-secondary,#D4D4D8)] uppercase transition-all duration-300 group-hover:border-[var(--accent-primary)]/50 group-hover:text-white shadow-sm">
             <span
               className="h-1.5 w-1.5 rounded-full"
               style={{

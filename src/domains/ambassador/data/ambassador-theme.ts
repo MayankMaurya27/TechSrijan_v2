@@ -150,7 +150,7 @@ export interface AmbassadorThemeTokens {
   modalCheckboxCheckedBorder: string;
 }
 
-export const AMBASSADOR_THEMES: Record<CanonicalTheme, AmbassadorThemeTokens> = {
+const AMBASSADOR_THEMES: Record<CanonicalTheme, AmbassadorThemeTokens> = {
   "geass-moon": {
     theme: "geass-moon",
     accent: "#FF2A36",

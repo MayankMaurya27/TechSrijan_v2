@@ -5,6 +5,7 @@ import QRCode from "qrcode";
 import { Printer, ShieldCheck } from "lucide-react";
 import { Button } from "@/shared";
 import { useTheme, cn } from "@/core";
+import { getPrefersReducedMotion } from "@/core/utils/reduced-motion";
 
 interface ImperiumPass3DProps {
   userName?: string;
@@ -27,9 +28,9 @@ export function ImperiumPass3D({
   const isGiediOrGeass = theme === "giedi-prime" || theme === "geass-moon";
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const cardRef = useRef<HTMLDivElement>(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
-  const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50 });
+  const glareRef = useRef<HTMLDivElement>(null);
+  const glareStreakRef = useRef<HTMLDivElement>(null);
+  const isHoveredRef = useRef(false);
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
@@ -62,7 +63,13 @@ export function ImperiumPass3D({
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
-    setIsHovered(true);
+    if (!isHoveredRef.current) {
+      isHoveredRef.current = true;
+      setIsHovered(true);
+    }
+
+    if (getPrefersReducedMotion()) return;
+
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -73,36 +80,49 @@ export function ImperiumPass3D({
     const rX = ((y - centerY) / centerY) * -12;
     const rY = ((x - centerX) / centerX) * 12;
 
-    setRotateX(rX);
-    setRotateY(rY);
+    cardRef.current.style.transform = `rotateX(${rX.toFixed(2)}deg) rotateY(${rY.toFixed(2)}deg)`;
 
-    setGlarePosition({
-      x: Math.round((x / rect.width) * 100),
-      y: Math.round((y / rect.height) * 100),
-    });
+    const gx = Math.round((x / rect.width) * 100);
+    const gy = Math.round((y / rect.height) * 100);
+
+    if (glareRef.current) {
+      glareRef.current.style.background = isGiediOrGeass
+        ? `radial-gradient(circle 260px at ${gx}% ${gy}%, rgba(255,255,255,0.26) 0%, rgba(255,40,50,0.18) 30%, rgba(168,85,247,0.1) 55%, transparent 75%)`
+        : `radial-gradient(circle 260px at ${gx}% ${gy}%, rgba(255,255,255,0.3) 0%, rgba(243,206,122,0.22) 30%, rgba(212,168,67,0.12) 55%, transparent 75%)`;
+    }
+    if (glareStreakRef.current) {
+      glareStreakRef.current.style.transform = `translateX(${((gx - 50) * 1.2).toFixed(1)}%)`;
+    }
   };
 
   const handleMouseLeave = () => {
+    isHoveredRef.current = false;
     setIsHovered(false);
-    setRotateX(0);
-    setRotateY(0);
-    setGlarePosition({ x: 50, y: 50 });
+    if (cardRef.current) {
+      cardRef.current.style.transform = "rotateX(0deg) rotateY(0deg)";
+    }
   };
 
   useEffect(() => {
+    if (getPrefersReducedMotion()) return;
+
     let rafId: number | null = null;
     let targetX = 0;
     let targetY = 0;
 
     const updateOrientation = () => {
-      setRotateX(-targetX);
-      setRotateY(targetY);
+      if (cardRef.current) {
+        cardRef.current.style.transform = `rotateX(${(-targetX).toFixed(2)}deg) rotateY(${targetY.toFixed(2)}deg)`;
+      }
       rafId = null;
     };
 
     const handleOrientation = (e: DeviceOrientationEvent) => {
       if (e.beta === null || e.gamma === null) return;
-      setIsHovered(true);
+      if (!isHoveredRef.current) {
+        isHoveredRef.current = true;
+        setIsHovered(true);
+      }
       targetX = Math.min(Math.max((e.beta - 45) * 0.4, -12), 12);
       targetY = Math.min(Math.max(e.gamma * 0.4, -12), 12);
       if (!rafId) {
@@ -146,7 +166,7 @@ export function ImperiumPass3D({
           )}
           style={{
             transformStyle: "preserve-3d",
-            transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+            transform: "rotateX(0deg) rotateY(0deg)",
           }}
         >
           <div
@@ -180,6 +200,7 @@ export function ImperiumPass3D({
           </div>
 
           <div
+            ref={glareRef}
             className={cn(
               "pointer-events-none absolute inset-0 z-20 mix-blend-screen transition-opacity duration-300",
               isHovered ? "opacity-65" : "opacity-0"
@@ -187,12 +208,13 @@ export function ImperiumPass3D({
             style={{
               background:
                 isGiediOrGeass
-                  ? `radial-gradient(circle 260px at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,0.26) 0%, rgba(255,40,50,0.18) 30%, rgba(168,85,247,0.1) 55%, transparent 75%)`
-                  : `radial-gradient(circle 260px at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,0.3) 0%, rgba(243,206,122,0.22) 30%, rgba(212,168,67,0.12) 55%, transparent 75%)`,
+                  ? `radial-gradient(circle 260px at 50% 50%, rgba(255,255,255,0.26) 0%, rgba(255,40,50,0.18) 30%, rgba(168,85,247,0.1) 55%, transparent 75%)`
+                  : `radial-gradient(circle 260px at 50% 50%, rgba(255,255,255,0.3) 0%, rgba(243,206,122,0.22) 30%, rgba(212,168,67,0.12) 55%, transparent 75%)`,
             }}
           />
 
           <div
+            ref={glareStreakRef}
             className={cn(
               "pointer-events-none absolute inset-0 z-20 mix-blend-overlay transition-opacity duration-300",
               isHovered ? "opacity-50" : "opacity-0"
@@ -202,7 +224,7 @@ export function ImperiumPass3D({
                 isGiediOrGeass
                   ? `linear-gradient(115deg, transparent 30%, rgba(255,30,39,0.12) 46%, rgba(255,255,255,0.22) 50%, rgba(255,30,39,0.12) 54%, transparent 70%)`
                   : `linear-gradient(115deg, transparent 30%, rgba(212,168,67,0.12) 46%, rgba(255,255,255,0.22) 50%, rgba(212,168,67,0.12) 54%, transparent 70%)`,
-              transform: `translateX(${(glarePosition.x - 50) * 1.2}%)`,
+              transform: "translateX(0%)",
               transition: "transform 0.1s ease-out",
             }}
           />

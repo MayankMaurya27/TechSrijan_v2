@@ -20,8 +20,9 @@ import {
 import type { DetailedEvent } from "./club-events-section";
 import { getOptimizedImageUrl } from "@/shared/utils/cloudinary-loader";
 import { useAuth } from "@/core";
-import { useAuthModal } from "@/domains/auth/context/auth-modal-context";
+import { useAuthModal } from "@/domains/auth";
 import { api } from "@/lib/api";
+import { useFocusTrap } from "@/shared";
 
 interface EventDetailModalProps {
   event: DetailedEvent | null;
@@ -52,20 +53,10 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
     setCodeCopied(false);
   }, [event]);
 
-  // ESC key listener to close modal
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    if (event) {
-      window.addEventListener("keydown", onKeyDown);
-      document.body.style.overflow = "hidden";
-    }
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = "unset";
-    };
-  }, [event, onClose]);
+  const modalContainerRef = useFocusTrap<HTMLDivElement>({
+    isOpen: !!event,
+    onClose,
+  });
 
   if (!event) return null;
 
@@ -192,7 +183,14 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
           <div className="absolute top-2 left-2 inset-0 bg-black border border-white/10 rounded-[1.75rem] pointer-events-none" />
 
           {/* Inner Content Surface */}
-          <div role="dialog" aria-modal="true" aria-labelledby="event-modal-title" className="relative z-10 bg-[#0d0e13] border border-white/20 rounded-[1.75rem] p-5 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden max-h-[88vh] flex flex-col">
+          <div
+            ref={modalContainerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="event-modal-title"
+            aria-describedby="event-modal-desc"
+            className="relative z-10 bg-[#0d0e13] border border-white/20 rounded-[1.75rem] p-5 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden max-h-[88vh] flex flex-col"
+          >
             {/* Top Silver Accent Beam */}
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
 
@@ -242,7 +240,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                 <h2 id="event-modal-title" className="font-montserrat text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tight text-white">
                   {event.name}
                 </h2>
-                <p className="font-sans text-xs sm:text-sm text-neutral-400 mt-1 italic">
+                <p id="event-modal-desc" className="font-sans text-xs sm:text-sm text-neutral-400 mt-1 italic">
                   &ldquo;{event.tagline}&rdquo;
                 </p>
               </div>
@@ -273,10 +271,11 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                         <button
                           type="button"
                           onClick={handleCopyCode}
-                          className="p-1 text-emerald-400 hover:text-white transition-colors cursor-pointer"
+                          className="min-w-[44px] min-h-[44px] p-2 flex items-center justify-center rounded-lg text-emerald-400 hover:text-white transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
                           title="Copy Code"
+                          aria-label="Copy squad verification code"
                         >
-                          {codeCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                          {codeCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                         </button>
                       </div>
                     </div>
@@ -339,22 +338,30 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                     <button
                       type="button"
                       onClick={() => setRegMode("idle")}
-                      className="text-xs text-neutral-400 hover:text-white"
+                      className="min-h-[44px] min-w-[44px] px-3 py-2 inline-flex items-center justify-center text-xs text-neutral-400 hover:text-white rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white cursor-pointer"
+                      aria-label="Cancel squad configuration"
                     >
                       Cancel
                     </button>
                   </div>
+                  <label htmlFor="squad-create-name" className="sr-only">
+                    Squad Name
+                  </label>
                   <input
+                    id="squad-create-name"
                     type="text"
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
                     required
+                    aria-required="true"
+                    aria-label="Squad Name"
+                    placeholder="Enter squad name..."
                     className="w-full px-3 py-2 rounded-lg bg-black border border-white/20 text-xs text-white placeholder:text-neutral-600 focus:border-white focus:outline-none"
                   />
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-2.5 rounded-lg bg-white text-black font-mono text-xs font-bold uppercase tracking-wider hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    className="w-full min-h-[44px] py-2.5 rounded-lg bg-white text-black font-mono text-xs font-bold uppercase tracking-wider hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     {isSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "CONFIRM & GENERATE SQUAD CODE"}
                   </button>
@@ -370,22 +377,30 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                     <button
                       type="button"
                       onClick={() => setRegMode("idle")}
-                      className="text-xs text-neutral-400 hover:text-white"
+                      className="min-h-[44px] min-w-[44px] px-3 py-2 inline-flex items-center justify-center text-xs text-neutral-400 hover:text-white rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white cursor-pointer"
+                      aria-label="Cancel squad configuration"
                     >
                       Cancel
                     </button>
                   </div>
+                  <label htmlFor="squad-join-code" className="sr-only">
+                    Squad Code
+                  </label>
                   <input
+                    id="squad-join-code"
                     type="text"
                     value={teamCode}
                     onChange={(e) => setTeamCode(e.target.value.toUpperCase())}
                     required
+                    aria-required="true"
+                    aria-label="Squad Code"
+                    placeholder="ENTER 6-DIGIT SQUAD CODE"
                     className="w-full px-3 py-2 rounded-lg bg-black border border-white/20 text-xs text-white placeholder:text-neutral-600 focus:border-white focus:outline-none uppercase font-mono tracking-widest"
                   />
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-2.5 rounded-lg bg-white text-black font-mono text-xs font-bold uppercase tracking-wider hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    className="w-full min-h-[44px] py-2.5 rounded-lg bg-white text-black font-mono text-xs font-bold uppercase tracking-wider hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     {isSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "VERIFY & JOIN SQUAD"}
                   </button>
@@ -451,7 +466,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
               <button
                 type="button"
                 onClick={handleShare}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-black/60 hover:bg-white/10 border border-white/15 text-white/80 hover:text-white font-mono text-xs uppercase tracking-wider transition-all cursor-pointer"
+                className="min-h-[44px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-black/60 hover:bg-white/10 border border-white/15 text-white/80 hover:text-white font-mono text-xs uppercase tracking-wider transition-all cursor-pointer"
               >
                 <Share2 className="w-3.5 h-3.5 text-white" />
                 <span className="hidden sm:inline">Share</span>
@@ -461,7 +476,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-mono text-xs uppercase tracking-wider transition-all cursor-pointer"
+                  className="min-h-[44px] px-4 py-2 inline-flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white font-mono text-xs uppercase tracking-wider transition-all cursor-pointer"
                 >
                   Close
                 </button>
@@ -479,7 +494,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                             }
                             setRegMode("create_squad");
                           }}
-                          className="px-3.5 py-2 rounded-xl bg-white hover:bg-neutral-200 text-black font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(255,255,255,0.2)] active:scale-95 cursor-pointer"
+                          className="min-h-[44px] px-3.5 py-2 inline-flex items-center justify-center rounded-xl bg-white hover:bg-neutral-200 text-black font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(255,255,255,0.2)] active:scale-95 cursor-pointer"
                         >
                           Create Squad
                         </button>
@@ -492,7 +507,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                             }
                             setRegMode("join_squad");
                           }}
-                          className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer"
+                          className="min-h-[44px] px-3.5 py-2 inline-flex items-center justify-center rounded-xl bg-white/15 hover:bg-white/25 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer"
                         >
                           Join Squad
                         </button>
@@ -502,7 +517,7 @@ export function EventDetailModal({ event, onClose }: EventDetailModalProps) {
                         type="button"
                         onClick={handleSoloRegister}
                         disabled={isSubmitting}
-                        className="px-5 py-2 rounded-xl bg-white hover:bg-neutral-200 text-black font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-95 cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                        className="min-h-[44px] px-5 py-2 inline-flex items-center justify-center rounded-xl bg-white hover:bg-neutral-200 text-black font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-95 cursor-pointer disabled:opacity-50 gap-1.5"
                       >
                         {isSubmitting ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
